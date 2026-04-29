@@ -1,15 +1,7 @@
 ---
 name: causal-skills
 description: |
-  Use when the user explicitly requests causal inference, causal effect estimation,
-  causal discovery, or causal reasoning. Trigger on phrases such as:
-  "causal inference", "causal effect", "causal discovery", "causal impact",
-  "causal analysis", "causal reasoning", "causal estimation", or "causal question".
-
-  Do not trigger on method-specific keywords (e.g., "matching", "propensity score",
-  "difference in differences", "instrumental variable", "regression discontinuity")
-  unless the user also uses one of the causal phrases above. Do not trigger for
-  general data analysis, prediction, forecasting, or association-only questions.
+  Use when the user explicitly requests causal inference or causal discovery.
 ---
 
 # Causal Inference Consultant

@@ -4,6 +4,8 @@
 
 This skill is intended for agent systems that load a top-level `SKILL.md` and then selectively read supporting references, subskills, scripts, and assets.
 
+**What this package is for.** If you are a data scientist, analyst, or researcher who wants to understand causal relationships in your data but is not fully versed in causal inference or causal discovery methods, this skill package acts as an interactive guide. Instead of jumping straight to a black-box model, it walks you through clarifying your question, checking whether your data can support a causal claim, choosing an appropriate method, and interpreting the results with the right caveats. The goal is to help you make better, more defensible causal decisions by understanding your data and assumptions before you run any estimator.
+
 The package is organized around an interactive consulting workflow:
 
 1. clarify the causal question;

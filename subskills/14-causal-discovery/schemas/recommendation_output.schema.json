@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CausalDiscoveryRecommendationOutput",
+  "type": "object",
+  "properties": {
+    "top_choice": {"type": "string"},
+    "test_or_score": {"type": "string"},
+    "why": {"type": "string"},
+    "graph_returned": {"type": "string"},
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "method": {"type": "string"},
+          "when_to_use": {"type": "string"}
+        },
+        "required": ["method", "when_to_use"]
+      }
+    },
+    "assumptions": {"type": "array", "items": {"type": "string"}},
+    "caveats": {"type": "array", "items": {"type": "string"}},
+    "validation": {"type": "array", "items": {"type": "string"}}
+  },
+  "required": ["top_choice", "why", "graph_returned", "alternatives", "assumptions", "caveats", "validation"]
+}

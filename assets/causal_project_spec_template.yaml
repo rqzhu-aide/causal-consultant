@@ -1,0 +1,90 @@
+project_name: null
+analyst: null
+date: null
+
+causal_question: null
+scientific_context: null
+
+unit_of_analysis: null
+target_population: null
+analysis_population: null
+
+intervention:
+  treatment_name: null
+  treatment_type: null
+  intervention_definition: null
+  comparator_definition: null
+  versions_of_treatment: null
+  treatment_initiation_time: null
+  adherence_or_compliance: null
+
+outcome:
+  outcome_name: null
+  outcome_type: null
+  outcome_definition: null
+  measurement_time: null
+  follow_up_window: null
+  competing_events: null
+
+time_zero: null
+
+estimand:
+  label: null
+  formal_definition: null
+  target_population: null
+  scale: null
+  effect_modifier_or_subgroup: null
+
+observed_data:
+  data_source: null
+  rows_represent: null
+  sample_size: null
+  number_treated: null
+  number_comparator: null
+  repeated_measures: null
+  clustering: null
+  survey_design_or_weights: null
+
+variables:
+  treatment_variable: null
+  outcome_variable: null
+  time_variable: null
+  id_variable: null
+  cluster_variable: null
+  pre_treatment_confounders: []
+  effect_modifiers: []
+  instruments: []
+  mediators: []
+  post_treatment_variables: []
+  censoring_variables: []
+  selection_variables: []
+
+missingness_censoring_selection:
+  missing_data_summary: null
+  censoring_summary: null
+  attrition_summary: null
+  sample_selection_summary: null
+
+assumptions:
+  consistency: null
+  exchangeability_or_as_if_random: null
+  positivity_or_overlap: null
+  no_interference_or_exposure_mapping: null
+  measurement_validity: null
+  censoring_or_missingness: null
+
+analysis_plan:
+  primary_method: null
+  alternative_methods: []
+  diagnostics: []
+  sensitivity_analyses: []
+  packages: []
+
+results:
+  main_estimate: null
+  uncertainty: null
+  diagnostics_summary: null
+  sensitivity_summary: null
+
+limitations: []
+open_questions: []

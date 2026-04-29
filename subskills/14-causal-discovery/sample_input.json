@@ -1,0 +1,15 @@
+{
+  "n_samples": 1200,
+  "n_variables": 25,
+  "data_type": "continuous",
+  "has_missing_values": false,
+  "is_iid": true,
+  "is_time_series": false,
+  "has_hidden_confounders": "possible",
+  "needs_unique_dag": false,
+  "accepts_cpdag_or_pag": true,
+  "has_interventions": false,
+  "has_background_knowledge": true,
+  "target_variable": null,
+  "language": "python"
+}

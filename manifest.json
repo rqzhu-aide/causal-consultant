@@ -1,0 +1,28 @@
+{
+  "package": "causal-inference-consultant",
+  "version": "0.1.1-iv-expanded",
+  "created_for": "modular causal inference consultant skill",
+  "top_level_skill": "SKILL.md",
+  "last_updated_focus": "Expanded subskills/09-instrumental-variables with detailed SKILL.md, workflow, assumption ledger, bibliography, examples, and root IV scripts.",
+  "subskills": [
+    "00-dag-identification",
+    "01-randomized-experiments",
+    "02-point-treatment-observational",
+    "03-matching-weighting-balance",
+    "04-doubly-robust-ml",
+    "05-heterogeneous-effects-policy",
+    "06-longitudinal-gmethods",
+    "07-did-event-study",
+    "08-regression-discontinuity",
+    "09-instrumental-variables",
+    "10-synthetic-control-time-series",
+    "11-survival-competing-risks",
+    "12-mediation",
+    "13-interference-spillovers",
+    "14-causal-discovery",
+    "15-causal-genomics",
+    "16-missingness-measurement-selection",
+    "17-reporting-interpretation"
+  ],
+  "notes": "Preliminary skill package. The instrumental-variables subskill has been expanded substantially. Review instrument-specific assumptions and test package-specific code in the target environment before production analyses."
+}

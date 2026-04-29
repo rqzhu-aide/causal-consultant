@@ -18,7 +18,7 @@ The package is organized around an interactive consulting workflow:
 ## Directory Structure
 
 ```text
-causal-inference-consultant/
+causal-skills/
   SKILL.md
   README.md
   references/

@@ -1,5 +1,5 @@
 ---
-name: causal-inference-consultant
+name: causal-skills
 description: Use when a user wants to plan, diagnose, estimate, interpret, validate, or report a causal inference analysis from randomized, observational, longitudinal, panel, time-series, survival, network, omics, or other scientific data. This skill acts as an interactive causal inference consultant: it clarifies the estimand and design, routes to one or more method-specific subskills, proposes analysis plans, checks assumptions and common failure modes, provides code templates, and interprets results with limitations.
 ---
 

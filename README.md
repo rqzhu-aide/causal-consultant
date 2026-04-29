@@ -49,7 +49,7 @@ The top-level `SKILL.md` should be the first file loaded. It instructs the agent
 | **00 — DAG Identification** | 25% | 🔴 | Basic scaffold; needs worked examples and code templates |
 | **01 — Randomized Experiments** | 85% | 🟢 | Comprehensive: 383-line SKILL.md, 5 refs, 6 examples, 4 root scripts, diagnostics, SRM/CUPED, cluster, factorial, crossover |
 | **02 — Point-Treatment Observational** | 45% | 🟡 | Scaffold + 2 refs; has DoWhy and statsmodels templates; needs deeper assumption guidance |
-| **03 — Matching / Weighting / Balance** | 40% | 🟡 | Scaffold + MatchIt/WeightIt/CoBalt template; needs diagnostics deep-dive |
+| **03 — Matching / Weighting / Balance** | 85% | 🟢 | Comprehensive: 589-line SKILL.md, 5 refs, 6 examples, 4 root scripts, formal estimands, overlap diagnostics, failure modes |
 | **04 — Doubly-Robust & Machine Learning** | 45% | 🟡 | Scaffold + TMLE and DoubleML templates; needs cross-fitting and nuisance convergence guidance |
 | **05 — Heterogeneous Effects & Policy** | 45% | 🟡 | Scaffold + causal forest (grf) and CATE (EconML) templates; needs policy evaluation examples |
 | **06 — Longitudinal G-Methods** | 40% | 🟡 | Scaffold + g-computation/IPW/TMLE template; needs MSM and survival extensions |
@@ -65,7 +65,7 @@ The top-level `SKILL.md` should be the first file loaded. It instructs the agent
 | **16 — Missingness, Measurement, Selection** | 25% | 🔴 | Skeleton only; needs MICE, proxy variables, and selection-bias correction templates |
 | **17 — Reporting & Interpretation** | 40% | 🟡 | Scaffold + report skeleton script + final report template; needs PRISMA-style checklists and rubrics |
 
-**Overall: ~45% complete.** The structural backbone is solid. Three subskills are now deep and usable (01 Randomized Experiments at 85%, 09 IV at 90%, 14 Causal Discovery at 85%). Most others remain functional scaffolds that need examples, diagnostics, and domain-specific elaboration.
+**Overall: ~50% complete.** The structural backbone is solid. Four subskills are now deep and usable (01 Randomized Experiments 85%, 03 Matching/Weighting/Balance 85%, 09 IV 90%, 14 Causal Discovery 85%). Most others remain functional scaffolds that need examples, diagnostics, and domain-specific elaboration.
 
 ## 🎯 Design Philosophy
 

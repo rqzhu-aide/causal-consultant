@@ -12,6 +12,8 @@ This skill is intended for agent systems that load a top-level `SKILL.md` and th
 
 The package is organized around an interactive consulting workflow:
 
+⚖️ See the full workflow diagram: [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md) (Mermaid) or open [`assets/causal-skills-workflow-diagram.html`](assets/causal-skills-workflow-diagram.html) in a browser for the SVG version.
+
 1. 🔍 clarify the causal question;
 2. 🎯 define the estimand;
 3. 📋 identify the data design and assumptions;

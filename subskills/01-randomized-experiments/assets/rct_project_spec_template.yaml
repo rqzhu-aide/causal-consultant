@@ -1,0 +1,41 @@
+causal_question: null
+experiment_type: null
+unit_randomized: null
+unit_analyzed: null
+assignment_variable: null
+treatment_received_variable: null
+arms: []
+planned_assignment_probabilities: []
+randomization_scheme: null
+primary_outcome: null
+primary_outcome_type: null
+secondary_outcomes: []
+guardrail_outcomes: []
+time_zero: null
+follow_up_window: null
+eligibility_criteria: null
+analysis_population: null
+exclusions_before_randomization: null
+exclusions_after_randomization: null
+baseline_covariates: []
+pre_experiment_metric: null
+missing_outcomes_or_attrition: null
+noncompliance_or_crossover: null
+clustering_or_repeated_measures: null
+interference_or_spillovers: null
+hypothesis_type: null
+multiplicity_plan: null
+primary_estimand:
+  name: null
+  scale: null
+  formal_definition: null
+primary_method: null
+alternative_methods: []
+required_diagnostics: []
+sensitivity_analyses: []
+related_subskills: []
+software_preference: null
+reproducibility:
+  random_seed: null
+  package_versions: null
+  code_template_used: null

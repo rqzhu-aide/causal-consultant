@@ -1,0 +1,53 @@
+{
+  "name": "randomized-experiments",
+  "display_name": "Randomized Experiments and A/B Testing",
+  "version": "0.2.0",
+  "status": "expanded-preliminary",
+  "description": "Consultant subskill for randomized experiments, A/B tests, randomized controlled trials, cluster trials, factorial trials, crossover trials, noncompliance, attrition, SRM, CUPED, and design-aware analysis.",
+  "entrypoint": "SKILL.md",
+  "primary_references": [
+    "references/workflow.md",
+    "references/math_estimands.md",
+    "references/diagnostics_and_failure_modes.md",
+    "references/software_and_packages.md",
+    "references/rct_ab_bibliography.md"
+  ],
+  "examples": [
+    "examples/r_estimatr_individual_rct.R",
+    "examples/r_fixest_clustered_ab.R",
+    "examples/r_ab_srm_cuped.R",
+    "examples/python_statsmodels_ab_test.py",
+    "examples/python_cluster_robust_rct.py",
+    "examples/python_cuped_ratio_metrics.py"
+  ],
+  "root_scripts": [
+    "scripts/R/rct_estimatr_template.R",
+    "scripts/R/ab_srm_cuped_template.R",
+    "scripts/python/ab_testing_statsmodels_template.py",
+    "scripts/python/cluster_robust_rct_template.py"
+  ],
+  "activates_when": [
+    "randomized controlled trial",
+    "A/B test",
+    "online experiment",
+    "field experiment",
+    "cluster randomized trial",
+    "factorial experiment",
+    "crossover trial",
+    "SMART design",
+    "randomized encouragement",
+    "noncompliance in randomized trial",
+    "sample ratio mismatch",
+    "CUPED"
+  ],
+  "routes_out_to": {
+    "noncompliance_or_treatment_received_estimand": "subskills/09-instrumental-variables/",
+    "time_to_event_or_competing_risk": "subskills/11-survival-competing-risks/",
+    "missing_outcomes_attrition_selection": "subskills/16-missingness-measurement-selection/",
+    "interference_spillovers": "subskills/13-interference-spillovers/",
+    "heterogeneous_effects_policy": "subskills/05-heterogeneous-effects-policy/",
+    "dynamic_regime_or_smart": "subskills/06-longitudinal-gmethods/",
+    "mediation_mechanisms": "subskills/12-mediation/",
+    "not_actually_randomized": "root router"
+  }
+}

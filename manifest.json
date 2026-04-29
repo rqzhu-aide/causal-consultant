@@ -1,9 +1,9 @@
 {
   "package": "causal-skills",
-  "version": "0.1.1-iv-expanded",
+  "version": "0.1.2-randomized-experiments-expanded",
   "created_for": "modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Expanded subskills/09-instrumental-variables with detailed SKILL.md, workflow, assumption ledger, bibliography, examples, and root IV scripts.",
+  "last_updated_focus": "Expanded subskills/01-randomized-experiments with detailed routing, estimands, diagnostics, examples, software notes, and root randomized-experiment scripts.",
   "subskills": [
     "00-dag-identification",
     "01-randomized-experiments",
@@ -24,5 +24,5 @@
     "16-missingness-measurement-selection",
     "17-reporting-interpretation"
   ],
-  "notes": "Preliminary skill package. The instrumental-variables subskill has been expanded substantially. Review instrument-specific assumptions and test package-specific code in the target environment before production analyses."
+  "notes": "Preliminary skill package. Both the randomized-experiments subskill (01) and the instrumental-variables subskill (09) have been expanded substantially. Test package-specific code in the target R/Python environment before production analyses. Scripts are templates and should not install packages or transfer data without explicit user approval."
 }

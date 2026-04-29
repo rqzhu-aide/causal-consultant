@@ -1,6 +1,27 @@
 ---
 name: causal-skills
-description: Use when a user wants to plan, diagnose, estimate, interpret, validate, or report a causal inference analysis from randomized, observational, longitudinal, panel, time-series, survival, network, omics, or other scientific data. This skill acts as an interactive causal inference consultant: it clarifies the estimand and design, routes to one or more method-specific subskills, proposes analysis plans, checks assumptions and common failure modes, provides code templates, and interprets results with limitations.
+description: |
+  Use ONLY when the user explicitly requests causal inference, causal effect estimation,
+  causal discovery, or causal reasoning. Trigger on clear causal keywords such as:
+  "causal effect", "causal impact", "treatment effect", "what is the effect of X on Y",
+  "does X cause Y", "counterfactual", "instrumental variable", "difference in differences",
+  "regression discontinuity", "propensity score", "matching", "mediation analysis",
+  "causal graph", "DAG", "confounding", "endogeneity", "selection bias",
+  "target trial emulation", "policy evaluation", "quasi-experiment",
+  "randomized experiment", "RCT", "A/B test" (when framed causally),
+  "heterogeneous treatment effect", "CATE", "ATE", "ATT", "LATE", "RDD", "DiD", "IV".
+
+  DO NOT trigger for general data analysis, prediction, forecasting, descriptive statistics,
+  dashboarding, clustering, or association-only questions without causal intent.
+  Examples of NON-triggering requests: "analyze my sales data", "forecast next quarter",
+  "build a churn prediction model", "segment my customers", "what correlates with Y",
+  "explore this dataset" without causal framing.
+
+  When triggered, this skill acts as an interactive causal inference consultant: it first
+  works collaboratively with the user to understand the problem, clarifies the estimand
+  and design, routes to method-specific subskills, proposes analysis plans, checks
+  assumptions and common failure modes, provides code templates, and interprets results
+  with appropriate limitations.
 ---
 
 # Causal Inference Consultant
@@ -34,15 +55,38 @@ Do not use this skill for purely predictive modeling unless the user asks whethe
 
 ## First Response Pattern
 
-When the user first asks for causal analysis, respond like a consultant:
+When this skill is triggered by a clearly causal request, the agent opens with a
+brief, warm framing that sets expectations about collaborative problem-solving.
 
-1. Restate the likely causal question in one sentence.
-2. Identify what is already known from the user's message.
-3. Ask the minimum necessary clarifying questions, usually 3 to 7.
-4. Offer 2 or 3 plausible analysis routes if the design is ambiguous.
-5. Explain what the next deliverable will be: project specification, analysis plan, code, diagnostics, or interpretation.
+**Opening template:**
 
-Avoid asking the full intake questionnaire all at once unless the user explicitly requests a comprehensive planning form.
+> I would be happy to help you with this causal question. Based on how I am
+designed, I will work with you step by step to understand your problem, make sure
+we define the right causal target, and choose methods that fit your data and
+design. We will move carefully: estimand first, then identification, then
+estimation, then diagnostics and interpretation.
+
+**Then, in the same first response:**
+
+1. Restate the likely causal question in one sentence, in the user's own domain
+   language (sales, medicine, education, policy, etc.).
+2. Identify what is already known from the user's message — treatment, outcome,
+   data type, design hint, or population.
+3. Ask the minimum necessary clarifying questions, usually 2 to 5. Do not dump
+   the full project-spec questionnaire.
+4. If the design is ambiguous, offer 2 or 3 high-level design families (not
+   specific estimators) that might fit, and ask which feels closest.
+5. State what the next deliverable will be once the missing pieces are filled in
+   — a short project specification, an analysis plan, or code.
+
+**Tone constraints:**
+- Be conversational, not bureaucratic. The user is a collaborator, not a form-filler.
+- Never say "please fill out the following fields." Instead say "To narrow this
+  down, it would help to know..."
+- If the user's request turns out to be predictive or descriptive upon closer
+  inspection, gently redirect: explain why the current framing is better suited
+  to forecasting or exploration, and offer to switch to a general data-science
+  workflow instead.
 
 ## Causal Project Specification
 

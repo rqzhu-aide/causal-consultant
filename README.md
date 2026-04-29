@@ -31,14 +31,13 @@ The package is organized around an interactive consulting workflow:
 
 ⚖️ See the full workflow diagram: [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md) (Mermaid) or open [`assets/causal-skills-workflow-diagram.html`](assets/causal-skills-workflow-diagram.html) in a browser for the SVG version.
 
-1. 🔍 clarify the causal question;
-2. 🎯 define the estimand;
-3. 📋 identify the data design and assumptions;
-4. 🗺️ route to method-specific subskills;
-5. 📐 propose a matched analysis plan;
-6. 💻 run or draft code only after the design is explicit;
-7. 📊 diagnose and interpret results;
-8. 📝 produce a reproducible report.
+1. 🔍 Clarify the causal question;
+2. 📋 Identify the study design, data collection, and other assumptions;
+3. 🎯 Define the target of inference (estimand);
+4. 📐 Find a matched analysis plan and route to method-specific subskills;
+5. 💻 Draft or run code;
+6. 🔄 Diagnose, interpret, and iterate with the user to improve and revise;
+7. 📝 Produce a reproducible report.
 
 ## 📁 Directory Structure
 

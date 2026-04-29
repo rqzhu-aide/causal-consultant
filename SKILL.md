@@ -1,27 +1,15 @@
 ---
 name: causal-skills
 description: |
-  Use ONLY when the user explicitly requests causal inference, causal effect estimation,
-  causal discovery, or causal reasoning. Trigger on clear causal keywords such as:
-  "causal effect", "causal impact", "treatment effect", "what is the effect of X on Y",
-  "does X cause Y", "counterfactual", "instrumental variable", "difference in differences",
-  "regression discontinuity", "propensity score", "matching", "mediation analysis",
-  "causal graph", "DAG", "confounding", "endogeneity", "selection bias",
-  "target trial emulation", "policy evaluation", "quasi-experiment",
-  "randomized experiment", "RCT", "A/B test" (when framed causally),
-  "heterogeneous treatment effect", "CATE", "ATE", "ATT", "LATE", "RDD", "DiD", "IV".
+  Use when the user explicitly requests causal inference, causal effect estimation,
+  causal discovery, or causal reasoning. Trigger on phrases such as:
+  "causal inference", "causal effect", "causal discovery", "causal impact",
+  "causal analysis", "causal reasoning", "causal estimation", or "causal question".
 
-  DO NOT trigger for general data analysis, prediction, forecasting, descriptive statistics,
-  dashboarding, clustering, or association-only questions without causal intent.
-  Examples of NON-triggering requests: "analyze my sales data", "forecast next quarter",
-  "build a churn prediction model", "segment my customers", "what correlates with Y",
-  "explore this dataset" without causal framing.
-
-  When triggered, this skill acts as an interactive causal inference consultant: it first
-  works collaboratively with the user to understand the problem, clarifies the estimand
-  and design, routes to method-specific subskills, proposes analysis plans, checks
-  assumptions and common failure modes, provides code templates, and interprets results
-  with appropriate limitations.
+  Do not trigger on method-specific keywords (e.g., "matching", "propensity score",
+  "difference in differences", "instrumental variable", "regression discontinuity")
+  unless the user also uses one of the causal phrases above. Do not trigger for
+  general data analysis, prediction, forecasting, or association-only questions.
 ---
 
 # Causal Inference Consultant

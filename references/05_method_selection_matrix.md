@@ -1,6 +1,6 @@
 # Method Selection Matrix
 
-Use this matrix after the estimand and design are provisionally clear.
+Use this matrix after the user need, data structure, estimand, and candidate design routes are provisionally clear. Do not use it as a keyword-to-package lookup table.
 
 ## Core Matrix
 
@@ -26,6 +26,17 @@ Use this matrix after the estimand and design are provisionally clear.
 
 ## Primary Method Selection Heuristics
 
+### Start with route feasibility, not estimator sophistication
+
+For each candidate route, ask:
+
+1. What data structure does the route require?
+2. Which assumptions are satisfied by design, checkable from data, or untestable?
+3. Which missing condition would invalidate the route?
+4. What fallback route is available if the condition fails?
+
+Choose the best-supported design first. Use more complex estimators only when they address a real feature of the data or estimand.
+
 ### Prefer simple, design-transparent methods when possible
 
 If treatment is randomized and compliance is high, a simple design-based estimator with appropriate standard errors is often preferable to complex ML.
@@ -50,6 +61,10 @@ Define eligibility, treatment strategies, assignment, follow-up, outcome, causal
 
 Use survival probability, cumulative incidence, risk difference, or RMST when the user wants risks or event-free time. Do not default to hazard ratios unless hazards are the scientific target.
 
+### Allow defensible preprocessing before package selection
+
+If existing packages require a clearer treatment, covariate, exposure, or unit structure, propose preprocessing only when it is defined before outcome analysis and has a scientific interpretation. Examples include baseline summary windows, event-row aggregation, lagged histories, exposure intensity definitions, network exposure mappings, and audited text-derived variables. Document these choices as part of the design.
+
 ## Method Proposal Checklist
 
 Before recommending a method, answer:
@@ -61,3 +76,4 @@ Before recommending a method, answer:
 5. What will happen if overlap/pretrends/bandwidth/IV strength/etc. fail?
 6. What alternative estimands or methods are available?
 7. What software can implement it reproducibly?
+8. What data reshaping or feature construction is required before using that software?

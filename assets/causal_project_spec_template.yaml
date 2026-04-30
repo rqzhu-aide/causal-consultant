@@ -2,6 +2,24 @@ project_name: null
 analyst: null
 date: null
 
+interaction:
+  current_mode: null
+  user_goal_type: null
+  requested_deliverable: null
+  decision_context: null
+  has_existing_data: null
+
+prospective_design:
+  planning_goal: null
+  ideal_study_design: null
+  feasible_design_options: []
+  minimum_data_to_collect: []
+  preferred_data_structure: null
+  measurement_plan: []
+  design_tradeoffs: []
+  future_diagnostics_enabled: []
+  data_collection_risks: []
+
 causal_question: null
 scientific_context: null
 
@@ -28,22 +46,27 @@ outcome:
 
 time_zero: null
 
-estimand:
-  label: null
-  formal_definition: null
-  target_population: null
-  scale: null
-  effect_modifier_or_subgroup: null
+data_structure:
+  design_label_claimed_by_user: null
+  inferred_design_family: null
+  rows_represent: null
+  unit_of_observation: null
+  one_row_per_unit: null
+  repeated_measures: null
+  clustering: null
+  panel_or_time_series: null
+  network_or_interference: null
+  assignment_mechanism: null
+  treatment_time_structure: null
+  outcome_time_structure: null
 
 observed_data:
   data_source: null
-  rows_represent: null
   sample_size: null
   number_treated: null
   number_comparator: null
-  repeated_measures: null
-  clustering: null
   survey_design_or_weights: null
+  data_access_or_privacy_constraints: null
 
 variables:
   treatment_variable: null
@@ -58,6 +81,31 @@ variables:
   post_treatment_variables: []
   censoring_variables: []
   selection_variables: []
+  unstructured_or_weakly_structured_covariates: []
+  proposed_feature_constructions: []
+
+causal_structure:
+  dag_status: not_started
+  dag_text: null
+  adjustment_set: []
+  forbidden_adjustment_variables: []
+  key_identification_notes: null
+
+estimand:
+  label: null
+  formal_definition: null
+  target_population: null
+  scale: null
+  effect_modifier_or_subgroup: null
+
+candidate_routes: []
+
+route_decision:
+  primary_route: null
+  activated_subskills: []
+  rejected_routes: []
+  required_conditions: []
+  unresolved_conditions: []
 
 missingness_censoring_selection:
   missing_data_summary: null
@@ -72,6 +120,7 @@ assumptions:
   no_interference_or_exposure_mapping: null
   measurement_validity: null
   censoring_or_missingness: null
+  model_assumptions: null
 
 analysis_plan:
   primary_method: null
@@ -86,5 +135,6 @@ results:
   diagnostics_summary: null
   sensitivity_summary: null
 
+iteration_history: []
 limitations: []
 open_questions: []

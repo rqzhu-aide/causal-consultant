@@ -1,19 +1,82 @@
 # Design Router
 
-Use this file after the intake has identified the basic causal question. The router should not merely classify the user's design label; it should check whether the data and implementation actually support the claimed design.
+Use this file after the intake has identified the basic causal question and the rough data structure. The router should not merely classify the user's design label; it should check whether the data and implementation actually support the claimed design.
+
+The router's main job is to narrow the problem to a small set of plausible high-level approaches, state the conditions each approach requires, and help the user choose the most defensible route when some conditions are uncertain or unavailable.
+
+If no data exist yet, use the router prospectively: compare designs by what the user could realistically assign, measure, and follow over time. The output should be a data collection and design blueprint, not a package recommendation.
 
 ## Top-Level Design Questions
 
-1. Was treatment assigned by an investigator, platform, protocol, randomization device, or policy rule?
-2. If randomized, what was randomized: individual, cluster, household, school, clinic, physician, account, cookie, device, session, time period, sequence, or site?
-3. Is the dataset row the same as the randomization unit? If not, does inference account for clustering/repeated observations?
-4. Was assignment actually random and recorded before treatment/exposure/outcome?
-5. Were units excluded after randomization? If yes, why and based on variables measured when?
-6. Did assignment equal treatment receipt/exposure, or is there noncompliance/triggering/crossover?
-7. Are missing outcomes, attrition, censoring, or logging failures present and differential by arm?
+1. What decision or scientific claim does the user want to support?
+2. What do rows represent, and is that the same as the causal unit?
+3. Was treatment assigned by an investigator, platform, protocol, randomization device, cutoff, instrument, policy rule, or self/clinician/market choice?
+4. If randomized, what was randomized: individual, cluster, household, school, clinic, physician, account, cookie, device, session, time period, sequence, or site?
+5. Was assignment recorded before treatment/exposure/outcome, and is it separate from treatment received?
+6. Were units excluded after assignment or treatment? If yes, why and based on variables measured when?
+7. Are missing outcomes, attrition, censoring, or logging failures present and differential by group?
 8. Could one unit's assigned treatment affect another unit's outcome?
 9. Is the outcome time-to-event, repeated, longitudinal, ratio-valued, count-valued, binary, or continuous?
 10. Is the user asking for average effects, heterogeneity, mechanisms, spillovers, policy value, or graph discovery?
+11. Are available covariates already analysis-ready, or do they require scientifically meaningful construction or aggregation?
+
+## Route Shortlisting Protocol
+
+After the top-level questions, produce a shortlist of 1 to 3 plausible routes. For each route, list the conditions needed and the current status of those conditions.
+
+Use these status labels:
+
+- **Known satisfied**: directly stated by the user or visible in the data.
+- **Checkable from data**: can be audited with the dataset, codebook, or diagnostics.
+- **Plausible but untestable**: must be argued from design/domain knowledge.
+- **Unresolved**: ask a targeted question if it would change the route.
+- **Likely violated**: route should be downgraded, modified, or abandoned.
+
+Prefer the route with the strongest design support, not the most sophisticated estimator. If no route can support a causal claim, recommend a descriptive, predictive, sensitivity, or data-collection next step.
+
+## Prospective Route Planning
+
+When `interaction.has_existing_data` is false or unknown, route by feasible data creation:
+
+| Feasible future design feature | Preferred route to consider | Data to plan now |
+|---|---|---|
+| User can randomize treatment, offer, encouragement, timing, or rollout | `01-randomized-experiments`; add `09` for noncompliance | assignment variable, probabilities, randomization unit, treatment received, pre-specified outcomes, attrition tracking |
+| User cannot randomize but can follow treated/comparator units from eligibility | `02-point-treatment-observational` + possibly `03`/`04` | eligibility/time zero, treatment definition, comparator definition, rich pre-treatment confounders, outcome follow-up |
+| Policy/treatment may start at different times across units | `07-did-event-study` | unit IDs, treatment adoption dates, multiple pre-period outcomes, stable composition, possible controls |
+| Assignment can use a cutoff or threshold | `08-regression-discontinuity`; add `09` if fuzzy | running variable, cutoff, treatment uptake, outcomes near cutoff, manipulation checks |
+| A credible encouragement or natural experiment can shift treatment | `09-instrumental-variables` | instrument, treatment received, outcome, first-stage data, exclusion-restriction evidence |
+| One/few aggregate units may be treated | `10-synthetic-control-time-series` | long pre-period outcome series, donor pool, covariates, intervention date, donor contamination checks |
+| Outcome is time-to-event | `11-survival-competing-risks` plus primary design | time zero, event dates, censoring dates, competing events, follow-up plan |
+| Mechanism/pathway is central | `12-mediation` after total-effect design | mediator timing, mediator-outcome confounders, treatment-mediator timing |
+| Spillovers are plausible or intentional | `13-interference-spillovers` plus primary design | cluster/network links, exposure mapping, treatment coverage, cluster/network outcomes |
+
+For each prospective route, state:
+
+- what the user must be able to control or observe;
+- the minimum variables to collect;
+- timing and measurement requirements;
+- diagnostics the future dataset should support;
+- what causal claim becomes unavailable if those data are not collected.
+
+## Data Reshaping and Feature Construction Route
+
+Sometimes the data are not immediately compatible with existing causal packages. The router may recommend preprocessing before estimator choice when the transformation is scientifically meaningful and defined without outcome leakage.
+
+Examples:
+
+- aggregate event/session/claim rows to the randomized or causal unit;
+- define baseline windows and summarize histories before time zero;
+- construct lagged treatment and confounder histories for longitudinal methods;
+- map network exposure or cluster-level spillover summaries;
+- convert free text or unstructured covariates into auditable indicators;
+- construct dose categories, exposure windows, or clinically meaningful thresholds;
+- build valid genetic instruments or omics summaries before MR/colocalization.
+
+Treat these transformations as part of the design. Document the construction, timing, and assumptions, and route to missingness/measurement/selection if the constructed variables may introduce bias.
+
+## DAG or Causal-Structure Gate
+
+Before final route selection, require a DAG, design diagram, or variable-role map when the route depends on adjustment, mediation, IV exclusion, selection/censoring, transportability, or interference. Do not wait until after code to discover that the proposed adjustment set includes mediators or colliders.
 
 ## Routing Logic
 
@@ -174,17 +237,41 @@ Many real projects need multiple subskills. Examples:
 ```markdown
 ## Design route
 
+Current mode:
+Requested deliverable:
+Existing data:
 Primary design family:
+Fallback design family:
 Activated subskills:
 Subskills considered but not activated:
-Excluded design families and why:
-Randomization claim audit:
-Unit randomized:
-Unit analyzed:
-Assignment mechanism:
+
+Data structure:
+- Rows represent:
+- Causal unit:
+- Unit analyzed:
+- Time variables:
+- Assignment mechanism:
+- Treatment timing:
+- Outcome timing:
+
+Route shortlist:
+1. Route:
+   - Conditions needed:
+   - Status of conditions:
+   - Main risks:
+2. Route:
+   - Conditions needed:
+   - Status of conditions:
+   - Main risks:
+
+DAG or causal-structure status:
 Primary estimand:
 Candidate methods:
+Feature construction or reshaping needed:
+Prospective data collection requirements:
+Future diagnostics to enable:
 Design-specific assumptions to audit:
 Diagnostics required before interpretation:
 Route-out triggers to monitor:
+Unresolved questions that would change the route:
 ```

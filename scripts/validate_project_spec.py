@@ -4,35 +4,38 @@
 This is a checklist helper, not a causal-validity guarantee. It uses PyYAML
 when available and falls back to a minimal parser for the bundled template
 shape when PyYAML is unavailable.
+
+Use --schema-only for blank templates where required paths should exist but
+project-specific values are not filled yet.
 """
 from pathlib import Path
 import argparse
 
 REQUIRED_PATHS = [
     ("interaction", "current_mode"),
-    ("causal_question",),
-    ("unit_of_analysis",),
-    ("target_population",),
-    ("intervention", "treatment_name"),
+    ("interaction", "user_goals"),
+    ("interaction", "requested_deliverables"),
+    ("interaction", "has_existing_data"),
+    ("data", "domain_context"),
+    ("data", "rows_represent"),
+    ("data", "unit_of_observation"),
+    ("intervention", "treatment_definition"),
     ("intervention", "comparator_definition"),
-    ("outcome", "outcome_name"),
-    ("outcome", "follow_up_window"),
-    ("time_zero",),
-    ("data_structure", "inferred_design_family"),
-    ("data_structure", "rows_represent"),
-    ("data_structure", "assignment_mechanism"),
-    ("estimand", "label"),
-    ("route_decision", "primary_route"),
-    ("variables", "treatment_variable"),
-    ("variables", "outcome_variable"),
-    ("analysis_plan", "primary_method"),
+    ("outcomes", "primary"),
+    ("study_design", "time_zero"),
+    ("study_design", "target_population"),
+    ("study_design", "inferred_design_family"),
+    ("analysis_routes", "potential_goals"),
+    ("analysis_routes", "candidate_routes"),
 ]
+
+MISSING = object()
 
 def get_path(d, path):
     cur = d
     for key in path:
         if not isinstance(cur, dict) or key not in cur:
-            return None
+            return MISSING
         cur = cur[key]
     return cur
 
@@ -90,20 +93,32 @@ def load_spec(path):
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("spec")
+    parser.add_argument(
+        "--schema-only",
+        action="store_true",
+        help="Check that required paths exist, but allow empty template values.",
+    )
     args = parser.parse_args()
     data = load_spec(args.spec)
     missing = []
     for path in REQUIRED_PATHS:
         val = get_path(data, path)
-        if val in (None, "", [], {}):
+        if args.schema_only:
+            if val is MISSING:
+                missing.append(".".join(path))
+        elif val is MISSING or val in (None, "", [], {}):
             missing.append(".".join(path))
 
     if missing:
-        print("Missing or empty fields:")
+        label = "Missing fields" if args.schema_only else "Missing or empty fields"
+        print(f"{label}:")
         for m in missing:
             print(f"- {m}")
         raise SystemExit(1)
-    print("Minimum project specification fields are present.")
+    if args.schema_only:
+        print("Minimum project specification paths are present.")
+    else:
+        print("Minimum project specification fields are present.")
 
 if __name__ == "__main__":
     main()

@@ -1,10 +1,10 @@
 # Causal Inference Consultant Skill
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.1.3--matching--weighting--balance--expanded-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-0.1.4--workflow--routing--architecture-blue.svg)]()
 [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
-Version: `0.1.3-matching-weighting-balance-expanded`
+Version: `0.1.4-workflow-routing-architecture`
 
 License: MIT
 
@@ -16,7 +16,7 @@ This is a modular causal inference consultant skill for agent systems that load 
 
 It is for data scientists, analysts, researchers, and domain experts who want a careful interactive guide rather than a black-box method picker. It can help whether the user already has a dataset or is still planning what data to collect.
 
-Current status: the top-level workflow and routing architecture are in place. Randomized experiments, matching/weighting/balance, instrumental variables, and causal discovery are the most developed subskills. Many other subskills are functional scaffolds that still need deeper examples, diagnostics, and package-specific recipes.
+Current status: the top-level workflow and routing architecture are in place. Randomized experiments, matching/weighting/balance, instrumental variables, and causal discovery are the most developed analysis subskills. Prospective design planning is available as a lightweight routing subskill for users who do not yet have data. Many other subskills are functional scaffolds that still need deeper examples, diagnostics, and package-specific recipes.
 
 > I cannot give you a definitive answer, but I can help you explore.
 
@@ -39,17 +39,18 @@ Example triggers:
 
 The package is organized around an interactive consulting workflow.
 
-See the workflow diagram: [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md). An older standalone HTML diagram is also included at [`assets/causal-skills-workflow-diagram.html`](assets/causal-skills-workflow-diagram.html).
+See the canonical workflow diagram: [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md). A legacy standalone HTML diagram is also included at [`assets/causal-skills-workflow-diagram.html`](assets/causal-skills-workflow-diagram.html), but the Mermaid diagram should be treated as the current architecture reference.
 
-1. Select the interaction mode: orientation, prospective design planning, design triage, data audit, DAG/estimand, analysis plan, code drafting, result interpretation, or reporting.
-2. Clarify the causal question, user goal, intervention, comparator, outcome, time zero, follow-up, unit, and target population.
-3. Determine whether data already exist. If not, create a prospective design and data collection blueprint.
-4. If data exist, audit the data structure: rows, IDs, timing, assignment/exposure, repeated measures, clustering, missingness, and available covariates.
-5. Narrow to 1 to 3 plausible design routes and check the conditions needed for each route.
-6. Create a DAG, design diagram, or variable-role map when needed to specify the estimand and identification strategy.
-7. Activate relevant method-specific subskills and draft an analysis plan, diagnostics, sensitivity analyses, and R/Python code when appropriate.
-8. Interpret results, diagnose problems, and iterate with the user to revise the estimand, route, model, data processing, or claim.
-9. Produce a reproducible report with assumptions, diagnostics, limitations, and interpretation.
+1. Identify the current interaction mode: learning, orientation, prospective planning, data audit, design triage, analysis planning, code drafting, result interpretation, or reporting.
+2. Restate the user's goal in domain language and clarify only the treatment, comparator, outcome, timing, population, data structure, and deliverable details needed for the next step.
+3. Determine whether data already exist. If not, activate prospective design planning and create a study or data-collection blueprint instead of jumping to model code.
+4. If data exist, audit the data structure: rows, IDs, timing, assignment/exposure, repeated measures, clustering, missingness, censoring, and available covariates.
+5. Narrow to 1 to 3 plausible design routes, state the key conditions for each, and use a lightweight DAG, design diagram, assignment summary, or variable-role map when it helps judge feasibility.
+6. Activate one or more relevant candidate subskills once the rough design is known. If a candidate route is rejected, record why, route back to the shortlist, and reconsider the best next route.
+7. Inside the activated subskill, refine the estimand, audit route-specific assumptions and failure modes, and decide whether the route is supported, fallback, rejected, or exploratory/user-forced.
+8. Draft analysis plans, diagnostics, sensitivity analyses, and R/Python code only when the route, estimand, and data suitability are clear enough.
+9. Interpret results, diagnose problems, and iterate with the user to revise the estimand, route, model, data processing, or claim.
+10. Produce a reproducible report with assumptions, diagnostics, limitations, and interpretation when requested.
 
 Directory structure:
 
@@ -73,7 +74,7 @@ The top-level `SKILL.md` should be loaded first. It uses progressive disclosure:
 
 | Component | Status | Notes |
 |---|---:|---|
-| Top-level framework | 75% | Interaction modes, prospective planning, project spec schema, router, assumption ledger, workflow assets, and code templates are in place. |
+| Top-level framework | 85% | Interaction modes, prospective planning, project spec schema, router, route-out loop, assumption ledger, workflow assets, and code templates are in place. |
 | 00 - DAG Identification | 25% | Basic scaffold; needs worked DAG examples and adjustment-set code templates. |
 | 01 - Randomized Experiments | 85% | Deep workflow with R/Python examples, SRM/CUPED, cluster trials, factorial/crossover/SMART considerations, and diagnostics. |
 | 02 - Point-Treatment Observational | 45% | Scaffold plus workflow references and templates; needs deeper assumption and sensitivity guidance. |
@@ -92,13 +93,16 @@ The top-level `SKILL.md` should be loaded first. It uses progressive disclosure:
 | 15 - Causal Genomics | 30% | Scaffold plus MR/coloc notes; needs omics examples and diagnostics. |
 | 16 - Missingness, Measurement, Selection | 25% | Skeleton; needs missing-data, measurement-error, and selection-bias templates. |
 | 17 - Reporting & Interpretation | 40% | Scaffold plus report skeleton and final report template; needs stronger reporting rubrics and examples. |
+| 18 - Prospective Design Planning | 25% | Lightweight planning subskill for future studies and data collection; needs deeper design examples and sample schemas. |
 
-Overall: approximately 50% complete. The structural backbone is solid, with four deep and usable subskills and many method areas still in scaffold form.
+Overall: approximately 50% complete. The structural backbone is solid, with four deep and usable analysis subskills, one lightweight prospective-planning subskill, and many method areas still in scaffold form.
 
-## Design Philosophy
+## Architecture Principles
 
-This skill treats causal inference as a sequence of design decisions, not as a single modeling command. The agent should first understand the user's need and data situation, then define the causal target, inspect or plan the data structure, compare feasible design routes, state assumptions, and only then choose methods or packages.
+This skill treats causal inference as a sequence of design decisions, not as a single modeling command. The agent should first understand the user's need and data situation, then define the causal target, inspect or plan the data structure, compare feasible design routes, state assumptions, and only then choose methods, packages, or code resources.
 
 When no data exist yet, the skill should help plan data collection so future causal analysis is possible. When data exist but are messy, it should map rows, timing, variables, and possible feature construction before fitting models. When results exist, it should use diagnostics and user feedback to iterate on the estimand, model, or interpretation.
+
+Tool fit, data suitability, and causal validity should be checked together. User-preferred packages or tools can be used, but only when their assumptions, supported estimands, diagnostics, and uncertainty estimates match the planned analysis.
 
 The skill's role is not to make causal inference automatic. Its role is to make causal reasoning explicit, auditable, reproducible, and appropriately cautious.

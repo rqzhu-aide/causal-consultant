@@ -10,12 +10,13 @@ First identify the interaction mode:
 
 | User need | Signs | Next step |
 |---|---|---|
-| Orientation | "Can I estimate...", "What should I do?", vague causal language | Explain what is knowable, ask 2-5 core questions |
+| Learning | User asks what a causal idea, assumption, design, or method means | Explain in plain language and use examples; do not force a project spec |
+| Orientation | "Can I estimate...", "What should I do?", vague causal language | Explain what is knowable, ask 1-4 high-value questions if needed |
 | Prospective design planning | No dataset yet, planning a study, deciding what to collect | Draft target trial/design options, minimum data schema, measurement plan |
 | Design triage | User has treatment/outcome/data context | Build a route shortlist and feasibility checklist |
 | Data structure audit | User has columns, schema, or messy data | Map rows, units, timing, variables, and possible feature construction |
 | DAG and estimand | User asks what to adjust for or assumptions are unclear | Elicit DAG/variable roles before estimator choice |
-| Analysis plan | User wants a plan or has a chosen route | Specify estimand, assumptions, diagnostics, packages |
+| Analysis plan | User wants a plan or has a chosen route | Specify route status, estimand, assumptions, diagnostics, and candidate implementation resources |
 | Code drafting | User asks for R/Python code | Confirm design is explicit enough, then adapt templates |
 | Result interpretation | User has outputs or estimates | Review diagnostics, interpret scale, decide whether to iterate |
 | Reporting | User needs methods/results/write-up | Use report template and assumption ledger |
@@ -30,7 +31,7 @@ Do not ask for a dataset or code first. Instead:
 
 1. Define the causal question, target population, treatment, comparator, outcome, time zero, and follow-up.
 2. Sketch the ideal target trial or strongest feasible quasi-experiment.
-3. Create a preliminary DAG or variable-role map from domain knowledge.
+3. Create a preliminary DAG, design diagram, or variable-role map from domain knowledge when useful.
 4. Compare 1 to 3 feasible design routes and list the data each route would require.
 5. Recommend a minimum data schema and measurement schedule.
 6. Identify diagnostics and sensitivity analyses that the planned data should make possible.
@@ -43,17 +44,21 @@ Prospective planning output should usually be a study/data blueprint, not analys
 ```yaml
 interaction:
   has_existing_data: false
-prospective_design:
-  planning_goal: null
-  ideal_study_design: null
-  feasible_design_options: []
-  minimum_data_to_collect: []
-  preferred_data_structure: null
-  measurement_plan: []
-  design_tradeoffs: []
-  future_diagnostics_enabled: []
-  data_collection_risks: []
+subskill_analyses:
+  - subskill_id: "18-prospective-design-planning"
+    status: "candidate | selected | fallback"
+    planned_estimand: null
+    candidate_designs: []
+    preferred_design: null
+    fallback_designs: []
+    minimum_data_to_collect: []
+    measurement_plan: []
+    future_diagnostics_enabled: []
+    feasibility_constraints: []
+    open_questions: []
 ```
+
+Do not add a separate top-level prospective schema unless the project truly needs it. The global project specification should stay compact, and prospective planning details should live in the `18-prospective-design-planning` subskill entry.
 
 ## Core Intake Fields
 
@@ -148,7 +153,7 @@ Key checks:
 - Are there IDs to aggregate event/visit rows to the causal unit?
 - Are baseline covariates measured before time zero?
 - Are post-treatment variables mixed in with baseline variables?
-- Does the data include enough pre-periods for DiD, event study, synthetic control, or CUPED?
+- Does the data include enough pre-periods for DiD, event study, synthetic control, or pre-period adjustment in experiments?
 - Are there censoring, missingness, selection, or logging processes?
 - Are cluster, network, or spillover structures identifiable?
 
@@ -184,7 +189,7 @@ Do not ask for formal notation if the user is early in the workflow. Translate t
 
 ## DAG or Causal Structure Trigger
 
-Create or elicit a DAG, design diagram, or variable-role map before final code when:
+Create or elicit a lightweight DAG, design diagram, assignment-mechanism summary, or variable-role map during route shortlisting or before code when:
 
 - the route depends on adjustment for measured confounding;
 - mediators, colliders, instruments, or selection variables are present;
@@ -194,6 +199,8 @@ Create or elicit a DAG, design diagram, or variable-role map before final code w
 - causal discovery output will be used to inform an effect-estimation question.
 
 For clean randomized experiments, DiD, RD, or synthetic control, a design diagram or assignment-mechanism summary may be more useful than a full DAG.
+
+Do not require the user to state formal identification assumptions up front. Use the structure to explain assumptions intuitively during route feasibility checks, then let the activated subskill handle the more rigorous assumption and failure-mode audit.
 
 ## Question Strategy
 
@@ -223,7 +230,7 @@ Ask questions in layers.
 3. What effect scale is scientifically meaningful?
 4. Which assumptions are checkable from data and which are untestable?
 5. What diagnostics and sensitivity analyses are required?
-6. What software does the user prefer?
+6. If code is requested, what software or tool does the user prefer, and does it fit the planned route and data?
 
 ## When to Proceed With Provisional Assumptions
 
@@ -253,6 +260,7 @@ Do not proceed to final code if the chosen route depends on an unresolved condit
 - Provisional estimand:
 - Data structure:
 - Candidate design routes:
+- Route status:
 - Known route conditions:
 - Unresolved route conditions:
 - Prospective data to collect:
@@ -265,4 +273,5 @@ Do not proceed to final code if the chosen route depends on an unresolved condit
 - Clustering/interference concerns:
 - Feature construction needed:
 - Key unresolved questions:
+- Subskill entries to update:
 ```

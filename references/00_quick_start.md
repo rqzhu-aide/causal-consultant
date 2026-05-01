@@ -4,38 +4,44 @@ Use this file when you need the shortest possible operating procedure.
 
 ## Minimal Workflow
 
-1. Ask: What is the treatment/intervention, comparator, outcome, time zero, follow-up, target population, and causal estimand?
-2. Identify the data design: randomized, observational point treatment, longitudinal, panel/policy, RD, IV, time series, survival, mediation, interference, discovery, genomics, or mixed.
-3. State the candidate identification strategy.
-4. Route to one or more subskills.
-5. Build an analysis plan with diagnostics and sensitivity analyses before code.
-6. Report estimates with assumptions and limitations.
+1. Identify what the user wants next: learn, get design help, audit data, plan analysis, draft code, interpret results, or write a report.
+2. Restate the likely causal question or learning goal in the user's domain language.
+3. Clarify only the treatment/intervention, comparator, outcome, time zero, follow-up, target population, and data structure details needed for the next step.
+4. If data do not exist yet, activate prospective design planning and create a study or data-collection blueprint.
+5. If data exist, shortlist 1 to 3 plausible routes and state the key conditions for each.
+6. Use a lightweight DAG, design diagram, assignment summary, or variable-role map when it helps judge route feasibility.
+7. Route to one or more candidate subskills once the rough design is known.
+8. If a subskill rejects a route, record why and return to the route shortlist.
+9. Build an analysis plan, diagnostics, sensitivity analyses, and code only after the route, estimand, and data suitability are clear enough.
+10. Report estimates with assumptions, diagnostics, limitations, and appropriately cautious causal language.
 
 ## Minimal Clarifying Questions
 
-Ask these if the user gives only a dataset and says “do causal inference”:
+Ask these if the user gives only a dataset and says "do causal inference":
 
-1. What is the treatment or intervention, and what is the comparator?
-2. What outcome do you want to affect, and when is it measured?
-3. What is the unit of analysis and the target population?
-4. Was treatment randomized, assigned by a policy/cutoff/instrument, or chosen observationally?
-5. What variables were measured before treatment that may affect both treatment and outcome?
-6. Are there repeated observations, censoring, missingness, clustering, or spillovers?
-7. Do you want an average effect, effect among treated, subgroup/individualized effects, a dynamic regime, or another estimand?
+1. What do you want to do next: learn, choose a design, audit the data, draft code, interpret results, or write a report?
+2. What is the treatment or intervention, and what is the comparator?
+3. What outcome do you want to affect, and when is it measured?
+4. What is the unit of analysis and the target population?
+5. Was treatment randomized, assigned by a policy/cutoff/instrument, or chosen observationally?
+6. What do rows represent, and are there repeated observations, censoring, missingness, clustering, or spillovers?
+7. What variables were measured before treatment that may affect both treatment and outcome?
 
 ## Minimal Output
 
-For any proposed analysis, produce:
+For any proposed route or analysis, produce:
 
 ```markdown
-Causal question:
-Estimand:
-Design:
-Primary method:
-Identification assumptions:
-Diagnostics:
-Sensitivity analyses:
-Recommended packages/code:
+Current mode:
+Causal question or learning goal:
+Existing data and data structure:
+Route shortlist:
+Activated subskills:
+Provisional estimand:
+Key route assumptions in plain language:
+Data suitability concerns:
+Diagnostics or checks needed:
+Next step:
 Known limitations:
 ```
 

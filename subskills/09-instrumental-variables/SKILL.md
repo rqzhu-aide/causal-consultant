@@ -8,9 +8,7 @@ version: 0.2.0
 
 ## Core Behavior
 
-When this subskill is invoked, act as an instrumental-variables consultant, not just as a 2SLS code generator.
-
-Always do these four things:
+When this subskill is invoked, focus on the instrument-specific parts of the causal analysis:
 
 1. **Audit the proposed instrument.** Clarify why the instrument affects treatment, why it is as-if random or valid conditional on covariates, why it has no direct effect on the outcome, and whether monotonicity is plausible.
 2. **Define the estimand.** Usually this is a LATE/CACE for compliers, not an ATE. State the population and scale.
@@ -19,9 +17,9 @@ Always do these four things:
 
 Do not treat `Z` as a valid instrument merely because the user calls it an instrument. The design argument is the main object of analysis.
 
-## When to Use
+## Activation and Route-Out
 
-Use this subskill for:
+Use this subskill when the plausible route involves:
 
 - instrumental variables with one or more instruments;
 - encouragement designs;
@@ -31,41 +29,73 @@ Use this subskill for:
 - natural experiments where assignment, eligibility, distance, policy exposure, price shifters, genes, or institutional rules are proposed as instruments;
 - high-dimensional covariates with IV identification, where IV-DML may be appropriate.
 
-Do **not** use this as the primary workflow when:
+If one of the conditions below appears, route out of IV as the primary workflow. Update the IV `subskill_analyses` entry as `rejected`, `fallback`, or `exploratory/user-forced`, record the failed condition under `fatal_flaws_or_major_limitations` or `limitations`, and return to the main skill's route shortlist.
 
 - treatment was randomized and compliance is perfect: use the randomized-experiments subskill;
 - the user only has observed confounders and no credible instrument: use point-treatment observational methods;
 - the proposed instrument directly changes the outcome by construction;
 - the instrument is only a predictor of treatment with no design-based exclusion argument;
-- the user wants to discover instruments automatically from arbitrary features without a causal design argument.
+- the user wants to discover instruments automatically from arbitrary features without a causal design argument. If the user still wants to proceed, treat this as an exploratory or user-forced IV route and surface the limitation clearly in any report.
 
-## Minimum Instrument Audit
+## IV Project Specification Entry
 
-Before final analysis, collect or infer the following fields. If essential fields are unknown, ask focused questions.
+Use this entry as the instrumental-variables audit checklist. When a project specification is being maintained, append or update it under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant; leave unknown fields as `null` or `[]`. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
 
-```json
-{
-  "outcome": "Y",
-  "endogenous_treatment": "D or A",
-  "instrument": "Z",
-  "instrument_type": "binary | multivalued | continuous",
-  "n_instruments": 1,
-  "treatment_type": "binary | continuous | multivalued",
-  "covariates": ["X1", "X2"],
-  "fixed_effects_or_blocks": [],
-  "cluster_variable": null,
-  "assignment_or_institutional_source_of_Z": "randomized encouragement | eligibility rule | distance | policy | genetic variant | other",
-  "exclusion_basis": "theoretical | institutional | design-based | empirical only | unknown",
-  "independence_basis": "randomized | as-if random conditional on X | natural experiment | unknown",
-  "monotonicity_plausible": "yes | no | unknown | not needed for constant-effect linear IV",
-  "first_stage_expected": "strong | moderate | weak | unknown",
-  "data_setting": "cross-sectional | panel | clustered | RCT noncompliance | fuzzy RD | survival | other",
-  "target_estimand": "LATE | CACE | linear structural coefficient | policy-relevant weighted average | unknown",
-  "language": "R | Python | either"
-}
+```yaml
+subskill_analyses:
+  - subskill_id: "09-instrumental-variables"
+    status: "candidate | selected | rejected | fallback | exploratory/user-forced"
+    fit_to_user_need: null
+    estimand:
+      label: "LATE | CACE | linear structural coefficient | policy-relevant weighted average | unknown"
+      target_population: null
+      scale: null
+      interpretation: null
+    assumptions_needed:
+      relevance: null
+      independence_or_as_if_random: null
+      exclusion_restriction: null
+      monotonicity: null
+      positivity_or_instrument_support: null
+    diagnostics_or_checks:
+      first_stage: null
+      reduced_form: null
+      weak_iv: null
+      falsification_checks: []
+      overidentification: null
+      complier_characterization: null
+    fatal_flaws_or_major_limitations: []
+    limitations: []
+    open_questions: []
+    subskill_specific_details:
+      instrument_variable: null
+      endogenous_treatment: null
+      instrument_type: null
+      number_of_instruments: null
+      treatment_type: null
+      covariates: []
+      fixed_effects_or_blocks: []
+      cluster_variable: null
+      assignment_or_institutional_source_of_instrument: null
+      exclusion_basis: null
+      independence_basis: null
+      monotonicity_plausible: null
+      first_stage_expected: null
+      data_setting: null
+      language: "R | Python | either | unknown"
 ```
 
 ## Core Theory and Formal Definitions
+
+Default notation in this subskill:
+
+- \(Y\): outcome;
+- \(D\) or \(A\): endogenous treatment or exposure;
+- \(Z\): instrument;
+- \(X\): pre-instrument or pre-treatment covariates;
+- \(U\): unobserved causes of treatment and outcome.
+
+If the user uses different notation or variable names, adapt responses to the user's notation rather than forcing these symbols.
 
 ### Structural IV model
 
@@ -257,17 +287,7 @@ Report the conventional first-stage partial F or robust Wald statistic, but do n
 
 ## Language Backend Policy
 
-Do not install packages silently. If packages are missing, show install commands and ask the user to approve installation.
-
 ### R
-
-Prefer:
-
-```r
-install.packages(c("ivreg", "fixest", "lmtest", "sandwich"))
-```
-
-Use:
 
 - `ivreg`: classical 2SLS with diagnostics, robust covariance support through `sandwich`, and regression diagnostics.
 - `fixest`: fast IV with high-dimensional fixed effects, clustered standard errors, first-stage summaries, and convenient tables.
@@ -275,15 +295,6 @@ Use:
 - `DoubleML`: IV-DML through PLIV/IIVM when high-dimensional covariates or flexible nuisance functions are needed.
 
 ### Python
-
-Prefer:
-
-```bash
-pip install linearmodels statsmodels pandas numpy
-pip install doubleml scikit-learn
-```
-
-Use:
 
 - `linearmodels.iv.IV2SLS`: standard 2SLS with robust, clustered, and other covariance options.
 - `linearmodels.iv.IVLIML` and `IVGMM`: LIML/GMM variants when appropriate.
@@ -577,6 +588,7 @@ Subskill examples:
 
 #### 8. Conclusion
 - Interpretation under assumptions:
+- Fatal flaws or major limitations:
 - Most important threats:
 - Recommended next steps:
 ```
@@ -586,6 +598,7 @@ Subskill examples:
 Escalate warnings when:
 
 - the instrument plausibly affects the outcome directly;
+- the proposed IV route lacks a credible exclusion-restriction argument;
 - the first stage is weak or unstable;
 - the instrument is strongly associated with pre-treatment covariates without a design explanation;
 - the analysis adjusts for post-treatment variables;

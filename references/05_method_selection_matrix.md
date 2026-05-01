@@ -1,11 +1,12 @@
 # Method Selection Matrix
 
-Use this matrix after the user need, data structure, estimand, and candidate design routes are provisionally clear. Do not use it as a keyword-to-package lookup table.
+Use this matrix after the user need, data structure, and candidate design routes are provisionally clear. Do not use it as a keyword-to-package lookup table. The matrix suggests candidate routes; the activated subskill determines the estimand, assumption audit, diagnostics, and whether the route is supported.
 
 ## Core Matrix
 
-| Data/design | Target | Candidate methods | Subskill | Typical packages |
+| Data/design | Target | Candidate approaches | Subskill | Typical implementation resources |
 |---|---|---|---|---|
+| No data yet; future study or data collection | future causal effect or design feasibility | target-trial planning, experiment/quasi-experiment comparison, measurement plan | 18 + candidate design subskills | design blueprint; optional simulation or power tools |
 | Randomized individual-level trial | ITT, ATE | difference in means, regression adjustment, randomization inference | 01 | R `estimatr`, `randomizr`; Python `statsmodels` |
 | Cluster randomized trial | cluster-level ATE | mixed models, GEE, cluster-robust SEs, randomization inference | 01 | R `lme4`, `geepack`, `clubSandwich`; Python `statsmodels` |
 | Noncompliant randomized trial | ITT, per-protocol, CACE/LATE | ITT, IV, adherence-adjusted analyses | 01 + 09 | R `ivreg`; Python `linearmodels` |
@@ -23,6 +24,8 @@ Use this matrix after the user need, data structure, estimand, and candidate des
 | Interference/spillovers | direct/indirect/spillover effects | exposure mapping, cluster/network estimators, TMLE/IPW | 13 | R `inferference`, `tmlenet` |
 | Causal graph learning | DAG/CPDAG/PAG | PC, FCI, GES/GIES, LiNGAM, ANM | 14 | R `pcalg`; Python `causal-learn`, `lingam` |
 | Genomics/omics | MR effect, colocalized effect, mediated effect | MR, colocalization, fine mapping, pleiotropy checks | 15 | R `TwoSampleMR`, `MendelianRandomization`, `coloc`, `MR-PRESSO` |
+| Missingness, measurement error, selection, transportability | bias audit or supported primary route | bounds, IPCW, sensitivity, measurement models, target-population checks | 16 + primary route | route-specific diagnostics and sensitivity tools |
+| Report, interpretation, or reproducibility | causal claim and communication | assumption ledger, diagnostic summary, limitations, report skeleton | 17 + primary route | Quarto/R Markdown/Jupyter; package version records |
 
 ## Primary Method Selection Heuristics
 
@@ -61,19 +64,20 @@ Define eligibility, treatment strategies, assignment, follow-up, outcome, causal
 
 Use survival probability, cumulative incidence, risk difference, or RMST when the user wants risks or event-free time. Do not default to hazard ratios unless hazards are the scientific target.
 
-### Allow defensible preprocessing before package selection
+### Allow defensible preprocessing before implementation selection
 
 If existing packages require a clearer treatment, covariate, exposure, or unit structure, propose preprocessing only when it is defined before outcome analysis and has a scientific interpretation. Examples include baseline summary windows, event-row aggregation, lagged histories, exposure intensity definitions, network exposure mappings, and audited text-derived variables. Document these choices as part of the design.
 
-## Method Proposal Checklist
+## Route Proposal Checklist
 
-Before recommending a method, answer:
+Before recommending a route or method, answer:
 
 1. What estimand does the method target?
 2. What assumptions identify that estimand?
 3. What data structure does the method require?
 4. What diagnostics are required?
-5. What will happen if overlap/pretrends/bandwidth/IV strength/etc. fail?
-6. What alternative estimands or methods are available?
-7. What software can implement it reproducibly?
-8. What data reshaping or feature construction is required before using that software?
+5. Which route conditions are known satisfied, checkable, plausible but untestable, unresolved, or likely violated?
+6. What will happen if overlap, pretrends, bandwidth, IV strength, measurement quality, censoring, or other route-specific checks fail?
+7. What fallback routes, weaker estimands, descriptive analyses, or data-collection steps are available?
+8. If code is requested, what implementation resources can be used reproducibly without changing the causal question?
+9. What data reshaping or feature construction is required before using those resources?

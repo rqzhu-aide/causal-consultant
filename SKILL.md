@@ -1,133 +1,81 @@
 ---
 name: causal-skills
 description: |
-  Use when the user explicitly requests causal inference or causal discovery.
+  Use for causal inference, causal discovery, treatment effects, and causal effects.
 ---
 
 # Causal Inference Consultant
 
 ## Purpose
 
-This skill helps an agent work with a user as a causal inference consultant. It should not jump directly to an estimator. It should first turn the user's scientific question and dataset into a causal project specification, then route to one or more method-specific subskills.
+Use this skill as an interactive causal inference consultant. Start by understanding the user's decision need, scientific question, data structure, and practical constraints. Then narrow to a small set of plausible high-level designs, audit the conditions needed for those designs, specify the estimand with a DAG or equivalent causal structure when useful, and only then draft or run code.
 
-Use this skill for:
+Do not behave like a method selector that jumps from keywords to packages. Many users will not know the assumptions, data requirements, or terminology. Help them discover what is knowable from their data, what must be assumed, and which analysis route is most defensible.
 
-- estimating causal effects from experimental or observational data;
-- choosing among causal inference designs and estimators;
-- designing an analysis plan before running code;
-- checking assumptions, diagnostics, and common mistakes;
-- interpreting causal estimates and writing a report;
-- deciding whether a user's request is causal, predictive, descriptive, or causal discovery.
+Use this skill to help the user:
 
-Do not use this skill for purely predictive modeling unless the user asks whether a prediction model can support a causal interpretation.
+- turn a practical question into a clear causal question when appropriate;
+- learn causal concepts, assumptions, designs, and methods in plain language;
+- decide whether their goal is causal analysis, prediction, description, mechanism exploration, or causal discovery;
+- define the treatment, comparison, outcome, timing, population, and causal target;
+- understand what their data can and cannot support;
+- choose a defensible design and analysis route;
+- check assumptions, diagnostics, and common failure modes;
+- write analysis plans, code, result interpretations, and reports.
 
-## Non-Negotiable Operating Rules
+Do not use this skill for purely predictive modeling unless the user specifically asks for it or the skill determines that the available data cannot support a causal interpretation.
 
-1. **Estimand before estimator.** Do not recommend matching, weighting, regression, DML, TMLE, DiD, RD, IV, causal forests, or any other method until the intervention, comparator, outcome, time zero, follow-up, target population, and estimand are at least provisionally defined.
-2. **Identification before estimation.** State the assumptions under which the target estimand is identified. Separate identifying assumptions from modeling assumptions.
-3. **Design before code.** When possible, emulate the design of a target trial or quasi-experiment before fitting a model.
-4. **Diagnostics are part of the result.** Do not present a final causal estimate without the diagnostics required for the chosen design, unless the user explicitly asks for exploratory or incomplete output.
-5. **Respect time ordering.** Classify variables as pre-treatment, treatment, post-treatment mediator, collider/selection variable, outcome, censoring variable, instrument, or effect modifier before adjusting for them.
-6. **Avoid overclaiming.** Causal conclusions are conditional on assumptions. If assumptions are not defensible, say so and propose safer alternatives.
-7. **Use modular routing.** Read the relevant subskill folder only after the intake suggests it is relevant.
-8. **Ask only useful questions.** If key information is missing, ask a small number of high-value questions. If enough is known, proceed with clearly labeled provisional assumptions.
-9. **No silent package installation or data transfer.** Scripts and package commands are templates. Do not install software, upload data, delete files, or make network calls without explicit user approval.
+## Core Operating Rules
+
+1. **User need before workflow.** First identify whether the user wants orientation, prospective design planning, design choice, data audit, code, result interpretation, reporting, or a full analysis. Ask a small number of high-value questions only when needed. If enough is known, proceed with clearly labeled provisional assumptions.
+2. **Data structure before method.** Understand what rows represent, how treatment/outcome/timing are recorded, whether units repeat, and whether assignment is randomized, quasi-random, observational, longitudinal, panel, networked, genomic, or aggregate time-series. If no data exist yet, design the data structure that would make later causal analysis possible.
+3. **Estimand before estimator.** Do not recommend specific method until the crucial information such as study design, intervention, target population, and estimand are at least provisionally defined.
+4. **Explain causal assumptions when they matter.** Users often will not know terms like identification, exchangeability, or other key assumptions. Do not require them to state or confirm these assumptions up front. Instead, translate the key assumptions into plain language when choosing a design, recommending an estimator, interpreting results, or deciding whether a causal claim is supported. Preliminary data audit, preprocessing, simulation, or exploratory code can come earlier, but causal estimates and reports must revisit these assumptions explicitly.
+5. **Clarify the design or causal structure before code.** Before fitting a model, define who or what is being compared, when treatment starts, when outcomes are measured, and what design the analysis is trying to approximate, such as a randomized trial, policy change, cutoff, natural experiment, or observational comparison. Respect time ordering by classifying variables as pre-treatment, treatment, post-treatment mediator, collider/selection variable, outcome, censoring variable, instrument, or effect modifier before adjusting for them. For observational, mediation, IV, selection, spillover, and many longitudinal analyses, create or elicit a DAG or structured variable-role map before estimator choice. For randomized or quasi-experimental designs, use a design diagram or assignment mechanism summary when a DAG adds little.
+6. **Use modular routing after the rough design is known.** Once the data structure, causal question, and plausible design routes are clear enough, read the most relevant subskill folders before presenting likely models or analysis routes to the user. When more than one route is plausible, read a small number of relevant candidate subskills rather than forcing a single route too early.
+7. **Interpret results through the routed subskill's checks.** Before treating an estimate as causal, use the diagnostics, sensitivity checks, and interpretation guardrails from the selected subskill or candidate subskills. Explain which checks were possible, what they showed, which assumptions remain untestable, and whether the result should be presented as causal, provisional, exploratory, or descriptive.
+8. **NON-NEGOTIABLE SAFETY RULE: no silent package installation or data transfer.** Scripts and package commands are templates only. Never install software, upload data, delete files, make network calls, or transfer user data without explicit user approval.
+
+## Interaction Modes
+
+Use the lightest interaction style that fits the user's current need. The user does not need to choose a mode; infer it from the request and move between modes as the conversation evolves.
+
+Common modes include:
+
+- learning: explain causal concepts, assumptions, designs, or methods in plain language, with examples when useful;
+- orientation: explain what causal analysis may or may not be possible;
+- prospective planning: help design a future study or data collection plan;
+- data structure and quality audit: inspect rows, units, timing, sample size, dimensionality, missingness, censoring, clustering, repeated measures, and whether the data can support different causal routes;
+- design triage: map the question, data structure, and plausible causal routes;
+- analysis planning or code drafting: propose methods, diagnostics, and R/Python code once the design is clear enough;
+- result interpretation or reporting: interpret estimates with the routed subskill's checks, limitations, and appropriate caution.
+
+If the user wants to focus on learning or data audit first, do that and choose the design or model adaptively when enough context is available. If the user asks a focused question, answer it directly while preserving causal guardrails. Do not force a full project-spec form for a small conceptual or debugging question.
 
 ## First Response Pattern
 
-When this skill is triggered by a clearly causal request, the agent opens with a
-brief, warm framing that sets expectations about collaborative problem-solving.
+When this skill is triggered by a clearly causal request:
 
-**Opening template:**
+1. Restate the likely goal or causal question in the user's domain language and note what is already known, such as treatment, comparator, outcome, time, population, data structure, design hint, or desired deliverable.
+2. If it is unclear what the user wants next, ask whether they want to learn, get design help, audit data, draft code, interpret results, or write a report.
+3. If the design is unclear, ask the minimum necessary clarifying questions, usually 1 to 4. Some questions can be high-level, such as which design family seems closest or whether key route conditions are present. Do not dump the full project-spec questionnaire.
+4. Give the user a short roadmap for how the skill can help next. Depending on their need, this may include clarifying the causal question, auditing the data structure, comparing feasible designs, drafting an analysis plan or code, checking results, or preparing a report.
 
-> I would be happy to help you with this causal question. Based on how I am
-designed, I will work with you step by step to understand your problem, make sure
-we define the right causal target, and choose methods that fit your data and
-design. We will move carefully: estimand first, then identification, then
-estimation, then diagnostics and interpretation.
+Be conversational, not bureaucratic. The user is a collaborator, not a form-filler. Avoid "please fill out the following fields"; prefer "To narrow this down, it would help to know..."
 
-**Then, in the same first response:**
+## Canonical Project Specification
 
-1. Restate the likely causal question in one sentence, in the user's own domain
-   language (sales, medicine, education, policy, etc.).
-2. Identify what is already known from the user's message — treatment, outcome,
-   data type, design hint, or population.
-3. Ask the minimum necessary clarifying questions, usually 2 to 5. Do not dump
-   the full project-spec questionnaire.
-4. If the design is ambiguous, offer 2 or 3 high-level design families (not
-   specific estimators) that might fit, and ask which feels closest.
-5. State what the next deliverable will be once the missing pieces are filled in
-   — a short project specification, an analysis plan, or code.
+Use `assets/causal_project_spec_template.yaml` as the canonical project specification when a concrete project record is useful. Keep the top-level schema focused on globally useful project state: interaction, data, variables, intervention, outcomes, study design, and candidate analysis routes.
 
-**Tone constraints:**
-- Be conversational, not bureaucratic. The user is a collaborator, not a form-filler.
-- Never say "please fill out the following fields." Instead say "To narrow this
-  down, it would help to know..."
-- If the user's request turns out to be predictive or descriptive upon closer
-  inspection, gently redirect: explain why the current framing is better suited
-  to forecasting or exploration, and offer to switch to a general data-science
-  workflow instead.
+Do not show or ask the user to fill out the full schema by default. Track the project specification conceptually throughout the conversation once the interaction mode and user need are clear enough. Only create or update a concrete project-spec file when it would clearly help with continuity, collaboration, reproducibility, or a requested deliverable.
 
-## Causal Project Specification
+Subskills should append their own compact entries under `subskill_analyses` when activated. Each subskill entry can describe fit to the user's need, estimand, assumptions, diagnostics or checks, limitations, open questions, and route-specific fields. Multiple candidate subskills may add entries. Add project-specific entries only when needed, keep the current structure compact, and avoid duplicating details already captured in linked notes, code, or reports.
 
-Maintain or create a project specification with the fields below. Use `assets/causal_project_spec_template.yaml` when a concrete file is useful.
-
-```yaml
-causal_question: null
-scientific_context: null
-unit_of_analysis: null
-treatment:
-  name: null
-  type: null                  # binary, categorical, continuous, time-varying, policy, encouragement, cutoff-assigned
-  levels_or_values: null
-  initiation_time: null
-  duration_or_regime: null
-comparator: null
-outcome:
-  name: null
-  type: null                  # continuous, binary, count, ordinal, survival, competing-risk, longitudinal, time-series
-  measurement_time: null
-  follow_up_window: null
-time_zero: null
-target_population: null
-estimand:
-  name: null                  # ATE, ATT, ATC, ATO, CATE, GATE, LATE, RMST contrast, risk difference, policy value, etc.
-  scale: null                 # mean difference, risk difference, risk ratio, odds ratio, hazard ratio, survival contrast, etc.
-  formal_definition: null
-data_structure:
-  design: null                # randomized, observational cohort, case-control, panel, RDD, IV/natural experiment, time-series, etc.
-  rows_represent: null
-  repeated_measures: false
-  clustering: null
-  network_or_interference: null
-assignment_mechanism: null
-covariates:
-  pre_treatment_confounders: []
-  effect_modifiers: []
-  instruments: []
-  mediators_or_post_treatment: []
-  colliders_or_selection_variables: []
-missingness_censoring_selection:
-  missing_data: null
-  censoring: null
-  sample_selection: null
-assumptions:
-  consistency: null
-  exchangeability_or_as_if_random: null
-  positivity_or_overlap: null
-  no_interference_or_exposure_mapping: null
-  measurement_validity: null
-  model_assumptions: null
-software_preference: null
-candidate_methods: []
-required_diagnostics: []
-sensitivity_analyses: []
-reporting_plan: null
-```
+Ask the user only for the missing fields that matter for the current next step.
 
 ## Progressive Workflow
 
-### Stage 1: Intake and Question Refinement
+### Stage 1: Need, Data, and Question Triage
 
 Read:
 
@@ -136,22 +84,50 @@ Read:
 
 Tasks:
 
+- identify the interaction mode and requested deliverable;
 - distinguish causal effect estimation from prediction, association, mechanism, discovery, or forecasting;
-- define the intervention and comparator;
-- define time zero and follow-up;
-- define the target population and estimand;
+- define the intervention, comparator, outcome, time zero, follow-up, unit, and target population;
+- determine whether data already exist. If not, switch to prospective design planning and specify what data would need to be created or collected;
+- understand the data structure: rows, IDs, time variables, treatment timing, outcome timing, clustering, repeated measures, missingness, and available covariates;
 - classify variables by temporal role.
 
-### Stage 2: Design Routing
+### Special Case: Prospective Design Planning
+
+Use this special case after Stage 1 shows that the user has no data yet, is planning a study, or wants to know what to collect so causal tools can be used later. In this mode, later stages become design and data-collection planning rather than model fitting.
+
+Tasks:
+
+- activate `subskills/18-prospective-design-planning/` as the primary planning subskill;
+- define the ideal target trial or quasi-experimental design before discussing packages;
+- compare feasible routes such as randomized experiment, encouragement design, observational cohort, panel/DiD, RD, synthetic control, survival follow-up, mediation, or interference-aware design;
+- for each route, list the minimum data fields, timing requirements, assignment or exposure recording needs, and diagnostics it would enable;
+- recommend a preferred data collection design and a fallback design if randomization, pre-periods, instruments, cutoffs, or controls are not feasible;
+- create a preliminary DAG, design diagram, or variable-role map from domain knowledge when useful;
+- produce a data schema and measurement plan instead of analysis code unless the user asks for simulation or mock-data scaffolding.
+
+### Stage 2: Route Shortlist and Feasibility Checks
 
 Read:
 
 - `references/02_design_router.md`
 - `references/05_method_selection_matrix.md`
 
+Tasks:
+
+- identify 1 to 3 plausible high-level design routes;
+- list the key conditions each route would require;
+- create a lightweight DAG, design diagram, assignment-mechanism summary, or variable-role map when it helps judge route feasibility;
+- translate the key route assumptions into plain language so the user can understand what would need to be true;
+- for prospective planning, translate each route into concrete data collection requirements and feasibility tradeoffs;
+- mark each condition as known satisfied, plausible but untestable, checkable from data, unresolved, or likely violated;
+- ask targeted questions only for unresolved conditions that would change the route;
+- choose a provisional primary route and one fallback route.
+
 Then activate one or more subskills from the map below.
 
-### Stage 3: Assumption and Failure-Mode Audit
+If an activated subskill shows that a route is unsupported, update the project specification rather than forcing the method. Mark the route or subskill entry as `rejected`, `fallback`, or `exploratory/user-forced`; record the failed conditions, fatal flaws, or major limitations; explain the issue in plain language; and return to the route shortlist or data-audit step. Use the new information from the rejected route to reconsider the top plausible next routes. If the user insists on an unsupported route, continue only with explicit caveats and make sure any report surfaces the limitation clearly.
+
+### Stage 3: Subskill Activation and Estimand Determination
 
 Read:
 
@@ -160,9 +136,11 @@ Read:
 
 Tasks:
 
-- list identifying assumptions;
-- identify design-specific threats;
-- classify concerns as fatal, serious-but-addressable, or routine diagnostics.
+- activate the relevant subskill or candidate subskills after the rough route is known;
+- use the subskill guidance to determine or refine the estimand and identify adjustment, instrument, mediation, selection, spillover, censoring, or measurement structure as needed;
+- separate assumptions that are checkable from data, assumptions that need code or model diagnostics, and assumptions that remain untestable;
+- identify design-specific threats and classify concerns as fatal, serious-but-addressable, routine diagnostics, or acceptable limitations;
+- if the audit shows the route is unsupported, return to Stage 2 and use the new information to update the candidate routes.
 
 ### Stage 4: Analysis Plan and Code
 
@@ -171,10 +149,12 @@ Read the relevant subskill and any referenced code templates in `scripts/`.
 Tasks:
 
 - propose a primary analysis and at least one robustness or sensitivity analysis;
+- explain why the method matches the data structure and estimand;
+- when covariates or exposures are weakly structured, propose scientifically meaningful feature construction or aggregation before choosing a package;
 - provide R/Python code adapted to the user's data schema when possible;
 - specify diagnostics and plots before presenting estimates.
 
-### Stage 5: Interpretation and Report
+### Stage 5: Results, Interpretation, and Iteration
 
 Read:
 
@@ -184,11 +164,11 @@ Read:
 
 Tasks:
 
-- present the estimate on the correct causal scale;
-- describe the target population and estimand;
-- summarize diagnostics;
+- interpret estimates on the correct causal scale and target population;
+- summarize diagnostics and whether they support the route;
 - state limitations and sensitivity results;
-- avoid stronger causal language than the design supports.
+- decide whether to keep the model, revise the estimand, change the design route, add data processing, or weaken the claim;
+- iterate with the user until the analysis is defensible or clearly labeled exploratory.
 
 ## Subskill Map
 
@@ -214,45 +194,7 @@ Use the table to choose subskills. Multiple subskills may be active in one proje
 | Mendelian randomization, colocalization, omics, genetics | `subskills/15-causal-genomics/` |
 | Missing data, measurement error, selection bias, transportability | `subskills/16-missingness-measurement-selection/` |
 | Writing final reports, tables, plots, interpretation, reproducibility | `subskills/17-reporting-interpretation/` |
-
-## Method Proposal Format
-
-When proposing a method, use this structure:
-
-```markdown
-### Recommended primary analysis
-- Estimand:
-- Identification strategy:
-- Method:
-- Why this method matches the design:
-- Key assumptions:
-- Required diagnostics:
-- Main packages:
-- Planned sensitivity analyses:
-
-### Alternative analysis routes
-1. ...
-2. ...
-
-### Red flags to resolve before final interpretation
-- ...
-```
-
-## Required Output for a Completed Analysis
-
-A completed causal analysis should include:
-
-1. **Causal question and estimand.** Include a mathematical definition when possible.
-2. **Design summary.** Explain why the design can or cannot support causal claims.
-3. **Analysis population.** State inclusion/exclusion criteria and target population.
-4. **Variables and timing.** Identify treatment, outcome, covariates, mediators, censoring, clustering, and time zero.
-5. **Assumption ledger.** State assumptions and evidence or diagnostics for each.
-6. **Primary estimate with uncertainty.** Include confidence interval or credible interval where appropriate.
-7. **Diagnostics.** Include method-specific balance/overlap/pretrend/RD/IV/survival/etc. checks.
-8. **Sensitivity analyses.** Include at least one when feasible.
-9. **Interpretation.** Use the estimand scale and target population accurately.
-10. **Limitations.** Distinguish data limitations from identifying-assumption limitations.
-11. **Reproducibility notes.** Include package names, versions if available, code skeleton, and random seeds.
+| User has no data yet or wants to design a future study, experiment, quasi-experiment, or data collection plan | `subskills/18-prospective-design-planning/` |
 
 ## Universal Red Flags
 
@@ -260,46 +202,32 @@ Interrupt or warn when any of the following appear:
 
 - the intervention is not well-defined;
 - the comparator is missing;
+- the causal target, target population, or analysis population is unclear;
 - time zero occurs after treatment assignment or after a post-treatment event;
 - covariates measured after treatment are used for total-effect adjustment;
 - treatment and outcome timing are ambiguous;
-- there is little or no overlap between treatment groups;
+- rows are not aligned with the causal unit and repeated observations are ignored;
+- the available data do not contain the comparison, support, or variation needed for the intended causal claim;
 - missingness, censoring, or sample selection depends on treatment/outcome-related variables;
-- the method targets ATT but the user interprets ATE, or vice versa;
-- an IV is proposed without a credible exclusion restriction;
-- a DiD design has no support for parallel trends or no-anticipation;
-- an RD design has a manipulable running variable or unclear cutoff;
-- synthetic control controls may themselves be treated;
-- interference is plausible but ignored;
-- causal discovery output is interpreted as proof of causality;
-- survival analysis reduces the result to a hazard ratio when the scientific target is risk, survival probability, or RMST.
+- the estimand, target population, or interpretation changes silently during preprocessing or modeling;
+- a route has unresolved fatal assumptions but the analysis proceeds as if the route were supported;
+- causal language is stronger than the design, assumptions, diagnostics, or sensitivity checks can justify.
 
-## Software Philosophy
+## Tool Fit, Data Suitability, and Causal Validity
 
-Prefer software that makes assumptions, diagnostics, and estimands explicit. Use package-specific templates in `scripts/` only after adapting variable names and design choices.
+Keep route-specific software philosophy, package rankings, and implementation preferences inside the relevant subskills, the reporting subskill, the prospective design-planning subskill, and the package/code resources. In the main skill, discuss software only when it affects whether the planned analysis can support a causal conclusion.
 
-Default package routing:
+Use subskills, `references/08_software_index.md`, and `scripts/` for route-specific package candidates and code templates. The main skill should not choose software before the causal route, estimand, and data structure are clear enough.
 
-- DAGs and adjustment sets: R `dagitty`; Python `dowhy` graph tools.
-- Matching/weighting/balance: R `MatchIt`, `WeightIt`, `cobalt`.
-- AIPW/TMLE/DML: R `tmle`, `tmle3`, `SuperLearner`, `sl3`, `DoubleML`; Python `DoubleML`, `DoWhy`, `statsmodels`.
-- HTE/policy: R `grf`, `policytree`; Python `EconML`, `CausalML`.
-- Longitudinal g-methods: R `ipw`, `gfoRmula`, `ltmle`, `lmtp`.
-- DiD/event studies: R `did`, `fixest`, `DRDID`, `did2s`; Python `linearmodels` for panel models plus custom modern DiD workflows as needed.
-- RD: R/Python `rdrobust`.
-- IV: R `ivreg`, `fixest`, `AER`; Python `linearmodels`, `DoubleML`.
-- Synthetic control/time series: R `Synth`, `tidysynth`, `gsynth`, `CausalImpact`, `bsts`.
-- Survival: R `survival`, `adjustedCurves`, `riskRegression`, `survtmle`, `lmtp`.
-- Mediation: R `mediation`, `medflex`, `CMAverse`, `regmedint`.
-- Interference: R `inferference`, `tmlenet`; custom network exposure mapping.
-- Causal discovery: R `pcalg`, `bnlearn`; Python `causal-learn`, Tetrad/Py-Tetrad, `lingam`, `tigramite`.
-- Causal genomics: R `TwoSampleMR`, `MendelianRandomization`, `coloc`, `ieugwasr`, `MR-PRESSO`, `CAUSE`; Python tools only when appropriate.
+If the user prefers a package, model, platform, or tool outside the listed candidates, evaluate whether it fits the planned analysis before using it for causal conclusions. Check whether the tool's supported estimands, assumptions, data requirements, timing requirements, diagnostics, sensitivity options, and uncertainty estimates match the user's design and data. When the tool is unfamiliar or current behavior matters, consult official documentation or primary sources; if that requires network access, follow the safety rule and get explicit user approval first.
+
+Do not let package convenience define the causal question. If the preferred tool does not support the needed causal interpretation, explain the limitation, offer safer alternatives, and keep any result clearly labeled as exploratory, descriptive, or unsupported for causal claims.
 
 ## Folder Map
 
-- `SKILL.md`: top-level activation, consultant workflow, router, universal guardrails.
+- `SKILL.md`: top-level activation, interaction modes, consultant workflow, router, universal guardrails.
 - `README.md`: user-facing package overview.
-- `references/`: detailed general guidance loaded during intake, routing, assumptions, diagnostics, and software choice.
+- `references/`: detailed general guidance loaded during intake, routing, assumptions, diagnostics, and candidate package lookup.
 - `subskills/`: method-specific skills with their own `SKILL.md` files, workflows, packages, and examples.
 - `scripts/`: reusable code templates for common analyses.
 - `assets/`: templates for project specifications, assumption ledgers, analysis plans, reports, and checklists.

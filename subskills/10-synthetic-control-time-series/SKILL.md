@@ -58,6 +58,7 @@ description: Use for aggregate treated units, interrupted time series, synthetic
 ## Red Flags
 
 - contaminated controls
+- donor units or control series may themselves be treated
 - poor pre-period fit
 - short pre-period
 - unknown intervention date

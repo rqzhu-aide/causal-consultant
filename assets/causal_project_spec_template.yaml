@@ -2,89 +2,97 @@ project_name: null
 analyst: null
 date: null
 
-causal_question: null
-scientific_context: null
+interaction:
+  current_mode: null
+  user_goals: []
+  requested_deliverables: []
+  has_existing_data: null
+  user_context_notes: null
+  open_questions: []
 
-unit_of_analysis: null
-target_population: null
-analysis_population: null
-
-intervention:
-  treatment_name: null
-  treatment_type: null
-  intervention_definition: null
-  comparator_definition: null
-  versions_of_treatment: null
-  treatment_initiation_time: null
-  adherence_or_compliance: null
-
-outcome:
-  outcome_name: null
-  outcome_type: null
-  outcome_definition: null
-  measurement_time: null
-  follow_up_window: null
-  competing_events: null
-
-time_zero: null
-
-estimand:
-  label: null
-  formal_definition: null
-  target_population: null
-  scale: null
-  effect_modifier_or_subgroup: null
-
-observed_data:
+data:
+  domain_context: null
+  scientific_or_business_context: null
   data_source: null
+  data_type: null
+  data_collection_context: null
   rows_represent: null
+  unit_of_observation: null
   sample_size: null
-  number_treated: null
-  number_comparator: null
+  data_dimensions: null
+  time_span_or_follow_up: null
   repeated_measures: null
-  clustering: null
-  survey_design_or_weights: null
+  groups_or_clusters: null
+  dependencies_or_networks: null
+  missingness_summary: null
+  censoring_or_attrition_summary: null
+  data_quality_notes: null
+  privacy_or_access_constraints: null
 
 variables:
-  treatment_variable: null
-  outcome_variable: null
-  time_variable: null
-  id_variable: null
-  cluster_variable: null
+  treatment_variables: []
+  outcome_variables: []
+  time_variables: []
+  id_variables: []
+  group_or_cluster_variables: []
   pre_treatment_confounders: []
+  clinical_or_domain_variables: []
   effect_modifiers: []
   instruments: []
   mediators: []
   post_treatment_variables: []
   censoring_variables: []
+  missingness_variables: []
   selection_variables: []
+  dependency_or_network_variables: []
+  unstructured_or_weakly_structured_variables: []
+  proposed_feature_constructions: []
+  variable_timing_notes: null
 
-missingness_censoring_selection:
-  missing_data_summary: null
-  censoring_summary: null
-  attrition_summary: null
-  sample_selection_summary: null
+intervention:
+  treatment_name: null
+  treatment_definition: null
+  comparator_definition: null
+  treatment_type: null
+  treatment_levels_or_values: null
+  treatment_timing: null
+  treatment_versions: null
+  adherence_or_compliance: null
 
-assumptions:
-  consistency: null
-  exchangeability_or_as_if_random: null
-  positivity_or_overlap: null
-  no_interference_or_exposure_mapping: null
-  measurement_validity: null
-  censoring_or_missingness: null
+outcomes:
+  primary: []
+  secondary: []
+  outcome_definitions: null
+  measurement_timing: null
+  follow_up_window: null
+  censoring_or_competing_events: null
 
-analysis_plan:
-  primary_method: null
-  alternative_methods: []
-  diagnostics: []
-  sensitivity_analyses: []
-  packages: []
+study_design:
+  design_label_claimed_by_user: null
+  inferred_design_family: null
+  assignment_or_exposure_mechanism: null
+  time_zero: null
+  target_population: null
+  analysis_population: null
+  causal_structure_notes: null
+  dag_status: not_started
+  dag_text: null
+  data_collection_or_sampling_design: null
+  route_candidates: []
+  design_constraints: []
+  key_assumptions_to_revisit: []
 
-results:
-  main_estimate: null
-  uncertainty: null
-  diagnostics_summary: null
-  sensitivity_summary: null
+analysis_routes:
+  potential_goals: []
+  candidate_routes: []
+  preferred_route: null
+  fallback_routes: []
+  route_selection_rationale: null
+  unresolved_decisions: []
+  next_steps: []
 
+subskill_analyses: []
+
+iteration_history: []
 limitations: []
 open_questions: []

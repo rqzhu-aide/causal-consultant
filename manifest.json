@@ -1,9 +1,9 @@
 {
   "package": "causal-skills",
-  "version": "0.1.3-matching-weighting-balance-expanded",
+  "version": "0.1.4-workflow-routing-architecture",
   "created_for": "modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Expanded subskills/03-matching-weighting-balance with comprehensive SKILL.md, workflow, estimands, diagnostics, failure modes, software notes, bibliography, examples, and root scripts.",
+  "last_updated_focus": "Refined top-level workflow, project-spec schema, route shortlist/route-out logic, prospective design planning, and architecture-level documentation.",
   "subskills": [
     "00-dag-identification",
     "01-randomized-experiments",
@@ -22,7 +22,8 @@
     "14-causal-discovery",
     "15-causal-genomics",
     "16-missingness-measurement-selection",
-    "17-reporting-interpretation"
+    "17-reporting-interpretation",
+    "18-prospective-design-planning"
   ],
-  "notes": "Preliminary skill package. Subskills 01 (randomized experiments), 03 (matching/weighting/balance), and 09 (instrumental variables) are now deeply expanded. Test package-specific code before production use."
+  "notes": "Preliminary skill package. The top-level workflow now emphasizes user need, data structure, route shortlist, subskill activation, route-out handling, and tool fit/data suitability before causal claims. Subskills 01 (randomized experiments), 03 (matching/weighting/balance), and 09 (instrumental variables) are deeply expanded. Subskill 18 adds a lightweight prospective design-planning workflow. Test package-specific code before production use."
 }

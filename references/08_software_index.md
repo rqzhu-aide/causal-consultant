@@ -1,6 +1,8 @@
 # Software Index
 
-This index lists commonly useful packages. Always verify the user's installed package versions and adapt code to the dataset.
+This index lists commonly useful packages. Treat these as candidate implementations, not method recommendations by themselves. The routed subskill, causal design, estimand, and data suitability determine whether a package is appropriate for causal interpretation.
+
+Always verify the user's installed package versions and adapt code to the dataset.
 
 ## R
 

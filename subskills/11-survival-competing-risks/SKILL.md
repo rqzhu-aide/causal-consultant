@@ -62,6 +62,7 @@ description: Use for time-to-event outcomes, censoring, competing risks, adjuste
 
 - immortal time
 - hazard ratio interpreted as risk ratio
+- hazard ratio emphasized when the scientific target is risk, survival probability, cumulative incidence, or RMST
 - competing risks censored without justification
 - time zero after treatment
 - informative censoring ignored

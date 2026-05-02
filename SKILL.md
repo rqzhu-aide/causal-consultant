@@ -1,7 +1,7 @@
 ---
 name: causal-skills
 description: |
-  Use when the user explicitly requests causal inference or causal discovery.
+  Use when the user explicitly requests causal inference, causal discovery, policy effect estimation, or treatment decision making.
 ---
 
 # Causal Inference Consultant

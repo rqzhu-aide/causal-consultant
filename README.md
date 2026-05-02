@@ -26,6 +26,8 @@ Say one of the following phrases in your request:
 
 - *"causal inference"*
 - *"causal discovery"*
+- *"policy effect estimation"*
+- *"treatment decision making"*
 
 ## Overall Structure
 

@@ -1,24 +1,20 @@
 # Causal Inference Consultant Skill
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/badge/version-1.0-blue.svg)]()
-[![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
-
-Version: `1.0`
-
-License: GPL-3.0
-
-Status: under active development
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-1.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
 ## What This Skill Is About
 
-This is a modular causal inference consultant skill for agent systems that load a top-level `SKILL.md` and then selectively read supporting references, subskills, scripts, and assets. It is designed to help users clarify causal questions, plan data collection, understand data structure, narrow down plausible causal designs, specify estimands, check assumptions, draft R/Python analysis code, interpret results, and prepare reproducible reports.
+---
 
-It is for data scientists, analysts, researchers, and domain experts who want a careful interactive guide rather than a black-box method picker. It can help whether the user already has a dataset or is still planning what data to collect.
+This is a modular causal inference consultant skill for agent systems that load a top-level `SKILL.md` and then selectively read supporting references, subskills, scripts, and assets. It is designed to guide an interactive conversation: first understand the user's goal, provided data or planned data structure, timing, variables, and practical constraints; then adaptively recommend suitable causal designs, analytic methods, diagnostics, and software tools.
 
-Current status: the top-level workflow and routing architecture are in place. Randomized experiments, matching/weighting/balance, instrumental variables, and causal discovery are the most developed analysis subskills. Prospective design planning is available as a lightweight routing subskill for users who do not yet have data. Many other subskills are functional scaffolds that still need deeper examples, diagnostics, and package-specific recipes.
+It is for data scientists, analysts, researchers, and domain experts who want a careful interactive guide rather than a black-box method picker. It helps users inspect provided data, clarify causal questions, plan data collection, specify estimands, check method conditions in intuitive language, draft R/Python analysis code, interpret results, and prepare reproducible reports. As new information appears, it can revise the route, narrow or change the estimand, suggest fallback analyses, or explain why a causal claim is not supported.
+
+However, causal claims should never be stronger than the design, assumptions, diagnostics, and sensitivity checks can justify.
 
 > I cannot give you a definitive answer, but I can help you explore.
+
+---
 
 ## How to Activate
 
@@ -28,6 +24,12 @@ Say one of the following phrases in your request:
 - *"causal discovery"*
 - *"policy effect estimation"*
 - *"treatment decision making"*
+
+---
+
+## Current Status
+
+The top-level workflow and routing architecture are in place. Randomized experiments, DAG/identification, point-treatment observational analysis, matching/weighting/balance, doubly robust ML, heterogeneous effects/policy, longitudinal g-methods, DiD/event studies, regression discontinuity, instrumental variables, and causal discovery are the most developed analysis subskills. Prospective design planning is available as a lightweight routing subskill for users who do not yet have data. Several remaining subskills still need deeper examples, diagnostics, and package-specific recipes.
 
 ## Overall Structure
 

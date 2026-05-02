@@ -1,12 +1,12 @@
 # Causal Inference Consultant Skill
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Version](https://img.shields.io/badge/version-0.1.4--workflow--routing--architecture-blue.svg)]()
 [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
 Version: `0.1.4-workflow-routing-architecture`
 
-License: MIT
+License: GPL-3.0
 
 Status: under active development
 

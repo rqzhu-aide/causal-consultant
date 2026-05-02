@@ -1,0 +1,40 @@
+{
+  "name": "instrumental-variables",
+  "version": "0.2.0",
+  "title": "Instrumental Variables",
+  "description": "Subskill for instrumental-variable designs, including classical 2SLS/Wald, LATE/CACE, noncompliance RCTs, fuzzy RD, weak-instrument diagnostics, falsification tests, and IV-DML.",
+  "entrypoint": "SKILL.md",
+  "references": [
+    "references/workflow.md",
+    "references/iv_bibliography.md",
+    "references/iv_assumption_ledger.md"
+  ],
+  "examples": [
+    "examples/r_ivreg_diagnostics.R",
+    "examples/r_fixest_iv.R",
+    "examples/python_linearmodels_iv.py",
+    "examples/python_doubleml_iv.py",
+    "examples/r_late_characterization.R"
+  ],
+  "related_subskills": [
+    "../05-randomized-experiments/",
+    "../09-heterogeneous-effects-policy/",
+    "../12-regression-discontinuity/",
+    "../02-user-data-inspector/"
+  ],
+  "primary_packages": {
+    "R": [
+      "ivreg",
+      "fixest",
+      "lmtest",
+      "sandwich",
+      "DoubleML"
+    ],
+    "Python": [
+      "linearmodels",
+      "statsmodels",
+      "doubleml",
+      "scikit-learn"
+    ]
+  }
+}

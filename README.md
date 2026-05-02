@@ -22,18 +22,10 @@ Current status: the top-level workflow and routing architecture are in place. Ra
 
 ## How to Activate
 
-Use this skill when asking about causal inference, causal discovery, treatment effects, impact evaluation, experiments, observational causal analysis, DAGs, estimands, assumptions, diagnostics, or causal reports.
+Say one of the following phrases in your request:
 
-Example triggers:
-
-- "Help me design a causal analysis."
-- "Can I estimate the effect of this intervention?"
-- "What data should I collect for a future causal study?"
-- "Should I use matching, DiD, RD, or IV?"
-- "Help me define the estimand and DAG."
-- "Review these causal results and diagnostics."
-- "Write R/Python code for this causal design."
-- "Help me interpret this treatment effect."
+- *"causal inference"*
+- *"causal discovery"*
 
 ## Overall Structure
 

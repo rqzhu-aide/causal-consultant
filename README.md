@@ -1,10 +1,10 @@
 # Causal Inference Consultant Skill
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/badge/version-0.1.4--workflow--routing--architecture-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.0-blue.svg)]()
 [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
-Version: `0.1.4-workflow-routing-architecture`
+Version: `1.0`
 
 License: GPL-3.0
 

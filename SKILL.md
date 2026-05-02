@@ -97,7 +97,7 @@ Use this special case after Stage 1 shows that the user has no data yet, is plan
 
 Tasks:
 
-- activate `subskills/18-prospective-design-planning/` as the primary planning subskill;
+- activate `subskills/04-design-planner/` as the primary planning subskill;
 - define the ideal target trial or quasi-experimental design before discussing packages;
 - compare feasible routes such as randomized experiment, encouragement design, observational cohort, panel/DiD, RD, synthetic control, survival follow-up, mediation, or interference-aware design;
 - for each route, list the minimum data fields, timing requirements, assignment or exposure recording needs, and diagnostics it would enable;
@@ -159,7 +159,7 @@ Tasks:
 Read:
 
 - `references/07_diagnostics_and_reporting.md`
-- `subskills/17-reporting-interpretation/SKILL.md`
+- `subskills/20-reporting-interpretation/SKILL.md`
 - `assets/final_report_template.md`
 
 Tasks:
@@ -176,25 +176,26 @@ Use the table to choose subskills. Multiple subskills may be active in one proje
 
 | User/data situation | Activate |
 |---|---|
-| User has or wants a DAG, adjustment set, target trial, or assumptions | `subskills/00-dag-identification/` |
-| Randomized, cluster-randomized, factorial, crossover, SMART, or A/B experiment | `subskills/01-randomized-experiments/` |
-| Observational point-treatment effect with measured confounders | `subskills/02-point-treatment-observational/` |
-| Propensity scores, matching, weighting, balance diagnostics | `subskills/03-matching-weighting-balance/` |
-| AIPW, TMLE, DML, high-dimensional nuisance functions | `subskills/04-doubly-robust-ml/` |
-| CATE, HTE, subgroup effects, uplift, treatment rules, policy learning | `subskills/05-heterogeneous-effects-policy/` |
-| Time-varying treatment, time-varying confounding, dynamic regimes, censoring | `subskills/06-longitudinal-gmethods/` |
-| Panel data, policy changes, staggered adoption, event studies | `subskills/07-did-event-study/` |
-| Threshold/cutoff assignment | `subskills/08-regression-discontinuity/` |
-| Instrumental variables, encouragement designs, Mendelian-randomization-like logic | `subskills/09-instrumental-variables/` |
-| Treated time series, aggregate interventions, synthetic controls, CausalImpact | `subskills/10-synthetic-control-time-series/` |
-| Time-to-event, censoring, competing risks, RMST, adjusted survival curves | `subskills/11-survival-competing-risks/` |
-| Direct/indirect effects, mechanisms, mediators | `subskills/12-mediation/` |
-| Spillovers, networks, clusters with interference | `subskills/13-interference-spillovers/` |
-| Learning or checking causal graphs from data | `subskills/14-causal-discovery/` |
-| Mendelian randomization, colocalization, omics, genetics | `subskills/15-causal-genomics/` |
-| Missing data, measurement error, selection bias, transportability | `subskills/16-missingness-measurement-selection/` |
-| Writing final reports, tables, plots, interpretation, reproducibility | `subskills/17-reporting-interpretation/` |
-| User has no data yet or wants to design a future study, experiment, quasi-experiment, or data collection plan | `subskills/18-prospective-design-planning/` |
+| New, broad, ambiguous, or mixed-goal causal request | `subskills/01-user-need-understander/` |
+| Data preprocessing, data readiness, variable-role mapping, missingness/outliers/dimensionality, IDs/time/group structure | `subskills/02-user-data-inspector/` |
+| User has or wants a DAG, adjustment set, target trial, or assumptions | `subskills/03-dag-builder/` |
+| User has no data yet or wants to design a future study, experiment, quasi-experiment, or data collection plan | `subskills/04-design-planner/` |
+| Randomized, cluster-randomized, factorial, crossover, SMART, or A/B experiment | `subskills/05-randomized-experiments/` |
+| Observational point-treatment effect with measured confounders | `subskills/06-point-treatment-observational/` |
+| Propensity scores, matching, weighting, balance diagnostics | `subskills/07-matching-weighting-balance/` |
+| AIPW, TMLE, DML, high-dimensional nuisance functions | `subskills/08-doubly-robust-ml/` |
+| CATE, HTE, subgroup effects, uplift, treatment rules, policy learning | `subskills/09-heterogeneous-effects-policy/` |
+| Time-varying treatment, time-varying confounding, dynamic regimes, censoring | `subskills/10-longitudinal-gmethods/` |
+| Panel data, policy changes, staggered adoption, event studies | `subskills/11-did-event-study/` |
+| Threshold/cutoff assignment | `subskills/12-regression-discontinuity/` |
+| Instrumental variables, encouragement designs, Mendelian-randomization-like logic | `subskills/13-instrumental-variables/` |
+| Treated time series, aggregate interventions, synthetic controls, CausalImpact | `subskills/14-synthetic-control-time-series/` |
+| Time-to-event, censoring, competing risks, RMST, adjusted survival curves | `subskills/15-survival-competing-risks/` |
+| Direct/indirect effects, mechanisms, mediators | `subskills/16-mediation/` |
+| Spillovers, networks, clusters with interference | `subskills/17-interference-spillovers/` |
+| Learning or checking causal graphs from data | `subskills/18-causal-discovery/` |
+| Mendelian randomization, colocalization, omics, genetics | `subskills/19-causal-genomics/` |
+| Writing final reports, tables, plots, interpretation, reproducibility | `subskills/20-reporting-interpretation/` |
 
 ## Universal Red Flags
 

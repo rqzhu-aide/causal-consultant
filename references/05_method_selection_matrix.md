@@ -6,26 +6,26 @@ Use this matrix after the user need, data structure, and candidate design routes
 
 | Data/design | Target | Candidate approaches | Subskill | Typical implementation resources |
 |---|---|---|---|---|
-| No data yet; future study or data collection | future causal effect or design feasibility | target-trial planning, experiment/quasi-experiment comparison, measurement plan | 18 + candidate design subskills | design blueprint; optional simulation or power tools |
-| Randomized individual-level trial | ITT, ATE | difference in means, regression adjustment, randomization inference | 01 | R `estimatr`, `randomizr`; Python `statsmodels` |
-| Cluster randomized trial | cluster-level ATE | mixed models, GEE, cluster-robust SEs, randomization inference | 01 | R `lme4`, `geepack`, `clubSandwich`; Python `statsmodels` |
-| Noncompliant randomized trial | ITT, per-protocol, CACE/LATE | ITT, IV, adherence-adjusted analyses | 01 + 09 | R `ivreg`; Python `linearmodels` |
-| Observational binary treatment | ATE/ATT/ATO | regression, matching, weighting, g-computation, AIPW, TMLE | 02 + 03 + 04 | R `MatchIt`, `WeightIt`, `cobalt`, `tmle`; Python `DoWhy`, `DoubleML` |
-| High-dimensional covariates | ATE/ATT/CATE | DML, TMLE, SuperLearner, causal forests | 04 + 05 | R `DoubleML`, `tmle3`, `grf`; Python `DoubleML`, `EconML` |
-| Multivalued/continuous treatment | dose-response | generalized propensity score, g-computation, TMLE/DML variants | 02 + 04 | R `WeightIt`, `CBPS`; Python `EconML`, `DoWhy` |
-| Heterogeneity/personalization | CATE, GATE, policy value | causal forests, meta-learners, DR-learners, policy learning | 05 | R `grf`, `policytree`; Python `EconML`, `CausalML` |
-| Time-varying treatment/confounding | regime mean/value | MSM/IPW, g-formula, longitudinal TMLE, LMTP | 06 | R `ipw`, `gfoRmula`, `ltmle`, `lmtp` |
-| Panel/policy, multiple units | ATT, event-study effects | modern DiD, group-time ATT, event studies | 07 | R `did`, `fixest`, `DRDID`, `did2s` |
-| Cutoff assignment | local treatment effect | sharp/fuzzy RD, local polynomial, bandwidth sensitivity | 08 | R/Python `rdrobust`, R `rddensity` |
-| Valid instrument | LATE/CACE | 2SLS, LIML, IV-DML | 09 | R `ivreg`, `fixest`, `DoubleML`; Python `linearmodels`, `DoubleML` |
-| One/few treated aggregate units | ATT over post-period | synthetic control, augmented synthetic control, BSTS/CausalImpact | 10 | R `Synth`, `tidysynth`, `gsynth`, `CausalImpact` |
-| Time-to-event | survival/risk/RMST contrast | adjusted survival, IPCW, AIPW/TMLE survival, RMST | 11 | R `survival`, `adjustedCurves`, `riskRegression`, `survtmle` |
-| Mediation | direct/indirect effects | mediation models, g-computation, interventional effects | 12 | R `mediation`, `medflex`, `CMAverse`, `regmedint` |
-| Interference/spillovers | direct/indirect/spillover effects | exposure mapping, cluster/network estimators, TMLE/IPW | 13 | R `inferference`, `tmlenet` |
-| Causal graph learning | DAG/CPDAG/PAG | PC, FCI, GES/GIES, LiNGAM, ANM | 14 | R `pcalg`; Python `causal-learn`, `lingam` |
-| Genomics/omics | MR effect, colocalized effect, mediated effect | MR, colocalization, fine mapping, pleiotropy checks | 15 | R `TwoSampleMR`, `MendelianRandomization`, `coloc`, `MR-PRESSO` |
-| Missingness, measurement error, selection, transportability | bias audit or supported primary route | bounds, IPCW, sensitivity, measurement models, target-population checks | 16 + primary route | route-specific diagnostics and sensitivity tools |
-| Report, interpretation, or reproducibility | causal claim and communication | assumption ledger, diagnostic summary, limitations, report skeleton | 17 + primary route | Quarto/R Markdown/Jupyter; package version records |
+| No data yet; future study or data collection | future causal effect or design feasibility | target-trial planning, experiment/quasi-experiment comparison, measurement plan | 04 + candidate design subskills | design blueprint; optional simulation or power tools |
+| Randomized individual-level trial | ITT, ATE | difference in means, regression adjustment, randomization inference | 05 | R `estimatr`, `randomizr`; Python `statsmodels` |
+| Cluster randomized trial | cluster-level ATE | mixed models, GEE, cluster-robust SEs, randomization inference | 05 | R `lme4`, `geepack`, `clubSandwich`; Python `statsmodels` |
+| Noncompliant randomized trial | ITT, per-protocol, CACE/LATE | ITT, IV, adherence-adjusted analyses | 05 + 13 | R `ivreg`; Python `linearmodels` |
+| Observational binary treatment | ATE/ATT/ATO | regression, matching, weighting, g-computation, AIPW, TMLE | 06 + 07 + 08 | R `MatchIt`, `WeightIt`, `cobalt`, `tmle`; Python `DoWhy`, `DoubleML` |
+| High-dimensional covariates | ATE/ATT/CATE | DML, TMLE, SuperLearner, causal forests | 08 + 09 | R `DoubleML`, `tmle3`, `grf`; Python `DoubleML`, `EconML` |
+| Multivalued/continuous treatment | dose-response | generalized propensity score, g-computation, TMLE/DML variants | 06 + 07 + 08 | R `WeightIt`, `CBPS`; Python `EconML`, `DoWhy` |
+| Heterogeneity/personalization | CATE, GATE, policy value | causal forests, meta-learners, DR-learners, policy learning | 09 | R `grf`, `policytree`; Python `EconML`, `CausalML` |
+| Time-varying treatment/confounding | regime mean/value | MSM/IPW, g-formula, longitudinal TMLE, LMTP | 10 | R `ipw`, `gfoRmula`, `ltmle`, `lmtp` |
+| Panel/policy, multiple units | ATT, event-study effects | modern DiD, group-time ATT, event studies | 11 | R `did`, `fixest`, `DRDID`, `did2s` |
+| Cutoff assignment | local treatment effect | sharp/fuzzy RD, local polynomial, bandwidth sensitivity | 12 | R/Python `rdrobust`, R `rddensity` |
+| Valid instrument | LATE/CACE | 2SLS, LIML, IV-DML | 13 | R `ivreg`, `fixest`, `DoubleML`; Python `linearmodels`, `DoubleML` |
+| One/few treated aggregate units | ATT over post-period | synthetic control, augmented synthetic control, BSTS/CausalImpact | 14 | R `Synth`, `tidysynth`, `gsynth`, `CausalImpact` |
+| Time-to-event | survival/risk/RMST contrast | adjusted survival, IPCW, AIPW/TMLE survival, RMST | 15 | R `survival`, `adjustedCurves`, `riskRegression`, `survtmle` |
+| Mediation | direct/indirect effects | mediation models, g-computation, interventional effects | 16 | R `mediation`, `medflex`, `CMAverse`, `regmedint` |
+| Interference/spillovers | direct/indirect/spillover effects | exposure mapping, cluster/network estimators, TMLE/IPW | 17 | R `inferference`, `tmlenet` |
+| Causal graph learning | DAG/CPDAG/PAG | PC, FCI, GES/GIES, LiNGAM, ANM | 18 | R `pcalg`; Python `causal-learn`, `lingam` |
+| Genomics/omics | MR effect, colocalized effect, mediated effect | MR, colocalization, fine mapping, pleiotropy checks | 19 | R `TwoSampleMR`, `MendelianRandomization`, `coloc`, `MR-PRESSO` |
+| Causal data preprocessing | analysis-ready dataset and route constraints | data profiling, structure checks, variable-role map, leakage audit, modeling-difficulty triage | 02 + primary route | route-specific diagnostics and sensitivity tools |
+| Report, interpretation, or reproducibility | causal claim and communication | assumption ledger, diagnostic summary, limitations, report skeleton | 20 + primary route | Quarto/R Markdown/Jupyter; package version records |
 
 ## Primary Method Selection Heuristics
 

@@ -45,7 +45,7 @@ Prospective planning output should usually be a study/data blueprint, not analys
 interaction:
   has_existing_data: false
 subskill_analyses:
-  - subskill_id: "18-prospective-design-planning"
+  - subskill_id: "04-design-planner"
     status: "candidate | selected | fallback"
     planned_estimand: null
     candidate_designs: []
@@ -58,7 +58,7 @@ subskill_analyses:
     open_questions: []
 ```
 
-Do not add a separate top-level prospective schema unless the project truly needs it. The global project specification should stay compact, and prospective planning details should live in the `18-prospective-design-planning` subskill entry.
+Do not add a separate top-level prospective schema unless the project truly needs it. The global project specification should stay compact, and prospective planning details should live in the `04-design-planner` subskill entry.
 
 ## Core Intake Fields
 

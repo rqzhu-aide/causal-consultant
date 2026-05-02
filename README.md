@@ -1,12 +1,12 @@
 # Causal Inference Consultant Skill
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.1.4--workflow--routing--architecture-blue.svg)]()
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Version](https://img.shields.io/badge/version-1.0-blue.svg)]()
 [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
-Version: `0.1.4-workflow-routing-architecture`
+Version: `1.0`
 
-License: MIT
+License: GPL-3.0
 
 Status: under active development
 
@@ -16,24 +16,18 @@ This is a modular causal inference consultant skill for agent systems that load 
 
 It is for data scientists, analysts, researchers, and domain experts who want a careful interactive guide rather than a black-box method picker. It can help whether the user already has a dataset or is still planning what data to collect.
 
-Current status: the top-level workflow and routing architecture are in place. Randomized experiments, matching/weighting/balance, instrumental variables, and causal discovery are the most developed analysis subskills. Prospective design planning is available as a lightweight routing subskill for users who do not yet have data. Many other subskills are functional scaffolds that still need deeper examples, diagnostics, and package-specific recipes.
+Current status: the top-level workflow and routing architecture are in place. Randomized experiments, DAG/identification, point-treatment observational analysis, matching/weighting/balance, doubly robust ML, heterogeneous effects/policy, longitudinal g-methods, DiD/event studies, regression discontinuity, instrumental variables, and causal discovery are the most developed analysis subskills. Prospective design planning is available as a lightweight routing subskill for users who do not yet have data. Several remaining subskills still need deeper examples, diagnostics, and package-specific recipes.
 
 > I cannot give you a definitive answer, but I can help you explore.
 
 ## How to Activate
 
-Use this skill when asking about causal inference, causal discovery, treatment effects, impact evaluation, experiments, observational causal analysis, DAGs, estimands, assumptions, diagnostics, or causal reports.
+Say one of the following phrases in your request:
 
-Example triggers:
-
-- "Help me design a causal analysis."
-- "Can I estimate the effect of this intervention?"
-- "What data should I collect for a future causal study?"
-- "Should I use matching, DiD, RD, or IV?"
-- "Help me define the estimand and DAG."
-- "Review these causal results and diagnostics."
-- "Write R/Python code for this causal design."
-- "Help me interpret this treatment effect."
+- *"causal inference"*
+- *"causal discovery"*
+- *"policy effect estimation"*
+- *"treatment decision making"*
 
 ## Overall Structure
 
@@ -75,15 +69,15 @@ The top-level `SKILL.md` should be loaded first. It uses progressive disclosure:
 | Component | Status | Notes |
 |---|---:|---|
 | Top-level framework | 85% | Interaction modes, prospective planning, project spec schema, router, route-out loop, assumption ledger, workflow assets, and code templates are in place. |
-| 00 - DAG Identification | 25% | Basic scaffold; needs worked DAG examples and adjustment-set code templates. |
+| 00 - DAG Identification | 75% | Expanded structure with project-spec entry, DAG/target-trial workflow, adjustment guardrails, and literature/software map. |
 | 01 - Randomized Experiments | 85% | Deep workflow with R/Python examples, SRM/CUPED, cluster trials, factorial/crossover/SMART considerations, and diagnostics. |
-| 02 - Point-Treatment Observational | 45% | Scaffold plus workflow references and templates; needs deeper assumption and sensitivity guidance. |
+| 02 - Point-Treatment Observational | 75% | Expanded target-trial framing, measured-confounding assumptions, route handoff logic, diagnostics, and literature/software map. |
 | 03 - Matching / Weighting / Balance | 85% | Deep workflow with formal estimands, overlap diagnostics, failure modes, software notes, examples, and templates. |
-| 04 - Doubly Robust & Machine Learning | 45% | Scaffold plus TMLE/DoubleML templates; needs cross-fitting and nuisance-model diagnostics. |
-| 05 - Heterogeneous Effects & Policy | 45% | Scaffold plus causal forest/EconML templates; needs policy evaluation and validation examples. |
-| 06 - Longitudinal G-Methods | 40% | Scaffold plus longitudinal template; needs MSM, dynamic-regime, and survival extensions. |
-| 07 - Diff-in-Diff & Event Studies | 40% | Scaffold plus workflow notes and Callaway-Sant'Anna template; needs modern DiD diagnostics and examples. |
-| 08 - Regression Discontinuity | 45% | Scaffold plus R/Python rdrobust templates; needs bandwidth, manipulation, and sensitivity examples. |
+| 04 - Doubly Robust & Machine Learning | 75% | Expanded AIPW/TMLE/DoubleML guidance with nuisance-model, cross-fitting, diagnostics, and literature/software map. |
+| 05 - Heterogeneous Effects & Policy | 75% | Expanded CATE/GATE/policy workflow with adaptive method selection, validation, diagnostics, and literature/software map. |
+| 06 - Longitudinal G-Methods | 75% | Expanded timeline-first workflow for MSM/IPW, g-formula, longitudinal TMLE, LMTP, and regime diagnostics. |
+| 07 - Diff-in-Diff & Event Studies | 75% | Expanded modern DiD workflow with group-time ATT, staggered adoption guardrails, pretrend diagnostics, and software map. |
+| 08 - Regression Discontinuity | 75% | Expanded RD workflow with local estimands, fuzzy RD, manipulation checks, bandwidth sensitivity, and software map. |
 | 09 - Instrumental Variables | 90% | Deep workflow with R/Python examples, LATE/CACE guardrails, diagnostics, and bibliography. |
 | 10 - Synthetic Control & Time Series | 35% | Scaffold plus CausalImpact template; needs placebo inference and modern synthetic control workflows. |
 | 11 - Survival & Competing Risks | 35% | Scaffold plus survival references and adjusted-curve template; needs competing-risk and IPCW depth. |
@@ -95,7 +89,7 @@ The top-level `SKILL.md` should be loaded first. It uses progressive disclosure:
 | 17 - Reporting & Interpretation | 40% | Scaffold plus report skeleton and final report template; needs stronger reporting rubrics and examples. |
 | 18 - Prospective Design Planning | 25% | Lightweight planning subskill for future studies and data collection; needs deeper design examples and sample schemas. |
 
-Overall: approximately 50% complete. The structural backbone is solid, with four deep and usable analysis subskills, one lightweight prospective-planning subskill, and many method areas still in scaffold form.
+Overall: approximately 60% complete. The structural backbone is solid, with several deep and usable analysis subskills, one lightweight prospective-planning subskill, and remaining method areas still needing examples, diagnostics, and package-specific recipes.
 
 ## Architecture Principles
 

@@ -19,7 +19,18 @@ However, causal claims should never be stronger than the design, assumptions, di
 
 ---
 
-## 🎯 Architecture Principles
+## 🚀 How to Activate
+
+Say one of the following phrases in your request:
+
+- "causal inference"
+- "causal discovery"
+- "policy effect estimation"
+- "treatment decision making"
+
+---
+
+## 🧩 Architecture Principles
 
 This skill treats causal inference as a sequence of design decisions, not as a single modeling command. The agent should first understand the user's need and data situation, then define the causal target, inspect or plan the data structure, compare feasible design routes, state assumptions, and only then choose methods, packages, or code resources.
 
@@ -44,7 +55,7 @@ See the canonical workflow diagram: [`assets/workflow-mermaid.md`](assets/workfl
 1. 🔍 Identify the current interaction mode: learning, orientation, prospective planning, data audit, design triage, analysis planning, code drafting, result interpretation, or reporting.
 2. 🗣️ Restate the user's goal in domain language and clarify only the treatment, comparator, outcome, timing, population, data structure, and deliverable details needed for the next step.
 3. 🏛️ Keep the main skill and four backend foundation subskills active concurrently: the main skill speaks with the user, while domain support, data inspection, design planning, and DAG/causal logic update backend records.
-4. 📊 In the data component, set `data_existence_status` as `existing`, `partially existing`, `conceptual`, or `unknown`. If data exist, audit rows, IDs, timing, assignment/exposure, repeated measures, clustering, missingness, censoring, and available covariates. If no data exist, record the expected schema or data requirements as conceptual.
+4. 📋 In the data component, set `data_existence_status` as `existing`, `partially existing`, `conceptual`, or `unknown`. If data exist, audit rows, IDs, timing, assignment/exposure, repeated measures, clustering, missingness, censoring, and available covariates. If no data exist, record the expected schema or data requirements as conceptual.
 5. 🗺️ Narrow to 1 to 3 plausible high-level design routes, state the key conditions for each, then use the DAG/causal-logic record to check identification, adjustment, and method-selection implications, constrained by data facts and design feasibility.
 6. ⚙️ Activate one or more relevant candidate method subskills once the rough design is known. If a candidate route is rejected, record why, route back to the shortlist, and reconsider the best next route.
 7. 🔬 Inside the activated subskill, refine the estimand, audit route-specific assumptions and failure modes, and decide whether the route is supported, fallback, rejected, or exploratory/user-forced.
@@ -72,13 +83,9 @@ The top-level `SKILL.md` should be loaded first. It uses progressive disclosure:
 
 ---
 
-## 📊 Current Status
+## 📈 Current Status & Completion Progress
 
 The top-level workflow and routing architecture are in place. The main skill is the user-facing coordinator, while Domain Helper, Data Inspector, Design Planner, and DAG Builder maintain backend records for domain context, data, study design, and causal logic. Randomized experiments, DAG/identification, point-treatment observational analysis, matching/weighting/balance, doubly robust ML, heterogeneous effects/policy, longitudinal g-methods, DiD/event studies, regression discontinuity, instrumental variables, and causal discovery are among the most developed analysis subskills. Several remaining subskills still need deeper examples, diagnostics, and package-specific recipes.
-
----
-
-## 📊 Completion Progress
 
 | Component | Status | Notes |
 |---|---:|---|
@@ -105,14 +112,3 @@ The top-level workflow and routing architecture are in place. The main skill is 
 | 20 - Reporting & Interpretation | 40% | Scaffold plus report skeleton and final report template; needs stronger reporting rubrics and examples. |
 
 Overall: approximately 85% complete. The structural backbone is solid, with the concurrent foundation architecture now defined and most analysis subskills deep and usable. The remaining major work is concentrated in reporting/interpretation, richer examples for the main skill plus four backend foundation subskills, and additional route-specific templates.
-
----
-
-## 🚀 How to Activate
-
-Say one of the following phrases in your request:
-
-- ✨ *"causal inference"*
-- 🔮 *"causal discovery"*
-- 📊 *"policy effect estimation"*
-- 💊 *"treatment decision making"*

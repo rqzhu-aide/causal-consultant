@@ -19,20 +19,21 @@ However, causal claims should never be stronger than the design, assumptions, di
 
 ---
 
-## 🚀 How to Activate
+## 🎯 Architecture Principles
 
-Say one of the following phrases in your request:
+This skill treats causal inference as a sequence of design decisions, not as a single modeling command. The agent should first understand the user's need and data situation, then define the causal target, inspect or plan the data structure, compare feasible design routes, state assumptions, and only then choose methods, packages, or code resources.
 
-- ✨ *"causal inference"*
-- 🔮 *"causal discovery"*
-- 📊 *"policy effect estimation"*
-- 💊 *"treatment decision making"*
+Before moving to actual analysis, the skill maintains four key records in parallel: **domain** context, **data** structure and quality, study **design**, and the causal **DAG** / identification logic. These are kept by the four backend foundation subskills (Domain Helper, Data Inspector, Design Planner, and DAG Builder).
+
+See the canonical workflow diagram: [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md). A legacy standalone HTML diagram is also included at [`assets/causal-skills-workflow-diagram.html`](assets/causal-skills-workflow-diagram.html), but the Mermaid diagram should be treated as the current architecture reference.
+
+When no data exist yet, the skill should help plan data collection so future causal analysis is possible. When data exist but are messy, it should map rows, timing, variables, and possible feature construction before fitting models. When results exist, it should use diagnostics and user feedback to iterate on the estimand, model, or interpretation.
+
+Tool fit, data suitability, and causal validity should be checked together. User-preferred packages or tools can be used, but only when their assumptions, supported estimands, diagnostics, and uncertainty estimates match the planned analysis.
+
+The skill's role is not to make causal inference automatic. Its role is to make causal reasoning explicit, auditable, reproducible, and appropriately cautious.
 
 ---
-
-## 📊 Current Status
-
-The top-level workflow and routing architecture are in place. The main skill is the user-facing coordinator, while Domain Helper, Data Inspector, Design Planner, and DAG Builder maintain backend records for domain context, data, study design, and causal logic. Randomized experiments, DAG/identification, point-treatment observational analysis, matching/weighting/balance, doubly robust ML, heterogeneous effects/policy, longitudinal g-methods, DiD/event studies, regression discontinuity, instrumental variables, and causal discovery are among the most developed analysis subskills. Several remaining subskills still need deeper examples, diagnostics, and package-specific recipes.
 
 ## 🏗️ Overall Structure
 
@@ -69,6 +70,14 @@ causal-skills/
 
 The top-level `SKILL.md` should be loaded first. It uses progressive disclosure: start with intake and routing, then read only the subskills and references relevant to the user's question and data structure.
 
+---
+
+## 📊 Current Status
+
+The top-level workflow and routing architecture are in place. The main skill is the user-facing coordinator, while Domain Helper, Data Inspector, Design Planner, and DAG Builder maintain backend records for domain context, data, study design, and causal logic. Randomized experiments, DAG/identification, point-treatment observational analysis, matching/weighting/balance, doubly robust ML, heterogeneous effects/policy, longitudinal g-methods, DiD/event studies, regression discontinuity, instrumental variables, and causal discovery are among the most developed analysis subskills. Several remaining subskills still need deeper examples, diagnostics, and package-specific recipes.
+
+---
+
 ## 📊 Completion Progress
 
 | Component | Status | Notes |
@@ -97,12 +106,13 @@ The top-level `SKILL.md` should be loaded first. It uses progressive disclosure:
 
 Overall: approximately 85% complete. The structural backbone is solid, with the concurrent foundation architecture now defined and most analysis subskills deep and usable. The remaining major work is concentrated in reporting/interpretation, richer examples for the main skill plus four backend foundation subskills, and additional route-specific templates.
 
-## 🎯 Architecture Principles
+---
 
-This skill treats causal inference as a sequence of design decisions, not as a single modeling command. The agent should first understand the user's need and data situation, then define the causal target, inspect or plan the data structure, compare feasible design routes, state assumptions, and only then choose methods, packages, or code resources.
+## 🚀 How to Activate
 
-When no data exist yet, the skill should help plan data collection so future causal analysis is possible. When data exist but are messy, it should map rows, timing, variables, and possible feature construction before fitting models. When results exist, it should use diagnostics and user feedback to iterate on the estimand, model, or interpretation.
+Say one of the following phrases in your request:
 
-Tool fit, data suitability, and causal validity should be checked together. User-preferred packages or tools can be used, but only when their assumptions, supported estimands, diagnostics, and uncertainty estimates match the planned analysis.
-
-The skill's role is not to make causal inference automatic. Its role is to make causal reasoning explicit, auditable, reproducible, and appropriately cautious.
+- ✨ *"causal inference"*
+- 🔮 *"causal discovery"*
+- 📊 *"policy effect estimation"*
+- 💊 *"treatment decision making"*

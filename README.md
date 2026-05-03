@@ -1,10 +1,12 @@
-# Causal Inference Consultant Skill
+# 🧠 Causal Inference Consultant Skill
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-1.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
+🎯 *An interactive consultant for causal reasoning, design, and analysis.*
+
 ---
 
-## What This Skill Is About
+## 📖 What This Skill Is About
 
 
 This is a modular causal inference consultant skill for agent systems that load a top-level `SKILL.md` and then selectively read supporting references, subskills, scripts, and assets. It is designed to guide an interactive conversation: maintain a living understanding of the user's goal, provided data or planned data structure, timing, variables, and practical constraints; then adaptively recommend suitable causal designs, analytic methods, diagnostics, and software tools.
@@ -13,41 +15,41 @@ It is for data scientists, analysts, researchers, and domain experts who want a 
 
 However, causal claims should never be stronger than the design, assumptions, diagnostics, and sensitivity checks can justify.
 
-> I cannot give you a definitive answer, but I can help you explore.
+> 🧭 I cannot give you a definitive answer, but I can help you explore.
 
 ---
 
-## How to Activate
+## 🚀 How to Activate
 
 Say one of the following phrases in your request:
 
-- *"causal inference"*
-- *"causal discovery"*
-- *"policy effect estimation"*
-- *"treatment decision making"*
+- ✨ *"causal inference"*
+- 🔮 *"causal discovery"*
+- 📊 *"policy effect estimation"*
+- 💊 *"treatment decision making"*
 
 ---
 
-## Current Status
+## 📊 Current Status
 
 The top-level workflow and routing architecture are in place. The main skill is the user-facing coordinator, while Domain Helper, Data Inspector, Design Planner, and DAG Builder maintain backend records for domain context, data, study design, and causal logic. Randomized experiments, DAG/identification, point-treatment observational analysis, matching/weighting/balance, doubly robust ML, heterogeneous effects/policy, longitudinal g-methods, DiD/event studies, regression discontinuity, instrumental variables, and causal discovery are among the most developed analysis subskills. Several remaining subskills still need deeper examples, diagnostics, and package-specific recipes.
 
-## Overall Structure
+## 🏗️ Overall Structure
 
 The package is organized around an interactive consulting workflow.
 
 See the canonical workflow diagram: [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md). A legacy standalone HTML diagram is also included at [`assets/causal-skills-workflow-diagram.html`](assets/causal-skills-workflow-diagram.html), but the Mermaid diagram should be treated as the current architecture reference.
 
-1. Identify the current interaction mode: learning, orientation, prospective planning, data audit, design triage, analysis planning, code drafting, result interpretation, or reporting.
-2. Restate the user's goal in domain language and clarify only the treatment, comparator, outcome, timing, population, data structure, and deliverable details needed for the next step.
-3. Keep the main skill and four backend foundation subskills active concurrently: the main skill speaks with the user, while domain support, data inspection, design planning, and DAG/causal logic update backend records.
-4. In the data component, set `data_existence_status` as `existing`, `partially existing`, `conceptual`, or `unknown`. If data exist, audit rows, IDs, timing, assignment/exposure, repeated measures, clustering, missingness, censoring, and available covariates. If no data exist, record the expected schema or data requirements as conceptual.
-5. Narrow to 1 to 3 plausible high-level design routes, state the key conditions for each, then use the DAG/causal-logic record to check identification, adjustment, and method-selection implications, constrained by data facts and design feasibility.
-6. Activate one or more relevant candidate method subskills once the rough design is known. If a candidate route is rejected, record why, route back to the shortlist, and reconsider the best next route.
-7. Inside the activated subskill, refine the estimand, audit route-specific assumptions and failure modes, and decide whether the route is supported, fallback, rejected, or exploratory/user-forced.
-8. Draft analysis plans, diagnostics, sensitivity analyses, and R/Python code only when the route, estimand, and data suitability are clear enough.
-9. Interpret results, diagnose problems, and iterate with the user to revise the estimand, route, model, data processing, or claim.
-10. Produce a reproducible report with assumptions, diagnostics, limitations, and interpretation when requested.
+1. 🔍 Identify the current interaction mode: learning, orientation, prospective planning, data audit, design triage, analysis planning, code drafting, result interpretation, or reporting.
+2. 🗣️ Restate the user's goal in domain language and clarify only the treatment, comparator, outcome, timing, population, data structure, and deliverable details needed for the next step.
+3. 🏛️ Keep the main skill and four backend foundation subskills active concurrently: the main skill speaks with the user, while domain support, data inspection, design planning, and DAG/causal logic update backend records.
+4. 📊 In the data component, set `data_existence_status` as `existing`, `partially existing`, `conceptual`, or `unknown`. If data exist, audit rows, IDs, timing, assignment/exposure, repeated measures, clustering, missingness, censoring, and available covariates. If no data exist, record the expected schema or data requirements as conceptual.
+5. 🗺️ Narrow to 1 to 3 plausible high-level design routes, state the key conditions for each, then use the DAG/causal-logic record to check identification, adjustment, and method-selection implications, constrained by data facts and design feasibility.
+6. ⚙️ Activate one or more relevant candidate method subskills once the rough design is known. If a candidate route is rejected, record why, route back to the shortlist, and reconsider the best next route.
+7. 🔬 Inside the activated subskill, refine the estimand, audit route-specific assumptions and failure modes, and decide whether the route is supported, fallback, rejected, or exploratory/user-forced.
+8. 📝 Draft analysis plans, diagnostics, sensitivity analyses, and R/Python code only when the route, estimand, and data suitability are clear enough.
+9. 🔄 Interpret results, diagnose problems, and iterate with the user to revise the estimand, route, model, data processing, or claim.
+10. 📄 Produce a reproducible report with assumptions, diagnostics, limitations, and interpretation when requested.
 
 Directory structure:
 
@@ -67,7 +69,7 @@ causal-skills/
 
 The top-level `SKILL.md` should be loaded first. It uses progressive disclosure: start with intake and routing, then read only the subskills and references relevant to the user's question and data structure.
 
-## Completion Progress
+## 📊 Completion Progress
 
 | Component | Status | Notes |
 |---|---:|---|
@@ -95,7 +97,7 @@ The top-level `SKILL.md` should be loaded first. It uses progressive disclosure:
 
 Overall: approximately 85% complete. The structural backbone is solid, with the concurrent foundation architecture now defined and most analysis subskills deep and usable. The remaining major work is concentrated in reporting/interpretation, richer examples for the main skill plus four backend foundation subskills, and additional route-specific templates.
 
-## Architecture Principles
+## 🎯 Architecture Principles
 
 This skill treats causal inference as a sequence of design decisions, not as a single modeling command. The agent should first understand the user's need and data situation, then define the causal target, inspect or plan the data structure, compare feasible design routes, state assumptions, and only then choose methods, packages, or code resources.
 

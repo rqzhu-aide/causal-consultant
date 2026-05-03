@@ -1,7 +1,6 @@
 ---
 name: causal-mediation
 description: Use for direct effects, indirect effects, mechanisms, mediators, pathways, path-specific effects, controlled direct effects, natural direct/indirect effects, interventional direct/indirect effects, mediation with multiple or high-dimensional mediators, and mechanism questions in randomized, observational, quasi-experimental, genomic, psychometric, economic, biomedical, and social-science settings.
-version: 0.2.0
 ---
 
 # Causal Mediation
@@ -48,15 +47,15 @@ Do **not** use this as the only workflow when:
 - the outcome is survival or competing risks: keep mediation active and coordinate with `subskills/15-survival-competing-risks/`;
 - the mechanism claim depends on genetic instruments, eQTLs, colocalization, Mendelian randomization, or multi-omics causal structure: coordinate with `subskills/19-causal-genomics/`;
 - the mediator may be affected by interference or peer/network exposure: coordinate with `subskills/17-interference-spillovers/`;
-- missingness, measurement error, latent constructs, selection, censoring, or sample conditioning dominate: coordinate with `subskills/02-user-data-inspector/`;
-- the user asks whether a graph identifies a path-specific effect or front-door criterion: coordinate with `subskills/03-dag-builder/`;
+- missingness, measurement error, latent constructs, selection, censoring, or sample conditioning dominate: coordinate with `subskills/02-data-inspector/`;
+- the user asks whether a graph identifies a path-specific effect or front-door criterion: coordinate with `subskills/04-dag-builder/`;
 - the question is only predictive variable importance or feature attribution with no causal pathway claim: treat as descriptive/predictive unless a causal design is added.
 
 If this route is rejected, update the `subskill_analyses` entry as `rejected`, `fallback`, or `exploratory/user-forced`, record the failed condition, and return to the main skill's route shortlist. If the user insists on causal mediation despite nonidentifiability, continue only with a clearly labeled exploratory or descriptive mechanism analysis.
 
 ## Mediation Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -385,7 +384,7 @@ Escalate warnings when:
 
 ## Related Subskills
 
-- `subskills/03-dag-builder/`: use for temporal DAGs, path-specific identification, front-door logic, and recanting-witness concerns.
+- `subskills/04-dag-builder/`: use for temporal DAGs, path-specific identification, front-door logic, and recanting-witness concerns.
 - `subskills/05-randomized-experiments/`: use when treatment was randomized but mediator pathways are the target.
 - `subskills/06-point-treatment-observational/`: use for total-effect identification in baseline observational exposure settings.
 - `subskills/08-doubly-robust-ml/`: coordinate for flexible nuisance modeling, AIPW/TMLE, or machine-learning-assisted mediation.
@@ -394,7 +393,7 @@ Escalate warnings when:
 - `subskills/15-survival-competing-risks/`: use when the outcome is time-to-event, censoring, competing risks, RMST, or cumulative incidence.
 - `subskills/17-interference-spillovers/`: use when mediators or outcomes are affected by other units' exposures.
 - `subskills/19-causal-genomics/`: use for Mendelian randomization, colocalization, eQTL/GWAS, omics mediation, pleiotropy, and multi-omics mechanisms.
-- `subskills/02-user-data-inspector/`: use when measurement error, missing mediator data, latent constructs, censoring, or selection dominate.
+- `subskills/02-data-inspector/`: use when measurement error, missing mediator data, latent constructs, censoring, or selection dominate.
 - `subskills/20-reporting-interpretation/`: use for final reports and calibrated causal mechanism language.
 
 ## Reference Files

@@ -55,7 +55,7 @@ When routing out, update `subskill_analyses` with the rejected or fallback reaso
 
 ## Stage 3: Estimand and Project Spec Entry
 
-Update the project specification entry from the main `SKILL.md`.
+Update the project specification entry from the top-level `../../../SKILL.md`.
 
 At minimum, record:
 

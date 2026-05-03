@@ -1,7 +1,6 @@
 ---
 name: interference-spillovers
 description: Use when one unit's treatment, exposure, assignment, behavior, or outcome can affect another unit's outcome, including spillovers, contamination, network effects, peer effects, diffusion, infectious disease transmission, households, schools, villages, markets, marketplaces, spatial exposure, cluster interference, neighborhood effects, social networks, equilibrium effects, and experiments or observational studies where SUTVA/no-interference is implausible.
-version: 0.2.0
 ---
 
 # Interference and Spillovers
@@ -53,13 +52,13 @@ Do **not** use this as the only workflow when:
 - infection, contagion, or event times with censoring/competing risks dominate: coordinate with `subskills/15-survival-competing-risks/`;
 - mechanisms through peers or network exposure are central: coordinate with `subskills/16-mediation/`;
 - network links are being discovered or learned from data rather than specified: coordinate with `subskills/18-causal-discovery/` and treat learned links cautiously;
-- missing links, measurement error in edges, selection into networks, attrition, or sample censoring dominate: coordinate with `subskills/02-user-data-inspector/`.
+- missing links, measurement error in edges, selection into networks, attrition, or sample censoring dominate: coordinate with `subskills/02-data-inspector/`.
 
 If this route is rejected, update the `subskill_analyses` entry as `rejected`, `fallback`, or `exploratory/user-forced`, record the failed condition, and return to the main skill's route shortlist. If the user insists on no-interference methods despite plausible spillovers, report the estimand as conditional on no spillovers and list likely bias direction only when scientifically justified.
 
 ## Interference Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -430,7 +429,7 @@ Escalate warnings when:
 
 ## Related Subskills
 
-- `subskills/03-dag-builder/`: use for variable roles, graph structure, and interference-aware exposure maps.
+- `subskills/04-dag-builder/`: use for variable roles, graph structure, and interference-aware exposure maps.
 - `subskills/05-randomized-experiments/`: use for standard randomized design audit, assignment probabilities, and cluster trials.
 - `subskills/06-point-treatment-observational/`: use when own-treatment confounding is primary but spillovers need explicit modeling.
 - `subskills/07-matching-weighting-balance/`: use for balance and positivity diagnostics across exposure groups.
@@ -443,7 +442,7 @@ Escalate warnings when:
 - `subskills/14-synthetic-control-time-series/`: use when donor units or neighboring regions may be contaminated.
 - `subskills/15-survival-competing-risks/`: use for infection, contagion, event times, censoring, and herd effects.
 - `subskills/16-mediation/`: use when peer exposure is a mechanism or mediator.
-- `subskills/02-user-data-inspector/`: use for missing links, network measurement error, attrition, selection, and censoring.
+- `subskills/02-data-inspector/`: use for missing links, network measurement error, attrition, selection, and censoring.
 - `subskills/20-reporting-interpretation/`: use for final reports and careful spillover language.
 
 ## Reference Files

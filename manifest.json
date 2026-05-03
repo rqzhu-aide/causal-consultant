@@ -1,14 +1,14 @@
 {
   "package": "causal-skills",
-  "version": "0.1.5-foundation-subskill-reorder",
+  "version": "0.1.10-design-dag-renumber",
   "created_for": "modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Reordered subskills around four foundation steps: user need understanding, user data inspection, DAG building, and design planning; renumbered analysis subskills accordingly.",
+  "last_updated_focus": "Renumbered the foundation workflow so 03-design-planner precedes 04-dag-builder, with design as the high-level route frame and DAG/identification as the causal-logic method-selection layer.",
   "subskills": [
-    "01-user-need-understander",
-    "02-user-data-inspector",
-    "03-dag-builder",
-    "04-design-planner",
+    "01-domain-helper",
+    "02-data-inspector",
+    "03-design-planner",
+    "04-dag-builder",
     "05-randomized-experiments",
     "06-point-treatment-observational",
     "07-matching-weighting-balance",
@@ -26,5 +26,5 @@
     "19-causal-genomics",
     "20-reporting-interpretation"
   ],
-  "notes": "Preliminary skill package. The subskill architecture now starts with user need understanding, data inspection/preprocessing, DAG building, and design planning before routing to analysis/modeling subskills. The top-level skill behavior is intentionally left for a later discussion."
+  "notes": "Preliminary skill package. The top-level main skill normally speaks with the user, while Domain Helper, Data Inspector, Design Planner, and DAG Builder maintain backend YAML records that guide method routing and conversation."
 }

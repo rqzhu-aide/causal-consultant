@@ -4,7 +4,16 @@
 
 Use this workflow when the user needs causal-structure support: a DAG, variable-role map, target-trial framing, adjustment set, or identification audit before estimation.
 
-This workflow should usually produce a better route and clearer assumptions, not a final estimator by itself.
+In the main-skill architecture, this workflow is the backend causal-logic record. It should usually produce a better route and clearer assumptions, not a final estimator by itself. The main skill normally speaks with the user; this workflow maintains the `04-dag-builder` YAML entry and feeds method-selection implications to the main skill.
+
+Coordinate continuously with:
+
+- main skill state for user goal, deliverable, understanding, and explanation depth;
+- `01-domain-helper` for domain terminology, substantive constraints, and plausible causal roles;
+- `02-data-inspector` for actual or conceptual variables, measurement timing, missingness, censoring, clustering, network links, and data-quality constraints;
+- `03-design-planner` for the actual or planned design, assignment/exposure mechanism, time zero, follow-up, and feasibility constraints.
+
+Use this record as the main causal-logic basis for selecting methods after the high-level design route is framed, but never select methods from causal logic alone. Check whether the data and design records can actually support the route.
 
 ## Stage 1: Question and Timing
 

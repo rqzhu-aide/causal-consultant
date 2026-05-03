@@ -1,21 +1,22 @@
 ---
-name: user-data-inspector
-description: Use before causal modeling to inspect, validate, and prepare user datasets for causal analysis: sample size, dimensionality, missingness, outliers, repeated measures, IDs, time variables, treatment labels, outcome variables, candidate covariates, confounder proxies, propensity-score inputs, clustering, longitudinal/cohort/panel structure, feature construction, transformations, and modeling difficulty triage. Route out when a data issue requires an explicit causal/statistical model rather than preprocessing.
-version: 0.3.0
+name: data-inspector
+description: "Use as the concurrent backend data and preprocessing component in a causal project. When actual user data exist, inspect, validate, and prepare them for causal analysis: sample size, dimensionality, missingness, outliers, repeated measures, IDs, time variables, treatment labels, outcome variables, candidate covariates, confounder proxies, propensity-score inputs, clustering, longitudinal/cohort/panel structure, feature construction, transformations, and modeling difficulty triage. When data do not exist, keep the data entry conceptual and record the expected or hypothetical schema. Always set data_existence_status in the data-inspector YAML as existing, partially existing, conceptual, or unknown. Coordinate with the main skill, domain helper, design planner, and DAG builder; route out when a data issue requires an explicit causal/statistical model rather than preprocessing."
 ---
 
-# User Data Inspector
+# Data Inspector
 
 ## Core Behavior
 
-When this subskill is invoked, treat it as the bridge between the user's domain story and the actual causal model. The goal is to inspect the data, infer the intended causal structure, check whether the observed rows and variables match that structure, and create a clean analysis-ready dataset or preprocessing plan for downstream causal subskills.
+When this subskill is invoked, treat it as the concurrent backend record for data structure and preprocessing. The main skill usually talks with the user; this component inspects actual data when available, or describes the expected/planned data structure when no actual data exist. In both cases, infer the intended causal structure, check whether rows and variables match that structure or would need to be collected, and create a clean analysis-ready dataset or preprocessing/data-requirements plan for downstream causal subskills.
+
+This component should coordinate with the other foundation records. It receives the user's goal from the main skill and domain expectations from `01-domain-helper`, gives observed or expected schema constraints to `03-design-planner`, and gives variable and timing facts to `04-dag-builder`. It can flag likely routes, but method selection should be finalized only after domain, design, and DAG/causal-logic records are considered.
 
 This subskill is **not** primarily a specialized bias-correction methods skill. Missing values, measurement error, censoring, and sampling issues are handled here only to the extent needed to decide whether ordinary preprocessing is enough or whether the analysis must route to a method that explicitly models the data-generating or observation process.
 
 Always do these six things:
 
 1. **Infer the expected data structure from domain context.** Before inspecting columns mechanically, form lightweight assumptions about the unit, treatment, outcome, timing, grouping, and likely covariates based on the user's domain story.
-2. **Profile the actual dataset.** Summarize rows, columns, sample size, dimensionality, variable types, missingness, duplicates, outliers, rare levels, constant/near-constant columns, ranges, IDs, time variables, and outcome availability.
+2. **Set the data existence status and profile accordingly.** In the YAML entry, set `data_existence_status` to `existing`, `partially existing`, `conceptual`, or `unknown`, then set the more descriptive `data_basis`. For existing data, summarize rows, columns, sample size, dimensionality, variable types, missingness, duplicates, outliers, rare levels, constant/near-constant columns, ranges, IDs, time variables, and outcome availability. For conceptual data, record the expected unit, rows, key variables, timing, and minimum schema instead of reporting nonexistent diagnostics.
 3. **Map variables to causal roles.** Identify treatment/exposure labels, outcome variables, baseline covariates, plausible confounders, effect modifiers, mediators/post-treatment variables, cluster/group IDs, time variables, censoring/observation indicators, and variables with unclear timing.
 4. **Validate structure against assumptions.** Check whether the data look like cross-sectional, cohort, panel, longitudinal, repeated-measures, clustered, networked, survival, aggregate time-series, or high-dimensional data, and whether the columns needed for that structure are present.
 5. **Flag modeling difficulties early.** Record issues that affect later method choice: high \(p/n\), sparse treatment groups, rare outcomes, many missing covariates, severe imbalance, poor overlap, too few clusters/time periods, repeated outcomes, irregular visits, high-cardinality categoricals, and leakage-prone variables.
@@ -23,7 +24,7 @@ Always do these six things:
 
 ## User-Facing Style
 
-Be quietly investigative. Start from the user's description, make provisional assumptions, then test those assumptions against the data. Do not ask the user to classify every variable manually if the dataset gives strong clues; infer first, then ask targeted questions.
+Be quietly investigative. In the full project workflow, this component usually does not speak as a separate persona; the main skill surfaces its findings to the user. Start from the user's description, make provisional assumptions, then test those assumptions against the data. Do not ask the user to classify every variable manually if the dataset gives strong clues; infer first, then ask targeted questions through the main skill.
 
 Good early response pattern:
 
@@ -48,7 +49,7 @@ Do **not** use this as the only workflow when:
 - missing outcome, censoring, or attrition is central to identification: coordinate with `subskills/15-survival-competing-risks/`, `10-longitudinal-gmethods/`, or the primary method;
 - treatment or outcome measurement error must be corrected explicitly: route to a measurement-error/sensitivity plan through the primary method and reporting workflow;
 - the user needs post-fit diagnostics, limitations, or final write-up: route to `subskills/20-reporting-interpretation/`;
-- the user is designing data collection rather than preprocessing existing data: route to `subskills/04-design-planner/`;
+- the user is designing data collection rather than preprocessing existing data: coordinate with `subskills/03-design-planner/`; keep this data track active but set `data_existence_status: conceptual` rather than `existing`;
 - the data are genomics/omics and batch/ancestry/QTL-specific issues dominate: coordinate with `subskills/19-causal-genomics/`;
 - the dominant issue is network exposure or spillover mapping: coordinate with `subskills/17-interference-spillovers/`.
 
@@ -56,14 +57,23 @@ If this route is rejected, update the `subskill_analyses` entry as `rejected`, `
 
 ## Causal Data Preprocessing Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Use `assets/data_inspector_entry.yaml` as the reusable template. Fill only fields that are known or decision-relevant.
 
 ```yaml
 subskill_analyses:
-  - subskill_id: "02-user-data-inspector"
+  - subskill_id: "02-data-inspector"
     status: "candidate | selected | rejected | fallback | exploratory/user-forced"
     fit_to_user_need: null
+    data_existence_status: "existing | partially existing | conceptual | unknown"
+    data_basis: "actual user data | partial user data | conceptual data | unknown"
+    data_evidence_source: "uploaded file | local file path | codebook | column list | sample rows | summary table | study plan | simulated/mock data | user description | none | unknown"
     user_task: "data audit | variable-role mapping | preprocessing plan | structure validation | propensity covariate prep | longitudinal/panel prep | high-dimensional prep | model-difficulty triage | unknown"
+    coordination:
+      main_skill_goal_summary: null
+      domain_record_used: "01-domain-helper"
+      design_record_to_update: "03-design-planner"
+      dag_record_to_update: "04-dag-builder"
+      user_facing_summary_for_main_skill: null
     inferred_domain_assumptions:
       expected_unit: null
       expected_treatment_or_exposure: null
@@ -88,6 +98,8 @@ subskill_analyses:
       duplicate_key_rows: null
       missingness_summary: null
       outlier_or_range_issues: []
+      expected_schema_when_no_actual_data: []
+      diagnostics_not_observable_without_actual_data: []
     variable_role_map:
       treatment_variables: []
       treatment_type: "binary | categorical | continuous | dose | time-varying | multi-arm | unknown"
@@ -148,6 +160,24 @@ subskill_analyses:
 
 ## Core Workflow
 
+### 0. Label data existence
+
+Before profiling, set `data_existence_status` in the YAML entry:
+
+- `existing`: actual records/files were provided and can be inspected;
+- `partially existing`: only a codebook, column list, sample rows, summary tables, partial extract, or existing result exists;
+- `conceptual`: no user data exist yet, or the work is based on a planned design, hypothetical schema, mock/example data, or purely conceptual data needs;
+- `unknown`: the data status is not yet clear.
+
+Then set `data_basis` as a human-readable companion label:
+
+- `actual user data`: records/files were provided and can be inspected;
+- `partial user data`: only a codebook, column list, sample rows, summary tables, or partial extract exists;
+- `conceptual data`: planned data, hypothetical schemas, mock/example data, simulated scaffolds, or conceptual data needs;
+- `unknown`: the basis is not yet clear.
+
+Do not blur these labels. A conceptual schema can be useful for design planning or teaching, but it must not be described as evidence about the user's population.
+
 ### 1. Infer before inspecting
 
 Use the user's domain language to infer likely structure:
@@ -158,7 +188,7 @@ Use the user's domain language to infer likely structure:
 - "biomarker mediates treatment" implies treatment, mediator timing, outcome timing, batch/assay concerns;
 - "county policy effect" implies aggregate panel, spatial spillovers, time-series checks, and donor/comparison contamination.
 
-Then inspect whether the data actually have the required IDs, times, labels, and outcome windows.
+Then inspect whether actual data have the required IDs, times, labels, and outcome windows, or record those fields as requirements when the data are conceptual.
 
 ### 2. Profile the dataset
 
@@ -174,6 +204,8 @@ Minimum profile:
 - outliers, impossible values, and rare categories;
 - cluster/group sizes and repeated-measure counts;
 - \(p/n\), treated/control sample sizes, and events-per-variable when relevant.
+
+If no actual data exist, replace this with a minimum expected profile: causal unit, expected row structure, required ID/time/group variables, treatment/exposure fields, outcome fields, baseline covariates, mediator or censoring fields when relevant, and expected sample-size or dimensionality constraints.
 
 ### 3. Map causal roles
 
@@ -339,15 +371,16 @@ Escalate warnings when:
 ## Step-by-Step Operating Procedure
 
 1. Restate the user's domain story and infer the expected unit, treatment, outcome, timing, and structure.
-2. Inspect the dataset profile: rows, columns, IDs, times, types, missingness, outliers, duplicates, and dimensions.
-3. Identify treatment, outcome, candidate covariates, plausible confounders, effect modifiers, IDs, groups, and time variables.
-4. Check whether the observed structure matches the expected design: cross-sectional, cohort, panel, longitudinal, clustered, survival, networked, or aggregate.
-5. Build a variable-role map and mark variables that should not be used for the planned estimand.
-6. Create a safe preprocessing plan: recodes, transformations, encoding, baseline summaries, imputation if appropriate, and reproducibility notes.
-7. Flag modeling difficulties that constrain later causal method choice.
-8. Decide which issues are preprocessing-only and which require explicit method handoff.
-9. Recommend the likely next causal subskill route.
-10. Record open questions for the user, focusing only on details the data cannot resolve.
+2. Set `data_existence_status` as `existing`, `partially existing`, `conceptual`, or `unknown`, then set the companion `data_basis` label.
+3. Inspect the actual dataset profile when records exist: rows, columns, IDs, times, types, missingness, outliers, duplicates, and dimensions. If no records exist, draft the expected schema and mark diagnostics as not yet observable.
+4. Identify treatment, outcome, candidate covariates, plausible confounders, effect modifiers, IDs, groups, and time variables.
+5. Check whether the observed or planned structure matches the expected design: cross-sectional, cohort, panel, longitudinal, clustered, survival, networked, or aggregate.
+6. Build a variable-role map and mark variables that should not be used for the planned estimand.
+7. Create a safe preprocessing plan or data-requirements plan: recodes, transformations, encoding, baseline summaries, imputation if appropriate, and reproducibility notes.
+8. Flag modeling difficulties that constrain later causal method choice.
+9. Decide which issues are preprocessing-only and which require explicit method handoff.
+10. Recommend the likely next causal subskill route.
+11. Record open questions for the user, focusing only on details the data cannot resolve.
 
 ## Output Template
 
@@ -355,6 +388,8 @@ Escalate warnings when:
 ### Causal Data Preprocessing Plan
 
 #### 1. Working assumptions
+- Data existence status:
+- Data basis:
 - Expected unit:
 - Treatment/exposure:
 - Outcome:
@@ -406,7 +441,7 @@ Escalate warnings when:
 
 ## Related Subskills
 
-- `subskills/03-dag-builder/`: use when variable roles, confounders, mediators, colliders, or adjustment sets are unclear.
+- `subskills/04-dag-builder/`: use when variable roles, confounders, mediators, colliders, or adjustment sets are unclear.
 - `subskills/06-point-treatment-observational/`: use after preprocessing for baseline observational treatment effects.
 - `subskills/07-matching-weighting-balance/`: use when propensity-score covariates, overlap, matching, or weights are next.
 - `subskills/08-doubly-robust-ml/`: use when high-dimensional covariates or flexible nuisance models are needed.
@@ -422,4 +457,4 @@ Escalate warnings when:
 
 ## Reference Files
 
-For the detailed workflow, read `references/workflow.md`. For preprocessing and software notes, read `references/literature_and_software.md`.
+For the detailed workflow, read `references/workflow.md`. For preprocessing and software notes, read `references/literature_and_software.md`. For the reusable YAML entry, use `assets/data_inspector_entry.yaml`.

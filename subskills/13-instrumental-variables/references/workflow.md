@@ -247,15 +247,15 @@ If the first stage is weak or exclusion is not credible, I would not present the
 
 ## Code Template Index
 
-- Full R `ivreg` example: `examples/r_ivreg_diagnostics.R`
-- Full R `fixest` example: `examples/r_fixest_iv.R`
-- Full Python `linearmodels` example: `examples/python_linearmodels_iv.py`
-- Python IV-DML example: `examples/python_doubleml_iv.py`
-- R complier characterization example: `examples/r_late_characterization.R`
-- Root R template: `../../scripts/R/ivreg_fixest_template.R`
-- Root R IV-DML template: `../../scripts/R/doubleml_iv_template.R`
-- Root Python template: `../../scripts/python/linearmodels_iv_template.py`
-- Root Python IV-DML template: `../../scripts/python/doubleml_iv_template.py`
+- Full R `ivreg` example: `../examples/r_ivreg_diagnostics.R`
+- Full R `fixest` example: `../examples/r_fixest_iv.R`
+- Full Python `linearmodels` example: `../examples/python_linearmodels_iv.py`
+- Python IV-DML example: `../examples/python_doubleml_iv.py`
+- R complier characterization example: `../examples/r_late_characterization.R`
+- Root R template: `../../../scripts/R/ivreg_fixest_template.R`
+- Root R IV-DML template: `../../../scripts/R/doubleml_iv_template.R`
+- Root Python template: `../../../scripts/python/linearmodels_iv_template.py`
+- Root Python IV-DML template: `../../../scripts/python/doubleml_iv_template.py`
 
 ## Failure Modes
 

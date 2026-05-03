@@ -1,7 +1,6 @@
 ---
 name: survival-competing-risks
 description: Use for causal questions with time-to-event outcomes, censoring, delayed entry, immortal time risk, survival probabilities, cumulative risks, RMST, adjusted survival curves, cause-specific cumulative incidence, competing risks, hazard models, AFT models, survival CATEs, and treatment decisions with survival endpoints.
-version: 0.2.0
 ---
 
 # Survival and Competing Risks
@@ -52,7 +51,7 @@ If this route is rejected, update the `subskill_analyses` entry as `rejected`, `
 
 ## Survival Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -363,7 +362,7 @@ Escalate warnings when:
 - `subskills/10-longitudinal-gmethods/`: use for time-varying treatment, sustained strategies, cloning-censoring-weighting, and sequential censoring.
 - `subskills/16-mediation/`: coordinate when survival mediation or separable effects are central.
 - `subskills/17-interference-spillovers/`: use when one unit's treatment affects another unit's event time.
-- `subskills/02-user-data-inspector/`: use when censoring, measurement, or selection dominate.
+- `subskills/02-data-inspector/`: use when censoring, measurement, or selection dominate.
 - `subskills/20-reporting-interpretation/`: use for final survival reports and limitation language.
 
 ## Reference Files

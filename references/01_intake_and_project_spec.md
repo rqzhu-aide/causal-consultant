@@ -4,7 +4,7 @@ The intake stage transforms a vague request into an evolving causal project spec
 
 Use `assets/causal_project_spec_template.yaml` as the canonical schema when a concrete file is useful.
 
-## User Need Triage
+## Main Skill Triage
 
 First identify the interaction mode:
 
@@ -23,6 +23,18 @@ First identify the interaction mode:
 
 If the user's request is descriptive or predictive rather than causal, explain the difference and offer the safer workflow.
 
+## Foundation Components
+
+Maintain the main skill and four backend foundation subskills concurrently once a concrete causal project is being formed. The user should experience one coherent conversation led by the main skill; the backend subskills maintain records that make that conversation informed.
+
+- `main_skill`: tracks user goal, desired deliverable, user understanding, communication style, understanding confidence, project alignment, and next conversation moves.
+- `01-domain-helper`: tracks domain context, user terminology, common working pictures, substantive constraints, domain-specific data expectations, and domain-specific causal/design risks.
+- `02-data-inspector`: tracks actual or expected data structure. In its YAML entry, set `data_existence_status` as existing, partially existing, conceptual, or unknown; then add the companion data-basis label.
+- `03-design-planner`: tracks actual or planned design, feasible designs, ideal-design comparisons, data requirements, variable-to-design fit, and design gaps.
+- `04-dag-builder`: tracks causal structure, variable timing, DAG or target-trial logic, assumptions, identification, adjustment concerns, and method-selection implications.
+
+The backend foundation subskills are not alternatives. They provide different project memory. Analysis/modeling subskills are selected after these components make the user goal, domain context, data situation, design options, and causal logic clearer. Design planning in `03-design-planner` gives the high-level feasible study route; `04-dag-builder` then checks whether the causal logic, identification, adjustment strategy, and method-selection implications are defensible. Both are constrained by domain facts from `01-domain-helper` and data facts from `02-data-inspector`.
+
 ## Prospective Design Planning
 
 Use this mode when the user does not yet have data, is planning data collection, or wants to know which data would make later causal analysis possible.
@@ -31,8 +43,8 @@ Do not ask for a dataset or code first. Instead:
 
 1. Define the causal question, target population, treatment, comparator, outcome, time zero, and follow-up.
 2. Sketch the ideal target trial or strongest feasible quasi-experiment.
-3. Create a preliminary DAG, design diagram, or variable-role map from domain knowledge when useful.
-4. Compare 1 to 3 feasible design routes and list the data each route would require.
+3. Use `01-domain-helper` to record domain terms and common working pictures, then create a preliminary design diagram, target-trial sketch, DAG, or variable-role map when useful.
+4. Compare 1 to 3 feasible design routes and list the data and causal assumptions each route would require.
 5. Recommend a minimum data schema and measurement schedule.
 6. Identify diagnostics and sensitivity analyses that the planned data should make possible.
 7. Name fallback routes if the preferred design is infeasible.
@@ -42,23 +54,37 @@ Prospective planning output should usually be a study/data blueprint, not analys
 ### Prospective Planning Fields
 
 ```yaml
-interaction:
-  has_existing_data: false
-subskill_analyses:
-  - subskill_id: "04-design-planner"
-    status: "candidate | selected | fallback"
-    planned_estimand: null
-    candidate_designs: []
+main_skill:
+  user_goal:
+    primary_intent: "design study"
+  communication_plan:
+    conversation_style: "suggest-and-invite | suggest-and-confirm"
+domain_helper_01:
+  status: active
+  working_pictures:
+    common_working_pictures: []
+  domain_data_expectations:
+    likely_units: []
+    likely_row_structures: []
+data_inspector_02:
+  data_existence_status: conceptual
+  data_basis: "conceptual data"
+  evidence_source: "study plan | user description | none | unknown"
+design_planner_03:
+  design_context:
+    actual_or_planned: "planned | hypothetical"
+  feasibility:
+    feasible_designs: []
     preferred_design: null
     fallback_designs: []
-    minimum_data_to_collect: []
+    minimum_data_to_collect_or_verify: []
     measurement_plan: []
     future_diagnostics_enabled: []
-    feasibility_constraints: []
-    open_questions: []
+    design_constraints: []
+    design_gaps: []
 ```
 
-Do not add a separate top-level prospective schema unless the project truly needs it. The global project specification should stay compact, and prospective planning details should live in the `04-design-planner` subskill entry.
+Do not add a separate top-level prospective schema unless the project truly needs it. Prospective planning details should live primarily in `design_planner_03`, with `data_inspector_02` labeled as conceptual unless actual or partial data appear.
 
 ## Core Intake Fields
 
@@ -131,19 +157,23 @@ Before routing to a method, understand the data shape. Ask for a schema, a small
 Minimum data-structure fields:
 
 ```yaml
-data_structure:
-  design_label_claimed_by_user: null
-  inferred_design_family: null
-  rows_represent: null
-  unit_of_observation: null
-  one_row_per_unit: null
-  repeated_measures: null
-  clustering: null
-  panel_or_time_series: null
-  network_or_interference: null
-  assignment_mechanism: null
-  treatment_time_structure: null
-  outcome_time_structure: null
+data_inspector_02:
+  data_existence_status: "existing | partially existing | conceptual | unknown"
+  data_basis: "actual user data | partial user data | conceptual data | unknown"
+  data_profile:
+    rows_represent: null
+    unit_of_observation: null
+    repeated_measures: null
+    groups_or_clusters: null
+    dependencies_or_networks: null
+design_planner_03:
+  design_context:
+    design_label_claimed_by_user: null
+    inferred_design_family: null
+  design_structure:
+    assignment_or_exposure_mechanism: null
+    time_zero: null
+    follow_up_window: null
 ```
 
 Key checks:
@@ -189,7 +219,7 @@ Do not ask for formal notation if the user is early in the workflow. Translate t
 
 ## DAG or Causal Structure Trigger
 
-Create or elicit a lightweight DAG, design diagram, assignment-mechanism summary, or variable-role map during route shortlisting or before code when:
+Create or elicit a lightweight design diagram, assignment-mechanism summary, DAG, or variable-role map during route shortlisting or before code when:
 
 - the route depends on adjustment for measured confounding;
 - mediators, colliders, instruments, or selection variables are present;

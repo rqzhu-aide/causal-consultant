@@ -1,7 +1,6 @@
 ---
 name: did-event-study
 description: Use for difference-in-differences, event studies, panel or repeated cross-section policy evaluation, staggered adoption, group-time ATT, dynamic effects, pretrend diagnostics, and parallel-trends sensitivity analysis.
-version: 0.2.0
 ---
 
 # Difference-in-Differences and Event Studies
@@ -45,14 +44,14 @@ Do **not** use this as the only workflow when:
 - treatment is randomized rollout or cluster randomized: coordinate with `subskills/05-randomized-experiments/`;
 - treatment or confounding varies at individual time-varying decision points: route to `subskills/10-longitudinal-gmethods/`;
 - interference/spillovers are central: coordinate with `subskills/17-interference-spillovers/`;
-- missingness, panel attrition, measurement, or composition changes dominate: coordinate with `subskills/02-user-data-inspector/`;
+- missingness, panel attrition, measurement, or composition changes dominate: coordinate with `subskills/02-data-inspector/`;
 - the user only has one treated group and one post period with no credible controls: route to descriptive, synthetic control if possible, or prospective design planning.
 
 If the DiD route is rejected, update the `subskill_analyses` entry as `rejected`, `fallback`, or `exploratory/user-forced`, record the failed condition, and return to the main skill's route shortlist.
 
 ## DiD Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -263,7 +262,7 @@ Escalate warnings when:
 ## Related Subskills
 
 - `subskills/14-synthetic-control-time-series/`: use when few aggregate units are treated or donor-pool fit is central.
-- `subskills/02-user-data-inspector/`: use for panel attrition, changing composition, or missing outcomes.
+- `subskills/02-data-inspector/`: use for panel attrition, changing composition, or missing outcomes.
 - `subskills/17-interference-spillovers/`: use when spillovers or contaminated controls are plausible.
 - `subskills/09-heterogeneous-effects-policy/`: use when heterogeneity, targeting, or policy rules are the target.
 - `subskills/20-reporting-interpretation/`: use for final write-up and limitations.

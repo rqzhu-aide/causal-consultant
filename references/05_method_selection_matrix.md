@@ -6,7 +6,7 @@ Use this matrix after the user need, data structure, and candidate design routes
 
 | Data/design | Target | Candidate approaches | Subskill | Typical implementation resources |
 |---|---|---|---|---|
-| No data yet; future study or data collection | future causal effect or design feasibility | target-trial planning, experiment/quasi-experiment comparison, measurement plan | 04 + candidate design subskills | design blueprint; optional simulation or power tools |
+| No data yet; future study or data collection | future causal effect or design feasibility | target-trial planning, experiment/quasi-experiment comparison, measurement plan | 03 + 04 + candidate method subskills | design blueprint; optional simulation or power tools |
 | Randomized individual-level trial | ITT, ATE | difference in means, regression adjustment, randomization inference | 05 | R `estimatr`, `randomizr`; Python `statsmodels` |
 | Cluster randomized trial | cluster-level ATE | mixed models, GEE, cluster-robust SEs, randomization inference | 05 | R `lme4`, `geepack`, `clubSandwich`; Python `statsmodels` |
 | Noncompliant randomized trial | ITT, per-protocol, CACE/LATE | ITT, IV, adherence-adjusted analyses | 05 + 13 | R `ivreg`; Python `linearmodels` |

@@ -1,0 +1,56 @@
+main_skill:
+  user_goal:
+    primary_intent: "estimate effect | choose method | inspect data | design study | critique paper | review assumptions | interpret results | write report | debug code | learn concept | rescue analysis | unknown"
+    secondary_intents: []
+    domain_question: null
+    practical_decision: null
+    requested_deliverables: []
+    audience: "self | collaborator | advisor | reviewer | client | regulator | clinical/scientific audience | product/business audience | unknown"
+    urgency_or_depth: "quick answer | careful analysis | publication-grade | exploratory | unknown"
+  current_understanding:
+    plain_language_summary: null
+    working_interpretations: []
+    possibilities_being_checked_not_assumed: []
+    assumptions_not_made: []
+    open_questions: []
+  communication_plan:
+    explanation_level: "plain language | mixed | technical | mathematical | unknown"
+    information_state: "sparse | partial | rich | unknown"
+    understanding_confidence: "low | moderate | high | unknown"
+    confidence_rationale: null
+    confidence_by_component:
+      user_goal: "low | moderate | high | unknown"
+      causal_components: "low | moderate | high | unknown"
+      data_situation: "low | moderate | high | unknown"
+      design_or_assignment_process: "low | moderate | high | unknown"
+      desired_deliverable: "low | moderate | high | unknown"
+    conversation_style: "suggest-and-invite | suggest-and-confirm | direct answer | teaching | unknown"
+    style_rationale: null
+    next_question_style: "ask one blocker | ask short list | proceed and verify | unknown"
+    user_comfort_notes: []
+  alignment_tracking:
+    check_frequency: "major decisions only"
+    major_decision_triggers:
+      - "before committing to a causal design, estimand, or identification strategy"
+      - "before activating a modeling subskill that would shape the analysis path"
+      - "before interpreting fitted results or writing a final deliverable"
+      - "when the user changes the goal, data source, target audience, or deliverable"
+      - "when data inspection contradicts the current working picture"
+    goal_alignment: "aligned | uncertain | drifting | unknown"
+    deliverable_alignment: "aligned | uncertain | drifting | unknown"
+    last_alignment_check: null
+    notes_for_main_skill_only: []
+  next_user_facing_step:
+    immediate_next_action: null
+    active_or_recommended_subskills: []
+    blocking_questions: []
+    nonblocking_questions: []
+    update_triggers: []
+
+foundation_coordination:
+  architecture: "main skill user-facing; 01 domain, 02 data, 03 design, and 04 DAG maintained as backstage records"
+  detailed_state_locations:
+    domain_details: "01-domain-helper"
+    data_details: "02-data-inspector"
+    design_details: "03-design-planner"
+    causal_logic_details: "04-dag-builder"

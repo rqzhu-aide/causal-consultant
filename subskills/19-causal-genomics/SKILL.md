@@ -1,7 +1,6 @@
 ---
 name: causal-genomics
 description: Use for Mendelian randomization, genetic instruments, GWAS/eQTL/pQTL/mQTL, colocalization, fine mapping, TWAS/SMR, polygenic scores used as instruments, omics mediation, drug-target MR, multi-omics causal questions, pleiotropy, ancestry/population structure, sample overlap, winner's curse, LD, and genomic evidence triangulation.
-version: 0.2.0
 ---
 
 # Causal Genomics
@@ -46,17 +45,17 @@ Do **not** use this as the only workflow when:
 - the genetics are merely covariates or risk predictors and no causal genomic claim is being made: route to the primary analysis or prediction workflow;
 - the user asks a generic IV question without genetic instruments: coordinate with `subskills/13-instrumental-variables/`;
 - the target is direct/indirect omics mediation using measured mediators rather than genetic instruments: coordinate with `subskills/16-mediation/`;
-- missing omics values, batch effects, assay error, misclassification, sample selection, or tissue/cell composition dominate: coordinate with `subskills/02-user-data-inspector/`;
+- missing omics values, batch effects, assay error, misclassification, sample selection, or tissue/cell composition dominate: coordinate with `subskills/02-data-inspector/`;
 - survival, competing risks, or time-to-event disease progression is central: coordinate with `subskills/15-survival-competing-risks/`;
 - network biology, infectious transmission, or family/social spillovers are central: coordinate with `subskills/17-interference-spillovers/`;
 - the user wants to infer a gene regulatory network structure from omics data: coordinate with `subskills/18-causal-discovery/`;
-- the user is designing a new genetic/omics study: coordinate with `subskills/04-design-planner/`.
+- the user is designing a new genetic/omics study: coordinate with `subskills/03-design-planner/`.
 
 If this route is rejected, update the `subskill_analyses` entry as `rejected`, `fallback`, or `exploratory/user-forced`, record the failed condition, and return to the main skill's route shortlist. If the user insists on a weak genomic causal claim, label it as gene prioritization, triangulation evidence, or exploratory association rather than proof of causality.
 
 ## Causal Genomics Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -412,15 +411,15 @@ Escalate warnings when:
 
 ## Related Subskills
 
-- `subskills/03-dag-builder/`: use for genetic DAGs, pleiotropy paths, collider/selection concerns, and variable roles.
+- `subskills/04-dag-builder/`: use for genetic DAGs, pleiotropy paths, collider/selection concerns, and variable roles.
 - `subskills/08-doubly-robust-ml/`: coordinate when individual-level genomic/omics analysis uses flexible nuisance modeling.
 - `subskills/13-instrumental-variables/`: use for generic IV logic, weak-instrument thinking, LATE/CACE analogies, and non-genetic instruments.
 - `subskills/15-survival-competing-risks/`: use when genomic exposure affects time-to-event outcomes.
 - `subskills/16-mediation/`: use for omics mediation, molecular pathways, and direct/indirect effects.
 - `subskills/18-causal-discovery/`: use for learned gene regulatory networks or causal graph discovery from omics.
-- `subskills/02-user-data-inspector/`: use for batch effects, measurement error, missing omics, selection, and ancestry transportability.
+- `subskills/02-data-inspector/`: use for batch effects, measurement error, missing omics, selection, and ancestry transportability.
 - `subskills/20-reporting-interpretation/`: use STROBE-MR and final causal-claim calibration.
-- `subskills/04-design-planner/`: use when designing new GWAS/QTL/MR/omics studies.
+- `subskills/03-design-planner/`: use when designing new GWAS/QTL/MR/omics studies.
 
 ## Reference Files
 

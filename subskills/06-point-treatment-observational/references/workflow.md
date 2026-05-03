@@ -82,7 +82,7 @@ Route elsewhere when:
 
 - treatment or confounders vary over time (`10-longitudinal-gmethods`);
 - outcome is survival/censoring/competing risks (`15-survival-competing-risks`);
-- missingness, measurement, selection, or transportability dominates (`02-user-data-inspector`);
+- missingness, measurement, selection, or transportability dominates (`02-data-inspector`);
 - CATE, treatment rules, or policy targeting are central (`09-heterogeneous-effects-policy`);
 - IV, RD, DiD, synthetic control, mediation, or interference better matches the design.
 
@@ -111,7 +111,7 @@ Interpret results as conditional on the measured-confounding design. If diagnost
 - narrow the target population;
 - switch from ATE to ATT or overlap estimand;
 - improve baseline covariate construction;
-- route to `02-user-data-inspector` or `10-longitudinal-gmethods`;
+- route to `02-data-inspector` or `10-longitudinal-gmethods`;
 - report sensitivity or descriptive analysis instead of a definitive causal effect;
 - recommend prospective data collection if key confounders or timing are missing.
 

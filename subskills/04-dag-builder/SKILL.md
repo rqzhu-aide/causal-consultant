@@ -1,14 +1,15 @@
 ---
 name: dag-builder
-description: Use for building and checking DAGs, target-trial framing, variable role and timing classification, adjustment-set selection, graphical identification, and causal-structure audits before estimation or routing.
-version: 0.2.0
+description: "Use as the concurrent backend causal-logic component in a causal project: build and check DAGs, target-trial framing, variable role and timing classification, adjustment-set selection, graphical identification, causal-structure audits, and method-selection implications before estimation or routing. Coordinate with the main skill, domain helper, data inspector, and design planner."
 ---
 
 # DAG Builder
 
 ## Core Behavior
 
-When this subskill is invoked, focus on causal structure: what comparison the user wants, which variables play which roles, and whether the requested effect is identifiable from the available design and assumptions. This subskill often supports another primary route rather than replacing it.
+When this subskill is invoked, focus on causal structure: what comparison the user wants, which variables play which roles, and whether the requested effect is identifiable from the available design and assumptions. In the main-skill architecture, this is the backend causal-logic record that follows the higher-level design frame and translates it into identification, adjustment, and method-selection implications. It should coordinate with the main skill for the user's goal, `01-domain-helper` for substantive context and common domain risks, `02-data-inspector` for actual or conceptual variable/timing facts, and `03-design-planner` for study-design feasibility.
+
+The main skill usually speaks with the user. This component should maintain the `04-dag-builder` YAML entry, identify what causal logic implies for routing, and pass compact findings to the main skill for user-facing conversation.
 
 Always do these six things:
 
@@ -19,9 +20,17 @@ Always do these six things:
 5. **Check adjustment sets and forbidden variables.** Do not adjust for mediators, colliders, descendants of treatment, or selection variables when targeting a total effect unless the estimand explicitly requires that structure.
 6. **Route out when needed.** If the graph implies IV, mediation, missingness/selection, interference, longitudinal treatment, causal discovery, or a quasi-experimental design, update the project spec and route to the relevant subskill.
 
+## Coordination Role
+
+- Use the main skill state to understand the user's goal, audience, desired deliverable, and preferred explanation depth.
+- Use `01-domain-helper` to understand domain terminology, plausible common causes, mechanisms, instruments, selection processes, and timing constraints.
+- Use `02-data-inspector` to ground the graph in actual or conceptual variables, IDs, timing, missingness, censoring, clusters, networks, and data-quality limitations.
+- Use `03-design-planner` to check whether the causal logic is compatible with the actual or proposed assignment/exposure mechanism, time zero, follow-up plan, and measurement schedule.
+- Feed method-selection implications back to the main skill. The user should hear a plain-language route recommendation, not an internal graph audit unless they ask for it.
+
 ## User-Facing Style
 
-Be gentle and concrete. Most users do not know graphical criteria. Translate the graph into plain questions:
+Be gentle and concrete. In a full project, this component's findings are usually surfaced by the main skill. Most users do not know graphical criteria. Translate the graph into plain questions:
 
 - "What caused treatment choice?"
 - "What caused the outcome?"
@@ -54,14 +63,20 @@ If no plausible graph can identify the requested effect, record the route as `re
 
 ## DAG and Identification Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Use `assets/dag_builder_entry.yaml` as the reusable template. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
-  - subskill_id: "03-dag-builder"
+  - subskill_id: "04-dag-builder"
     status: "candidate | selected | rejected | fallback | support-route | exploratory/user-forced"
     fit_to_user_need: null
     user_task: "learn DAG | classify variables | choose adjustment set | target trial framing | identify effect | audit assumptions | route support | unknown"
+    coordination:
+      main_skill_goal_summary: null
+      domain_record_used: "01-domain-helper"
+      data_record_used: "02-data-inspector"
+      design_record_used: "03-design-planner"
+      user_facing_summary_for_main_skill: null
     causal_question:
       treatment_or_action: null
       comparator: null
@@ -100,6 +115,12 @@ subskill_analyses:
       mediation_or_direct_effect_needed: null
       selection_or_transport_issue: null
       identifiable_under_current_assumptions: null
+    method_selection_implications:
+      plausible_method_routes: []
+      routes_supported_by_graph: []
+      routes_blocked_by_graph: []
+      route_conditions_to_check_in_data_or_design: []
+      recommended_next_subskills: []
     diagnostics_or_checks:
       timing_table_needed: null
       adjustment_set_check: null
@@ -150,15 +171,15 @@ For applied work, a target-trial protocol or SWIG-style intervention graph may b
 
 | Situation | Default structural task | Likely next route |
 |---|---|---|
-| User asks what to adjust for | Build timing table, DAG or role map, then find valid adjustment sets | `02-user-data-inspector`, `06-point-treatment-observational`, `07-matching-weighting-balance`, or `08-doubly-robust-ml` |
+| User asks what to adjust for | Build timing table, DAG or role map, then find valid adjustment sets | `02-data-inspector`, `06-point-treatment-observational`, `07-matching-weighting-balance`, or `08-doubly-robust-ml` |
 | User has observational point treatment | Check confounders, post-treatment variables, overlap-relevant modifiers | `06-point-treatment-observational` plus `07-matching-weighting-balance`/`08-doubly-robust-ml` |
 | User wants direct/indirect effects | Distinguish total, controlled direct, natural, and interventional effects | `16-mediation` |
 | User proposes an instrument | Audit exclusion, independence, relevance, monotonicity as graph claims | `13-instrumental-variables` |
-| User conditions on selection, complete cases, censoring, or responders | Map selection/censoring node and causes | `02-user-data-inspector` |
+| User conditions on selection, complete cases, censoring, or responders | Map selection/censoring node and causes | `02-data-inspector` |
 | User worries about spillovers | Replace ordinary DAG with exposure mapping or interference structure | `17-interference-spillovers` |
 | User has time-varying treatment or confounders | Use longitudinal structure, not a single baseline DAG | `10-longitudinal-gmethods` |
 | User asks whether data can learn the graph | Route to discovery and treat output as uncertain graph/equivalence class | `18-causal-discovery` |
-| User has no data yet | Use target trial and prospective variable map | `04-design-planner` |
+| User has no data yet | Use target trial and prospective variable map | `03-design-planner` |
 | User has a clean randomized experiment | Use assignment mechanism summary; DAG optional | `05-randomized-experiments` |
 
 ### Adjustment rules
@@ -311,9 +332,9 @@ Escalate warnings when:
 - `subskills/16-mediation/`: use when direct/indirect effects are targeted.
 - `subskills/17-interference-spillovers/`: use when ordinary no-interference structure fails.
 - `subskills/18-causal-discovery/`: use when learning graph structure from data.
-- `subskills/02-user-data-inspector/`: use when sample selection, missingness, or censoring affects identification.
-- `subskills/04-design-planner/`: use when planning future data collection.
+- `subskills/02-data-inspector/`: use when sample selection, missingness, or censoring affects identification.
+- `subskills/03-design-planner/`: use when planning future data collection.
 
 ## Reference Files
 
-For the detailed workflow, read `references/workflow.md`. For the literature and software map behind this subskill, read `references/literature_and_software.md`.
+For the detailed workflow, read `references/workflow.md`. For the literature and software map behind this subskill, read `references/literature_and_software.md`. For the reusable YAML entry, use `assets/dag_builder_entry.yaml`.

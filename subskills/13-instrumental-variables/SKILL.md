@@ -1,7 +1,6 @@
 ---
 name: instrumental-variables
 description: Use when a user proposes or needs an instrumental-variable design, encouragement design, imperfect-compliance randomized experiment, fuzzy regression discontinuity, or LATE/CACE analysis. This subskill audits the instrument, defines the IV estimand, selects IV estimators, generates R/Python code, and reports first-stage, weak-instrument, falsification, overidentification, and complier diagnostics.
-version: 0.2.0
 ---
 
 # Instrumental Variables
@@ -39,7 +38,7 @@ If one of the conditions below appears, route out of IV as the primary workflow.
 
 ## IV Project Specification Entry
 
-Use this entry as the instrumental-variables audit checklist. When a project specification is being maintained, append or update it under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant; leave unknown fields as `null` or `[]`. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+Use this entry as the instrumental-variables audit checklist. When a project specification is being maintained, append or update it under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant; leave unknown fields as `null` or `[]`. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:

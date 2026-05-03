@@ -1,7 +1,6 @@
 ---
 name: regression-discontinuity
 description: Use for sharp, fuzzy, kink, or local-randomization regression discontinuity designs where treatment, eligibility, dose, or policy assignment changes at a known cutoff of a running variable, including RD plots, bandwidth choice, robust bias-corrected inference, manipulation checks, and local effect interpretation.
-version: 0.2.0
 ---
 
 # Regression Discontinuity
@@ -45,13 +44,13 @@ Do **not** use this as the only workflow when:
 - the cutoff is an encouragement/instrument with broader IV concerns: coordinate with `subskills/13-instrumental-variables/`;
 - outcome is time-to-event and local RD is only the assignment design: coordinate with `subskills/15-survival-competing-risks/`;
 - spillovers around the cutoff are central: coordinate with `subskills/17-interference-spillovers/`;
-- missingness, measurement, heaping, or selection in the running variable dominates: coordinate with `subskills/02-user-data-inspector/`.
+- missingness, measurement, heaping, or selection in the running variable dominates: coordinate with `subskills/02-data-inspector/`.
 
 If the RD route is rejected, update the `subskill_analyses` entry as `rejected`, `fallback`, or `exploratory/user-forced`, record the failed condition, and return to the main skill's route shortlist.
 
 ## RD Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -273,7 +272,7 @@ Escalate warnings when:
 
 - `subskills/13-instrumental-variables/`: use for fuzzy RD IV interpretation and weak first-stage concerns.
 - `subskills/15-survival-competing-risks/`: use for time-to-event outcomes.
-- `subskills/02-user-data-inspector/`: use for manipulation, missing running variables, heaping, or selection near cutoff.
+- `subskills/02-data-inspector/`: use for manipulation, missing running variables, heaping, or selection near cutoff.
 - `subskills/17-interference-spillovers/`: use when units across the cutoff affect each other.
 - `subskills/20-reporting-interpretation/`: use for final report and limitations.
 

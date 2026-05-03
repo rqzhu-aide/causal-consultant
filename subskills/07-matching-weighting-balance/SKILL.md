@@ -1,7 +1,6 @@
 ---
 name: matching-weighting-balance
 description: Use when a user wants to estimate causal effects from observational point-treatment data by matching, propensity-score weighting, overlap weighting, entropy balancing, covariate balancing propensity scores, subclassification, or balance diagnostics. This subskill audits the estimand, covariates, overlap, method choice, diagnostics, failure modes, R/Python backends, and interpretation limits.
-version: 0.2.0
 ---
 
 # Matching, Weighting, and Balance
@@ -39,7 +38,7 @@ Do **not** use this as the only workflow when:
 - treatment is assigned at a cutoff: route to `subskills/12-regression-discontinuity/`;
 - the design is panel/policy timing: route to `subskills/11-did-event-study/`;
 - interference/spillovers are plausible: route to `subskills/17-interference-spillovers/`;
-- severe missingness, measurement error, or selection bias dominates: route to `subskills/02-user-data-inspector/`;
+- severe missingness, measurement error, or selection bias dominates: route to `subskills/02-data-inspector/`;
 - the user wants doubly robust or ML-based final estimation after weights: coordinate with `subskills/08-doubly-robust-ml/`.
 
 ## Minimum Design Audit
@@ -566,7 +565,7 @@ For binary outcomes, weighted logistic regression odds ratios are conditional/mo
 - `subskills/13-instrumental-variables/`: use when unmeasured confounding is central and a credible instrument exists.
 - `subskills/15-survival-competing-risks/`: use when the outcome is survival, censoring, competing risks, or RMST.
 - `subskills/17-interference-spillovers/`: use when treatment of one unit can affect another unit.
-- `subskills/02-user-data-inspector/`: use when missingness, measurement error, or selection dominates the design.
+- `subskills/02-data-inspector/`: use when missingness, measurement error, or selection dominates the design.
 
 ## Code Template Index
 

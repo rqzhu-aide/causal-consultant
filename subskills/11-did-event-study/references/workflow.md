@@ -98,7 +98,7 @@ Interpret as an ATT for treated units/cohorts unless a different estimand is exp
 - shorten or re-bin event windows;
 - use synthetic control for few treated units;
 - use HonestDiD sensitivity rather than a point claim;
-- route to `02-user-data-inspector` or `17-interference-spillovers` if those problems dominate;
+- route to `02-data-inspector` or `17-interference-spillovers` if those problems dominate;
 - report descriptive trends only.
 
 ## Suggested Response Pattern

@@ -1,7 +1,6 @@
 ---
 name: heterogeneous-effects-policy
 description: Use for CATE, HTE, subgroup effects, treatment prioritization, uplift modeling, individualized treatment rules, and policy learning after a plausible causal design has been identified.
-version: 0.2.0
 ---
 
 # Heterogeneous Effects and Policy
@@ -57,7 +56,7 @@ If this route is rejected or only used as an exploratory add-on, update the `sub
 
 ## HTE and Policy Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -382,7 +381,7 @@ Escalate warnings when:
 - `subskills/13-instrumental-variables/`: coordinate when heterogeneity is local to compliers or instruments.
 - `subskills/15-survival-competing-risks/`: use when censoring or competing risks define the outcome.
 - `subskills/17-interference-spillovers/`: use when treatment can affect other units.
-- `subskills/02-user-data-inspector/`: use when missingness, measurement error, or selection affects the design.
+- `subskills/02-data-inspector/`: use when missingness, measurement error, or selection affects the design.
 - `subskills/20-reporting-interpretation/`: use for final reports and policy interpretation.
 
 ## Reference Files

@@ -1,7 +1,6 @@
 ---
 name: synthetic-control-time-series
 description: Use for one or a few treated aggregate units, policy shocks at known times, synthetic control, augmented or generalized synthetic control, synthetic DiD, matrix-completion panel counterfactuals, interrupted time series, Bayesian structural time-series, and CausalImpact-style analyses.
-version: 0.2.0
 ---
 
 # Synthetic Control and Time Series
@@ -49,14 +48,14 @@ Do **not** use this as the only workflow when:
 - the treatment is an encouragement or instrument: coordinate with `subskills/13-instrumental-variables/`;
 - the outcome is time-to-event or competing risks: coordinate with `subskills/15-survival-competing-risks/`;
 - donor units can affect each other or spill over across regions or markets: coordinate with `subskills/17-interference-spillovers/`;
-- missingness, measurement changes, reporting artifacts, sample composition shifts, or selection dominate the time series: coordinate with `subskills/02-user-data-inspector/`;
+- missingness, measurement changes, reporting artifacts, sample composition shifts, or selection dominate the time series: coordinate with `subskills/02-data-inspector/`;
 - the user only wants a forecast with no causal interpretation: treat it as predictive time-series modeling outside this causal skill.
 
 If this route is rejected, update the `subskill_analyses` entry as `rejected`, `fallback`, or `exploratory/user-forced`, record the failed condition, and return to the main skill's route shortlist. If the user insists on a weak route, continue only with prominent caveats and track the fatal flaws so a report can state them clearly.
 
 ## Synthetic Control Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -322,7 +321,7 @@ Escalate warnings when:
 - `subskills/13-instrumental-variables/`: use when timing or exposure is driven by an instrument or encouragement.
 - `subskills/15-survival-competing-risks/`: use when outcomes are time-to-event or competing risks.
 - `subskills/17-interference-spillovers/`: use when spillovers contaminate donor units or neighboring regions.
-- `subskills/02-user-data-inspector/`: use when reporting changes, missing time points, measurement error, or selection dominate.
+- `subskills/02-data-inspector/`: use when reporting changes, missing time points, measurement error, or selection dominate.
 - `subskills/20-reporting-interpretation/`: use for final reports and causal-claim calibration.
 
 ## Reference Files

@@ -1,7 +1,6 @@
 ---
 name: doubly-robust-ml
 description: Use for AIPW, TMLE, one-step estimators, DoubleML, debiased/orthogonal machine learning, cross-fitting, Super Learner, flexible nuisance estimation, and doubly robust causal effect estimation after a plausible causal design and adjustment set exist.
-version: 0.2.0
 ---
 
 # Doubly Robust and Orthogonal ML
@@ -42,19 +41,19 @@ Use this subskill when the user says or implies:
 
 Do **not** use this as the only workflow when:
 
-- the adjustment set or causal structure is unclear: activate `subskills/03-dag-builder/` and usually `02-user-data-inspector` first;
+- the adjustment set or causal structure is unclear: activate `subskills/04-dag-builder/` and usually `02-data-inspector` first;
 - the main task is matching, weighting, overlap, or balance design: activate `subskills/07-matching-weighting-balance/`;
 - the user wants subgroup/CATE/policy learning as the main output: coordinate with `subskills/09-heterogeneous-effects-policy/`;
 - treatment/confounding is time-varying: coordinate with `subskills/10-longitudinal-gmethods/`;
 - outcome is time-to-event or competing risks: coordinate with `subskills/15-survival-competing-risks/`;
-- missingness, censoring, selection, or transportability is central: coordinate with `subskills/02-user-data-inspector/`;
+- missingness, censoring, selection, or transportability is central: coordinate with `subskills/02-data-inspector/`;
 - the user has an IV, RD, DiD, synthetic control, mediation, or interference design: route to the design-specific subskill first.
 
 If this route is rejected or only exploratory, update the `subskill_analyses` entry with the failed condition and return to the main route shortlist.
 
 ## DR/ML Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -157,7 +156,7 @@ Do not say "doubly robust" means the estimate is robust to unmeasured confoundin
 | Flexible learners needed but sample is small | Simpler AIPW/TMLE with conservative learner library | fold stability, overfitting, learner sensitivity |
 | Need CATE or subgroup effects | DRLearner, causal forest DML, or coordinate with `09-heterogeneous-effects-policy` | CATE validation, overlap by modifiers, calibration |
 | Time-to-event or competing risk outcome | Survival-specific AIPW/TMLE or coordinate with `15-survival-competing-risks` | censoring, horizon, risk/RMST scale |
-| Missing outcomes or informative censoring | Add missingness/censoring nuisance model and coordinate with `02-user-data-inspector` | IPCW/IPMW diagnostics, positivity |
+| Missing outcomes or informative censoring | Add missingness/censoring nuisance model and coordinate with `02-data-inspector` | IPCW/IPMW diagnostics, positivity |
 | IV or natural experiment with high-dimensional controls | IV-DML via `13-instrumental-variables` | IV assumptions, first stage, orthogonal score |
 
 ### Learner selection
@@ -300,14 +299,14 @@ Escalate warnings when:
 
 ## Related Subskills
 
-- `subskills/03-dag-builder/`: use when adjustment variables or causal structure are unclear.
+- `subskills/04-dag-builder/`: use when adjustment variables or causal structure are unclear.
 - `subskills/06-point-treatment-observational/`: parent route for measured-confounding point-treatment designs.
 - `subskills/07-matching-weighting-balance/`: use for balance, matching, weighting, and overlap diagnostics.
 - `subskills/09-heterogeneous-effects-policy/`: use for CATE, GATE, DRLearner, causal forests, or policy learning outputs.
 - `subskills/10-longitudinal-gmethods/`: use for time-varying treatment/confounding.
 - `subskills/13-instrumental-variables/`: use for IV-DML or high-dimensional IV designs.
 - `subskills/15-survival-competing-risks/`: use for survival, censoring, competing risks, or RMST.
-- `subskills/02-user-data-inspector/`: use for missing outcomes, censoring, selection, or transportability.
+- `subskills/02-data-inspector/`: use for missing outcomes, censoring, selection, or transportability.
 
 ## Reference Files
 

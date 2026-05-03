@@ -1,8 +1,6 @@
 ---
 name: randomized-experiments
-summary: Consultant workflow for randomized experiments, A/B tests, randomized controlled trials, cluster-randomized trials, factorial trials, crossover trials, SMART designs, attrition, noncompliance, sample-ratio mismatch, and experiment diagnostics.
 description: Use when treatment assignment was randomized or allegedly randomized. This subskill audits the randomization, defines the experimental estimand, selects design-appropriate analysis methods, provides R/Python code templates, diagnoses implementation failures, and routes to other subskills when the ideal randomized-trial conditions are not met.
-version: 0.2.0
 ---
 
 # Randomized Experiments and A/B Testing
@@ -71,9 +69,9 @@ The root skill should initially keep the randomized route even if complications 
 
 | Complication detected | Keep `05-randomized-experiments`? | Additional subskill |
 |---|---:|---|
-| Noncompliance, crossover, treatment switching | yes | `13-instrumental-variables` for CACE/LATE; `02-user-data-inspector` for adherence/missingness data issues if relevant |
+| Noncompliance, crossover, treatment switching | yes | `13-instrumental-variables` for CACE/LATE; `02-data-inspector` for adherence/missingness data issues if relevant |
 | Time-to-event outcome, censoring, competing risks | yes | `15-survival-competing-risks` |
-| Missing outcomes, attrition, post-randomization selection | yes | `02-user-data-inspector` |
+| Missing outcomes, attrition, post-randomization selection | yes | `02-data-inspector` |
 | Spillovers, household/network/marketplace interference | yes, but only for design audit | `17-interference-spillovers` |
 | Heterogeneous effects, uplift, treatment rules | yes | `09-heterogeneous-effects-policy` |
 | Dynamic regimes, repeated randomized decisions, SMART | yes | `10-longitudinal-gmethods` |
@@ -86,8 +84,8 @@ The root skill should initially keep the randomized route even if complications 
 Exit or downgrade the randomized-trial interpretation when any of these are true:
 
 1. **No credible randomization.** If assignment was chosen by clinicians, users, firms, schools, policy makers, self-selection, or an algorithm based on outcome-related variables without randomization, route to observational or quasi-experimental subskills.
-2. **Assignment variable is unavailable.** If the dataset contains only treatment received/exposure, but no randomized assignment, the ITT estimand cannot be directly estimated. Route to `02-user-data-inspector` or `13-instrumental-variables` depending on whether assignment can serve as an instrument.
-3. **Dataset conditions on post-randomization events.** If the dataset includes only exposed, triggered, compliant, retained, surviving, or logged units, warn that the all-randomized ITT estimand may be lost. Activate `02-user-data-inspector` and possibly redefine the estimand.
+2. **Assignment variable is unavailable.** If the dataset contains only treatment received/exposure, but no randomized assignment, the ITT estimand cannot be directly estimated. Route to `02-data-inspector` or `13-instrumental-variables` depending on whether assignment can serve as an instrument.
+3. **Dataset conditions on post-randomization events.** If the dataset includes only exposed, triggered, compliant, retained, surviving, or logged units, warn that the all-randomized ITT estimand may be lost. Activate `02-data-inspector` and possibly redefine the estimand.
 4. **Treatment received is the target despite noncompliance.** If the user wants effect of actual treatment receipt, activate `13-instrumental-variables` for CACE/LATE or treat as observational if IV assumptions fail.
 5. **Interference is central.** If one unit's treatment can affect another unit's outcome, activate `17-interference-spillovers` and redefine exposure mappings.
 6. **Outcome is survival/competing risk.** Use `15-survival-competing-risks` for estimand and estimator while preserving `05-randomized-experiments` for assignment audit.
@@ -366,7 +364,7 @@ Interpretation: Under the documented randomization, consistency, no-interference
 
 - Use `13-instrumental-variables` when noncompliance/crossover makes treatment receipt differ from randomized assignment.
 - Use `15-survival-competing-risks` for time-to-event endpoints, censoring, competing events, RMST, and cumulative incidence.
-- Use `02-user-data-inspector` for attrition, missing outcomes, post-randomization exclusions, triggered-only datasets, or logging failures.
+- Use `02-data-inspector` for attrition, missing outcomes, post-randomization exclusions, triggered-only datasets, or logging failures.
 - Use `17-interference-spillovers` for spillovers, contamination, marketplaces, networks, classrooms, households, or cluster exposure mappings.
 - Use `09-heterogeneous-effects-policy` for subgroup/CATE/uplift/policy-learning analyses.
 - Use `10-longitudinal-gmethods` for SMART, dynamic regimes, repeated treatments, or crossover analyses with time-varying treatment.

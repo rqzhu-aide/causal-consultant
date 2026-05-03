@@ -1,0 +1,63 @@
+subskill_analyses:
+  - subskill_id: "04-dag-builder"
+    status: "candidate | selected | rejected | fallback | support-route | exploratory/user-forced"
+    fit_to_user_need: null
+    user_task: "learn DAG | classify variables | choose adjustment set | target trial framing | identify effect | audit assumptions | route support | unknown"
+    coordination:
+      main_skill_goal_summary: null
+      domain_record_used: "01-domain-helper"
+      data_record_used: "02-data-inspector"
+      design_record_used: "03-design-planner"
+      user_facing_summary_for_main_skill: null
+    causal_question:
+      treatment_or_action: null
+      comparator: null
+      outcome: null
+      target_population: null
+      time_zero: null
+      follow_up: null
+    estimand:
+      label: "ATE | ATT | total effect | controlled direct effect | interventional direct/indirect effect | front-door effect | transported effect | local effect | unknown"
+      scale: null
+      interpretation: null
+    graph_status:
+      graph_type: "DAG | SWIG | CPDAG | PAG | variable-role map | target-trial protocol | unknown"
+      nodes_recorded: []
+      directed_edges: []
+      uncertain_edges: []
+      latent_or_unmeasured_common_causes: []
+      selection_nodes: []
+      alternative_graphs_considered: []
+    variable_roles:
+      pre_treatment_confounders: []
+      precision_variables: []
+      effect_modifiers: []
+      mediators: []
+      colliders_or_selection_variables: []
+      instruments_or_encouragements: []
+      missingness_or_censoring_variables: []
+      post_treatment_variables_to_avoid_for_total_effect: []
+      unmeasured_needed_variables: []
+    identification:
+      candidate_adjustment_sets: []
+      preferred_adjustment_set: []
+      forbidden_adjustment_variables: []
+      frontdoor_possible: null
+      iv_or_local_design_needed: null
+      mediation_or_direct_effect_needed: null
+      selection_or_transport_issue: null
+      identifiable_under_current_assumptions: null
+    method_selection_implications:
+      plausible_method_routes: []
+      routes_supported_by_graph: []
+      routes_blocked_by_graph: []
+      route_conditions_to_check_in_data_or_design: []
+      recommended_next_subskills: []
+    diagnostics_or_checks:
+      timing_table_needed: null
+      adjustment_set_check: null
+      testable_implications_or_negative_controls: []
+      sensitivity_analysis_needed: null
+    fatal_flaws_or_major_limitations: []
+    limitations: []
+    open_questions: []

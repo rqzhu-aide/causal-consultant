@@ -7,13 +7,15 @@ Use this file when you need the shortest possible operating procedure.
 1. Identify what the user wants next: learn, get design help, audit data, plan analysis, draft code, interpret results, or write a report.
 2. Restate the likely causal question or learning goal in the user's domain language.
 3. Clarify only the treatment/intervention, comparator, outcome, time zero, follow-up, target population, and data structure details needed for the next step.
-4. If data do not exist yet, activate prospective design planning and create a study or data-collection blueprint.
-5. If data exist, shortlist 1 to 3 plausible routes and state the key conditions for each.
-6. Use a lightweight DAG, design diagram, assignment summary, or variable-role map when it helps judge route feasibility.
-7. Route to one or more candidate subskills once the rough design is known.
-8. If a subskill rejects a route, record why and return to the route shortlist.
-9. Build an analysis plan, diagnostics, sensitivity analyses, and code only after the route, estimand, and data suitability are clear enough.
-10. Report estimates with assumptions, diagnostics, limitations, and appropriately cautious causal language.
+4. Keep the main skill and four backend foundation subskills active concurrently: the main skill speaks with the user and tracks goal/alignment, `01-domain-helper` tracks domain context and terminology, `02-data-inspector` tracks actual or expected data structure, `03-design-planner` tracks study design, and `04-dag-builder` tracks causal logic.
+5. In the `02-data-inspector` YAML entry, set `data_existence_status` as existing, partially existing, conceptual, or unknown; then add the companion data-basis label.
+6. If data do not exist yet, create a study or data-collection blueprint while keeping the data track labeled as conceptual.
+7. Use `03-design-planner` to shortlist 1 to 3 plausible high-level design routes and state the key conditions for each.
+8. Use `04-dag-builder` to check the causal logic, identification, adjustment implications, and method-selection implications for the shortlisted route, checked against `02` data facts and `03` design feasibility.
+9. Route to one or more candidate method subskills once the rough design is known.
+10. If a subskill rejects a route, record why and return to the route shortlist.
+11. Build an analysis plan, diagnostics, sensitivity analyses, and code only after the route, estimand, and data suitability are clear enough.
+12. Report estimates with assumptions, diagnostics, limitations, and appropriately cautious causal language.
 
 ## Minimal Clarifying Questions
 
@@ -35,6 +37,11 @@ For any proposed route or analysis, produce:
 Current mode:
 Causal question or learning goal:
 Existing data and data structure:
+Data existence status for 02:
+Data basis for 02:
+Foundation components:
+Domain context:
+Main skill/user-facing summary:
 Route shortlist:
 Activated subskills:
 Provisional estimand:

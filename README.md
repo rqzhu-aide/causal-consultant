@@ -2,11 +2,12 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-1.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
-## What This Skill Is About
-
 ---
 
-This is a modular causal inference consultant skill for agent systems that load a top-level `SKILL.md` and then selectively read supporting references, subskills, scripts, and assets. It is designed to guide an interactive conversation: first understand the user's goal, provided data or planned data structure, timing, variables, and practical constraints; then adaptively recommend suitable causal designs, analytic methods, diagnostics, and software tools.
+## What This Skill Is About
+
+
+This is a modular causal inference consultant skill for agent systems that load a top-level `SKILL.md` and then selectively read supporting references, subskills, scripts, and assets. It is designed to guide an interactive conversation: maintain a living understanding of the user's goal, provided data or planned data structure, timing, variables, and practical constraints; then adaptively recommend suitable causal designs, analytic methods, diagnostics, and software tools.
 
 It is for data scientists, analysts, researchers, and domain experts who want a careful interactive guide rather than a black-box method picker. It helps users inspect provided data, clarify causal questions, plan data collection, specify estimands, check method conditions in intuitive language, draft R/Python analysis code, interpret results, and prepare reproducible reports. As new information appears, it can revise the route, narrow or change the estimand, suggest fallback analyses, or explain why a causal claim is not supported.
 
@@ -29,7 +30,7 @@ Say one of the following phrases in your request:
 
 ## Current Status
 
-The top-level workflow and routing architecture are in place. Randomized experiments, DAG/identification, point-treatment observational analysis, matching/weighting/balance, doubly robust ML, heterogeneous effects/policy, longitudinal g-methods, DiD/event studies, regression discontinuity, instrumental variables, and causal discovery are the most developed analysis subskills. Prospective design planning is available as a lightweight routing subskill for users who do not yet have data. Several remaining subskills still need deeper examples, diagnostics, and package-specific recipes.
+The top-level workflow and routing architecture are in place. The main skill is the user-facing coordinator, while Domain Helper, Data Inspector, Design Planner, and DAG Builder maintain backend records for domain context, data, study design, and causal logic. Randomized experiments, DAG/identification, point-treatment observational analysis, matching/weighting/balance, doubly robust ML, heterogeneous effects/policy, longitudinal g-methods, DiD/event studies, regression discontinuity, instrumental variables, and causal discovery are among the most developed analysis subskills. Several remaining subskills still need deeper examples, diagnostics, and package-specific recipes.
 
 ## Overall Structure
 
@@ -39,10 +40,10 @@ See the canonical workflow diagram: [`assets/workflow-mermaid.md`](assets/workfl
 
 1. Identify the current interaction mode: learning, orientation, prospective planning, data audit, design triage, analysis planning, code drafting, result interpretation, or reporting.
 2. Restate the user's goal in domain language and clarify only the treatment, comparator, outcome, timing, population, data structure, and deliverable details needed for the next step.
-3. Determine whether data already exist. If not, activate prospective design planning and create a study or data-collection blueprint instead of jumping to model code.
-4. If data exist, audit the data structure: rows, IDs, timing, assignment/exposure, repeated measures, clustering, missingness, censoring, and available covariates.
-5. Narrow to 1 to 3 plausible design routes, state the key conditions for each, and use a lightweight DAG, design diagram, assignment summary, or variable-role map when it helps judge feasibility.
-6. Activate one or more relevant candidate subskills once the rough design is known. If a candidate route is rejected, record why, route back to the shortlist, and reconsider the best next route.
+3. Keep the main skill and four backend foundation subskills active concurrently: the main skill speaks with the user, while domain support, data inspection, design planning, and DAG/causal logic update backend records.
+4. In the data component, set `data_existence_status` as `existing`, `partially existing`, `conceptual`, or `unknown`. If data exist, audit rows, IDs, timing, assignment/exposure, repeated measures, clustering, missingness, censoring, and available covariates. If no data exist, record the expected schema or data requirements as conceptual.
+5. Narrow to 1 to 3 plausible high-level design routes, state the key conditions for each, then use the DAG/causal-logic record to check identification, adjustment, and method-selection implications, constrained by data facts and design feasibility.
+6. Activate one or more relevant candidate method subskills once the rough design is known. If a candidate route is rejected, record why, route back to the shortlist, and reconsider the best next route.
 7. Inside the activated subskill, refine the estimand, audit route-specific assumptions and failure modes, and decide whether the route is supported, fallback, rejected, or exploratory/user-forced.
 8. Draft analysis plans, diagnostics, sensitivity analyses, and R/Python code only when the route, estimand, and data suitability are clear enough.
 9. Interpret results, diagnose problems, and iterate with the user to revise the estimand, route, model, data processing, or claim.
@@ -70,11 +71,11 @@ The top-level `SKILL.md` should be loaded first. It uses progressive disclosure:
 
 | Component | Status | Notes |
 |---|---:|---|
-| Top-level framework | 85% | Interaction modes, prospective planning, project spec schema, router, route-out loop, assumption ledger, workflow assets, and code templates are in place. |
-| 01 - User Need Understander | 65% | New foundation subskill for clarifying user goal, causal components, data availability, deliverable, and next route. |
-| 02 - User Data Inspector | 90% | Expanded preprocessing workflow for dataset profiling, structure validation, variable-role mapping, treatment/outcome/covariate preparation, leakage checks, and modeling-difficulty triage before causal analysis. |
-| 03 - DAG Builder | 75% | Expanded structure with project-spec entry, DAG/target-trial workflow, adjustment guardrails, and literature/software map. |
-| 04 - Design Planner | 25% | Lightweight planning subskill for future studies and data collection; needs deeper design examples and sample schemas. |
+| Main skill framework | 90% | User-facing coordination, interaction modes, concurrent backend foundation architecture, project spec schema, router, route-out loop, assumption ledger, workflow assets, and code templates are in place. |
+| 01 - Domain Helper | 55% | Backend domain-knowledge component for terminology translation, common working pictures, substantive constraints, domain-specific risks, and coordination with data/DAG/design records. |
+| 02 - Data Inspector | 90% | Expanded preprocessing workflow for dataset profiling, structure validation, variable-role mapping, treatment/outcome/covariate preparation, leakage checks, and modeling-difficulty triage before causal analysis. |
+| 03 - Design Planner | 55% | Backend study-design component for actual or planned designs, variable-to-design mapping, future data collection, retrospective design critique, and high-level route support. |
+| 04 - DAG Builder | 80% | Backend causal-logic component with project-spec entry, DAG/target-trial workflow, adjustment guardrails, method-selection implications, and literature/software map. |
 | 05 - Randomized Experiments | 85% | Deep workflow with R/Python examples, SRM/CUPED, cluster trials, factorial/crossover/SMART considerations, and diagnostics. |
 | 06 - Point-Treatment Observational | 75% | Expanded target-trial framing, measured-confounding assumptions, route handoff logic, diagnostics, and literature/software map. |
 | 07 - Matching / Weighting / Balance | 85% | Deep workflow with formal estimands, overlap diagnostics, failure modes, software notes, examples, and templates. |
@@ -92,7 +93,7 @@ The top-level `SKILL.md` should be loaded first. It uses progressive disclosure:
 | 19 - Causal Genomics | 90% | Expanded causal genomics workflow with MR, colocalization, fine mapping, TWAS/SMR, drug-target MR, multi-omics, ancestry/sample-overlap guardrails, diagnostics, and literature/software map. |
 | 20 - Reporting & Interpretation | 40% | Scaffold plus report skeleton and final report template; needs stronger reporting rubrics and examples. |
 
-Overall: approximately 82% complete. The structural backbone is solid, with most analysis subskills now deep and usable. The remaining major work is concentrated in reporting/interpretation, design planning, and deeper examples for the new user-need foundation step.
+Overall: approximately 85% complete. The structural backbone is solid, with the concurrent foundation architecture now defined and most analysis subskills deep and usable. The remaining major work is concentrated in reporting/interpretation, richer examples for the main skill plus four backend foundation subskills, and additional route-specific templates.
 
 ## Architecture Principles
 

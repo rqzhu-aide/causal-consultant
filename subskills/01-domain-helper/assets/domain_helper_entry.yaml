@@ -1,0 +1,57 @@
+domain_helper_01:
+  status: "active | inactive | unknown"
+  fit_to_user_need: null
+  domain_context:
+    domain_area: null
+    setting: null
+    substantive_question: null
+    scientific_or_business_context: null
+    practical_decision_context: null
+    audience_or_stakeholders: []
+  language_translation:
+    user_terms: []
+    translated_causal_terms: []
+    terms_needing_user_clarification: []
+    preferred_user_facing_language: []
+  working_pictures:
+    common_working_pictures: []
+    working_pictures_rejected: []
+    assumptions_to_verify: []
+    assumptions_not_made: []
+  domain_data_expectations:
+    likely_units: []
+    likely_row_structures: []
+    likely_time_variables: []
+    likely_id_or_group_variables: []
+    likely_treatment_or_exposure_records: []
+    likely_outcome_records: []
+    likely_baseline_or_pre_treatment_variables: []
+    likely_structured_or_unstructured_feature_blocks: []
+    expected_data_issues_for_02: []
+  domain_causal_expectations:
+    plausible_confounding_sources: []
+    plausible_effect_modifiers: []
+    plausible_mediators_or_mechanisms: []
+    plausible_instruments_or_encouragements: []
+    plausible_selection_or_censoring_processes: []
+    plausible_interference_or_spillover_paths: []
+    plausible_unmeasured_causes: []
+    timing_or_role_questions_for_04: []
+  domain_design_expectations:
+    likely_design_families: []
+    feasible_design_constraints: []
+    measurement_constraints: []
+    ethics_privacy_access_or_governance_notes: []
+    design_questions_for_03: []
+  method_context:
+    domain_methods_commonly_seen: []
+    method_routes_that_may_be_relevant: []
+    method_routes_to_avoid_without_more_support: []
+    literature_or_method_context: []
+  coordination:
+    main_skill_goal_summary: null
+    data_record_to_update: "02-data-inspector"
+    design_record_to_update: "03-design-planner"
+    dag_record_to_update: "04-dag-builder"
+    user_facing_summary_for_main_skill: null
+    questions_that_would_change_route: []

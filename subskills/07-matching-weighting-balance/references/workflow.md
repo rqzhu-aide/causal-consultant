@@ -75,7 +75,7 @@ Route out when:
 | Cutoff assignment | `12-regression-discontinuity` |
 | Survival/censoring/competing risks outcome | `15-survival-competing-risks` after baseline design |
 | Interference/spillovers | `17-interference-spillovers` |
-| Severe missingness, measurement error, selection | `02-user-data-inspector` |
+| Severe missingness, measurement error, selection | `02-data-inspector` |
 | Final estimator is AIPW/TMLE/DML | `08-doubly-robust-ml` after balance design |
 
 ## Step 3: Define the Estimand Before the Method
@@ -118,7 +118,7 @@ Before estimating propensities:
 - identify impossible exact-matching constraints;
 - confirm the analysis sample.
 
-If a large number of units are dropped due to missing covariates, route to `02-user-data-inspector` or report a complete-case target population.
+If a large number of units are dropped due to missing covariates, route to `02-data-inspector` or report a complete-case target population.
 
 ## Step 6: Initial Overlap Assessment
 
@@ -299,15 +299,15 @@ Use language like:
 
 R examples:
 
-- `examples/r_matchit_nearest_cobalt.R`: nearest-neighbor ATT matching with MatchIt and cobalt diagnostics.
-- `examples/r_weightit_overlap_entropy.R`: ATE IPW, ATO overlap weights, and ATT entropy balancing with WeightIt and cobalt.
-- `examples/r_full_cem_matching.R`: full matching and coarsened exact matching with MatchIt.
+- `../examples/r_matchit_nearest_cobalt.R`: nearest-neighbor ATT matching with MatchIt and cobalt diagnostics.
+- `../examples/r_weightit_overlap_entropy.R`: ATE IPW, ATO overlap weights, and ATT entropy balancing with WeightIt and cobalt.
+- `../examples/r_full_cem_matching.R`: full matching and coarsened exact matching with MatchIt.
 
 Python examples:
 
-- `examples/python_ps_weighting_diagnostics.py`: from-scratch IPW/overlap weighting, balance diagnostics, ESS, plots, robust weighted regression.
-- `examples/python_nearest_neighbor_matching.py`: from-scratch nearest-neighbor PS matching with caliper and SMD diagnostics.
-- `examples/python_dowhy_weighting_template.py`: optional DoWhy propensity-score matching/weighting workflow.
+- `../examples/python_ps_weighting_diagnostics.py`: from-scratch IPW/overlap weighting, balance diagnostics, ESS, plots, robust weighted regression.
+- `../examples/python_nearest_neighbor_matching.py`: from-scratch nearest-neighbor PS matching with caliper and SMD diagnostics.
+- `../examples/python_dowhy_weighting_template.py`: optional DoWhy propensity-score matching/weighting workflow.
 
 Root scripts:
 

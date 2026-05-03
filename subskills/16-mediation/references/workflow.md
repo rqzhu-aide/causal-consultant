@@ -285,4 +285,4 @@ If [main assumption] is not defensible, I would switch to [fallback estimand or 
 
 ## Reference Files
 
-- `references/literature_and_software.md`: literature map, domain-specific notes, and package guide.
+- `literature_and_software.md`: literature map, domain-specific notes, and package guide.

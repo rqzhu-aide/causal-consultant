@@ -294,5 +294,5 @@ I would check [diagnostics]. If [colocalization/pleiotropy/strength/overlap] fai
 
 ## Reference Files
 
-- `references/mr_coloc_notes.md`: compact MR/colocalization assumptions and diagnostics.
-- `references/literature_and_software.md`: literature map, software map, and method-selection notes.
+- `mr_coloc_notes.md`: compact MR/colocalization assumptions and diagnostics.
+- `literature_and_software.md`: literature map, software map, and method-selection notes.

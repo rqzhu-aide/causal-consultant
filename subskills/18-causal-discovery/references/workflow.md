@@ -54,7 +54,7 @@ The agent should state which estimand is being targeted and what estimands are n
 
 ## Recommendation Workflow
 
-Run `scripts/recommend.py` with a JSON input matching `schemas/recommendation_input.schema.json` to get a structured recommendation.
+Run `../scripts/recommend.py` with a JSON input matching `../schemas/recommendation_input.schema.json` to get a structured recommendation.
 
 Or follow the manual rules:
 
@@ -119,14 +119,14 @@ If [main diagnostic] fails, I would [fallback plan].
 ## Code Template Index
 
 See the following files in this subskill folder:
-- `examples/python_pc.py` — causal-learn PC baseline
-- `examples/python_fci.py` — causal-learn FCI baseline
-- `examples/r_pcalg_pc.R` — pcalg PC baseline
-- `examples/r_pcalg_fci.R` — pcalg FCI baseline
-- `examples/r_bnlearn_hc.R` — bnlearn hill-climbing
-- `examples/java_tetrad_workflow.md` — Tetrad CLI and Java workflow
-- `scripts/recommend.py` — rule-based algorithm recommender
-- `sample_input.json` — example recommender input
+- `../examples/python_pc.py` — causal-learn PC baseline
+- `../examples/python_fci.py` — causal-learn FCI baseline
+- `../examples/r_pcalg_pc.R` — pcalg PC baseline
+- `../examples/r_pcalg_fci.R` — pcalg FCI baseline
+- `../examples/r_bnlearn_hc.R` — bnlearn hill-climbing
+- `../examples/java_tetrad_workflow.md` — Tetrad CLI and Java workflow
+- `../scripts/recommend.py` — rule-based algorithm recommender
+- `../sample_input.json` — example recommender input
 
 And at the package root:
 - `scripts/python/causal_learn_pc_template.py`

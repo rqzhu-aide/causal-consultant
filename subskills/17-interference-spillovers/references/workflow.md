@@ -307,4 +307,4 @@ Do not overstate software maturity. For many interference analyses, the most rel
 
 ## Reference Files
 
-- `references/literature_and_software.md`: literature map, recent methods, software, and practical implementation guidance.
+- `literature_and_software.md`: literature map, recent methods, software, and practical implementation guidance.

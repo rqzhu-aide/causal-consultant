@@ -1,7 +1,6 @@
 ---
 name: longitudinal-gmethods
 description: Use for longitudinal causal questions with time-varying treatments, time-varying confounders affected by prior treatment, dynamic regimes, sustained strategies, grace periods, censoring, marginal structural models, g-formula, longitudinal TMLE, and longitudinal modified treatment policies.
-version: 0.2.0
 ---
 
 # Longitudinal G-Methods
@@ -46,7 +45,7 @@ Do **not** use this as the only workflow when:
 - there is one baseline treatment and no treatment-confounder feedback: use `subskills/06-point-treatment-observational/`;
 - the main problem is a randomized trial with simple fixed assignment: use `subskills/05-randomized-experiments/`;
 - the outcome is time-to-event or competing risk and the longitudinal treatment structure is secondary: coordinate with `subskills/15-survival-competing-risks/`;
-- missingness, censoring, or selection is the dominant validity issue: coordinate with `subskills/02-user-data-inspector/`;
+- missingness, censoring, or selection is the dominant validity issue: coordinate with `subskills/02-data-inspector/`;
 - the user wants learned individualized policy rules beyond a fixed regime: coordinate with `subskills/09-heterogeneous-effects-policy/`;
 - the design is policy timing, cutoff, instrument, synthetic control, mediation, or interference: route to the relevant subskill.
 
@@ -54,7 +53,7 @@ If the longitudinal route is rejected, update the `subskill_analyses` entry as `
 
 ## Longitudinal Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -151,7 +150,7 @@ When \(L_t\) affects later treatment and outcome, but earlier treatment also aff
 | Continuous or multivalued treatments with feasible intervention | LMTP via `lmtp` | modified policy definition, feasible support, density-ratio diagnostics |
 | Per-protocol effect with treatment switching or grace period | Cloning-censoring-weighting or target-trial emulation | clone rules, artificial censoring, censoring weights |
 | Sequential individualized decision rule | Dynamic treatment regime/value methods plus `09-heterogeneous-effects-policy` | decision points, state variables, validation |
-| Censoring or competing events central | Coordinate with `15-survival-competing-risks` and `02-user-data-inspector` | risk set, competing event definition, censoring positivity |
+| Censoring or competing events central | Coordinate with `15-survival-competing-risks` and `02-data-inspector` | risk set, competing event definition, censoring positivity |
 | No time-varying treatment-confounder feedback | Use simpler point-treatment route | time zero, baseline confounding, no feedback |
 
 In normal responses, recommend one primary method family and one fallback. Do not list all g-methods unless the user asks for a survey.
@@ -270,7 +269,7 @@ Escalate warnings when:
 - `subskills/08-doubly-robust-ml/`: coordinate for longitudinal TMLE or flexible nuisance estimation.
 - `subskills/09-heterogeneous-effects-policy/`: coordinate for dynamic decision rules or individualized regimes.
 - `subskills/15-survival-competing-risks/`: use for survival endpoints, censoring, competing risks, or RMST.
-- `subskills/02-user-data-inspector/`: use when censoring, missingness, visit processes, or selection dominate.
+- `subskills/02-data-inspector/`: use when censoring, missingness, visit processes, or selection dominate.
 - `subskills/20-reporting-interpretation/`: use for final reporting.
 
 ## Reference Files

@@ -29,7 +29,7 @@ This is a compact map, not an exhaustive bibliography. Use it to choose a safe D
 - **DoubleML PLR:** partially linear regression model for low-dimensional treatment coefficient with high-dimensional controls.
 - **DoubleML IRM:** interactive regression model for binary treatment ATE/ATTE with flexible outcome and propensity models.
 - **DRLearner / orthogonal CATE methods:** heterogeneity-focused methods; coordinate with `09-heterogeneous-effects-policy`.
-- **Survival/missingness DR methods:** require outcome-specific or censoring-specific estimands; coordinate with `15-survival-competing-risks` and `02-user-data-inspector`.
+- **Survival/missingness DR methods:** require outcome-specific or censoring-specific estimands; coordinate with `15-survival-competing-risks` and `02-data-inspector`.
 
 ## Software Map
 

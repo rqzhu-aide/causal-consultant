@@ -1,7 +1,6 @@
 ---
 name: point-treatment-observational
 description: Use for observational cohort, registry, EHR, claims, survey, or cross-sectional data with one primary treatment/exposure time, a comparator, measured pre-treatment confounders, and a causal effect question under measured-confounding assumptions.
-version: 0.2.0
 ---
 
 # Point-Treatment Observational
@@ -55,7 +54,7 @@ If the point-treatment observational route is rejected, update the `subskill_ana
 
 ## Point-Treatment Project Specification Entry
 
-When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `data`, `variables`, `intervention`, `outcomes`, `study_design`, or `analysis_routes`.
+When a project specification is being maintained, append or update this compact entry under the top-level `subskill_analyses` list. Fill only fields that are known or decision-relevant. Do not duplicate global fields already captured under `main_skill`, `data_inspector_02`, `dag_builder_04`, `design_planner_03`, or `analysis_routing`.
 
 ```yaml
 subskill_analyses:
@@ -241,7 +240,7 @@ When the user proposes another package, check whether it supports the target tre
 - sensitivity to covariate set, functional form, and sample restriction;
 - negative controls or placebo outcomes/exposures where scientifically available;
 - sensitivity analysis for unmeasured confounding when causal claims matter;
-- design-specific diagnostics delegated to `07-matching-weighting-balance`, `08-doubly-robust-ml`, `15-survival-competing-risks`, `02-user-data-inspector`, or other subskills.
+- design-specific diagnostics delegated to `07-matching-weighting-balance`, `08-doubly-robust-ml`, `15-survival-competing-risks`, `02-data-inspector`, or other subskills.
 
 ## Failure Modes and Guardrails
 
@@ -262,7 +261,7 @@ Escalate warnings when:
 
 1. Restate the causal question in domain language.
 2. Define eligibility, time zero, treatment, comparator, outcome, follow-up, and target population.
-3. Classify variables by timing and role, ideally using `subskills/03-dag-builder/`.
+3. Classify variables by timing and role, ideally using `subskills/04-dag-builder/`.
 4. Choose the estimand and effect scale.
 5. Check whether measured-confounding adjustment is plausible; if not, route out or label the result descriptive/sensitivity-only.
 6. Check raw overlap and data support before estimator choice.
@@ -322,13 +321,13 @@ Escalate warnings when:
 
 ## Related Subskills
 
-- `subskills/03-dag-builder/`: use before estimator choice when adjustment variables or causal structure are unclear.
+- `subskills/04-dag-builder/`: use before estimator choice when adjustment variables or causal structure are unclear.
 - `subskills/07-matching-weighting-balance/`: use for matching, weighting, overlap, balance, and target-population diagnostics.
 - `subskills/08-doubly-robust-ml/`: use for AIPW, TMLE, DML, Super Learner, cross-fitting, and flexible nuisance models.
 - `subskills/09-heterogeneous-effects-policy/`: use for CATE, subgroup effects, uplift, or treatment rules after the parent route is credible.
 - `subskills/10-longitudinal-gmethods/`: use when treatment/confounding changes over time.
 - `subskills/15-survival-competing-risks/`: use for time-to-event outcomes, censoring, competing risks, or RMST.
-- `subskills/02-user-data-inspector/`: use when missingness, measurement error, selection, transportability, or post-treatment conditioning dominates.
+- `subskills/02-data-inspector/`: use when missingness, measurement error, selection, transportability, or post-treatment conditioning dominates.
 - `subskills/20-reporting-interpretation/`: use for final write-up and limitations.
 
 ## Reference Files

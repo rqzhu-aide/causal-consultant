@@ -4,12 +4,22 @@
 
 Use this workflow before choosing or fitting a causal model. The goal is to turn a raw or semi-clean dataset into a causal-analysis-ready structure, while flagging issues that could damage validity later.
 
+In the main-skill architecture, this workflow is the backend data/preprocessing record. The main skill usually speaks with the user; this workflow updates the `02-data-inspector` YAML entry and feeds concrete data facts to the main skill, domain helper, design planner, and DAG builder.
+
 This workflow centers on:
 
 - basic data profile: sample size, dimensions, missingness, outliers, variable types;
 - data structure: units, IDs, time, repeated measures, clusters, cohorts, panels, longitudinal format;
 - causal variable roles: treatment, outcome, covariates, confounder proxies, propensity-score candidates, mediators, post-treatment variables;
 - modeling difficulties: high dimension, sparse treatment groups, rare outcomes, limited overlap, too few clusters/time periods, leakage risk.
+
+## Coordination With Other Foundation Components
+
+- Coordinate with the main skill by reporting data facts in user-friendly summaries: what exists, what is missing, what seems safe, and what needs clarification.
+- Coordinate with `01-domain-helper` by checking whether actual or conceptual data match domain expectations.
+- Coordinate with `03-design-planner` by recording whether the actual or conceptual schema supports the design: assignment/exposure records, time zero, follow-up, IDs, clusters, repeated measures, pre-periods, network links, and measurement schedule.
+- Coordinate with `04-dag-builder` by providing variable timing, candidate treatment/outcome variables, baseline covariates, possible confounders, mediators, instruments, selection/censoring variables, and variables with unclear roles.
+- Do not let data shape alone choose the final method. A route recommendation from this workflow is provisional until design feasibility and causal logic agree.
 
 ## Intake Checklist
 
@@ -242,4 +252,4 @@ The main modeling constraints are [sample size/dimension/overlap/rare outcome/et
 
 ## Reference Files
 
-- `references/literature_and_software.md`: preprocessing principles and software notes.
+- `literature_and_software.md`: preprocessing principles and software notes.

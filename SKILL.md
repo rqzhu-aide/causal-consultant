@@ -157,6 +157,10 @@ Use method subskills as a role-based stack rather than a flat menu:
 - **Discovery modules** generate or compare graph hypotheses: causal discovery.
 - **Reporting modules** synthesize assumptions, diagnostics, claim strength, interpretation, limitations, and reproducibility.
 
+Activate `18-causal-discovery` only when graph, mechanism, or variable-role uncertainty is itself the next route-changing problem. Good triggers include an explicit user request for graph discovery, competing plausible causal stories that `04-dag-builder` cannot resolve from domain/design information, route ambiguity caused by unclear variable roles, high-dimensional hypothesis generation, time-series or longitudinal structure where lagged relations are exploratory, or a need to compare a user-supplied DAG against data-driven graph hypotheses. Do not activate causal discovery as a shortcut to validate an effect estimate, when a design already identifies the target effect, or when data are too sparse, noisy, or poorly measured for even exploratory graph learning.
+
+Causal discovery output is always provisional. Treat discovered graphs, CPDAGs, PAGs, lagged graphs, screened edges, or learned mechanisms as candidate structures that return to `04-dag-builder` and the main-skill gate before they affect route commitment or claim strength.
+
 The main skill composes these roles. For example, an observational survival analysis may use `06-point-treatment-observational` as the route, `15-survival-competing-risks` as the outcome module, and `07` or `08` as estimation support. A DiD subgroup analysis may use `11-did-event-study` plus `09-heterogeneous-effects-policy`. A proximal negative-control analysis should use `21-negative-controls-proximal` with close handoff from `04-dag-builder`.
 
 Treat method subskills as route-specific executors and implementation auditors, not foundation gate owners. The main skill hands them a selected or candidate route from `routes`, `analysis`, and the foundation evaluator summaries. A method subskill then checks whether the planned route can actually be implemented as specified:

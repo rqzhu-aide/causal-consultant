@@ -1,5 +1,5 @@
 evaluators:
-  data_inspector_02:
+  data_technician_02:
     status: "active | inactive | unknown"
     readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
     readiness_scope: "not assessed | exploratory review | route comparison | design-data fit | dag-data fit | preprocessing | method-specific modeling | gate commitment | user-directed execution | unknown"
@@ -7,6 +7,7 @@ evaluators:
     summary: null
     key_findings: []
     data_enabled_opportunities: []
+    method_fit_suggestions: []
     implications:
       domain_helper_01: []
       design_planner_03: []

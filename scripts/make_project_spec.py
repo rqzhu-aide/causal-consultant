@@ -21,9 +21,9 @@ import re
 
 ACTION_CHOICES = (
     "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | "
-    "refresh_data_inspector_02 | refresh_design_planner_03 | refresh_dag_builder_04 | "
-    "activate_method_subskill | proceed_with_caveat | block_ready_gate | mark_ready | "
-    "no_action | unknown"
+    "refresh_data_technician_02 | refresh_design_planner_03 | refresh_dag_builder_04 | "
+    "confirm_analysis_plan | activate_method_subskill | run_first_pass | run_diagnostics | "
+    "prepare_final_report | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
 )
 
 READINESS_CHOICES = (
@@ -80,7 +80,7 @@ def fill_template(
         'status: "active | inactive | unknown"': 'status: "active"',
         f'readiness: "{READINESS_CHOICES}"': 'readiness: "unknown"',
         f'domain_helper_01: "{READINESS_CHOICES}"': 'domain_helper_01: "unknown"',
-        f'data_inspector_02: "{READINESS_CHOICES}"': 'data_inspector_02: "unknown"',
+        f'data_technician_02: "{READINESS_CHOICES}"': 'data_technician_02: "unknown"',
         f'design_planner_03: "{READINESS_CHOICES}"': 'design_planner_03: "unknown"',
         f'dag_builder_04: "{READINESS_CHOICES}"': 'dag_builder_04: "unknown"',
         'readiness_scope: "not assessed | exploratory review | route comparison | design-data fit | dag-data fit | preprocessing | method-specific modeling | gate commitment | user-directed execution | unknown"': 'readiness_scope: "unknown"',
@@ -90,6 +90,8 @@ def fill_template(
         'supported_scope: "not assessed | exploratory audit | route support | design revision | method handoff | gate commitment | user-directed execution | unknown"': 'supported_scope: "unknown"',
         'identification_status: "yes | no | partial | unknown"': 'identification_status: "unknown"',
         'route_commitment_status: "exploratory | ready | committed | blocked | user-directed | unknown"': 'route_commitment_status: "unknown"',
+        'execution_stage: "not started | plan proposed | plan confirmed | first pass run | diagnostics proposed | diagnostics confirmed | diagnostics complete | final reporting proposed | final report approved | completed | unknown"': 'execution_stage: "not started"',
+        'confirmation_basis: "explicit user approval | user-directed continuation | not required | unknown"': 'confirmation_basis: "unknown"',
         'claim_strength: "causal | cautious causal | associational | descriptive | exploratory | unknown"': 'claim_strength: "unknown"',
     }
     for old, new in replacements.items():

@@ -9,6 +9,10 @@ description: "Primary structural route or target module for direct effects, indi
 
 Use this as a **structural route or target module** when the user asks about mechanisms, pathways, direct effects, indirect effects, or mediators. Mediation needs especially careful timing and assumptions from `04-dag-builder`.
 
+## Interaction Boundary
+
+This subskill may audit fit and prepare a plan, code skeleton, diagnostics, or reporting handoff, but it should not run substantial analysis, present first-pass estimates as final, or produce a final report on its own. Execution must return through the main skill's interaction checkpoints: user-confirmed plan, first-pass result review, diagnostics/sensitivity decision, and final-report approval or explicit deferral. If activated directly, summarize the proposed next step and ask one focused confirmation question before running models or writing final results.
+
 ## Fit Check
 
 Given the route handoff, check:

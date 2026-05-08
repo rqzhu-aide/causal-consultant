@@ -6,10 +6,11 @@ Use this reference when the main skill needs to shortlist causal routes or compo
 
 1. Start from the user's decision, estimand, deliverable, data status, and claim strength.
 2. Use `03-design-planner` to propose route hypotheses and `04-dag-builder` to audit causal logic.
-3. Use `02-data-inspector` to check whether the route is observable or constructible.
+3. Use `02-data-technician` as the Data Technician to check whether the route is observable or constructible and which method families are technically feasible.
 4. Treat method subskills as a role-based stack, not a flat package menu.
 5. Prefer the strongest supported design route over the most sophisticated estimator.
-6. If no route can support the intended causal claim, recommend descriptive, predictive, sensitivity, data-collection, fallback, or user-directed options.
+6. Before substantial method execution, use Data Technician method-fit suggestions to distinguish data-compatible, fragile, and blocked method families.
+7. If no route can support the intended causal claim, recommend descriptive, predictive, sensitivity, data-collection, fallback, or user-directed options.
 
 ## Role-Based Composition
 

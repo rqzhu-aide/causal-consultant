@@ -179,7 +179,7 @@ Report ITT primary. For treatment received:
 
 Report missingness by arm. If differential or outcome-related missingness is plausible:
 
-- route to `02-data-inspector`;
+- route to `02-data-technician`;
 - consider sensitivity analysis, inverse-probability weighting, multiple imputation, or bounds;
 - distinguish the all-randomized estimand from complete-case estimands.
 
@@ -229,7 +229,7 @@ The estimate should be interpreted as [assignment/treatment/exposure] effect amo
 | Assignment not randomized | Return to root router; consider observational/quasi-experimental designs. |
 | Assignment not observed | Cannot estimate ITT directly; consider observational or IV design if an instrument exists. |
 | Treatment receipt differs from assignment | Keep ITT in `05-randomized-experiments`; use `13-instrumental-variables` for CACE/LATE. |
-| Only triggered/exposed users are in dataset | Warn about post-randomization selection; use `02-data-inspector`; define triggered estimand if scientifically intended. |
+| Only triggered/exposed users are in dataset | Warn about post-randomization selection; use `02-data-technician`; define triggered estimand if scientifically intended. |
 | Outcome is time-to-event | Use `15-survival-competing-risks`; keep `05-randomized-experiments` for randomization audit. |
 | Interference/spillovers plausible | Use `17-interference-spillovers`; redefine exposure mapping. |
 | CATE/uplift requested | Use `09-heterogeneous-effects-policy`; require honest or held-out evaluation. |

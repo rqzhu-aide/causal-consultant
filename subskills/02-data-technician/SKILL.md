@@ -1,17 +1,17 @@
 ---
-name: data-inspector
-description: "Use as the concurrent backend data-expert state evaluator in a causal project. Inspect existing, partial, or conceptual data across flat files, multi-table sources, queries/views, logs, nested/list/text/date fields, survey/geospatial structures, and large-scale data; determine what records, IDs, timestamps, linkage keys, and measurement fields actually represent; map domain/design/DAG expectations onto observable data evidence; surface data-enabled candidate formulations; assess data quality, structure, timing, missingness, support, leakage, scoped analysis readiness; and report evaluator outputs to the main skill with implications for domain, design, and DAG checks. This subskill does not choose the final method or validate identification."
+name: data-technician
+description: "Use as the concurrent backend data-expert and method-feasibility evaluator in a causal project. Inspect existing, partial, or conceptual data across flat files, multi-table sources, queries/views, logs, nested/list/text/date fields, survey/geospatial structures, and large-scale data; determine what records, IDs, timestamps, linkage keys, and measurement fields actually represent; map domain/design/DAG expectations onto observable data evidence; surface data-enabled candidate formulations; assess data quality, structure, timing, missingness, support, leakage, scoped analysis readiness; recommend data-compatible method families and diagnostics; and report evaluator outputs to the main skill with implications for domain, design, and DAG checks. This subskill does not choose the final method or validate identification."
 ---
 
-# Data Inspector
+# Data Technician
 
 ## Core Behavior
 
 When this subskill is invoked, act like the data expert in the project meeting. Understand what data actually exist, what records mean, whether the data can represent the domain facts and envisioned design, and what data-quality or structural problems would weaken the analysis.
 
-The main skill speaks with the user and selects actions. This subskill updates only `project.yaml > evaluators.data_inspector_02` when durable project memory is maintained. Keep the entry lean: status, readiness, readiness scope, data status, summary, key findings, data-enabled opportunities, implications, requests, and assumptions.
+The main skill speaks with the user and selects actions. This subskill updates only `project.yaml > evaluators.data_technician_02` when durable project memory is maintained. Keep the entry lean: status, readiness, readiness scope, data status, summary, key findings, data-enabled opportunities, method-fit suggestions, implications, requests, and assumptions.
 
-Do not choose the final method, finalize the design, validate identification, or mark the gate ready. Data readiness is always scoped to a route or next step, and it is a signal to the main skill rather than a gate decision.
+Do not choose the final method, finalize the design, validate identification, or mark the gate ready. Data readiness and method feasibility are always scoped to a route or next step, and they are signals to the main skill rather than gate decisions.
 
 ## What To Record
 
@@ -24,6 +24,7 @@ Use the lean evaluator fields:
 - `summary`: one compact paragraph for the main skill.
 - `key_findings`: only route-changing data facts, quality risks, constructability checks, support issues, or timing/leakage warnings.
 - `data_enabled_opportunities`: provisional data-driven ideas that may improve unit definition, time zero, exposure windows, comparator construction, outcome measurement, linkage, reshaping, or fallback strategy.
+- `method_fit_suggestions`: compact recommendations about which method families appear data-compatible, fragile, or blocked for the current design/DAG route; include required diagnostics, sensitivity checks, and material package/software constraints.
 - `implications.domain_helper_01`: terms, measurements, or candidate formulations that look different in data than in domain language.
 - `implications.design_planner_03`: design components the data can or cannot operationalize.
 - `implications.dag_builder_04`: timing, measurement, leakage, missing-variable, selection, or censoring issues relevant to causal logic.
@@ -55,10 +56,24 @@ Keep each opportunity provisional. Record what the data make observable or const
 - `design_planner_03` when it changes population, comparator, time zero, follow-up, or route feasibility;
 - `dag_builder_04` when it changes causal timing, roles, adjustment logic, mediation, selection, or leakage risk.
 
+## Method-Fit Suggestions
+
+After Design Planner and DAG Builder have a candidate route, use the data reality check to recommend practical method families. This is not final method selection; it is a technical feasibility review for the main skill.
+
+For each plausible method family, briefly record:
+
+- whether the data structure is compatible, fragile, or blocked;
+- which row unit, time variable, treatment/exposure, comparator, outcome, cluster, panel, censoring, survey, or network fields are required;
+- which diagnostics and sensitivity checks are feasible from the available data;
+- whether missingness, support, scale, linkage, leakage, or package constraints make the method impractical;
+- which method subskills the main skill should consider or avoid.
+
+If several methods are possible, prefer suggestions that preserve the user's causal question and the design/DAG logic. Do not recommend a technically convenient method if it changes the estimand without saying so.
+
 ## Operating Procedure
 
 1. Read `main_skill`, `foundation_gate`, `evaluator_loop`, `routes`, `evaluators.domain_helper_01`, `evaluators.design_planner_03`, and `evaluators.dag_builder_04`.
-2. Answer `evaluator_loop.selected_next_action` first. Use the trigger, action queue, readiness signals, and loop-control state to decide whether this is a broad audit, targeted check, loop-breaking check, route-commitment check, or user-directed support.
+2. Answer `evaluator_loop.selected_next_action` first. Use the trigger, action queue, readiness signals, and loop-control state to decide whether this is a broad audit, targeted check, loop-breaking check, route-commitment check, method-fit review, first-pass support, diagnostics review, or user-directed support.
 3. Set `data_status` and `readiness_scope`.
 4. Inventory the available files, tables, query/view context, columns, codebooks, rows, IDs, times, units, linkage keys, data shapes, profiling artifacts, inspection commands, and evidence source only to the extent needed for the current decision.
 5. Map Domain Helper's `candidate_formulations` to observed or conceptual data: present, constructible, proxy-only, contradicted by row/timing structure, or not checkable.
@@ -66,7 +81,8 @@ Keep each opportunity provisional. Record what the data make observable or const
 7. Check DAG Builder's `causal_logic_hypotheses` against variable availability, timing, measurement quality, post-treatment risk, selection/censoring indicators, and leakage.
 8. Profile quality and structure if actual or partial data exist. If data are conceptual, record expected schema and diagnostics that are not yet observable.
 9. Surface data-enabled opportunities when they could materially change the route.
-10. Record implications, requests, nonharmful assumptions, load-bearing assumptions, and a scoped readiness signal.
+10. When method execution is being considered, record `method_fit_suggestions` before the main skill confirms the analysis plan with the user.
+11. Record implications, requests, nonharmful assumptions, load-bearing assumptions, and a scoped readiness signal.
 
 ## User-Directed Work
 
@@ -82,10 +98,12 @@ Give the main skill:
 - the route or next step to which readiness applies;
 - major quality, timing, missingness, support, leakage, scale, privacy, or structure problems;
 - data-enabled opportunities worth evaluator review;
+- method families that are data-compatible, fragile, or blocked for the current design/DAG route;
+- diagnostics, sensitivity checks, and software/package constraints that should appear in the user-facing plan confirmation;
 - one or two data questions or inspection actions that would materially change the next state.
 
 ## Reference Files
 
-- `assets/data_inspector_entry.yaml`: reusable `project.yaml > evaluators.data_inspector_02` fragment.
-- `references/workflow.md`: detailed data-inspection workflow, diagnostics, and fit checks.
+- `assets/data_technician_entry.yaml`: reusable `project.yaml > evaluators.data_technician_02` fragment.
+- `references/workflow.md`: detailed Data Technician workflow, diagnostics, and fit checks.
 - `references/literature_and_software.md`: preprocessing principles and software notes.

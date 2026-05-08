@@ -4,7 +4,7 @@
 
 Use this workflow after `03-design-planner` has proposed, shortlisted, or asked to audit a candidate design. The DAG builder's job is to turn that design into practical causal logic: assumptions, timing, variable roles, identification, adjustment or non-adjustment strategy, sensitivity needs, and downstream analytic handoff.
 
-In the main-skill architecture, this workflow is the backend practical causal-logic evaluator. It maintains `project.yaml > evaluators.dag_builder_04` and feeds compact analytic implications to the main skill, feedback to the design planner, data checks to the data inspector, domain checks to Domain Helper, and handoff notes to method subskills.
+In the main-skill architecture, this workflow is the backend practical causal-logic evaluator. It maintains `project.yaml > evaluators.dag_builder_04` and feeds compact analytic implications to the main skill, feedback to the design planner, data and method-feasibility checks to the Data Technician, domain checks to Domain Helper, and handoff notes to method subskills.
 
 Start each evaluator pass by reading `evaluator_loop`. The trigger, selected next action, action queue, readiness signals, summaries, and loop-control state tell DAG Builder whether this is a targeted causal-logic audit, route-hypothesis review, route-commitment check, user-directed support, or a loop-breaking pass. Answer that selected action first before adding broader graph alternatives.
 
@@ -13,7 +13,7 @@ Coordinate continuously with:
 - `evaluators.design_planner_03` for the design to audit, comparison, population, time zero, follow-up, route hypotheses, preferred route ID, and specific design questions;
 - `routes.current_route_id` and `routes.hypotheses` for the main skill's promoted route state;
 - `evaluators.domain_helper_01` for field context, scientific conventions, mechanisms, candidate formulations, and domain cautions;
-- `evaluators.data_inspector_02` for observed variables, measurement timing, missingness, censoring, clustering, network links, data-enabled opportunities, and data-readiness limitations;
+- `evaluators.data_technician_02` for observed variables, measurement timing, missingness, censoring, clustering, network links, data-enabled opportunities, and data-readiness limitations;
 - `main_skill` and `evaluator_loop` for user goal, selected action, action priority, deliverable, and explanation depth.
 
 Do not lead the high-level design conversation. If causal logic breaks the proposed design, record the problem, possible causal-logic alternatives, and feed them back to `03-design-planner`.
@@ -112,7 +112,7 @@ Return compact feedback:
 
 - to `main_skill`: plain-language assumptions and analytic status;
 - to `03-design-planner`: design features that need revision, clarification, or fallback;
-- to `02-data-inspector`: variable timing or data availability checks needed before implementation;
+- to `02-data-technician`: variable timing or data availability checks needed before implementation;
 - to `01-domain-helper`: mechanisms, timing claims, or field-common assumptions that need domain review;
 - to method subskills: adjustment set, forbidden variables, diagnostics, sensitivity checks, and warnings.
 

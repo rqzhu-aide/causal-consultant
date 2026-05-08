@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This map supports subskill 02. Use it for practical data inspection before causal analysis: data profiling, data-to-domain fit, data-to-design fit, data-to-DAG fit, structure validation, leakage prevention, missingness/outlier summaries, feature construction, reproducible preprocessing, and analysis-readiness triage.
+This map supports subskill 02. Use it for practical Data Technician review before causal analysis: data profiling, data-to-domain fit, data-to-design fit, data-to-DAG fit, structure validation, leakage prevention, missingness/outlier summaries, feature construction, reproducible preprocessing, and analysis-readiness triage.
 
 This is intentionally narrower than a missing-data or measurement-error methods guide. If the data problem requires an explicit statistical model for censoring, measurement error, transportability, or nonignorable missingness, route to the relevant analysis subskill and use this preprocessing audit as input.
 
@@ -108,7 +108,7 @@ Check whether outcome is:
 
 ### Covariates and confounders
 
-Candidate baseline variables should generally be measured before treatment or time zero. The data inspector can flag candidates for DAG review, but should not finalize confounder, mediator, collider, or instrument roles. Bad adjustment candidates often include variables measured after treatment, variables created by survival/follow-up, and variables affected by selection.
+Candidate baseline variables should generally be measured before treatment or time zero. The Data Technician can flag candidates for DAG review, but should not finalize confounder, mediator, collider, or instrument roles. Bad adjustment candidates often include variables measured after treatment, variables created by survival/follow-up, and variables affected by selection.
 
 ### IDs and time
 

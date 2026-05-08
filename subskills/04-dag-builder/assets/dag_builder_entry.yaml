@@ -11,7 +11,7 @@ evaluators:
     implications:
       domain_helper_01: []
       design_planner_03: []
-      data_inspector_02: []
+      data_technician_02: []
       method_subskills: []
     requests_for_main_skill: []
     nonharmful_assumptions: []

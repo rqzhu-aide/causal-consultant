@@ -16,7 +16,7 @@ main_skill:
   primary_intent: "estimate effect | choose method | inspect data | design study | critique paper | review assumptions | interpret results | write report | debug code | learn concept | rescue analysis | unknown"
   rigor_mode: "not needed | exploratory | ready | blocked | user-directed | unknown"
   conversation_style: "suggest-and-invite | suggest-and-confirm | direct answer | teaching | unknown"
-  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_inspector_02 | refresh_design_planner_03 | refresh_dag_builder_04 | activate_method_subskill | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_technician_02 | refresh_design_planner_03 | refresh_dag_builder_04 | confirm_analysis_plan | activate_method_subskill | run_first_pass | run_diagnostics | prepare_final_report | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
   summary_for_user: null
   open_questions: []
   assumptions_to_surface: []
@@ -41,16 +41,16 @@ foundation_gate:
 
 evaluator_loop:
   trigger: "user_update | data_update | design_change | dag_feedback | route_commitment | user-directed | unknown"
-  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_inspector_02 | refresh_design_planner_03 | refresh_dag_builder_04 | activate_method_subskill | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_technician_02 | refresh_design_planner_03 | refresh_dag_builder_04 | confirm_analysis_plan | activate_method_subskill | run_first_pass | run_diagnostics | prepare_final_report | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
   action_queue: []
   readiness_signals:
     domain_helper_01: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-    data_inspector_02: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    data_technician_02: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
     design_planner_03: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
     dag_builder_04: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
   summaries:
     domain_helper_01: null
-    data_inspector_02: null
+    data_technician_02: null
     design_planner_03: null
     dag_builder_04: null
   loop_control:
@@ -69,13 +69,13 @@ evaluators:
     key_findings: []
     candidate_formulations: []
     implications:
-      data_inspector_02: []
+      data_technician_02: []
       design_planner_03: []
       dag_builder_04: []
     requests_for_main_skill: []
     nonharmful_assumptions: []
     load_bearing_assumptions: []
-  data_inspector_02:
+  data_technician_02:
     status: "active | inactive | unknown"
     readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
     readiness_scope: "not assessed | exploratory review | route comparison | design-data fit | dag-data fit | preprocessing | method-specific modeling | gate commitment | user-directed execution | unknown"
@@ -83,6 +83,7 @@ evaluators:
     summary: null
     key_findings: []
     data_enabled_opportunities: []
+    method_fit_suggestions: []
     implications:
       domain_helper_01: []
       design_planner_03: []
@@ -100,7 +101,7 @@ evaluators:
     route_hypotheses: []
     implications:
       domain_helper_01: []
-      data_inspector_02: []
+      data_technician_02: []
       dag_builder_04: []
     requests_for_main_skill: []
     nonharmful_assumptions: []
@@ -117,7 +118,7 @@ evaluators:
     implications:
       domain_helper_01: []
       design_planner_03: []
-      data_inspector_02: []
+      data_technician_02: []
       method_subskills: []
     requests_for_main_skill: []
     nonharmful_assumptions: []
@@ -130,8 +131,16 @@ routes:
 
 analysis:
   route_commitment_status: "exploratory | ready | committed | blocked | user-directed | unknown"
+  execution_stage: "not started | plan proposed | plan confirmed | first pass run | diagnostics proposed | diagnostics confirmed | diagnostics complete | final reporting proposed | final report approved | completed | unknown"
+  execution_confirmation:
+    plan_summary: null
+    user_confirmed_plan: false
+    confirmation_basis: "explicit user approval | user-directed continuation | not required | unknown"
+    confirmed_at: null
   active_or_recommended_subskills: []
   analyses: []
+  first_pass_summary: null
+  recommended_diagnostics: []
   claim_strength: "causal | cautious causal | associational | descriptive | exploratory | unknown"
   limitations: []
 

@@ -14,12 +14,14 @@ Use this as the **reporting layer**. It does not validate a route or strengthen 
 Before writing, check:
 
 - `foundation_gate.status`, `analysis.route_commitment_status`, and `analysis.claim_strength`;
+- `analysis.execution_stage`, `analysis.execution_confirmation`, first-pass status, and whether final reporting has been approved or is only a progress summary;
 - selected route, estimand, population, comparator, outcome scale, time horizon, and method subskill outputs;
 - diagnostics, sensitivity checks, failed routes, caveats, and user-directed constraints;
+- Data Technician method-fit suggestions and any unresolved data feasibility warnings;
 - load-bearing assumptions and whether they were surfaced, acknowledged, or deferred;
 - reproducibility needs: package names, versions, seeds, data-processing notes, code paths, and artifacts.
 
-If the requested report would overstate the causal claim, return to the main skill with safer language or a needed route/diagnostic check.
+If the requested report would overstate the causal claim, return to the main skill with safer language or a needed route/diagnostic check. If only a first pass has been run, produce a progress memo or preliminary interpretation unless the user explicitly asks to defer remaining diagnostics and approve final reporting.
 
 ## Output Types
 

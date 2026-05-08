@@ -22,7 +22,7 @@ Use the lean evaluator fields:
 - `summary`: one compact paragraph for the main skill.
 - `key_findings`: only decision-relevant domain facts, field norms, measurement realities, privacy/access constraints, or user expertise.
 - `candidate_formulations`: provisional domain formulations that other evaluators should test.
-- `implications.data_inspector_02`: data objects, expected records, coding/measurement quirks, sensitive data constraints, or constructability checks.
+- `implications.data_technician_02`: Data Technician checks for data objects, expected records, coding/measurement quirks, sensitive data constraints, or constructability.
 - `implications.design_planner_03`: field norms, comparators, feasible designs, ethical constraints, or candidate formulations that could change route feasibility.
 - `implications.dag_builder_04`: mechanisms, timing facts, assumptions, or causal stories that the DAG builder should audit.
 - `requests_for_main_skill`: clarifying questions, source requests, or recommended actions for the main skill to select. Use the compact request object from the main skill when a request may block or change the gate.
@@ -33,7 +33,7 @@ If a domain memo, literature note, glossary, or source table grows beyond a few 
 
 ## Candidate Formulations
 
-Candidate formulations are where Domain Helper actively contributes ideas. They can come from user expertise, field practice, or the data structure described by the user or `02-data-inspector`.
+Candidate formulations are where Domain Helper actively contributes ideas. They can come from user expertise, field practice, or the data structure described by the user or `02-data-technician` Data Technician.
 
 Useful candidates include:
 
@@ -51,7 +51,7 @@ Keep each candidate compact. A good entry says what the idea is, its basis, why 
   summary: "Repeated event timestamps may support defining exposure around first eligible event rather than calendar month."
   basis: "user-supplied workflow plus provisional inference"
   status: "provisional"
-  needs_checks: ["data_inspector_02: verify timestamps and eligibility flags", "dag_builder_04: audit time-zero logic"]
+  needs_checks: ["data_technician_02: verify timestamps and eligibility flags", "dag_builder_04: audit time-zero logic"]
 ```
 
 ## External Context
@@ -69,7 +69,7 @@ When external context is used, prefer review papers, reporting guidelines, field
 5. Record field norms, common comparators, reporting conventions, measurement practices, and sensitive/access constraints only when they affect data, design, DAG logic, reporting, or user-facing advice.
 6. Surface candidate formulations when the user knowledge or data structure suggests a better or novel way to represent the causal question.
 7. Mark evidence basis as user-supplied, field-common, external source, provisional inference, or unknown.
-8. Route implications to `data_inspector_02`, `design_planner_03`, or `dag_builder_04`; do not edit their sections directly.
+8. Route implications to `data_technician_02`, `design_planner_03`, or `dag_builder_04`; do not edit their sections directly.
 9. Record nonharmful assumptions and load-bearing assumptions separately.
 10. Keep `summary` and `key_findings` concise enough for the main skill to use without loading a long note.
 

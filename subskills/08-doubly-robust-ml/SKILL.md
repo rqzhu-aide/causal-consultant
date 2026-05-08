@@ -9,6 +9,10 @@ description: "Estimation support module for AIPW, TMLE, one-step estimators, Dou
 
 Use this as an **estimation support module**, not a primary identification route. Activate it after a primary route has defined the estimand, causal assumptions, adjustment set or nuisance functions, and data structure.
 
+## Interaction Boundary
+
+This subskill may audit fit and prepare a plan, code skeleton, diagnostics, or reporting handoff, but it should not run substantial analysis, present first-pass estimates as final, or produce a final report on its own. Execution must return through the main skill's interaction checkpoints: user-confirmed plan, first-pass result review, diagnostics/sensitivity decision, and final-report approval or explicit deferral. If activated directly, summarize the proposed next step and ask one focused confirmation question before running models or writing final results.
+
 ## Fit Check
 
 Given the route handoff, check:

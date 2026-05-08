@@ -9,6 +9,10 @@ description: "Target and outcome module for causal questions with time-to-event 
 
 Use this as a **target/outcome module** when the outcome is time-to-event or censoring/competing risks are central. It usually combines with a primary route such as randomized experiments, point-treatment observational, longitudinal g-methods, or HTE/policy.
 
+## Interaction Boundary
+
+This subskill may audit fit and prepare a plan, code skeleton, diagnostics, or reporting handoff, but it should not run substantial analysis, present first-pass estimates as final, or produce a final report on its own. Execution must return through the main skill's interaction checkpoints: user-confirmed plan, first-pass result review, diagnostics/sensitivity decision, and final-report approval or explicit deferral. If activated directly, summarize the proposed next step and ask one focused confirmation question before running models or writing final results.
+
 ## Fit Check
 
 Given the route handoff, check:

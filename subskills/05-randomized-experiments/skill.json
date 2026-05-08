@@ -43,7 +43,7 @@
   "routes_out_to": {
     "noncompliance_or_treatment_received_estimand": "subskills/13-instrumental-variables/",
     "time_to_event_or_competing_risk": "subskills/15-survival-competing-risks/",
-    "missing_outcomes_attrition_selection": "subskills/02-data-inspector/",
+    "missing_outcomes_attrition_selection": "subskills/02-data-technician/",
     "interference_spillovers": "subskills/17-interference-spillovers/",
     "heterogeneous_effects_policy": "subskills/09-heterogeneous-effects-policy/",
     "dynamic_regime_or_smart": "subskills/10-longitudinal-gmethods/",

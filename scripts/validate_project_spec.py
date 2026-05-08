@@ -25,10 +25,14 @@ ACTIONS = {
     "inspect_data",
     "literature_search",
     "refresh_domain_helper_01",
-    "refresh_data_inspector_02",
+    "refresh_data_technician_02",
     "refresh_design_planner_03",
     "refresh_dag_builder_04",
+    "confirm_analysis_plan",
     "activate_method_subskill",
+    "run_first_pass",
+    "run_diagnostics",
+    "prepare_final_report",
     "proceed_with_caveat",
     "block_ready_gate",
     "mark_ready",
@@ -75,11 +79,11 @@ REQUIRED_PATHS = [
     ("evaluator_loop", "selected_next_action"),
     ("evaluator_loop", "action_queue"),
     ("evaluator_loop", "readiness_signals", "domain_helper_01"),
-    ("evaluator_loop", "readiness_signals", "data_inspector_02"),
+    ("evaluator_loop", "readiness_signals", "data_technician_02"),
     ("evaluator_loop", "readiness_signals", "design_planner_03"),
     ("evaluator_loop", "readiness_signals", "dag_builder_04"),
     ("evaluator_loop", "summaries", "domain_helper_01"),
-    ("evaluator_loop", "summaries", "data_inspector_02"),
+    ("evaluator_loop", "summaries", "data_technician_02"),
     ("evaluator_loop", "summaries", "design_planner_03"),
     ("evaluator_loop", "summaries", "dag_builder_04"),
     ("evaluator_loop", "loop_control", "status"),
@@ -93,25 +97,26 @@ REQUIRED_PATHS = [
     ("evaluators", "domain_helper_01", "summary"),
     ("evaluators", "domain_helper_01", "key_findings"),
     ("evaluators", "domain_helper_01", "candidate_formulations"),
-    ("evaluators", "domain_helper_01", "implications", "data_inspector_02"),
+    ("evaluators", "domain_helper_01", "implications", "data_technician_02"),
     ("evaluators", "domain_helper_01", "implications", "design_planner_03"),
     ("evaluators", "domain_helper_01", "implications", "dag_builder_04"),
     ("evaluators", "domain_helper_01", "requests_for_main_skill"),
     ("evaluators", "domain_helper_01", "nonharmful_assumptions"),
     ("evaluators", "domain_helper_01", "load_bearing_assumptions"),
-    ("evaluators", "data_inspector_02", "status"),
-    ("evaluators", "data_inspector_02", "readiness"),
-    ("evaluators", "data_inspector_02", "readiness_scope"),
-    ("evaluators", "data_inspector_02", "data_status"),
-    ("evaluators", "data_inspector_02", "summary"),
-    ("evaluators", "data_inspector_02", "key_findings"),
-    ("evaluators", "data_inspector_02", "data_enabled_opportunities"),
-    ("evaluators", "data_inspector_02", "implications", "domain_helper_01"),
-    ("evaluators", "data_inspector_02", "implications", "design_planner_03"),
-    ("evaluators", "data_inspector_02", "implications", "dag_builder_04"),
-    ("evaluators", "data_inspector_02", "requests_for_main_skill"),
-    ("evaluators", "data_inspector_02", "nonharmful_assumptions"),
-    ("evaluators", "data_inspector_02", "load_bearing_assumptions"),
+    ("evaluators", "data_technician_02", "status"),
+    ("evaluators", "data_technician_02", "readiness"),
+    ("evaluators", "data_technician_02", "readiness_scope"),
+    ("evaluators", "data_technician_02", "data_status"),
+    ("evaluators", "data_technician_02", "summary"),
+    ("evaluators", "data_technician_02", "key_findings"),
+    ("evaluators", "data_technician_02", "data_enabled_opportunities"),
+    ("evaluators", "data_technician_02", "method_fit_suggestions"),
+    ("evaluators", "data_technician_02", "implications", "domain_helper_01"),
+    ("evaluators", "data_technician_02", "implications", "design_planner_03"),
+    ("evaluators", "data_technician_02", "implications", "dag_builder_04"),
+    ("evaluators", "data_technician_02", "requests_for_main_skill"),
+    ("evaluators", "data_technician_02", "nonharmful_assumptions"),
+    ("evaluators", "data_technician_02", "load_bearing_assumptions"),
     ("evaluators", "design_planner_03", "status"),
     ("evaluators", "design_planner_03", "readiness"),
     ("evaluators", "design_planner_03", "design_status"),
@@ -120,7 +125,7 @@ REQUIRED_PATHS = [
     ("evaluators", "design_planner_03", "key_findings"),
     ("evaluators", "design_planner_03", "route_hypotheses"),
     ("evaluators", "design_planner_03", "implications", "domain_helper_01"),
-    ("evaluators", "design_planner_03", "implications", "data_inspector_02"),
+    ("evaluators", "design_planner_03", "implications", "data_technician_02"),
     ("evaluators", "design_planner_03", "implications", "dag_builder_04"),
     ("evaluators", "design_planner_03", "requests_for_main_skill"),
     ("evaluators", "design_planner_03", "nonharmful_assumptions"),
@@ -135,7 +140,7 @@ REQUIRED_PATHS = [
     ("evaluators", "dag_builder_04", "causal_logic_hypotheses"),
     ("evaluators", "dag_builder_04", "implications", "domain_helper_01"),
     ("evaluators", "dag_builder_04", "implications", "design_planner_03"),
-    ("evaluators", "dag_builder_04", "implications", "data_inspector_02"),
+    ("evaluators", "dag_builder_04", "implications", "data_technician_02"),
     ("evaluators", "dag_builder_04", "implications", "method_subskills"),
     ("evaluators", "dag_builder_04", "requests_for_main_skill"),
     ("evaluators", "dag_builder_04", "nonharmful_assumptions"),
@@ -144,8 +149,15 @@ REQUIRED_PATHS = [
     ("routes", "hypotheses"),
     ("routes", "rejected_or_deferred"),
     ("analysis", "route_commitment_status"),
+    ("analysis", "execution_stage"),
+    ("analysis", "execution_confirmation", "plan_summary"),
+    ("analysis", "execution_confirmation", "user_confirmed_plan"),
+    ("analysis", "execution_confirmation", "confirmation_basis"),
+    ("analysis", "execution_confirmation", "confirmed_at"),
     ("analysis", "active_or_recommended_subskills"),
     ("analysis", "analyses"),
+    ("analysis", "first_pass_summary"),
+    ("analysis", "recommended_diagnostics"),
     ("analysis", "claim_strength"),
     ("analysis", "limitations"),
     ("subskill_analyses",),
@@ -178,7 +190,7 @@ REQUIRED_NONEMPTY_PATHS = [
     ("evaluator_loop", "trigger"),
     ("evaluator_loop", "selected_next_action"),
     ("evaluator_loop", "readiness_signals", "domain_helper_01"),
-    ("evaluator_loop", "readiness_signals", "data_inspector_02"),
+    ("evaluator_loop", "readiness_signals", "data_technician_02"),
     ("evaluator_loop", "readiness_signals", "design_planner_03"),
     ("evaluator_loop", "readiness_signals", "dag_builder_04"),
     ("evaluator_loop", "loop_control", "status"),
@@ -186,10 +198,10 @@ REQUIRED_NONEMPTY_PATHS = [
     ("evaluator_loop", "loop_control", "break_action"),
     ("evaluators", "domain_helper_01", "status"),
     ("evaluators", "domain_helper_01", "readiness"),
-    ("evaluators", "data_inspector_02", "status"),
-    ("evaluators", "data_inspector_02", "readiness"),
-    ("evaluators", "data_inspector_02", "readiness_scope"),
-    ("evaluators", "data_inspector_02", "data_status"),
+    ("evaluators", "data_technician_02", "status"),
+    ("evaluators", "data_technician_02", "readiness"),
+    ("evaluators", "data_technician_02", "readiness_scope"),
+    ("evaluators", "data_technician_02", "data_status"),
     ("evaluators", "design_planner_03", "status"),
     ("evaluators", "design_planner_03", "readiness"),
     ("evaluators", "design_planner_03", "design_status"),
@@ -199,6 +211,8 @@ REQUIRED_NONEMPTY_PATHS = [
     ("evaluators", "dag_builder_04", "supported_scope"),
     ("evaluators", "dag_builder_04", "identification_status"),
     ("analysis", "route_commitment_status"),
+    ("analysis", "execution_stage"),
+    ("analysis", "execution_confirmation", "user_confirmed_plan"),
     ("analysis", "claim_strength"),
 ]
 
@@ -271,7 +285,7 @@ ALLOWED_VALUES = {
     },
     ("evaluator_loop", "selected_next_action"): ACTIONS,
     ("evaluator_loop", "readiness_signals", "domain_helper_01"): READINESS,
-    ("evaluator_loop", "readiness_signals", "data_inspector_02"): READINESS,
+    ("evaluator_loop", "readiness_signals", "data_technician_02"): READINESS,
     ("evaluator_loop", "readiness_signals", "design_planner_03"): READINESS,
     ("evaluator_loop", "readiness_signals", "dag_builder_04"): READINESS,
     ("evaluator_loop", "loop_control", "status"): {
@@ -294,9 +308,9 @@ ALLOWED_VALUES = {
     },
     ("evaluators", "domain_helper_01", "status"): {"active", "inactive", "unknown"},
     ("evaluators", "domain_helper_01", "readiness"): READINESS,
-    ("evaluators", "data_inspector_02", "status"): {"active", "inactive", "unknown"},
-    ("evaluators", "data_inspector_02", "readiness"): READINESS,
-    ("evaluators", "data_inspector_02", "readiness_scope"): {
+    ("evaluators", "data_technician_02", "status"): {"active", "inactive", "unknown"},
+    ("evaluators", "data_technician_02", "readiness"): READINESS,
+    ("evaluators", "data_technician_02", "readiness_scope"): {
         "not assessed",
         "exploratory review",
         "route comparison",
@@ -308,7 +322,7 @@ ALLOWED_VALUES = {
         "user-directed execution",
         "unknown",
     },
-    ("evaluators", "data_inspector_02", "data_status"): {
+    ("evaluators", "data_technician_02", "data_status"): {
         "existing",
         "partially existing",
         "conceptual",
@@ -355,6 +369,25 @@ ALLOWED_VALUES = {
         "committed",
         "blocked",
         "user-directed",
+        "unknown",
+    },
+    ("analysis", "execution_stage"): {
+        "not started",
+        "plan proposed",
+        "plan confirmed",
+        "first pass run",
+        "diagnostics proposed",
+        "diagnostics confirmed",
+        "diagnostics complete",
+        "final reporting proposed",
+        "final report approved",
+        "completed",
+        "unknown",
+    },
+    ("analysis", "execution_confirmation", "confirmation_basis"): {
+        "explicit user approval",
+        "user-directed continuation",
+        "not required",
         "unknown",
     },
     ("analysis", "claim_strength"): {
@@ -452,7 +485,7 @@ def collect_load_bearing(data):
         ("foundation_gate", "assumptions_to_surface"),
         ("main_skill", "assumptions_to_surface"),
         ("evaluators", "domain_helper_01", "load_bearing_assumptions"),
-        ("evaluators", "data_inspector_02", "load_bearing_assumptions"),
+        ("evaluators", "data_technician_02", "load_bearing_assumptions"),
         ("evaluators", "design_planner_03", "load_bearing_assumptions"),
         ("evaluators", "dag_builder_04", "load_bearing_assumptions"),
     ]
@@ -512,7 +545,7 @@ def validate_workflow_invariants(data):
     action_queue = get_path(data, ("evaluator_loop", "action_queue"))
     readiness_signals = [
         ("domain_helper_01", get_path(data, ("evaluator_loop", "readiness_signals", "domain_helper_01"))),
-        ("data_inspector_02", get_path(data, ("evaluator_loop", "readiness_signals", "data_inspector_02"))),
+        ("data_technician_02", get_path(data, ("evaluator_loop", "readiness_signals", "data_technician_02"))),
         ("design_planner_03", get_path(data, ("evaluator_loop", "readiness_signals", "design_planner_03"))),
         ("dag_builder_04", get_path(data, ("evaluator_loop", "readiness_signals", "dag_builder_04"))),
     ]
@@ -521,7 +554,7 @@ def validate_workflow_invariants(data):
     blocking_requests = []
     for evaluator_id in (
         "domain_helper_01",
-        "data_inspector_02",
+        "data_technician_02",
         "design_planner_03",
         "dag_builder_04",
     ):
@@ -628,20 +661,65 @@ def validate_workflow_invariants(data):
     if route_status in {"ready", "committed"} and gate_status != "ready":
         errors.append("analysis.route_commitment_status is ready/committed but foundation_gate.status is not ready")
 
-    data_readiness = get_path(data, ("evaluators", "data_inspector_02", "readiness"))
-    data_scope = get_path(data, ("evaluators", "data_inspector_02", "readiness_scope"))
+    execution_stage = get_path(data, ("analysis", "execution_stage"))
+    user_confirmed_plan = get_path(data, ("analysis", "execution_confirmation", "user_confirmed_plan"))
+    stages_after_confirmation = {
+        "plan confirmed",
+        "first pass run",
+        "diagnostics proposed",
+        "diagnostics confirmed",
+        "diagnostics complete",
+        "final reporting proposed",
+        "final report approved",
+        "completed",
+    }
+    if execution_stage in stages_after_confirmation and user_confirmed_plan is not True:
+        errors.append(
+            "analysis.execution_stage indicates execution moved past planning but "
+            "analysis.execution_confirmation.user_confirmed_plan is not true"
+        )
+    if route_status == "committed" and user_confirmed_plan is not True:
+        errors.append("analysis.route_commitment_status is committed but the analysis plan is not user-confirmed")
+
+    data_readiness = get_path(data, ("evaluators", "data_technician_02", "readiness"))
+    data_scope = get_path(data, ("evaluators", "data_technician_02", "readiness_scope"))
+    method_fit_suggestions = get_path(data, ("evaluators", "data_technician_02", "method_fit_suggestions"))
+    active_method_subskills = get_path(data, ("analysis", "active_or_recommended_subskills"))
     if data_readiness == "ready" and not has_recorded_value(data_scope):
-        errors.append("data_inspector_02.readiness is ready but readiness_scope is not recorded")
+        errors.append("data_technician_02.readiness is ready but readiness_scope is not recorded")
+    stages_after_method_fit = stages_after_confirmation
+    if (
+        (
+            route_status in {"ready", "committed", "user-directed"}
+            and has_recorded_value(active_method_subskills)
+        )
+        or execution_stage in stages_after_method_fit
+    ) and not has_recorded_value(method_fit_suggestions):
+        errors.append(
+            "analysis has method execution or active/recommended method subskills but "
+            "data_technician_02.method_fit_suggestions is not recorded"
+        )
+    stages_after_first_pass = {
+        "first pass run",
+        "diagnostics proposed",
+        "diagnostics confirmed",
+        "diagnostics complete",
+        "final reporting proposed",
+        "final report approved",
+        "completed",
+    }
+    if execution_stage in stages_after_first_pass and not has_recorded_value(active_method_subskills):
+        errors.append("analysis.execution_stage indicates modeling/diagnostics but no method subskill is active or recommended")
 
     design_status = get_path(data, ("evaluators", "design_planner_03", "design_status"))
-    data_signal = get_path(data, ("evaluator_loop", "readiness_signals", "data_inspector_02"))
+    data_signal = get_path(data, ("evaluator_loop", "readiness_signals", "data_technician_02"))
     dag_supported_status = get_path(data, ("evaluators", "dag_builder_04", "supported_status"))
     dag_readiness = get_path(data, ("evaluators", "dag_builder_04", "readiness"))
     if design_status == "feasible":
         if data_signal == "blocks_ready_gate":
-            errors.append("design_planner_03.design_status is feasible but data_inspector_02 signal blocks the ready gate")
+            errors.append("design_planner_03.design_status is feasible but data_technician_02 signal blocks the ready gate")
         if data_readiness == "blocks_ready_gate":
-            errors.append("design_planner_03.design_status is feasible but data_inspector_02 readiness blocks the ready gate")
+            errors.append("design_planner_03.design_status is feasible but data_technician_02 readiness blocks the ready gate")
         if dag_readiness == "blocks_ready_gate":
             errors.append("design_planner_03.design_status is feasible but dag_builder_04 readiness blocks the ready gate")
         if dag_supported_status in {"blocked", "needs design revision"}:

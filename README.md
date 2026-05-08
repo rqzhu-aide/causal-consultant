@@ -30,6 +30,48 @@ Say one of the following phrases in your request:
 
 ---
 
+## How to Install
+
+This repository is a Codex skill. It is not a standalone R or Python package; it is a structured instruction package for agent environments that can load local `SKILL.md` folders.
+
+Install with Codex's skill installer, then restart Codex so the skill is discovered.
+
+Windows PowerShell:
+
+```powershell
+python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" `
+  --repo rqzhu-aide/causal-skills `
+  --path . `
+  --name causal-skills
+```
+
+macOS/Linux shell:
+
+```bash
+python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo rqzhu-aide/causal-skills \
+  --path . \
+  --name causal-skills
+```
+
+The `--name causal-skills` option is important because the skill lives at the repository root. Without it, some installers try to derive the skill name from `.` and fail.
+
+If `~/.codex/skills/causal-skills` already exists, remove or rename the existing folder first; the installer does not overwrite installed skills.
+
+### Supported Use Contexts
+
+This skill is intended for:
+
+- Codex Desktop or other Codex environments that load skills from `~/.codex/skills`.
+- Codex CLI or local agent setups that support `SKILL.md`-based skills.
+- Windows, macOS, and Linux machines where Codex can read local skill folders.
+- GitHub-hosted sharing through the installer command above, including private repositories when the user has GitHub credentials.
+- Other agent frameworks that explicitly support the same skill-folder convention, though behavior may vary outside Codex.
+
+The skill can generate or guide R, Python, Stata, or other analysis workflows once activated, but the skill itself is platform-neutral Markdown, YAML, references, and templates.
+
+---
+
 ## 🧩 Architecture Principles
 
 This skill treats causal inference as a sequence of design decisions, not as a single modeling command. The agent should first understand the user's need and data situation, then define the causal target, inspect or plan the data structure, compare feasible design routes, state assumptions, and only then choose methods, packages, or code resources.

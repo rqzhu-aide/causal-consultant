@@ -11,7 +11,7 @@ First identify the interaction mode:
 | User need | Signs | Next step |
 |---|---|---|
 | Learning | User asks what a causal idea, assumption, design, or method means | Explain in plain language and use examples; do not force a project spec |
-| Orientation | "Can I estimate...", "What should I do?", vague causal language | Explain what is knowable, ask 1-4 high-value questions if needed |
+| Orientation | "Can I estimate...", "What should I do?", vague causal language | Explain what is knowable, then ask one high-value question if needed. Ask two only when both are tightly related and needed for the same decision. |
 | Prospective design planning | No dataset yet, planning a study, deciding what to collect | Draft target trial/design options, minimum data schema, measurement plan |
 | Design triage | User has treatment/outcome/data context | Build a route shortlist and feasibility checklist |
 | Data structure audit | User has columns, schema, or messy data | Map rows, units, timing, variables, and possible feature construction |
@@ -253,7 +253,7 @@ Do not require the user to state formal identification assumptions up front. Use
 
 Ask questions in layers.
 
-Do not run the layers as an opening questionnaire. For a broad cold-start request, begin with one warm invitation and wait for the user's first concrete detail. Once the user provides a dataset, decision, treatment, outcome, or desired deliverable, ask only the next one or two questions that would change routing.
+Do not run the layers as an opening questionnaire. For a broad cold-start request, begin with one warm invitation and wait for the user's first concrete detail. Once the user provides a dataset, decision, treatment, outcome, or desired deliverable, ask only the next question that would change routing. Ask two questions only when both are tightly related and both are needed for the same next decision.
 
 ### Layer 1: enough to understand the need
 

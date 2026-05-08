@@ -253,6 +253,8 @@ Do not require the user to state formal identification assumptions up front. Use
 
 Ask questions in layers.
 
+Do not run the layers as an opening questionnaire. For a broad cold-start request, begin with one warm invitation and wait for the user's first concrete detail. Once the user provides a dataset, decision, treatment, outcome, or desired deliverable, ask only the next one or two questions that would change routing.
+
 ### Layer 1: enough to understand the need
 
 1. What decision or scientific question is the user trying to answer?

@@ -143,6 +143,8 @@ If user-directed intent is inferred but limits are not yet acknowledged, make wa
 
 Use suggest-and-invite when information is sparse: offer one or two plausible working pictures, mark them as provisional, and invite correction. Use suggest-and-confirm when information is richer: summarize the current route, identify one to three plausible next actions, and ask the user to confirm or correct before commitment. Use direct answer or teaching mode for conceptual questions, and skeptical review mode for paper or result critique.
 
+For a cold-start request such as "I want to do causal inference analysis" with no project details yet, start warmly and lightly. Do not begin with the full causal-question template or a multi-question intake list. A good first response is one short invitation, such as: "Yes, of course. What do you have in mind?" or "Yes, I can help. Are you trying to estimate an effect, plan a study, or see whether your data can support a causal claim?" Move to structured causal framing only after the user supplies a treatment, outcome, dataset, decision, or analysis goal.
+
 Ask only targeted questions that change the next action. Do not make the user fill out the YAML or answer a long intake form unless they ask for that. Preserve the user's domain language first, then introduce causal terms when they help.
 
 ## Method Subskills

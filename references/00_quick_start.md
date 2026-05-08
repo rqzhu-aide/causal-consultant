@@ -22,7 +22,9 @@ Use this file when you need the shortest possible operating procedure.
 
 ## Minimal Clarifying Questions
 
-Ask these if the user gives only a dataset and says "do causal inference":
+Use these as a menu, not a script. For a broad cold-start request with no project detail, ask only one warm opener first, such as "Yes, of course. What do you have in mind?" or "Are you trying to estimate an effect, plan a study, or check whether your data can support a causal claim?"
+
+After the user gives a dataset, decision, treatment, outcome, or method goal, choose only the next question that would change the next action. Ask two questions only when they are tightly related and both are needed for the same decision:
 
 1. What do you want to do next: learn, choose a design, audit the data, draft code, interpret results, or write a report?
 2. What is the treatment or intervention, and what is the comparator?

@@ -7,15 +7,18 @@ Use this file when you need the shortest possible operating procedure.
 1. Identify what the user wants next: learn, get design help, audit data, plan analysis, draft code, interpret results, or write a report.
 2. Restate the likely causal question or learning goal in the user's domain language.
 3. Clarify only the treatment/intervention, comparator, outcome, time zero, follow-up, target population, and data structure details needed for the next step.
-4. Keep the main skill and four backend foundation subskills active concurrently: the main skill speaks with the user and tracks goal/alignment, `01-domain-helper` tracks domain context and terminology, `02-data-inspector` tracks actual or expected data structure, `03-design-planner` tracks study design, and `04-dag-builder` tracks causal logic.
-5. In the `02-data-inspector` YAML entry, set `data_existence_status` as existing, partially existing, conceptual, or unknown; then add the companion data-basis label.
-6. If data do not exist yet, create a study or data-collection blueprint while keeping the data track labeled as conceptual.
-7. Use `03-design-planner` to shortlist 1 to 3 plausible high-level design routes and state the key conditions for each.
-8. Use `04-dag-builder` to check the causal logic, identification, adjustment implications, and method-selection implications for the shortlisted route, checked against `02` data facts and `03` design feasibility.
-9. Route to one or more candidate method subskills once the rough design is known.
-10. If a subskill rejects a route, record why and return to the route shortlist.
-11. Build an analysis plan, diagnostics, sensitivity analyses, and code only after the route, estimand, and data suitability are clear enough.
-12. Report estimates with assumptions, diagnostics, limitations, and appropriately cautious causal language.
+4. When durable memory is useful, create or reuse a dated state folder with `project.yaml`, `analyses/`, and `artifacts/`; otherwise track the state conceptually.
+5. Keep the main skill and four backend foundation subskills active concurrently: the main skill speaks with the user, tracks goal/alignment, and selects next actions; `evaluators.domain_helper_01`, `evaluators.data_inspector_02`, `evaluators.design_planner_03`, and `evaluators.dag_builder_04` act as state evaluators that update their own sections and report summaries, implications, and requests back to the main skill.
+6. In `project.yaml > evaluators.data_inspector_02`, set `data_status` as existing, partially existing, conceptual, or unknown; then set a route- or next-step-specific `readiness_scope`.
+7. If data do not exist yet, create a study or data-collection blueprint while keeping the data track labeled as conceptual.
+8. Use `design_planner_03` to shortlist 1 to 3 feasible high-level design strategies, state the key conditions, and identify route-changing user questions.
+9. Use `dag_builder_04` to audit the proposed design's causal logic, identification, adjustment implications, assumptions, and analytic handoff, checked against `data_inspector_02` data readiness and `design_planner_03` design feasibility.
+10. Track `foundation_gate.status` as `not needed`, `exploratory`, `ready`, `blocked`, or `unknown`. Use `ready` only when a named route, evaluator records, and load-bearing assumption review are reconciled enough to support causal commitment.
+11. If two consecutive evaluator rounds repeat the same blocker, cross-subskill dependency, or readiness state, record `evaluator_loop.loop_control` and stop the full loop. Choose one loop-break action: ask one decisive user question, make a permissible working assumption, surface a load-bearing assumption, demote/block the route, choose a fallback, or proceed user-directed with limits.
+12. Route to one or more candidate method subskills once the rough design is known. For supported causal work, wait for gate status `ready`. If the user asks for model execution, accepts a caveated analysis, repeatedly prefers continuation, signals urgency, or otherwise makes clear that they want progress while the gate is `exploratory` or `blocked`, give a brief validity warning, record acknowledged limits under `main_skill.user_directed`, and set `analysis.route_commitment_status` to `user-directed`.
+13. If a subskill rejects a route, record why and return to the route shortlist.
+14. Build an analysis plan, diagnostics, sensitivity analyses, and code only after the route, estimand, and data suitability are clear enough, unless the user-directed intent and validity limits are recorded.
+15. Report estimates with assumptions, diagnostics, limitations, and appropriately cautious causal language. User-directed model execution may include complex model fitting, but it does not upgrade the validity label.
 
 ## Minimal Clarifying Questions
 
@@ -37,9 +40,11 @@ For any proposed route or analysis, produce:
 Current mode:
 Causal question or learning goal:
 Existing data and data structure:
-Data existence status for 02:
-Data basis for 02:
+Data status and readiness scope for `evaluators.data_inspector_02`:
 Foundation components:
+Foundation gate status:
+Load-bearing assumption review:
+User-directed continuation, if active: intent basis, warning, acknowledged limits, requested/allowed scope, prohibited claims
 Domain context:
 Main skill/user-facing summary:
 Route shortlist:

@@ -1,136 +1,119 @@
-# Workflow: User Data Inspection
+# Workflow: Data Inspection
 
 ## Goal
 
-Use this workflow before choosing or fitting a causal model. The goal is to turn a raw or semi-clean dataset into a causal-analysis-ready structure, while flagging issues that could damage validity later.
+Use this workflow before choosing or fitting a causal model, and whenever the project needs a data reality check. The data inspector asks: given the domain facts, envisioned design, and DAG/assumption needs, what does the data actually contain, and what can it support?
 
-In the main-skill architecture, this workflow is the backend data/preprocessing record. The main skill usually speaks with the user; this workflow updates the `02-data-inspector` YAML entry and feeds concrete data facts to the main skill, domain helper, design planner, and DAG builder.
+In the main-skill architecture, this workflow is the backend data-expert state evaluator. The main skill usually speaks with the user and selects next actions; this workflow updates `project.yaml > evaluators.data_inspector_02` with compact summary, findings, data-enabled opportunities, implications, requests, and assumptions for the main skill.
+
+Start each evaluator pass by reading `evaluator_loop`. The trigger, selected next action, action queue, readiness signals, summaries, and loop-control state tell Data Inspector whether this is a broad audit, a targeted check, route-commitment review, user-directed support, or a loop-breaking pass. Answer that selected action first before adding broader observations.
 
 This workflow centers on:
 
-- basic data profile: sample size, dimensions, missingness, outliers, variable types;
-- data structure: units, IDs, time, repeated measures, clusters, cohorts, panels, longitudinal format;
-- causal variable roles: treatment, outcome, covariates, confounder proxies, propensity-score candidates, mediators, post-treatment variables;
-- modeling difficulties: high dimension, sparse treatment groups, rare outcomes, limited overlap, too few clusters/time periods, leakage risk.
+- data existence and evidence basis: actual, partial, conceptual, or unknown;
+- data inventory: rows, columns, files, tables, source systems, queries/views, codebooks, IDs, time variables, linkage keys, groups, records, and data shape;
+- data-to-domain fit: whether fields represent the domain objects, terms, measurements, and codes described by `01`;
+- data-to-design fit: whether the data can construct the population, treatment/exposure, comparator, time zero, follow-up, outcomes, clusters, pre-periods, or network links envisioned by `03`;
+- data-to-DAG fit: whether variables and timing needed by `04` are observable, missing, late, ambiguous, or leakage-prone;
+- quality and readiness: missingness, outliers, duplicates, support, sparsity, dimensionality, and reproducible preprocessing needs;
+- data-enabled opportunities: alternate units, time-zero definitions, exposure windows, linkages, reshapes, proxy outcomes, or natural-experiment signals to route back to the foundation team.
 
 ## Coordination With Other Foundation Components
 
-- Coordinate with the main skill by reporting data facts in user-friendly summaries: what exists, what is missing, what seems safe, and what needs clarification.
-- Coordinate with `01-domain-helper` by checking whether actual or conceptual data match domain expectations.
-- Coordinate with `03-design-planner` by recording whether the actual or conceptual schema supports the design: assignment/exposure records, time zero, follow-up, IDs, clusters, repeated measures, pre-periods, network links, and measurement schedule.
-- Coordinate with `04-dag-builder` by providing variable timing, candidate treatment/outcome variables, baseline covariates, possible confounders, mediators, instruments, selection/censoring variables, and variables with unclear roles.
-- Do not let data shape alone choose the final method. A route recommendation from this workflow is provisional until design feasibility and causal logic agree.
+- Use `main_skill` for the user goal, requested deliverable, and what needs to be explained plainly.
+- Use `evaluator_loop` for the main skill's selected action, active queue, readiness signals, summaries, and loop-control state.
+- Use `01-domain-helper` to check how domain terms, field norms, measurement practices, and privacy/access constraints appear in the data.
+- Use `03-design-planner` to check whether actual or conceptual data support the envisioned design components.
+- Use `04-dag-builder` to check timing evidence, candidate variables for DAG review, unavailable variables, and leakage-prone or late-measured variables.
+- Do not let data shape alone choose the final method. Data inspector reports what the data can support, cannot support, or newly suggest; design and DAG records decide what that means for route validity.
 
 ## Intake Checklist
 
-- [ ] What does one row represent?
-- [ ] What does the user believe the treatment/exposure is?
-- [ ] What outcome is intended, and when is it measured?
-- [ ] What is the domain story about how treatment is assigned?
-- [ ] What variables are known before treatment?
-- [ ] Which variables might be post-treatment, mediators, or consequences of treatment?
-- [ ] Are there unit IDs, group IDs, time variables, visit numbers, or event dates?
-- [ ] Is the data cross-sectional, cohort, panel, longitudinal, repeated-measures, clustered, survival, networked, or aggregate?
-- [ ] Are there enough treated/control units, events, clusters, and time periods for plausible modeling?
-- [ ] Are there missingness, outlier, high-dimensional, or leakage concerns?
+- What data evidence exists: file, table, codebook, column list, sample rows, summary table, study plan, or user description?
+- What does one row represent, and does that match the intended analysis unit?
+- What files/tables contain IDs, dates, treatment/exposure, outcomes, eligibility, follow-up, groups/clusters, or repeated records?
+- Are there multiple tables, linkage keys, database queries, source-system views, nested records, logs, text/list fields, survey weights, geospatial fields, or scale limits that change what is observable?
+- Which domain terms have obvious data fields, proxy fields, ambiguous fields, or no fields?
+- Can the data construct treatment/exposure, comparator, time zero, follow-up, and outcome windows?
+- Are proposed baseline variables measured before treatment or time zero?
+- Are there unit IDs, group IDs, time variables, visit numbers, adoption dates, event dates, or censoring indicators?
+- Are there enough units, treated/control observations, events, clusters, and time periods for the envisioned analysis?
+- Are there missingness, outlier, high-dimensional, support, or leakage concerns?
+- Are privacy, governance, or access limits preventing needed fields from being used?
+- What profiling artifacts, codebook checks, or inspection commands have actually been run?
 
-## Analysis Planning
+## Fit Checks
 
-1. Infer expected structure from the user's domain description.
-2. Inspect the dataset profile.
-3. Identify IDs, time variables, treatment, outcome, and likely covariates.
-4. Validate the structure against the expected causal design.
-5. Build a variable-role table.
-6. Decide safe preprocessing steps.
-7. Flag modeling difficulties and method constraints.
-8. Route to the next causal subskill or ask targeted questions.
+### Data-to-domain fit
+
+Check whether the data reflect the domain scientist's notes:
+
+- user-facing terms versus column/table names;
+- true domain events versus billing/logging/proxy events;
+- standard domain measurement windows versus available timestamps;
+- field-specific coding systems, scales, instruments, assays, or log events;
+- sensitive fields that are missing, masked, restricted, or only available in aggregate;
+- domain concepts that are not measured and should not be silently treated as observed.
+
+### Data-to-design fit
+
+Check whether the data can operationalize the design planner's structure:
+
+- target and analysis population;
+- eligibility criteria;
+- treatment/exposure assignment, receipt, dose, intensity, or timing;
+- comparator or untreated/control observations;
+- time zero;
+- baseline window;
+- follow-up and outcome window;
+- clusters, sites, panels, pre-periods, repeated measures, or networks;
+- censoring, attrition, sampling, or observation process fields.
+
+### Data-to-DAG fit
+
+Check whether the data can support DAG-builder questions:
+
+- whether candidate baseline variables are measured before treatment/time zero;
+- whether proposed adjustment variables are available and reliably measured;
+- whether some variables are actually post-treatment, mediators, colliders, or consequences of selection;
+- whether selection, censoring, missingness, or observation indicators exist;
+- whether variables flagged as important by the DAG are unobserved, proxied, or restricted;
+- whether preprocessing could leak outcome or future information.
+
+### Data-enabled formulation scan
+
+Data Inspector should notice when data structure suggests a useful causal formulation that has not yet been proposed. Examples include:
+
+- a better unit of analysis than the one initially assumed;
+- a credible time-zero field, adoption date, eligibility date, or baseline window;
+- exposure intensity, dose, receipt, adherence, or timing constructions;
+- comparator/control construction from unexposed, not-yet-treated, assigned-but-untriggered, or matched source-system records;
+- panel, event-history, repeated-measure, or linkage reshapes;
+- proxy outcomes or measurement composites that need domain review;
+- discontinuities, rollouts, cutoffs, shocks, eligibility rules, or other natural-experiment signals.
+
+Record these as `data_enabled_opportunities`, then route plausibility to `domain_helper_01`, route feasibility to `design_planner_03`, and causal timing/role concerns to `dag_builder_04`. Keep them provisional until the main skill selects a next action.
 
 ## Data Profile Checklist
 
 - row count and column count;
-- unique unit count;
+- unique units;
 - duplicate unit/time keys;
-- variable types;
-- missingness by column;
-- treatment and outcome missingness;
-- numeric ranges and impossible values;
-- outliers and heavy tails;
-- categorical levels and rare categories;
-- constant or near-constant variables;
-- high-cardinality variables;
-- memory/size constraints;
-- \(p/n\), treated/control counts, and event counts.
-
-## Structure Checklist
-
-### Cross-sectional or cohort
-
-- one row per unit;
-- treatment or exposure measured before outcome;
-- baseline covariate window available;
-- follow-up/outcome window available.
-
-### Repeated measures or longitudinal
-
-- unit ID;
-- time or visit index;
-- repeated outcome and/or treatment measurements;
-- irregular visits or missing visits;
-- time-varying covariates and possible treatment-confounder feedback.
-
-### Panel or DiD
-
-- unit ID;
-- calendar time;
-- treatment adoption time;
-- pre-period and post-period outcomes;
-- balanced or unbalanced panel;
-- cluster or region indicators.
-
-### Clustered or multilevel
-
-- group/cluster/site ID;
-- treatment assigned at individual or cluster level;
-- outcome measured at individual or cluster level;
-- number of clusters and cluster sizes.
-
-### Survival or event data
-
-- time zero;
-- event date or duration;
-- event indicator;
-- censoring indicator/date;
-- competing event codes if present.
-
-### High-dimensional data
-
-- number of features relative to sample size;
-- feature blocks;
-- sparsity;
-- baseline availability;
-- planned screening or dimension reduction;
-- leakage risk.
-
-## Variable-Role Mapping
-
-Assign every important variable to one of these roles:
-
-- treatment/exposure;
-- treatment timing or dose;
-- outcome;
-- outcome timing;
-- baseline covariate;
-- plausible confounder;
-- propensity-score candidate;
-- effect modifier;
-- mediator or post-treatment variable;
-- instrument or encouragement;
-- cluster/group ID;
-- unit ID;
-- time variable;
-- censoring/observation indicator;
-- variable to exclude;
-- unclear role.
+- wide versus long format;
+- numeric, categorical, date/time, text, and list columns;
+- JSON/list/nested fields, log events, source-system views, and database queries used;
+- linkage keys, table relationships, and join multiplicity;
+- survey weights, strata, clusters, or sampling fields;
+- geospatial coordinates, regions, distances, or adjacency fields;
+- missingness by variable and by key component;
+- impossible values, date-order errors, unit inconsistencies, duplicate records;
+- treatment/exposure availability and levels;
+- comparator/control availability;
+- outcome distribution and outcome availability;
+- cluster sizes, repeated-measure counts, and panel balance;
+- categorical levels, sparse levels, constant columns, and high-cardinality variables;
+- \(p/n\), treated/control counts, event counts, cluster counts, and pre-period counts.
+- computational scale, memory constraints, profiling artifacts, and inspection commands or rules run.
 
 ## Safe Preprocessing Patterns
 
@@ -140,114 +123,81 @@ Generally safe when documented:
 - parse dates;
 - recode labels using a codebook;
 - remove exact duplicate records after key audit;
-- create baseline summaries from pre-treatment windows;
+- construct baseline summaries from pre-treatment windows;
 - encode categorical covariates;
-- scale continuous covariates for algorithms;
+- scale continuous variables for algorithms;
 - create missingness indicators for descriptive audit;
-- impute baseline covariates when assumptions are plausible;
-- use unsupervised dimension reduction on baseline covariates only.
+- impute baseline covariates when assumptions are plausible and documented;
+- use unsupervised dimension reduction on baseline covariates only;
+- preserve raw variables and reproducible transformation rules.
 
 Potentially unsafe:
 
 - use future visits to construct baseline;
-- use post-treatment variables in propensity scores;
+- use post-treatment variables in baseline adjustment sets;
 - drop rows based on outcome availability without checking treatment/prognosis patterns;
 - remove outliers after seeing treatment effects;
 - infer treatment from downstream behavior;
-- include mediators as confounders for a total effect;
-- select features by outcome association without sample splitting/cross-fitting;
-- collapse repeated rows without preserving time.
+- include mediators as baseline covariates for a total-effect analysis;
+- select features by outcome association without sample splitting or cross-fitting;
+- collapse repeated rows without preserving time;
+- learn embeddings or PCA from variables that include outcomes, mediators, or future information.
 
-## Modeling Difficulty Triage
+## Readiness Triage
 
-Flag:
+Use the canonical evaluator readiness statuses:
 
-- treated group too small;
-- control group too small;
-- rare outcome or few events;
-- high \(p/n\);
-- sparse high-cardinality categories;
-- many covariates relative to treated/event count;
-- poor covariate overlap;
-- continuous treatment with sparse dose range;
-- multi-arm treatment with rare arms;
-- too few clusters for cluster-robust inference;
-- too few pre-periods for DiD/synthetic control;
-- irregular time-varying treatment;
-- missingness concentrated in treatment/outcome/covariates;
-- plausible unmeasured confounding due to absent key variables.
+- `ready`: data structure and quality are adequate for a named route, design, or next step;
+- `sufficient_for_now`: data evidence is enough for the current exploratory or routing action, but not necessarily enough for gate commitment;
+- `needs_information`: key meanings, timing, IDs, files, tables, fields, or preprocessing evidence are ambiguous;
+- `blocks_ready_gate`: a required design/DAG component is absent, contradicted, or cannot be constructed from available data;
+- `not_needed`: no data check is needed for the current non-causal, teaching, or descriptive task;
+- `unknown`: data evidence is too limited to judge.
 
-## Route Decisions
+Common blockers:
 
-| Data finding | Likely route |
-|---|---|
-| One row per unit, baseline treatment, fixed outcome | point-treatment observational or randomized experiment |
-| Strong treatment imbalance and many baseline covariates | matching/weighting/balance |
-| High-dimensional baseline covariates | doubly robust/ML or simpler screened model |
-| Repeated time-varying treatment/covariates | longitudinal g-methods |
-| Panel with adoption timing | DiD/event study |
-| One/few treated aggregate units over time | synthetic control/time series |
-| Event times and censoring | survival/competing risks |
-| Post-treatment mediator variables | mediation |
-| Network/geographic spillovers | interference/spillovers |
-| Measurement/censoring process dominates | method-specific handoff and sensitivity/reporting |
+- no comparator/control observations;
+- no treatment/exposure timing;
+- no outcome or follow-up window;
+- rows represent the wrong unit for the intended analysis;
+- missing or unreliable unit IDs, time IDs, cluster IDs, or adoption dates;
+- baseline variables measured after treatment;
+- complete-case filtering would remove most treated or outcome-positive units;
+- too few treated units, events, clusters, or pre-periods;
+- key domain measurements are only proxies or unavailable;
+- data include only triggered/exposed/observed units when the design needs assigned or eligible units.
 
-## Suggested Response Pattern
+Every readiness note should include `readiness_scope`, such as `exploratory review`, `route comparison`, `design-data fit`, `dag-data fit`, `preprocessing`, `method-specific modeling`, `gate commitment`, or `user-directed execution`. If readiness is narrow, record `not_ready_for` so a preprocessing pass is not mistaken for route or gate readiness.
 
-```markdown
-Based on the domain description, I am assuming rows represent [unit], treatment is [column/concept], outcomes are measured at [time], and these variables are likely pre-treatment covariates.
+## Evaluator Output Examples
 
-The data structure appears to be [cross-sectional/cohort/panel/longitudinal/etc.] because [IDs/time/repeated rows].
-
-Before causal modeling, I would preprocess [safe steps] and avoid [unsafe steps]. The variables I would consider for the propensity/outcome model are [covariates], while [variables] look post-treatment or unclear.
-
-The main modeling constraints are [sample size/dimension/overlap/rare outcome/etc.]. That suggests [next route] and makes [methods] risky unless [fix/check] is addressed.
-```
-
-## Output Template
-
-```markdown
-### Causal Data Preprocessing Summary
-
-#### 1. Working assumptions
-- Unit:
-- Treatment/exposure:
-- Outcome:
-- Timing:
-- Expected structure:
-
-#### 2. Data profile
-- Sample size:
-- Dimensions:
-- IDs/time/group variables:
-- Missingness:
-- Outliers/range issues:
-- Treatment/outcome distribution:
-
-#### 3. Variable roles
-- Treatment:
-- Outcome:
-- Candidate covariates:
-- Likely confounders:
-- Propensity-score candidates:
-- Effect modifiers:
-- Post-treatment/mediator variables:
-- Unclear variables:
-
-#### 4. Preprocessing plan
-- Safe cleaning:
-- Encoding/transformation:
-- Missingness handling:
-- Outlier handling:
-- Dimension reduction:
-- Leakage checks:
-
-#### 5. Modeling implications
-- Key risks:
-- Methods supported:
-- Methods risky:
-- Required fixes:
-- Next route:
+```yaml
+evaluators:
+  data_inspector_02:
+    readiness: "blocks_ready_gate"
+    readiness_scope: "design-data fit"
+    data_status: "existing"
+    summary: "The file appears to include only treated users, so a treatment-versus-control effect is not currently supported by these data."
+    key_findings:
+      - note: "No comparator group is visible in the observed data."
+        basis: "observed data"
+        severity: "blocker"
+    implications:
+      design_planner_03:
+        - note: "The current cohort design needs a comparator source or a fallback route."
+          basis: "observed data"
+          suggested_next_action: "refresh_design_planner_03"
+      dag_builder_04:
+        - note: "Several candidate severity variables are measured after treatment initiation."
+          basis: "data dictionary"
+          suggested_next_action: "refresh_dag_builder_04"
+    requests_for_main_skill:
+      - request_id: "data-01"
+        note: "Ask whether an untreated, not-yet-treated, or eligible-but-unexposed comparator source exists."
+        requested_action: "ask_user"
+        readiness_impact: "blocks_ready_gate"
+        status: "open"
+        main_skill_decision: null
 ```
 
 ## Reference Files

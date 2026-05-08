@@ -1,56 +1,49 @@
 main_skill:
-  user_goal:
-    primary_intent: "estimate effect | choose method | inspect data | design study | critique paper | review assumptions | interpret results | write report | debug code | learn concept | rescue analysis | unknown"
-    secondary_intents: []
-    domain_question: null
-    practical_decision: null
-    requested_deliverables: []
-    audience: "self | collaborator | advisor | reviewer | client | regulator | clinical/scientific audience | product/business audience | unknown"
-    urgency_or_depth: "quick answer | careful analysis | publication-grade | exploratory | unknown"
-  current_understanding:
-    plain_language_summary: null
-    working_interpretations: []
-    possibilities_being_checked_not_assumed: []
-    assumptions_not_made: []
-    open_questions: []
-  communication_plan:
-    explanation_level: "plain language | mixed | technical | mathematical | unknown"
-    information_state: "sparse | partial | rich | unknown"
-    understanding_confidence: "low | moderate | high | unknown"
-    confidence_rationale: null
-    confidence_by_component:
-      user_goal: "low | moderate | high | unknown"
-      causal_components: "low | moderate | high | unknown"
-      data_situation: "low | moderate | high | unknown"
-      design_or_assignment_process: "low | moderate | high | unknown"
-      desired_deliverable: "low | moderate | high | unknown"
-    conversation_style: "suggest-and-invite | suggest-and-confirm | direct answer | teaching | unknown"
-    style_rationale: null
-    next_question_style: "ask one blocker | ask short list | proceed and verify | unknown"
-    user_comfort_notes: []
-  alignment_tracking:
-    check_frequency: "major decisions only"
-    major_decision_triggers:
-      - "before committing to a causal design, estimand, or identification strategy"
-      - "before activating a modeling subskill that would shape the analysis path"
-      - "before interpreting fitted results or writing a final deliverable"
-      - "when the user changes the goal, data source, target audience, or deliverable"
-      - "when data inspection contradicts the current working picture"
-    goal_alignment: "aligned | uncertain | drifting | unknown"
-    deliverable_alignment: "aligned | uncertain | drifting | unknown"
-    last_alignment_check: null
-    notes_for_main_skill_only: []
-  next_user_facing_step:
-    immediate_next_action: null
-    active_or_recommended_subskills: []
-    blocking_questions: []
-    nonblocking_questions: []
-    update_triggers: []
+  user_goal: null
+  primary_intent: "estimate effect | choose method | inspect data | design study | critique paper | review assumptions | interpret results | write report | debug code | learn concept | rescue analysis | unknown"
+  rigor_mode: "not needed | exploratory | ready | blocked | user-directed | unknown"
+  conversation_style: "suggest-and-invite | suggest-and-confirm | direct answer | teaching | unknown"
+  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_inspector_02 | refresh_design_planner_03 | refresh_dag_builder_04 | activate_method_subskill | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  summary_for_user: null
+  open_questions: []
+  assumptions_to_surface: []
+  user_directed:
+    requested: false
+    intent_basis: "none | explicit user request | inferred urgency | repeated preference to continue | accepted caveated analysis | declined further gate work | unknown"
+    acknowledged_limits: false
+    requested_scope: []
+    allowed_scope: []
+    prohibited_claims: []
+    warning: null
 
-foundation_coordination:
-  architecture: "main skill user-facing; 01 domain, 02 data, 03 design, and 04 DAG maintained as backstage records"
-  detailed_state_locations:
-    domain_details: "01-domain-helper"
-    data_details: "02-data-inspector"
-    design_details: "03-design-planner"
-    causal_logic_details: "04-dag-builder"
+foundation_gate:
+  status: "not needed | exploratory | ready | blocked | unknown"
+  can_support_causal_commitment: false
+  blockers: []
+  unresolved_required_information: []
+  assumptions_to_surface: []
+  surfaced_or_acknowledged_assumptions: []
+  deferred_assumptions: []
+  claim_strength_allowed: "causal | cautious causal | associational | descriptive | exploratory | unknown"
+
+evaluator_loop:
+  trigger: "user_update | data_update | design_change | dag_feedback | route_commitment | user-directed | unknown"
+  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_inspector_02 | refresh_design_planner_03 | refresh_dag_builder_04 | activate_method_subskill | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  action_queue: []
+  readiness_signals:
+    domain_helper_01: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    data_inspector_02: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    design_planner_03: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    dag_builder_04: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+  summaries:
+    domain_helper_01: null
+    data_inspector_02: null
+    design_planner_03: null
+    dag_builder_04: null
+  loop_control:
+    status: "not assessed | no loop | possible loop | loop detected | resolved | unknown"
+    repeated_cycle_count: 0
+    issue_signature: null
+    break_action: "ask_decisive_user_question | make_nonharmful_working_assumption | surface_load_bearing_assumption | demote_or_block_route | choose_fallback | proceed_user_directed | no_action | unknown"
+    rationale: null
+    decisive_question_or_assumption: null

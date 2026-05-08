@@ -1,317 +1,141 @@
 project:
   project_name: null
+  short_label: null
   analyst: null
-  date: null
+  date_started: null
+  last_updated: null
+  state_folder: null
+  project_yaml: "project.yaml"
+  analyses_dir: "analyses/"
+  artifacts_dir: "artifacts/"
   project_status: "active | paused | completed | unknown"
-  current_phase: "intake | data inspection | design planning | causal structure | method selection | analysis | diagnostics | reporting | unknown"
-
-domain_helper_01:
-  status: "active | inactive | unknown"
-  domain_context:
-    domain_area: null
-    setting: null
-    substantive_question: null
-    scientific_or_business_context: null
-    practical_decision_context: null
-    audience_or_stakeholders: []
-  language_translation:
-    user_terms: []
-    translated_causal_terms: []
-    terms_needing_user_clarification: []
-    preferred_user_facing_language: []
-  working_pictures:
-    common_working_pictures: []
-    working_pictures_rejected: []
-    assumptions_to_verify: []
-    assumptions_not_made: []
-  domain_data_expectations:
-    likely_units: []
-    likely_row_structures: []
-    likely_time_variables: []
-    likely_id_or_group_variables: []
-    likely_treatment_or_exposure_records: []
-    likely_outcome_records: []
-    likely_baseline_or_pre_treatment_variables: []
-    likely_structured_or_unstructured_feature_blocks: []
-    expected_data_issues_for_02: []
-  domain_causal_expectations:
-    plausible_confounding_sources: []
-    plausible_effect_modifiers: []
-    plausible_mediators_or_mechanisms: []
-    plausible_instruments_or_encouragements: []
-    plausible_selection_or_censoring_processes: []
-    plausible_interference_or_spillover_paths: []
-    plausible_unmeasured_causes: []
-    timing_or_role_questions_for_04: []
-  domain_design_expectations:
-    likely_design_families: []
-    feasible_design_constraints: []
-    measurement_constraints: []
-    ethics_privacy_access_or_governance_notes: []
-    design_questions_for_03: []
-  method_context:
-    domain_methods_commonly_seen: []
-    method_routes_that_may_be_relevant: []
-    method_routes_to_avoid_without_more_support: []
-    literature_or_method_context: []
-  coordination:
-    main_skill_goal_summary: null
-    data_record_to_update: "02-data-inspector"
-    design_record_to_update: "03-design-planner"
-    dag_record_to_update: "04-dag-builder"
-    user_facing_summary_for_main_skill: null
-    questions_that_would_change_route: []
-
-foundation_coordination:
-  architecture: "main skill user-facing; 01 domain, 02 data, 03 design, and 04 DAG maintained as backstage records"
-  active_foundation_components:
-    main_skill: active
-    domain_helper_01: active
-    data_inspector_02: active
-    design_planner_03: active
-    dag_builder_04: active
-  consistency_checks:
-    user_need_matches_domain: "yes | no | partial | unknown"
-    user_need_matches_data: "yes | no | partial | unknown"
-    user_need_matches_design: "yes | no | partial | unknown"
-    user_need_matches_causal_structure: "yes | no | partial | unknown"
-    domain_matches_data: "yes | no | partial | unknown"
-    domain_matches_design: "yes | no | partial | unknown"
-    domain_matches_causal_structure: "yes | no | partial | unknown"
-    data_matches_design: "yes | no | partial | unknown"
-    data_matches_dag_timing: "yes | no | partial | unknown"
-  major_decision_log: []
+  current_phase: "intake | foundation loop | method selection | analysis | reporting | unknown"
 
 main_skill:
-  user_goal:
-    primary_intent: "estimate effect | choose method | inspect data | design study | critique paper | review assumptions | interpret results | write report | debug code | learn concept | rescue analysis | unknown"
-    secondary_intents: []
-    domain_question: null
-    practical_decision: null
-    requested_deliverables: []
-    audience: "self | collaborator | advisor | reviewer | client | regulator | clinical/scientific audience | product/business audience | unknown"
-    urgency_or_depth: "quick answer | careful analysis | publication-grade | exploratory | unknown"
-  current_understanding:
-    plain_language_summary: null
-    working_interpretations: []
-    possibilities_being_checked_not_assumed: []
-    assumptions_not_made: []
-    open_questions: []
-  communication_plan:
-    explanation_level: "plain language | mixed | technical | mathematical | unknown"
-    information_state: "sparse | partial | rich | unknown"
-    understanding_confidence: "low | moderate | high | unknown"
-    confidence_rationale: null
-    conversation_style: "suggest-and-invite | suggest-and-confirm | direct answer | teaching | unknown"
-    next_question_style: "ask one blocker | ask short list | proceed and verify | unknown"
-    user_comfort_notes: []
-  alignment_tracking:
-    check_frequency: "major decisions only"
-    goal_alignment: "aligned | uncertain | drifting | unknown"
-    deliverable_alignment: "aligned | uncertain | drifting | unknown"
-    last_alignment_check: null
-    notes_for_main_skill_only: []
-  next_user_facing_step:
-    immediate_next_action: null
-    blocking_questions: []
-    nonblocking_questions: []
+  user_goal: null
+  primary_intent: "estimate effect | choose method | inspect data | design study | critique paper | review assumptions | interpret results | write report | debug code | learn concept | rescue analysis | unknown"
+  rigor_mode: "not needed | exploratory | ready | blocked | user-directed | unknown"
+  conversation_style: "suggest-and-invite | suggest-and-confirm | direct answer | teaching | unknown"
+  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_inspector_02 | refresh_design_planner_03 | refresh_dag_builder_04 | activate_method_subskill | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  summary_for_user: null
+  open_questions: []
+  assumptions_to_surface: []
+  user_directed:
+    requested: false
+    intent_basis: "none | explicit user request | inferred urgency | repeated preference to continue | accepted caveated analysis | declined further gate work | unknown"
+    acknowledged_limits: false
+    requested_scope: []
+    allowed_scope: []
+    prohibited_claims: []
+    warning: null
 
-data_inspector_02:
-  data_existence_status: "existing | partially existing | conceptual | unknown"
-  data_basis: "actual user data | partial user data | conceptual data | unknown"
-  evidence_source: "uploaded file | local file path | codebook | column list | sample rows | summary table | study plan | simulated/mock data | user description | none | unknown"
-  data_source: null
-  data_collection_context: null
-  data_profile:
-    rows: null
-    columns: null
-    rows_represent: null
-    unit_of_observation: null
-    unique_units: null
-    time_span_or_follow_up: null
-    repeated_measures: null
-    groups_or_clusters: null
-    dependencies_or_networks: null
-    wide_or_long_format: "wide | long | one-row-per-unit | one-row-per-unit-time | one-row-per-event | unknown"
-  data_quality:
-    missingness_summary: null
-    outlier_or_range_issues: []
-    duplicate_key_rows: null
-    censoring_or_attrition_summary: null
-    high_cardinality_or_sparse_variables: []
-    data_quality_notes: []
-  variable_candidates:
-    treatment_variables: []
-    outcome_variables: []
-    time_variables: []
-    id_variables: []
-    group_or_cluster_variables: []
-    baseline_covariates: []
-    plausible_confounders: []
-    effect_modifiers: []
-    instruments_or_encouragements: []
-    mediators_or_post_treatment_variables: []
-    censoring_or_observation_indicators: []
-    missingness_variables: []
-    variables_with_unclear_role_or_timing: []
-    variables_to_exclude_from_adjustment: []
-  preprocessing_plan:
-    safe_cleaning_steps: []
-    treatment_label_construction: []
-    outcome_construction: []
-    baseline_covariate_construction: []
-    categorical_encoding_plan: []
-    transformation_or_scaling_plan: []
-    missingness_handling_plan: []
-    outlier_handling_plan: []
-    dimension_reduction_or_screening_plan: []
-    leakage_checks: []
-    reproducibility_notes: []
-  modeling_difficulty_flags:
-    small_sample_or_few_treated: null
-    high_dimension_relative_to_sample: null
-    rare_outcome_or_separation: null
-    treatment_imbalance: null
-    limited_overlap_or_positivity: null
-    too_few_clusters_or_time_periods: null
-    irregular_follow_up_or_visit_times: null
-    high_missingness_in_key_variables: null
-    post_treatment_covariate_risk: null
-    likely_modeling_handoffs: []
+foundation_gate:
+  status: "not needed | exploratory | ready | blocked | unknown"
+  can_support_causal_commitment: false
+  blockers: []
+  unresolved_required_information: []
+  assumptions_to_surface: []
+  surfaced_or_acknowledged_assumptions: []
+  deferred_assumptions: []
+  claim_strength_allowed: "causal | cautious causal | associational | descriptive | exploratory | unknown"
 
-design_planner_03:
-  design_context:
-    actual_or_planned: "actual | planned | hypothetical | unknown"
-    design_use: "prospective planning | retrospective design audit | educational planning | method-routing support | unknown"
-    design_label_claimed_by_user: null
-    inferred_design_family: null
-  design_structure:
-    assignment_or_exposure_mechanism: null
-    randomization_feasible: null
-    assignment_unit: null
-    analysis_unit: null
-    target_population: null
-    analysis_population: null
-    eligibility_criteria: []
-    time_zero: null
-    baseline_window: null
-    follow_up_window: null
-    measurement_schedule: null
-    data_collection_or_sampling_design: null
-  variable_to_design_map:
-    eligibility_variables: []
-    assignment_or_exposure_variables: []
-    treatment_received_variables: []
-    baseline_covariates: []
-    time_zero_variables: []
-    follow_up_variables: []
-    outcome_variables: []
-    censoring_or_attrition_variables: []
-    cluster_or_group_variables: []
-    network_or_spillover_variables: []
-    mediator_variables: []
-    instrument_or_encouragement_variables: []
-    pre_period_variables: []
-    missing_or_needed_variables: []
-  feasibility:
-    feasible_designs: []
-    preferred_design: null
-    fallback_designs: []
-    minimum_data_to_collect_or_verify: []
-    measurement_plan: []
-    design_constraints: []
-    design_gaps: []
-    future_diagnostics_enabled: []
-    future_diagnostics_not_enabled: []
-  method_selection_implications:
-    plausible_method_routes: []
-    routes_supported_by_design: []
-    routes_blocked_by_design: []
-    route_conditions_to_check_in_data_or_dag: []
-    recommended_next_subskills: []
-  limitations_or_red_flags: []
+evaluator_loop:
+  trigger: "user_update | data_update | design_change | dag_feedback | route_commitment | user-directed | unknown"
+  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_inspector_02 | refresh_design_planner_03 | refresh_dag_builder_04 | activate_method_subskill | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  action_queue: []
+  readiness_signals:
+    domain_helper_01: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    data_inspector_02: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    design_planner_03: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    dag_builder_04: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+  summaries:
+    domain_helper_01: null
+    data_inspector_02: null
+    design_planner_03: null
+    dag_builder_04: null
+  loop_control:
+    status: "not assessed | no loop | possible loop | loop detected | resolved | unknown"
+    repeated_cycle_count: 0
+    issue_signature: null
+    break_action: "ask_decisive_user_question | make_nonharmful_working_assumption | surface_load_bearing_assumption | demote_or_block_route | choose_fallback | proceed_user_directed | no_action | unknown"
+    rationale: null
+    decisive_question_or_assumption: null
 
-dag_builder_04:
-  causal_question:
-    treatment_or_exposure: null
-    comparator: null
-    outcome: null
-    target_population: null
-    unit_of_analysis: null
-    time_zero: null
-    follow_up_or_time_horizon: null
-    desired_causal_claim: null
-  estimand:
-    label: "ATE | ATT | total effect | controlled direct effect | interventional direct/indirect effect | transported effect | local effect | policy value | unknown"
-    scale: null
-    interpretation: null
-  graph_or_causal_structure:
-    graph_type: "DAG | SWIG | CPDAG | PAG | variable-role map | target-trial protocol | unknown"
-    status: "not started | partial | reviewed | finalized | unknown"
-    nodes_recorded: []
-    directed_edges: []
-    uncertain_edges: []
-    latent_or_unmeasured_common_causes: []
-    selection_nodes: []
-    alternative_graphs_considered: []
-  causal_roles:
-    pre_treatment_confounders: []
-    precision_variables: []
-    effect_modifiers: []
-    mediators: []
-    colliders_or_selection_variables: []
-    instruments_or_encouragements: []
-    missingness_or_censoring_variables: []
-    post_treatment_variables_to_avoid_for_total_effect: []
-    unmeasured_needed_variables: []
-  identification:
-    candidate_adjustment_sets: []
-    preferred_adjustment_set: []
-    forbidden_adjustment_variables: []
-    frontdoor_possible: null
-    iv_or_local_design_needed: null
-    mediation_or_direct_effect_needed: null
-    interference_or_spillover_issue: null
-    selection_or_transport_issue: null
-    identifiable_under_current_assumptions: null
-  method_selection_implications:
-    plausible_method_routes: []
-    routes_supported_by_graph: []
-    routes_blocked_by_graph: []
-    route_conditions_to_check_in_data_or_design: []
-    recommended_next_subskills: []
-  limitations_or_red_flags: []
+evaluators:
+  domain_helper_01:
+    status: "active | inactive | unknown"
+    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    summary: null
+    key_findings: []
+    candidate_formulations: []
+    implications:
+      data_inspector_02: []
+      design_planner_03: []
+      dag_builder_04: []
+    requests_for_main_skill: []
+    nonharmful_assumptions: []
+    load_bearing_assumptions: []
+  data_inspector_02:
+    status: "active | inactive | unknown"
+    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    readiness_scope: "not assessed | exploratory review | route comparison | design-data fit | dag-data fit | preprocessing | method-specific modeling | gate commitment | user-directed execution | unknown"
+    data_status: "existing | partially existing | conceptual | unknown"
+    summary: null
+    key_findings: []
+    data_enabled_opportunities: []
+    implications:
+      domain_helper_01: []
+      design_planner_03: []
+      dag_builder_04: []
+    requests_for_main_skill: []
+    nonharmful_assumptions: []
+    load_bearing_assumptions: []
+  design_planner_03:
+    status: "active | inactive | unknown"
+    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    design_status: "promising | feasible | fragile | blocked | needs clarification | unknown"
+    preferred_route_id: null
+    summary: null
+    key_findings: []
+    route_hypotheses: []
+    implications:
+      domain_helper_01: []
+      data_inspector_02: []
+      dag_builder_04: []
+    requests_for_main_skill: []
+    nonharmful_assumptions: []
+    load_bearing_assumptions: []
+  dag_builder_04:
+    status: "active | inactive | unknown"
+    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    supported_status: "supported | fragile | blocked | needs design revision | unknown"
+    supported_scope: "not assessed | exploratory audit | route support | design revision | method handoff | gate commitment | user-directed execution | unknown"
+    identification_status: "yes | no | partial | unknown"
+    summary: null
+    key_findings: []
+    causal_logic_hypotheses: []
+    implications:
+      domain_helper_01: []
+      design_planner_03: []
+      data_inspector_02: []
+      method_subskills: []
+    requests_for_main_skill: []
+    nonharmful_assumptions: []
+    load_bearing_assumptions: []
 
-analysis_routing:
-  candidate_routes: []
-  preferred_route: null
-  fallback_routes: []
-  rejected_routes: []
-  route_selection_rationale: null
-  unresolved_decisions: []
+routes:
+  current_route_id: null
+  hypotheses: []
+  rejected_or_deferred: []
+
+analysis:
+  route_commitment_status: "exploratory | ready | committed | blocked | user-directed | unknown"
   active_or_recommended_subskills: []
-  next_analysis_steps: []
-
-diagnostics_and_results:
-  fitted_models_or_completed_analyses: []
-  diagnostics_planned: []
-  diagnostics_completed: []
-  sensitivity_checks_planned: []
-  sensitivity_checks_completed: []
-  result_interpretation_notes: []
+  analyses: []
   claim_strength: "causal | cautious causal | associational | descriptive | exploratory | unknown"
-  reasons_to_weaken_claim: []
-
-reporting:
-  planned_outputs: []
-  report_audience: null
-  key_messages: []
-  assumptions_to_report: []
-  diagnostics_to_report: []
-  limitations_to_report: []
-  reproducibility_notes: []
+  limitations: []
 
 subskill_analyses: []
-iteration_history: []
+artifacts: []
 limitations: []
 open_questions: []

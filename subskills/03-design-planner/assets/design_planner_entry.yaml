@@ -1,60 +1,16 @@
-subskill_analyses:
-  - subskill_id: "03-design-planner"
-    status: "candidate | selected | fallback | support-route"
-    fit_to_user_need: null
-    design_context:
-      data_existence_status_from_02: "existing | partially existing | conceptual | unknown"
-      domain_context_from_01: null
-      design_use: "prospective planning | retrospective design audit | educational planning | method-routing support | unknown"
-      actual_or_planned: "actual | planned | hypothetical | unknown"
-      user_facing_summary_for_main_skill: null
-    planned_or_actual_estimand:
-      label: null
-      target_population: null
-      scale: null
-      interpretation: null
-    candidate_designs: []
-    preferred_design: null
-    fallback_designs: []
-    actual_or_planned_design:
-      design_family: null
-      assignment_or_exposure_mechanism: null
-      randomization_feasible: null
-      assignment_unit: null
-      analysis_unit: null
-      target_population: null
-      analysis_population: null
-      eligibility_criteria: []
-      time_zero: null
-      baseline_window: null
-      follow_up_window: null
-      measurement_schedule: null
-    variable_to_design_map:
-      eligibility_variables: []
-      assignment_or_exposure_variables: []
-      treatment_received_variables: []
-      baseline_covariates: []
-      time_zero_variables: []
-      follow_up_variables: []
-      outcome_variables: []
-      censoring_or_attrition_variables: []
-      cluster_or_group_variables: []
-      network_or_spillover_variables: []
-      mediator_variables: []
-      instrument_or_encouragement_variables: []
-      pre_period_variables: []
-      missing_or_needed_variables: []
-    minimum_data_to_collect_or_verify: []
-    measurement_plan: []
-    feasibility_constraints: []
-    design_gaps: []
-    future_diagnostics_enabled: []
-    future_diagnostics_not_enabled: []
-    method_selection_implications:
-      plausible_method_routes: []
-      routes_supported_by_design: []
-      routes_blocked_by_design: []
-      route_conditions_to_check_in_data_or_dag: []
-      recommended_next_subskills: []
-    fatal_flaws_or_major_limitations: []
-    open_questions: []
+evaluators:
+  design_planner_03:
+    status: "active | inactive | unknown"
+    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    design_status: "promising | feasible | fragile | blocked | needs clarification | unknown"
+    preferred_route_id: null
+    summary: null
+    key_findings: []
+    route_hypotheses: []
+    implications:
+      domain_helper_01: []
+      data_inspector_02: []
+      dag_builder_04: []
+    requests_for_main_skill: []
+    nonharmful_assumptions: []
+    load_bearing_assumptions: []

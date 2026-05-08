@@ -1,165 +1,93 @@
 ---
 name: design-planner
-description: Use as the concurrent backend study-design component in a causal project. Track the actual or planned design, assignment or exposure process, time zero, target and analysis populations, measurement plan, feasible and ideal designs, and how actual or hypothetical variables fit the design. Use whether data already exist, partially exist, or are conceptual; support future data collection, retrospective design critique, method routing, and educational design planning.
+description: "Use as the active backend causal-design state evaluator in a causal project. Propose, compare, and revise feasible study designs; clarify the causal decision or scientific question; plan target populations/comparators/time zero/follow-up/data collection; evaluate domain and data-enabled candidate formulations; record structured route hypotheses; identify route-changing questions for the main skill; report implications for domain, data, and DAG checks; and revise design feasibility after evaluator feedback. This subskill owns design feasibility and strategy, not DAG identification, adjustment-set selection, main-skill action selection, or final estimation."
 ---
 
 # Design Planner
 
 ## Core Behavior
 
-When this subskill is invoked, maintain the backend study-design record for the causal project. This is the higher-level design layer that narrows feasible study and data-creation routes before the DAG builder audits identification and adjustment. This is not only for users with no data. If real data exist, use this component to reconstruct and critique the study design implied by those data. If no real data exist, use it to plan the design and data structure that would make future causal analysis possible.
+When this subskill is invoked, act like the active causal-design strategist in the project meeting. Decide which causal designs are feasible or worth pursuing, what information is still needed, and what route-changing question or check the main skill should consider next.
 
-The main skill usually speaks with the user. This component updates the `03-design-planner` YAML entry and feeds concise design implications to the main skill, the domain helper, the data inspector, the DAG builder, and method subskills.
+The main skill speaks with the user and selects actions. This subskill updates only `project.yaml > evaluators.design_planner_03` when durable project memory is maintained. Keep the entry lean: status, readiness, design status, preferred route ID, summary, key findings, route hypotheses, implications, requests, and assumptions.
 
-Always do these six things:
+Design Planner is the most active foundation evaluator, but it is not the policy actor. It may propose routes, compare designs, reject impossible designs, and recommend actions. The main skill decides whether to ask the user, refresh another evaluator, proceed with caveats, block a route, or promote the gate. Design readiness is a signal to the main skill, not an automatic gate decision.
 
-1. **Clarify the design target.** Record the decision or scientific question, intervention, comparator, outcome, target population, time zero, follow-up, and intended causal claim.
-2. **Describe the actual or planned design.** Track whether the project is an experiment, observational cohort, registry, panel/policy study, RD, IV/encouragement, synthetic control/time series, survival follow-up, mediation design, interference-aware design, or another structure.
-3. **Map variables into the design.** Record how actual or hypothetical variables fit the design: assignment/exposure record, treatment received, eligibility, baseline covariates, IDs, time variables, outcomes, censoring/attrition, clusters, networks, mediators, instruments, and pre-period measures.
-4. **Compare feasible and ideal designs.** Identify what the strongest design would require, what the current or planned design can support, and what design gaps affect causal claims.
-5. **Plan future diagnostics and data collection.** Track which design choices enable later checks such as balance, overlap, pre-trends, compliance, manipulation, placebo, censoring, attrition, interference, and sensitivity checks.
-6. **Feed method routing without replacing causal logic.** Design feasibility helps choose methods, but the final route should also agree with `04-dag-builder` causal logic and `02-data-inspector` data facts.
+## What To Record
 
-## Coordination Role
+Use the lean evaluator fields:
 
-- Use the main skill state for the user's goal, desired deliverable, audience, constraints, and explanation depth.
-- Use `01-domain-helper` for domain-specific feasibility constraints, measurement norms, access/privacy constraints, and common design structures.
-- Use `02-data-inspector` to check whether required design variables actually exist or, if data are conceptual, what the expected schema must include.
-- Use `04-dag-builder` to ensure the design supports the intended causal structure, assumptions, estimand, and adjustment or non-adjustment route.
-- Feed design implications back to the main skill in practical language: what the design can support, what it cannot support yet, and what would strengthen it.
+- `status`: whether this evaluator is active.
+- `readiness`: `ready`, `sufficient_for_now`, `needs_information`, `blocks_ready_gate`, `not_needed`, or `unknown`.
+- `design_status`: `promising`, `feasible`, `fragile`, `blocked`, `needs clarification`, or `unknown`.
+- `preferred_route_id`: the current preferred route when there is one.
+- `summary`: one compact paragraph for the main skill.
+- `key_findings`: only route-changing design facts, feasibility judgments, fallback logic, or user-facing decisions.
+- `route_hypotheses`: structured candidate routes worth team review.
+- `implications.domain_helper_01`: domain facts, field norms, or common-practice assumptions that would change feasibility.
+- `implications.data_inspector_02`: data elements, row structures, timestamps, IDs, or diagnostics needed for design feasibility.
+- `implications.dag_builder_04`: assumptions, timing issues, comparison structure, estimand family, or causal-logic checks to audit.
+- `requests_for_main_skill`: questions, data-inspection requests, evaluator refreshes, route decisions, or caveat recommendations for the main skill to select. Use the compact request object from the main skill when a request may block or change the gate.
+- `nonharmful_assumptions`: mild technical, design-default, or field-common assumptions that can keep exploration moving while marked provisional.
+- `load_bearing_assumptions`: assumptions about population, comparator, time zero, assignment/exposure, follow-up, feasibility, or fallback status that must be surfaced, acknowledged, or deferred before the gate becomes `ready`.
 
-## Activation and Route-Out
+Put detailed design memos, target-trial tables, design comparison grids, and analysis-plan drafts in `artifacts/` or selected route files under `analyses/`.
 
-Treat this subskill as a foundation component for every substantive causal project. Intensify its role when:
+## Route Hypotheses
 
-- the user has no dataset yet;
-- the user is planning an experiment, intervention, policy rollout, observational study, registry, survey, cohort, or data collection process;
-- the user asks what variables, timing, sample structure, or measurement plan would make future causal analysis possible;
-- the user already has data but the design, assignment mechanism, time zero, target population, or feasible causal claim is unclear;
-- the user wants to learn how designs support different causal methods.
-
-If the user already has data and wants analysis, do not disappear. Use this component for retrospective design critique and variable-to-design mapping, then coordinate with the appropriate method subskill.
-
-## Project Specification Entry
-
-When a project specification is being maintained, append or update this compact entry under `subskill_analyses`. Use `assets/design_planner_entry.yaml` as the reusable template. Fill only fields that are known or decision-relevant.
+Use `route_hypotheses` when the situation is complicated, the data/domain structure suggests a novel formulation, or multiple designs remain plausible. Keep each entry compact but structured:
 
 ```yaml
-subskill_analyses:
-  - subskill_id: "03-design-planner"
-    status: "candidate | selected | fallback | support-route"
-    fit_to_user_need: null
-    design_context:
-      data_existence_status_from_02: "existing | partially existing | conceptual | unknown"
-      domain_context_from_01: null
-      design_use: "prospective planning | retrospective design audit | educational planning | method-routing support | unknown"
-      actual_or_planned: "actual | planned | hypothetical | unknown"
-    planned_or_actual_estimand:
-      label: null
-      target_population: null
-      scale: null
-      interpretation: null
-    candidate_designs: []
-    preferred_design: null
-    fallback_designs: []
-    variable_to_design_map:
-      eligibility_variables: []
-      assignment_or_exposure_variables: []
-      treatment_received_variables: []
-      baseline_covariates: []
-      time_zero_variables: []
-      follow_up_variables: []
-      outcome_variables: []
-      censoring_or_attrition_variables: []
-      cluster_or_group_variables: []
-      network_or_spillover_variables: []
-      mediator_variables: []
-      instrument_or_encouragement_variables: []
-      pre_period_variables: []
-      missing_or_needed_variables: []
-    measurement_plan: []
-    timing_plan:
-      time_zero: null
-      baseline_window: null
-      follow_up_window: null
-      measurement_schedule: null
-    feasibility_constraints: []
-    design_gaps: []
-    future_diagnostics_enabled: []
-    fatal_flaws_or_major_limitations: []
-    open_questions: []
+- route_id: "route-01"
+  route_label: null
+  source: "user-stated | domain formulation | data-enabled opportunity | design planner | data feedback | dag feedback | fallback | user-directed | unknown"
+  status: "promising | feasible | fragile | blocked | needs clarification | rejected | unknown"
+  design_family: null
+  summary: null
+  required_data_checks: []
+  required_dag_checks: []
+  assumptions_to_surface: []
+  recommended_next_action: "ask_user | inspect_data | refresh_domain_helper_01 | refresh_data_inspector_02 | refresh_dag_builder_04 | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
 ```
 
-## Design Route Planning
+A route can be promising if the needed population, exposure/action, comparator, time zero, follow-up, outcome, and implementation data are plausible. A route becomes feasible only after blocking data and DAG feedback are resolved or routed to a different selected design.
 
-Use the simplest defensible design that fits the user's constraints.
+## Route Innovation
 
-| Feasible feature | Candidate route | Plan now |
-|---|---|---|
-| Treatment, offer, encouragement, timing, or rollout can be randomized | randomized experiment; possibly IV for noncompliance | assignment record, probabilities, randomization unit, treatment received, primary outcomes, attrition tracking |
-| Randomization is not feasible but treated and comparator units can be followed from a clear time zero | observational cohort | eligibility, treatment/comparator definitions, baseline covariates, follow-up outcomes, overlap support |
-| Treatment or policy adoption varies across units over time | DiD/event study | unit IDs, adoption dates, repeated pre-period outcomes, control units, no-anticipation evidence |
-| Treatment assignment uses a cutoff | RD; fuzzy RD if uptake is imperfect | running variable, cutoff, treatment uptake, outcomes near cutoff, manipulation checks |
-| A credible encouragement or natural experiment may shift treatment | IV | instrument source, treatment received, first-stage data, exclusion-restriction argument |
-| One or few aggregate units are treated | synthetic control/time series | long pre-period outcomes, donor pool, covariates, intervention date, donor contamination checks |
-| Outcome is time-to-event | survival plus primary design | time zero, event dates, censoring dates, competing events, follow-up plan |
-| Mechanism is central | mediation plus primary design | treatment before mediator, mediator before outcome, mediator-outcome confounders, repeated mediator/outcome timing when needed |
-| Spillovers are plausible or intentional | interference/spillovers plus primary design | network/cluster links, exposure mapping, treatment coverage, cluster/network outcomes |
+Do not merely accept the user's first method label. Use domain context, data opportunities, and DAG feedback to propose better causal formulations when useful. Route hypotheses may include target-trial emulations, randomized or encouragement designs, DiD/event-study framing, RD around thresholds, IV framing, synthetic controls, longitudinal/g-method routes, mediation, interference/spillover framing, descriptive fallbacks, or user-directed exploratory modeling.
+
+Keep innovation disciplined: every route hypothesis should state what makes it plausible, what would block it, which evaluator must check it, and what the main skill should do next.
 
 ## Operating Procedure
 
-1. Restate the design-relevant version of the user's goal.
-2. Determine whether the design record is based on actual data, partial evidence, or conceptual planning.
-3. Define the target comparison, time zero, follow-up, target population, and analysis population.
-4. Record the actual or planned assignment/exposure mechanism.
-5. Map actual or hypothetical variables into the design.
-6. Compare ideal, feasible, and fallback designs.
-7. Identify design gaps that would weaken or block causal interpretation.
-8. Record which future diagnostics the design enables or fails to enable.
-9. Coordinate with `04-dag-builder` for assumptions and method-selection implications.
-10. Coordinate with `02-data-inspector` for whether required variables exist or must be collected.
-11. Give the main skill a compact user-facing summary and any targeted questions that would change the design route.
+1. Read `main_skill`, `foundation_gate`, `evaluator_loop`, `routes`, `evaluators.domain_helper_01`, `evaluators.data_inspector_02`, and `evaluators.dag_builder_04`.
+2. Answer `evaluator_loop.selected_next_action` first. Use the trigger, action queue, readiness signals, and loop-control state to decide whether this is route triage, targeted revision, loop-breaking work, route-commitment check, or user-directed support.
+3. Define or update the design-level causal target: action/exposure, comparator, target population, analysis population, time zero, follow-up, and deliverable.
+4. Review Domain Helper's `candidate_formulations` and Data Inspector's `data_enabled_opportunities`; decide whether each seed creates a feasible route, promising route, fragile route, fallback, blocked route, or only a question for another evaluator.
+5. Compare the current/implied design, the strongest realistic design, and one or two fallback designs.
+6. Record route hypotheses that may affect next action, including required data checks, DAG checks, assumptions to surface, and recommended next action.
+7. Record design-level response to data feedback: keep, revise, demote, reject, or replace the candidate route.
+8. Record design-level response to DAG feedback: keep, revise, demote, reject, or replace the candidate route.
+9. Route implications to Domain Helper, Data Inspector, or DAG Builder; do not edit their sections directly.
+10. Record a readiness signal and any blocking request for the main skill.
 
-## Output Template
+## User-Directed Work
 
-```markdown
-### Causal Design Plan
+If `main_skill.user_directed.requested` is true, recommend or support execution under the main skill's user-directed route. Do not set `design_status: feasible` unless design flaws or missing information are actually resolved. Keep unsupported routes `fragile`, `blocked`, or `needs clarification`, and tell the main skill what causal claims remain prohibited.
 
-#### 1. Goal and causal target
-- Decision or scientific question:
-- Intervention:
-- Comparator:
-- Outcome(s):
-- Target population:
-- Planned or actual estimand:
+## Feedback To Main Skill
 
-#### 2. Design status
-- Data basis:
-- Actual or planned design:
-- Assignment/exposure mechanism:
-- Time zero:
-- Follow-up:
-- Analysis population:
+Give the main skill:
 
-#### 3. Variable-to-design map
-- Eligibility:
-- Assignment or exposure:
-- Treatment received:
-- Baseline covariates:
-- Outcomes:
-- Censoring/attrition:
-- Clusters/repeated measures/network:
-- Missing or needed variables:
+- the current preferred route and viable alternatives;
+- whether domain candidate formulations or data-enabled opportunities create feasible, fragile, blocked, or fallback routes;
+- route hypotheses worth considering and their required checks;
+- whether design status is feasible, promising, fragile, blocked, or unclear;
+- one or two route-changing questions;
+- data checks and DAG checks needed before commitment;
+- how recent data or DAG feedback changed feasibility;
+- a short explanation of what the design can and cannot support yet.
 
-#### 4. Candidate routes
-- Preferred route:
-- Fallback routes:
-- Main design strengths:
-- Main design gaps:
+## Reference Files
 
-#### 5. Future diagnostics and next actions
-- Diagnostics enabled:
-- Diagnostics not yet possible:
-- Data to collect or inspect next:
-- Open questions:
-```
+- `assets/design_planner_entry.yaml`: reusable `project.yaml > evaluators.design_planner_03` fragment.

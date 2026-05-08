@@ -2,24 +2,22 @@
 
 ## Purpose
 
-This map supports subskill 02. Use it for practical preprocessing before causal analysis: data profiling, variable-role mapping, structure validation, leakage prevention, missingness/outlier summaries, feature construction, and modeling-difficulty triage.
+This map supports subskill 02. Use it for practical data inspection before causal analysis: data profiling, data-to-domain fit, data-to-design fit, data-to-DAG fit, structure validation, leakage prevention, missingness/outlier summaries, feature construction, reproducible preprocessing, and analysis-readiness triage.
 
 This is intentionally narrower than a missing-data or measurement-error methods guide. If the data problem requires an explicit statistical model for censoring, measurement error, transportability, or nonignorable missingness, route to the relevant analysis subskill and use this preprocessing audit as input.
 
 ## Practical Principles
 
-### Start from a causal data model
+### Start from the foundation records
 
-Before touching variables, identify:
+Before touching variables, read the current project context:
 
-- unit of analysis;
-- treatment/exposure;
-- treatment timing or assignment time;
-- outcome and outcome timing;
-- baseline covariate window;
-- IDs, groups, clusters, and time variables;
-- repeated or longitudinal structure;
-- variables that are post-treatment or should be excluded from adjustment.
+- `evaluator_loop`: trigger, selected next action, action queue, readiness signals, summaries, and loop-control state;
+- `evaluators.domain_helper_01`: domain terms, measurement conventions, field norms, privacy/access constraints, candidate formulations, and implications;
+- `evaluators.design_planner_03`: route hypotheses, envisioned population, eligibility, exposure/assignment, comparator, time zero, follow-up, clusters, pre-periods, and measurement schedule;
+- `evaluators.dag_builder_04`: causal-logic hypotheses, timing claims, proposed variable roles, variables that may be forbidden or late, and unobserved-variable concerns.
+
+Then inspect whether the actual or conceptual data can represent those objects. Do not treat candidate data fields as final causal roles; record evidence for the design planner and DAG builder to use.
 
 ### Keep preprocessing reproducible
 
@@ -32,6 +30,10 @@ Every preprocessing step should be documented as code or a rule:
 - whether it is used for treatment, outcome, covariate, ID, or diagnostic role;
 - whether it changes the analysis sample.
 
+### Surface data-enabled opportunities
+
+If the schema reveals a better formulation, record it as provisional rather than treating it as a final design. Examples include alternate row/unit definitions, source-table linkages, time-zero or baseline-window fields, exposure intensity or receipt measures, comparator construction from another table, panel/event-history reshapes, proxy outcomes, rollout/cutoff signals, or survey/geographic structure that changes the feasible route.
+
 ### Avoid leakage
 
 Leakage in causal preprocessing often comes from:
@@ -43,7 +45,7 @@ Leakage in causal preprocessing often comes from:
 - learning embeddings/PCA on variables that include post-treatment or outcome information;
 - imputing with variables that would not be observed at the decision time.
 
-### Treat preprocessing as part of design
+### Treat preprocessing as part of design evidence
 
 Choices about row filtering, baseline windows, treatment definitions, outcome windows, covariate summaries, and outlier rules are part of the causal design. They should be made before fitting the effect model and carried into the report.
 
@@ -56,6 +58,9 @@ Choices about row filtering, baseline windows, treatment definitions, outcome wi
 - duplicate keys;
 - wide versus long format;
 - numeric/categorical/date/text/list columns;
+- table relationships, join keys, and join multiplicity;
+- database queries, source-system views, nested records, JSON/list fields, and logs;
+- survey weights, strata, clusters, sampling fields, geospatial fields, and scale constraints;
 - memory and computational scale.
 
 ### Data quality
@@ -69,7 +74,7 @@ Choices about row filtering, baseline windows, treatment definitions, outcome wi
 - outliers and heavy tails;
 - constant or near-constant variables.
 
-### Causal readiness
+### Causal-analysis readiness
 
 - treatment count and levels;
 - control/comparator count;
@@ -80,7 +85,7 @@ Choices about row filtering, baseline windows, treatment definitions, outcome wi
 - repeated-measure pattern;
 - overlap warning signs.
 
-## Variable-Role Notes
+## Variable Evidence Notes
 
 ### Treatment labels
 
@@ -103,7 +108,7 @@ Check whether outcome is:
 
 ### Covariates and confounders
 
-Candidate covariates should generally be measured before treatment. Good propensity-score candidates are plausible common causes of treatment and outcome. Bad candidates include mediators, colliders, post-treatment utilization, and variables defined by survival or follow-up after treatment.
+Candidate baseline variables should generally be measured before treatment or time zero. The data inspector can flag candidates for DAG review, but should not finalize confounder, mediator, collider, or instrument roles. Bad adjustment candidates often include variables measured after treatment, variables created by survival/follow-up, and variables affected by selection.
 
 ### IDs and time
 

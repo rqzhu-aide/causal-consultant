@@ -1,281 +1,83 @@
 # Design Router
 
-Use this file after the intake has identified the basic causal question and the rough data structure. The router should not merely classify the user's design label; it should check whether the data and implementation actually support the claimed design.
+Use this reference when the main skill needs to shortlist causal routes or compose method subskills. The source of truth remains the main `SKILL.md`, the four foundation evaluator records, and the lean `project.yaml`.
 
-The router's main job is to narrow the problem to a small set of plausible high-level approaches, state the conditions each approach requires, and help the user choose the most defensible route when some conditions are uncertain or unavailable.
+## Routing Principles
 
-Use the top-level main skill as the persistent user-facing project coordinator: it clarifies the user's objective, causal components, data availability, and deliverable at the start, then stays active to keep later routing, diagnostics, interpretation, and reporting aligned with what the user wants.
+1. Start from the user's decision, estimand, deliverable, data status, and claim strength.
+2. Use `03-design-planner` to propose route hypotheses and `04-dag-builder` to audit causal logic.
+3. Use `02-data-inspector` to check whether the route is observable or constructible.
+4. Treat method subskills as a role-based stack, not a flat package menu.
+5. Prefer the strongest supported design route over the most sophisticated estimator.
+6. If no route can support the intended causal claim, recommend descriptive, predictive, sensitivity, data-collection, fallback, or user-directed options.
 
-Maintain the main skill and four backend foundation subskills concurrently regardless of whether real data already exist. The main skill normally talks with the user; the backend foundation subskills maintain YAML records.
+## Role-Based Composition
 
-- `subskills/01-domain-helper/` tracks domain context, user terminology, common working pictures, substantive constraints, domain-specific data expectations, and domain-specific causal/design risks.
-- `subskills/02-data-inspector/` tracks data structure. In its YAML entry, set `data_existence_status` as `existing`, `partially existing`, `conceptual`, or `unknown`. Use the companion `data_basis` field for the human-readable label, then inspect existing data or record expected schema/data requirements when data do not exist.
-- `subskills/03-design-planner/` tracks actual or planned design, feasible designs, ideal-design comparisons, variable-to-design fit, data-collection needs, and design gaps.
-- `subskills/04-dag-builder/` tracks causal structure, variable roles, timing, assumptions, DAG fragments, identification status, and method-selection implications.
+Compose subskills in this order:
 
-Use `03-design-planner` to establish the high-level feasible design route, then use `04-dag-builder` to check the causal basis for method selection. Every candidate route should still be checked against domain constraints in `01-domain-helper` and data facts in `02-data-inspector`.
+1. **Primary route/design family**: one of `05`, `06`, `10`, `11`, `12`, `13`, `14`, `16`, `17`, `19`, or `21`.
+2. **Optional estimation/diagnostic support**: `07` for matching/weighting/balance; `08` for AIPW/TMLE/DML/orthogonal ML.
+3. **Optional target/outcome/decision module**: `09` for HTE/CATE/policy; `15` for survival/competing risks.
+4. **Optional discovery module**: `18` for graph discovery, usually exploratory until audited by `04`.
+5. **Reporting layer**: `20` for plans, results, limitations, and reproducibility.
 
-If no data exist yet, use the router prospectively: compare designs by what the user could realistically assign, measure, and follow over time. The output should be a data collection and design blueprint, not a package recommendation.
+## Primary Route Triggers
 
-## Top-Level Design Questions
-
-1. What decision or scientific claim does the user want to support?
-2. What do rows represent, and is that the same as the causal unit?
-3. Was treatment assigned by an investigator, platform, protocol, randomization device, cutoff, instrument, policy rule, or self/clinician/market choice?
-4. If randomized, what was randomized: individual, cluster, household, school, clinic, physician, account, cookie, device, session, time period, sequence, or site?
-5. Was assignment recorded before treatment/exposure/outcome, and is it separate from treatment received?
-6. Were units excluded after assignment or treatment? If yes, why and based on variables measured when?
-7. Are missing outcomes, attrition, censoring, or logging failures present and differential by group?
-8. Could one unit's assigned treatment affect another unit's outcome?
-9. Is the outcome time-to-event, repeated, longitudinal, ratio-valued, count-valued, binary, or continuous?
-10. Is the user asking for average effects, heterogeneity, mechanisms, spillovers, policy value, or graph discovery?
-11. Are available covariates already analysis-ready, or do they require scientifically meaningful construction or aggregation?
-
-## Route Shortlisting Protocol
-
-After the top-level questions, produce a shortlist of 1 to 3 plausible routes. For each route, list the conditions needed and the current status of those conditions.
-
-Use these status labels:
-
-- **Known satisfied**: directly stated by the user or visible in the data.
-- **Checkable from data**: can be audited with the dataset, codebook, or diagnostics.
-- **Plausible but untestable**: must be argued from design/domain knowledge.
-- **Unresolved**: ask a targeted question if it would change the route.
-- **Likely violated**: route should be downgraded, modified, or abandoned.
-
-Prefer the route with the strongest design support, not the most sophisticated estimator. If no route can support a causal claim, recommend a descriptive, predictive, sensitivity, or data-collection next step.
-
-If an activated subskill shows that a candidate route is unsupported, do not force the method. Mark the route as `rejected`, `fallback`, or `exploratory/user-forced`, record the failed conditions or fatal limitations, explain the issue in plain language, and return to the shortlist with the new information.
-
-## Prospective Route Planning
-
-When `data_inspector_02.data_existence_status` is `conceptual` or `unknown`, route by feasible data creation:
-
-| Feasible future design feature | Preferred route to consider | Data to plan now |
+| Situation | Primary route | Common companion modules |
 |---|---|---|
-| User can randomize treatment, offer, encouragement, timing, or rollout | `03-design-planner` + `05-randomized-experiments`; add `13-instrumental-variables` for noncompliance | assignment variable, probabilities, randomization unit, treatment received, pre-specified outcomes, attrition tracking |
-| User cannot randomize but can follow treated/comparator units from eligibility | `03-design-planner` + `06-point-treatment-observational`; add `04-dag-builder`, `07-matching-weighting-balance`, or `08-doubly-robust-ml` when needed | eligibility/time zero, treatment definition, comparator definition, rich pre-treatment confounders, outcome follow-up |
-| Policy/treatment may start at different times across units | `03-design-planner` + `11-did-event-study` | unit IDs, treatment adoption dates, multiple pre-period outcomes, stable composition, possible controls |
-| Assignment can use a cutoff or threshold | `03-design-planner` + `12-regression-discontinuity`; add `13-instrumental-variables` if fuzzy | running variable, cutoff, treatment uptake, outcomes near cutoff, manipulation checks |
-| A credible encouragement or natural experiment can shift treatment | `03-design-planner` + `13-instrumental-variables` | instrument, treatment received, outcome, first-stage data, exclusion-restriction evidence |
-| One/few aggregate units may be treated | `03-design-planner` + `14-synthetic-control-time-series` | long pre-period outcome series, donor pool, covariates, intervention date, donor contamination checks |
-| Outcome is time-to-event | `03-design-planner` + `15-survival-competing-risks` plus primary design | time zero, event dates, censoring dates, competing events, follow-up plan |
-| Mechanism/pathway is central | `03-design-planner` + `16-mediation` after total-effect design | mediator timing, mediator-outcome confounders, treatment-mediator timing |
-| Spillovers are plausible or intentional | `03-design-planner` + `17-interference-spillovers` plus primary design | cluster/network links, exposure mapping, treatment coverage, cluster/network outcomes |
-
-For each prospective route, state:
-
-- what the user must be able to control or observe;
-- the minimum variables to collect;
-- timing and measurement requirements;
-- diagnostics the future dataset should support;
-- what causal claim becomes unavailable if those data are not collected.
-
-## Data Reshaping and Feature Construction Route
-
-Sometimes the data are not immediately compatible with existing causal packages. The router may recommend preprocessing before estimator choice when the transformation is scientifically meaningful and defined without outcome leakage.
-
-Examples:
-
-- aggregate event/session/claim rows to the randomized or causal unit;
-- define baseline windows and summarize histories before time zero;
-- construct lagged treatment and confounder histories for longitudinal methods;
-- map network exposure or cluster-level spillover summaries;
-- convert free text or unstructured covariates into auditable indicators;
-- construct dose categories, exposure windows, or clinically meaningful thresholds;
-- build valid genetic instruments or omics summaries before MR/colocalization.
-
-Treat these transformations as part of the design. Document the construction, timing, and assumptions, and route to `02-data-inspector` if the constructed variables may introduce bias through missingness, measurement error, sample conditioning, or leakage.
-
-## Causal-Structure Feasibility Gate
-
-During route shortlisting, use a lightweight design diagram, assignment-mechanism summary, DAG, or variable-role map when the route depends on adjustment, mediation, IV exclusion, selection/censoring, transportability, or interference. The purpose is to detect obvious feasibility problems before code, not to force a formal assumption lecture up front.
-
-Detailed assumptions, failure-mode audits, and model diagnostics belong inside the activated subskill. Do not wait until after code to discover that the proposed adjustment set includes mediators or colliders.
-
-## Routing Logic
-
-### Prospective design planning
-
-Activate `subskills/03-design-planner/` when the user has no dataset yet, is planning a study or data collection process, or asks what to collect so future causal analysis will be possible.
-
-Use this route as the primary planning frame, then add candidate analysis subskills only to explain what each future design would require.
-
-### DAG, identification, and causal structure
-
-Activate `subskills/04-dag-builder/` when the user asks what to adjust for, wants a DAG, needs a target-trial framing, or the route depends on confounding, mediation, instruments, selection/censoring, transportability, or interference.
-
-Use this as a support route after or alongside the design route, not as a replacement for the design route unless the user's main goal is learning or graph work.
-
-### Randomized experiment, A/B test, or investigator-assigned treatment
-
-Activate `subskills/05-randomized-experiments/` when the user says or the data indicate any of the following:
-
-- randomized controlled trial, clinical trial, field experiment, lab experiment, online A/B test, experiment arm, treatment/control arm, random assignment, split test, holdout, encouragement trial, randomized rollout;
-- treatment was assigned by a randomization protocol;
-- a design file contains assignment probabilities, block IDs, cluster IDs, or experiment arms;
-- the user wants power, MDE, randomization, CONSORT-style flow, randomization-inference, online experiment diagnostics, pre-period adjustment, or trial reporting.
-
-At the router level, only verify that random assignment is real, that assignment precedes outcomes, and that the analysis unit can be aligned with the randomized unit. The randomized-experiments subskill owns detailed randomization audits, online experiment checks, pre-period adjustment, cluster/factorial/crossover specifics, and trial reporting details.
-
-Also activate:
-
-- `13-instrumental-variables` for noncompliance, encouragement designs, or treatment-received targets;
-- `02-data-inspector` for causal data preprocessing, triggered-only datasets, logging failures, missingness, or data-readiness problems;
-- `15-survival-competing-risks` for time-to-event endpoints;
-- `17-interference-spillovers` for contamination or spillovers;
-- `09-heterogeneous-effects-policy` for subgroup, CATE, uplift, or treatment-rule targets;
-- `16-mediation` for mechanisms or pathways after the total-effect route is clarified.
-
-Route out of `05-randomized-experiments` as the primary route if there was no actual random assignment, if randomization happened after conditioning on a post-treatment event, or if the claimed treatment is actually a policy adoption, cutoff, instrument, or observational exposure better handled by another route.
-
-### Observational point treatment
-
-Activate `subskills/06-point-treatment-observational/` when treatment is measured once, treatment was not randomized, and the user wants a causal effect under measured-confounding assumptions.
-
-Also activate:
-
-- `07-matching-weighting-balance` if design uses propensity scores, matching, stratification, or weighting;
-- `08-doubly-robust-ml` if using AIPW/TMLE/DML or high-dimensional nuisance models;
-- `09-heterogeneous-effects-policy` if CATE/HTE is requested;
-- `15-survival-competing-risks` for time-to-event outcomes;
-- `16-mediation` if the target is mechanism;
-- `02-data-inspector` for data preprocessing, missingness, censoring, or variable-role/timing problems.
-
-### Longitudinal treatment
-
-Activate `subskills/10-longitudinal-gmethods/` when treatment or confounders change over time, especially when past treatment affects later confounders.
-
-Also activate:
-
-- `15-survival-competing-risks` for survival outcomes;
-- `09-heterogeneous-effects-policy` for dynamic treatment regimes or individualized policies;
-- `02-data-inspector` for preprocessing time-varying rows, IDs, visits, censoring indicators, or observation-process variables.
-
-### Panel/policy/staggered adoption
-
-Activate `subskills/11-did-event-study/` when there are units observed before and after policy/treatment adoption.
-
-Also activate:
-
-- `14-synthetic-control-time-series` if few treated units or aggregate units;
-- `02-data-inspector` if panel preprocessing, missing periods, composition changes, or ID/time structure matters.
-
-### Cutoff-based assignment
-
-Activate `subskills/12-regression-discontinuity/` when treatment assignment changes at a threshold or score cutoff.
-
-Also activate:
-
-- `13-instrumental-variables` if assignment at cutoff is fuzzy rather than deterministic;
-- `05-randomized-experiments` only if there is explicit randomization inside a bandwidth or lottery window.
-
-### Instrument or encouragement design
-
-Activate `subskills/13-instrumental-variables/` when a variable affects treatment uptake but is claimed not to affect outcome except through treatment.
-
-Also activate:
-
-- `05-randomized-experiments` if the instrument is randomized assignment or encouragement;
-- `12-regression-discontinuity` if the instrument is cutoff eligibility;
-- `19-causal-genomics` if the instrument is genetic/omics-based.
-
-### Aggregate time-series intervention
-
-Activate `subskills/14-synthetic-control-time-series/` when there is a treated time series, a policy shock, pre/post periods, and possibly control series.
-
-### Survival/competing risks
-
-Activate `subskills/15-survival-competing-risks/` whenever the outcome is time-to-event or censoring is central.
-
-This may combine with randomized, observational, longitudinal, DiD, IV, or HTE subskills.
-
-### Mediation/mechanism
-
-Activate `subskills/16-mediation/` when the user asks about pathways, direct effects, indirect effects, mechanisms, or mediators.
-
-### Interference/spillovers
-
-Activate `subskills/17-interference-spillovers/` if one unit's treatment can affect another unit's outcome.
-
-### Causal discovery
-
-Activate `subskills/18-causal-discovery/` if the user asks to learn a causal graph from data.
-
-Do not confuse causal discovery with causal effect estimation from a known treatment and outcome.
-
-### Causal genomics
-
-Activate `subskills/19-causal-genomics/` for Mendelian randomization, colocalization, eQTL, GWAS, fine mapping, multi-omics mediation, and pleiotropy concerns.
-
-### Causal Data Preprocessing
-
-Activate `subskills/02-data-inspector/` when the user needs causal data preprocessing: dataset profiling, structure validation, variable-role mapping, treatment/outcome/covariate construction, missingness/outlier/dimensionality triage, leakage checks, or early modeling-difficulty flags before selecting the final causal route.
-
-This often supports another primary route rather than replacing it.
-
-### Reporting and interpretation
-
-Activate `subskills/20-reporting-interpretation/` when the user wants a report, methods section, result interpretation, diagnostic summary, limitations section, or reproducibility appendix.
-
-Use this route after the relevant design subskill has supplied the estimand, assumptions, diagnostics, and limitations.
-
-## Mixed Designs
-
-Many real projects need multiple subskills. Examples:
-
-- Online A/B test with session-level data: randomized experiments + unit-of-analysis diagnostics; possibly cluster-robust inference.
-- Noncompliant randomized clinical trial: randomized experiments + IV.
-- Cluster-randomized trial with spillovers: randomized experiments + interference.
-- RCT with time-to-event endpoint and censoring: randomized experiments + survival + missingness/censoring.
-- EHR treatment effect with survival outcome and censoring: point-treatment + survival + missingness/censoring + matching/DR.
-- Policy adoption by states over years: DiD + synthetic control + reporting.
-- Treatment effect with strong subgroup interest: point-treatment or randomized experiments + doubly robust ML + HTE/policy.
-- MR with gene expression mediator: causal genomics + IV + mediation.
-- Future study with no dataset yet: prospective design planning + one or more candidate design subskills.
-
-## Routing Output Template
-
-```markdown
-## Design route
-
-Current mode:
-Requested deliverable:
-Existing data:
-Primary design family:
-Fallback design family:
-Activated subskills:
-Subskills considered but not activated:
-Rejected, fallback, or exploratory subskills:
-
-Data structure:
-- Rows represent:
-- Causal unit:
-- Unit analyzed:
-- Time variables:
-- Assignment mechanism:
-- Treatment timing:
-- Outcome timing:
-
-Route shortlist:
-1. Route:
-   - Conditions needed:
-   - Status of conditions:
-   - Main risks:
-2. Route:
-   - Conditions needed:
-   - Status of conditions:
-   - Main risks:
-
-Design diagram, DAG, or causal-structure status:
-Primary estimand:
-Candidate analysis approaches:
-Feature construction or reshaping needed:
-Prospective data collection requirements:
-Future diagnostics to enable:
-High-level assumptions explained to the user:
-Design-specific assumptions or failure modes deferred to activated subskills:
-Diagnostics required before interpretation:
-Route-out triggers to monitor:
-Unresolved questions that would change the route:
+| Randomized assignment, A/B test, randomized rollout, trial | `05-randomized-experiments` | `13` for noncompliance, `15` for survival, `17` for spillovers, `09` for CATE |
+| One main observational treatment time with measured confounders | `06-point-treatment-observational` | `07`, `08`, `09`, `15`, `16` |
+| Time-varying treatment/confounding or dynamic regimes | `10-longitudinal-gmethods` | `08`, `09`, `15` |
+| Panel/policy adoption with pre/post periods | `11-did-event-study` | `09`, `14`, `20` |
+| Cutoff or threshold assignment | `12-regression-discontinuity` | `13` for fuzzy RD, `09` for heterogeneity |
+| Instrument or encouragement design | `13-instrumental-variables` | `05`, `12`, `08`, `19`, `21` |
+| One/few treated aggregate units or intervention time series | `14-synthetic-control-time-series` | `11`, `20` |
+| Mechanism, direct/indirect effect, pathway | `16-mediation` | primary treatment route, `15`, `19` |
+| Spillovers, peer effects, networks, contamination | `17-interference-spillovers` | primary treatment route, `09`, `15` |
+| Genetic/omics causal evidence | `19-causal-genomics` | `13`, `16`, `21` |
+| Negative controls, proxy variables, proximal causal inference | `21-negative-controls-proximal` | `04`, `06`, `08`, `20` |
+
+## Support And Modifier Triggers
+
+- Activate `07-matching-weighting-balance` when the selected route needs propensity scores, matching, weighting, overlap diagnostics, or balance reporting.
+- Activate `08-doubly-robust-ml` when the selected route needs AIPW, TMLE, DML, cross-fitting, or flexible nuisance models after identification is plausible.
+- Activate `09-heterogeneous-effects-policy` when the user asks for subgroup effects, CATE, individualized treatment rules, prioritization, uplift, or policy value.
+- Activate `15-survival-competing-risks` when the outcome is time-to-event, censoring or competing risks matter, or the target is risk/RMST/survival probability.
+- Activate `18-causal-discovery` for learning or comparing graph hypotheses. Keep claims exploratory until `04-dag-builder` and the main gate support them.
+- Activate `20-reporting-interpretation` when the user needs plans, methods, results, limitations, claim calibration, or reproducibility.
+
+## Route Status Labels
+
+For each route hypothesis, use:
+
+- `feasible`: data, design, and causal logic can support the selected route after any nonblocking deferrals.
+- `promising`: route may work, but key checks are pending.
+- `fragile`: route may proceed only with major caveats or sensitivity checks.
+- `blocked`: route cannot support the intended claim without changes.
+- `fallback`: weaker or safer route if the primary route fails.
+- `user-directed`: user chooses to proceed despite incomplete support.
+
+## Routing Output
+
+Keep output compact:
+
+```yaml
+route_id: null
+route_label: null
+role_stack:
+  primary_route: null
+  support_modules: []
+  target_modules: []
+  discovery_modules: []
+  reporting_modules: []
+status: "feasible | promising | fragile | blocked | fallback | user-directed | unknown"
+estimand: null
+claim_strength: null
+required_data_checks: []
+required_dag_checks: []
+package_fit_questions: []
+recommended_next_action: null
+failure_or_fallback_reason: null
 ```
+
+Detailed route comparison belongs in `artifacts/` or `analyses/`; `project.yaml` should keep only active route hypotheses, selected route, limitations, and handoff summaries.

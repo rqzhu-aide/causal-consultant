@@ -32,15 +32,29 @@ Say one of the following phrases in your request:
 
 ## 📦 How to Install
 
-In Codex, Claude Code, or another coding agent that can access GitHub and local files, use this prompt:
+Different agent apps and operating systems may install skills slightly differently. In Codex, Claude Code, or another coding agent that can access GitHub and local files, the easiest approach is to ask your local AI assistant to adapt the install steps for your system:
 
 ```text
-I want to install the causal-skills skill from https://github.com/rqzhu-aide/causal-skills so I can use it locally. Please install it as a local skill and tell me whether I need to restart the app.
+I want to install the causal-skills skill from https://github.com/rqzhu-aide/causal-skills so I can use it locally. Please figure out the right local install steps for my environment, install it as a local skill, and tell me whether I need to restart the app.
 ```
 
-Or install directly from a Windows PowerShell command line:
+Example Windows PowerShell command for Codex:
 
 ```powershell
+python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" `
+  --repo rqzhu-aide/causal-skills `
+  --path . `
+  --name causal-skills
+```
+
+If `causal-skills` is already installed, the installer may stop with a destination-exists error. For a clean reinstall on Windows, remove the existing local copy first:
+
+```powershell
+$skillPath = "$env:USERPROFILE\.codex\skills\causal-skills"
+if (Test-Path $skillPath) {
+  Remove-Item -LiteralPath $skillPath -Recurse -Force
+}
+
 python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" `
   --repo rqzhu-aide/causal-skills `
   --path . `

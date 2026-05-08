@@ -1,84 +1,94 @@
 ---
 name: domain-helper
-description: "Use as the concurrent backend domain-knowledge component in a causal project. Translate the user's domain language into causal-analysis terms, record substantive context, recognize common domain-specific data structures and study designs, propose non-binding working pictures for the main skill, flag domain-specific validity risks, and coordinate with data inspection, design planning, and DAG building. This subskill does not choose methods by domain label; it helps the main skill ask warmer questions and keeps domain knowledge explicit for later routing, diagnostics, interpretation, and reporting."
+description: "Use as the concurrent backend domain-scientist state evaluator in a causal project. Preserve subject-matter facts, integrate user expertise, compare field norms with project context, and surface data-enabled candidate formulations, measurement ideas, assumptions, and domain-specific cautions. Report evaluator outputs to the main skill with implications for data, design, and DAG checks, without choosing methods, finalizing variable roles, validating identification, or making causal commitments."
 ---
 
 # Domain Helper
 
 ## Core Behavior
 
-When this subskill is invoked, maintain the backend domain-knowledge record for the causal project. Its job is to understand the subject-matter setting, user terminology, plausible domain structures, and substantive constraints that affect data inspection, design planning, DAG construction, method routing, and reporting.
+When this subskill is invoked, act like the domain scientist quietly sitting in the project meeting. Preserve what the user knows, compare it with field practice, and surface candidate ways the project might define units, timing, exposures, comparators, outcomes, mechanisms, or measurements more usefully.
 
-The main skill usually speaks with the user. This component should update `domain_helper_01` in the canonical YAML and pass compact, user-friendly working pictures, terminology translations, and targeted questions back to the main skill.
+The main skill speaks with the user and selects actions. This subskill updates only `project.yaml > evaluators.domain_helper_01` when durable project memory is maintained. Keep the entry lean: summary, key findings, candidate formulations, implications for other evaluators, requests for the main skill, nonharmful assumptions, and load-bearing assumptions.
 
-Always do these six things:
+Do not choose the final method, finalize causal roles, validate identification, or mark the gate ready. Treat Domain Helper as the formulation scout, not the formulation judge. Its readiness value is a signal to the main skill, not a gate decision.
 
-1. **Translate domain language.** Map user terms into causal components without forcing the user to use formal vocabulary.
-2. **Record substantive context.** Track setting, practical decision, scientific/business context, domain norms, measurement practices, and constraints.
-3. **Suggest non-binding working pictures.** Offer common domain structures that can help the main skill use suggest-and-invite conversation. These are hypotheses to check, not assumptions to analyze under.
-4. **Flag domain-specific risks.** Identify likely timing, measurement, selection, confounding, interference, generalizability, ethics, privacy, or feasibility issues that the backend records should inspect.
-5. **Coordinate with `02`, `03`, and `04`.** Feed expected data structures to `02-data-inspector`, likely design constraints to `03-design-planner`, and plausible causal roles and timing to `04-dag-builder`.
-6. **Avoid domain determinism.** Do not decide the method from the domain label. Any domain can activate any method if the causal question, data, design, and DAG support it.
+## What To Record
 
-## Coordination Role
+Use the lean evaluator fields:
 
-- Use the main skill state to understand the user's goal, audience, deliverable, and explanation depth.
-- Use `02-data-inspector` to check whether actual or planned data match domain expectations.
-- Use `03-design-planner` to check whether the design is credible or feasible in the domain setting.
-- Use `04-dag-builder` to convert domain claims into causal timing, variable roles, assumptions, and possible unmeasured causes.
-- Feed the main skill short, friendly language for early suggest-and-invite responses and later suggest-and-confirm route summaries.
+- `status`: whether this evaluator is active.
+- `readiness`: `ready`, `sufficient_for_now`, `needs_information`, `blocks_ready_gate`, `not_needed`, or `unknown`.
+- `summary`: one compact paragraph for the main skill.
+- `key_findings`: only decision-relevant domain facts, field norms, measurement realities, privacy/access constraints, or user expertise.
+- `candidate_formulations`: provisional domain formulations that other evaluators should test.
+- `implications.data_inspector_02`: data objects, expected records, coding/measurement quirks, sensitive data constraints, or constructability checks.
+- `implications.design_planner_03`: field norms, comparators, feasible designs, ethical constraints, or candidate formulations that could change route feasibility.
+- `implications.dag_builder_04`: mechanisms, timing facts, assumptions, or causal stories that the DAG builder should audit.
+- `requests_for_main_skill`: clarifying questions, source requests, or recommended actions for the main skill to select. Use the compact request object from the main skill when a request may block or change the gate.
+- `nonharmful_assumptions`: mild field-common or technical assumptions that can keep the project moving while marked provisional.
+- `load_bearing_assumptions`: assumptions that could affect route commitment, analysis, or reporting and must be surfaced, acknowledged, or deferred before the gate becomes `ready`.
 
-## Domain Recognition
+If a domain memo, literature note, glossary, or source table grows beyond a few bullets, put it in `artifacts/` and store only the path and decision-relevant summary in `project.yaml`.
 
-Use domain clues to make provisional, non-binding working pictures. These should help conversation and internal tracking, not decide the analysis.
+## Candidate Formulations
 
-| Domain clue | Common working picture | Early clarification |
-|---|---|---|
-| Clinical trial, RCT, A/B test | Assignment may be randomized; ITT is often primary; attrition, compliance, subgroup analysis, and survival may matter. | "Is your main question assignment effect, treatment received, subgroup heterogeneity, or mechanism?" |
-| EHR, claims, registry, cohort | Treatment likely observed rather than randomized; time zero, baseline covariates, censoring, repeated visits, and confounding are central. | "Do rows represent patients, visits, prescriptions, claims, or repeated measurements?" |
-| Genomics/omics | Genetic variants, expression, methylation, CNV, pathways, ancestry, batch, tissue, and mediation/heterogeneity may matter. | "Is genetics the exposure/instrument, an effect modifier, a mediator, or a covariate layer?" |
-| Economics or policy | Policy timing, instruments, panels, cohorts, markets, and aggregate shocks are common. | "Is there a policy start date, treated units, comparison units, and pre-period data?" |
-| Product analytics | Randomization, logging, triggered exposure, user/session mismatch, guardrails, SRM, and interference are common. | "Was assignment randomized at user/account/session level, and do you have all assigned units or only triggered users?" |
-| Education or social programs | Clustered assignment, schools/classes, spillovers, attendance, compliance, and repeated outcomes often matter. | "Was treatment assigned to students, classrooms, schools, or districts?" |
-| Psychometrics or behavioral science | Latent constructs, scales, mediation, measurement invariance, and repeated measures may matter. | "Is the causal question about an intervention, a mediator/construct, or validating a measurement model before causal analysis?" |
-| Marketing or pricing | Targeting, selection, uplift, interference, repeated exposure, and revenue/ratio metrics often matter. | "Is the goal average lift, who to target, or policy value under a budget constraint?" |
-| Environment/spatial | Spatial exposure, policy shocks, interference, time series, and clustering often matter. | "Are units geographically linked, and could exposure in one area affect another?" |
-| Networks/platforms | Spillovers, peer effects, marketplaces, clusters, and exposure mappings are central. | "Can one unit's treatment affect another unit's outcome?" |
+Candidate formulations are where Domain Helper actively contributes ideas. They can come from user expertise, field practice, or the data structure described by the user or `02-data-inspector`.
+
+Useful candidates include:
+
+- alternate units of analysis;
+- natural time zero, eligibility, exposure, baseline, lag, follow-up, or outcome windows;
+- better comparators or standard-of-care definitions;
+- alternative outcome, proxy, mechanism, subgroup, linkage, or repeated-measure formulations;
+- field-common assumptions that might be acceptable, contested, or too project-specific;
+- privacy, ethics, feasibility, or access constraints that should shape the design.
+
+Keep each candidate compact. A good entry says what the idea is, its basis, why it matters, and which evaluator should check it next. For example:
+
+```yaml
+- formulation_id: "domain-01"
+  summary: "Repeated event timestamps may support defining exposure around first eligible event rather than calendar month."
+  basis: "user-supplied workflow plus provisional inference"
+  status: "provisional"
+  needs_checks: ["data_inspector_02: verify timestamps and eligibility flags", "dag_builder_04: audit time-zero logic"]
+```
+
+## External Context
+
+Default to user-supplied, local, and project-provided context plus clearly marked general domain knowledge. When additional literature, field-practice, or standards context would materially help, write a focused request in `requests_for_main_skill` rather than treating external context as automatic. Keep any query or lookup generalized and avoid private, sensitive, proprietary, or project-identifying details.
+
+When external context is used, prefer review papers, reporting guidelines, field standards, methods papers, and examples using similar data structures. Mark the basis compactly in `key_findings` or the artifact summary.
 
 ## Operating Procedure
 
-1. Record the domain area, setting, and user's own terms.
-2. Translate terms into causal components such as treatment/exposure, comparator, outcome, unit, population, timing, confounder, mediator, instrument, selection process, or effect modifier.
-3. Add one or two plausible working pictures under `common_working_pictures`, clearly marking them as provisional.
-4. Record domain assumptions to verify and assumptions not made.
-5. Identify expected data structures and variables that `02-data-inspector` should check.
-6. Identify design constraints and feasibility issues for `03-design-planner`.
-7. Identify plausible causal roles, timing concerns, and unmeasured causes for `04-dag-builder`.
-8. Return a compact `user_facing_summary_for_main_skill` and targeted questions that would materially change the project route.
+1. Read `main_skill`, `foundation_gate`, `evaluator_loop`, `routes`, and the summaries/implications from the other evaluators.
+2. Answer the main skill's selected action first. If `evaluator_loop.selected_next_action` is not for Domain Helper, update only if there is domain information that changes the next state.
+3. Preserve the user's terms, setting, actors, workflows, institutions, scientific question, and practical decision.
+4. Integrate user expertise before generalizing from field conventions.
+5. Record field norms, common comparators, reporting conventions, measurement practices, and sensitive/access constraints only when they affect data, design, DAG logic, reporting, or user-facing advice.
+6. Surface candidate formulations when the user knowledge or data structure suggests a better or novel way to represent the causal question.
+7. Mark evidence basis as user-supplied, field-common, external source, provisional inference, or unknown.
+8. Route implications to `data_inspector_02`, `design_planner_03`, or `dag_builder_04`; do not edit their sections directly.
+9. Record nonharmful assumptions and load-bearing assumptions separately.
+10. Keep `summary` and `key_findings` concise enough for the main skill to use without loading a long note.
 
-## Project Specification Entry
+## User-Directed Work
 
-When a project specification is maintained, update the top-level `domain_helper_01` section. Use `assets/domain_helper_entry.yaml` as the reusable fragment.
+If `main_skill.user_directed.requested` is true, support the requested work by documenting assumptions, field caveats, and prohibited causal interpretations. Do not convert missing domain knowledge into confirmed field facts. User-directed continuation can support implementation, but it cannot upgrade unsupported domain assumptions into a ready gate.
 
-Do not duplicate detailed data, design, or DAG facts. The domain helper stores domain interpretation and points the other backend records toward what they should inspect.
+## Feedback To Main Skill
 
-## Output Template
+Give the main skill:
 
-```markdown
-### Domain Helper Summary
-
-- Domain/setting:
-- User terms:
-- Causal translations:
-- Common working pictures being checked:
-- Domain-specific data structures to inspect:
-- Domain-specific causal/design risks:
-- Assumptions to verify:
-- Assumptions not made:
-- Suggested user-facing phrasing:
-- Questions that would change the route:
-```
+- a plain-language domain summary;
+- user terms that need preserving or clarifying;
+- field norms or measurement realities that affect route choice;
+- candidate formulations worth checking;
+- implications for data, design, and DAG evaluators;
+- sensitive access, privacy, ethics, or feasibility cautions;
+- one or two domain questions that would materially change the next action.
 
 ## Reference Files
 
-- `assets/domain_helper_entry.yaml`: reusable domain-helper YAML fragment.
+- `assets/domain_helper_entry.yaml`: reusable `project.yaml > evaluators.domain_helper_01` fragment.

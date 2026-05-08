@@ -2,7 +2,7 @@
 
 ## How to Use This Reference
 
-This is a compact map, not an exhaustive bibliography. Use it to decide which structural ideas matter for the user's problem, choose safe graph tools, and avoid overstating what a DAG or software check can prove.
+This is a compact map, not an exhaustive bibliography. Use it to audit the causal structure of the current design plan, choose safe graph tools, and avoid overstating what a DAG or software check can prove.
 
 ## Core Lessons
 
@@ -10,7 +10,8 @@ This is a compact map, not an exhaustive bibliography. Use it to decide which st
 - Identification comes before estimation. A good estimator cannot repair a structurally invalid adjustment set.
 - Adjustment is only one identification strategy. IV, front-door, mediation, g-methods, RD, DiD, selection models, transportability, and prospective design may be needed instead.
 - Graphical tools can check consequences of a supplied graph, enumerate adjustment sets, and reveal forbidden variables. They cannot prove the graph is true.
-- A target-trial protocol is often the most useful causal structure for applied users because it forces treatment, comparator, eligibility, time zero, outcome, and follow-up to be explicit.
+- A target-trial protocol is often the most useful structure to audit a design plan because it forces treatment, comparator, eligibility, time zero, outcome, and follow-up to be explicit. The design planner owns the active design proposal; DAG builder audits the causal logic.
+- A route hypothesis is not feasible merely because its graph can be drawn. Treat graph alternatives as provisional until design feasibility, data support, and domain plausibility are checked by the other foundation evaluators.
 
 ## Foundational Graphical Causal Inference
 
@@ -47,11 +48,12 @@ This is a compact map, not an exhaustive bibliography. Use it to decide which st
 - `networkx` and `graphviz`: useful for lightweight graph construction and visualization.
 - `causal-learn`: discovery-oriented package; coordinate with `subskills/18-causal-discovery/`.
 
-## Method Selection Heuristics
+## Analytic Handoff Heuristics
 
 - If the user asks "what should I adjust for", start with variable timing and a DAG or role map, then use `dagitty` to check adjustment sets.
 - If the graph has unmeasured common causes between treatment and outcome, ordinary adjustment is not enough; consider sensitivity analysis, IV, front-door, RD, DiD, or prospective design only if the required structure is plausible.
 - If the user wants a direct or indirect effect, route to mediation before choosing adjustment variables.
 - If selection into the dataset or complete-case analysis depends on treatment or outcome risk, route to `02-data-inspector` before final estimation.
 - If the user has a graph learned from data, treat it as an uncertain CPDAG/PAG or candidate graph and coordinate with causal discovery.
-- If the user's practical question is still vague, target-trial framing usually gives more traction than drawing a detailed DAG.
+- If the user's practical question is still vague, ask `03-design-planner` to clarify the design target before drawing a detailed DAG.
+- If `03-design-planner` records structured route hypotheses or `02-data-inspector` records data-enabled opportunities, audit each promising route for timing, identification, forbidden variables, unobserved causes, and assumptions before method handoff.

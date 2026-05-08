@@ -57,6 +57,11 @@ Always verify the user's installed package versions and adapt code to the datase
 - `fixest`: IV with fixed effects.
 - `ivmodel`: IV diagnostics and robust inference.
 
+### Negative controls and proximal causal inference
+
+- Package support is less standardized than for IV, DiD, or RD. Treat package names and code snippets as candidates only after `21-negative-controls-proximal` confirms the bridge-function, proxy, and data requirements.
+- Expect some analyses to require custom estimating equations, GMM, flexible nuisance models, or sensitivity/falsification workflows.
+
 ### Synthetic control and time-series intervention
 
 - `Synth`: synthetic control.
@@ -115,6 +120,10 @@ Always verify the user's installed package versions and adapt code to the datase
 ### Econometrics and panel/IV
 
 - `linearmodels`: IV, panel, GMM, fixed effects.
+
+### Negative controls and proximal causal inference
+
+- Python support may require custom code around regression, GMM, or ML nuisance estimation. Verify any specialized package before relying on it for a causal claim.
 
 ### Regression discontinuity
 

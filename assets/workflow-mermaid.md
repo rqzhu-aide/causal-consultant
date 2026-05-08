@@ -1,37 +1,47 @@
 # Causal-Skills Workflow Diagram
 
-This diagram shows the intended interaction loop from initial user need to defensible causal analysis.
+This diagram is a visual map of the workflow. The source of truth is the main `SKILL.md`, the subskill `SKILL.md` files, and the lean `project.yaml` contract.
 
 ```mermaid
 flowchart TB
-    U["User question or dataset"] --> M["Main causal skill<br/>user-facing conversation"]
-    M --> F["Concurrent backend records<br/>01 domain, 02 data, 03 design, 04 DAG/causal logic"]
-    F --> H{"Existing user data?"}
-    H -->|No or conceptual| PD["01 domain support + 03 design planning + 02 conceptual schema<br/>target trial, route options, data requirements"]
-    PD --> R["Route shortlist<br/>1-3 possible design families"]
-    H -->|Yes or partial| DS["01 domain support + 02 data inspection + 03 design audit<br/>rows, units, timing, assignment, variables"]
-    DS --> R["Route shortlist<br/>1-3 possible design families"]
-    R --> C["04 causal-logic gate<br/>DAG/target trial, assumptions, identification"]
-    C --> D{"Enough support for a causal route?"}
-    D -->|No| ALT["Recommend descriptive, predictive, sensitivity, or data collection next step"]
-    D -->|Yes| S["Activate candidate subskill(s)"]
-    S --> E["Subskill activation<br/>estimand determination and route-specific audit"]
-    E --> SD{"Selected route still supported?"}
-    SD -->|No| RO["Record rejected, fallback, or exploratory/user-forced status<br/>then return to route shortlist"]
-    RO --> R
-    SD -->|Yes| P["Analysis plan<br/>primary route, fallback route, diagnostics"]
-    P --> CODE["R/Python code or package workflow"]
-    CODE --> RES["Results and diagnostics"]
-    RES --> ITER{"Revise?"}
-    ITER -->|Revise estimand/model/data processing| R
-    ITER -->|Ready| REP["Report, interpretation, limitations, reproducibility"]
+    U["User question, goal, or dataset"] --> M["Main causal skill<br/>policy actor and user-facing conversation"]
+    M --> Y["Lean project.yaml<br/>main_skill, foundation_gate, evaluator_loop, routes, analysis"]
+
+    Y --> E["Foundation evaluator loop<br/>01 domain, 02 data, 03 design, 04 DAG"]
+    E --> S["Evaluator signals<br/>summaries, implications, requests, assumptions, blockers"]
+    S --> M
+    E --> I["Innovation seeds<br/>candidate formulations, data opportunities,<br/>route hypotheses, causal-logic hypotheses"]
+    I --> M
+
+    M --> A{"Main skill selected action"}
+    A -->|"ask / inspect / search / refresh"| E
+    A -->|"loop detected"| LB["Loop break<br/>decisive question, labeled assumption, surface assumption, block, fallback, or user-directed"]
+    LB --> M
+
+    M --> RT["Promote, defer, revise, or reject routes<br/>routes.current_route_id and routes.hypotheses"]
+    RT --> G{"Main skill gate decision"}
+    G -->|"not ready / blocked"| ALT["Revise route, ask user, collect data, refresh evaluator,<br/>choose fallback, or continue user-directed with caveats"]
+    ALT --> M
+    G -->|"ready or user-directed"| R["Selected route handoff<br/>route_id, estimand, data status, assumptions, limitations, software preference"]
+
+    R --> MS["Compose method stack<br/>primary route + optional support/target/reporting modules"]
+    MS --> PF{"Route fit and package/code fit pass?"}
+    PF -->|"no"| FB["Method feedback to main skill<br/>failed condition, owner of fix, recommended next action"]
+    FB --> M
+    PF -->|"yes"| PLAN["Analysis plan<br/>estimator, diagnostics, sensitivity, fallback"]
+    PLAN --> CODE["Code/package workflow<br/>R, Python, Stata, or documented manual workflow"]
+    CODE --> RES["Results, diagnostics, limitations"]
+    RES --> OK{"Interpretation ready?"}
+    OK -->|"revise route/model/data processing"| M
+    OK -->|"yes"| REP["Reporting subskill<br/>interpretation, limitations, reproducibility"]
 ```
 
 ## Key Design Principles
 
-1. **Need-aware interaction** - Start from the user's requested deliverable, not a fixed questionnaire.
-2. **Concurrent foundation records** - Keep the main skill, domain support, data inspection, design planning, and DAG/causal logic active together.
-3. **Data and design before method** - Identify rows, units, timing, assignment, and variable roles before choosing methods.
-4. **Design frames routing; causal logic checks it** - Use the design record for high-level feasible routes, then use the DAG/target-trial record for identification, adjustment, and method-selection implications.
-5. **Tool fit, data suitability, and causal validity together** - Use packages only when their assumptions and outputs match the planned causal claim.
-6. **Iterative refinement** - Use diagnostics and user feedback to revise the estimand, route, model, or interpretation.
+1. **Main skill owns policy and gate decisions** - Foundation evaluator readiness values are signals, not automatic gate openers.
+2. **Foundation evaluators maintain state** - Domain, data, design, and DAG subskills update only their lean evaluator records and provide implications to the main skill.
+3. **Method subskills have roles** - Primary route subskills check design families, support modules add estimators/diagnostics, target modules change the estimand target, discovery modules explore graphs, and reporting modules communicate results.
+4. **Package lists are candidate maps** - A package is appropriate only if the method stack confirms it supports the estimand, data structure, diagnostics, and uncertainty needs.
+5. **User-directed progress is allowed but labeled** - The user can force workflow pace, not unqualified causal validity.
+6. **Loop control prevents circular evaluation** - Repeated unresolved blockers trigger a main-skill loop-break action.
+7. **Detailed work leaves the shared YAML** - Full audits, code, diagnostics, DAGs, reports, and route memos belong in `analyses/` or `artifacts/`, with compact summaries in `project.yaml`.

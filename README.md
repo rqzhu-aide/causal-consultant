@@ -36,8 +36,6 @@ This skill treats causal inference as a sequence of design decisions, not as a s
 
 Before moving to actual analysis, the skill maintains four key records in parallel: **domain** context, **data** structure and quality, study **design**, and the causal **DAG** / identification logic. These are kept by the four backend foundation subskills (Domain Helper, Data Inspector, Design Planner, and DAG Builder).
 
-See the canonical workflow diagram: [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md). A legacy standalone HTML diagram is also included at [`assets/causal-skills-workflow-diagram.html`](assets/causal-skills-workflow-diagram.html), but the Mermaid diagram should be treated as the current architecture reference.
-
 When no data exist yet, the skill should help plan data collection so future causal analysis is possible. When data exist but are messy, it should map rows, timing, variables, and possible feature construction before fitting models. When results exist, it should use diagnostics and user feedback to iterate on the estimand, model, or interpretation.
 
 Tool fit, data suitability, and causal validity should be checked together. User-preferred packages or tools can be used, but only when their assumptions, supported estimands, diagnostics, and uncertainty estimates match the planned analysis.
@@ -50,15 +48,15 @@ The skill's role is not to make causal inference automatic. Its role is to make 
 
 The package is organized around an interactive consulting workflow.
 
-See the canonical workflow diagram: [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md). A legacy standalone HTML diagram is also included at [`assets/causal-skills-workflow-diagram.html`](assets/causal-skills-workflow-diagram.html), but the Mermaid diagram should be treated as the current architecture reference.
+See the canonical workflow diagram: [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md).
 
 1. 🔍 Identify the current interaction mode: learning, orientation, prospective planning, data audit, design triage, analysis planning, code drafting, result interpretation, or reporting.
 2. 🗣️ Restate the user's goal in domain language and clarify only the treatment, comparator, outcome, timing, population, data structure, and deliverable details needed for the next step.
 3. 🏛️ Keep the main skill and four backend foundation subskills active concurrently: the main skill speaks with the user, while domain support, data inspection, design planning, and DAG/causal logic update backend records.
-4. 📋 In the data component, set `data_existence_status` as `existing`, `partially existing`, `conceptual`, or `unknown`. If data exist, audit rows, IDs, timing, assignment/exposure, repeated measures, clustering, missingness, censoring, and available covariates. If no data exist, record the expected schema or data requirements as conceptual.
+4. 📋 In `evaluators.data_inspector_02`, set `data_status` as `existing`, `partially existing`, `conceptual`, or `unknown`, and scope readiness to the route or next step. If data exist, audit rows, IDs, timing, assignment/exposure, repeated measures, clustering, missingness, censoring, and available covariates. If no data exist, record the expected schema or data requirements as conceptual.
 5. 🗺️ Narrow to 1 to 3 plausible high-level design routes, state the key conditions for each, then use the DAG/causal-logic record to check identification, adjustment, and method-selection implications, constrained by data facts and design feasibility.
 6. ⚙️ Activate one or more relevant candidate method subskills once the rough design is known. If a candidate route is rejected, record why, route back to the shortlist, and reconsider the best next route.
-7. 🔬 Inside the activated subskill, refine the estimand, audit route-specific assumptions and failure modes, and decide whether the route is supported, fallback, rejected, or exploratory/user-forced.
+7. 🔬 Inside the activated subskill, refine the estimand, audit route-specific assumptions and failure modes, and decide whether the route is supported, fallback, rejected, or user-directed.
 8. 📝 Draft analysis plans, diagnostics, sensitivity analyses, and R/Python code only when the route, estimand, and data suitability are clear enough.
 9. 🔄 Interpret results, diagnose problems, and iterate with the user to revise the estimand, route, model, data processing, or claim.
 10. 📄 Produce a reproducible report with assumptions, diagnostics, limitations, and interpretation when requested.

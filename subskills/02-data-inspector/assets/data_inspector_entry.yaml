@@ -1,96 +1,16 @@
-subskill_analyses:
-  - subskill_id: "02-data-inspector"
-    status: "candidate | selected | rejected | fallback | exploratory/user-forced"
-    fit_to_user_need: null
-    data_existence_status: "existing | partially existing | conceptual | unknown"
-    data_basis: "actual user data | partial user data | conceptual data | unknown"
-    data_evidence_source: "uploaded file | local file path | codebook | column list | sample rows | summary table | study plan | simulated/mock data | user description | none | unknown"
-    user_task: "data audit | variable-role mapping | preprocessing plan | structure validation | propensity covariate prep | longitudinal/panel prep | high-dimensional prep | model-difficulty triage | unknown"
-    coordination:
-      main_skill_goal_summary: null
-      domain_record_used: "01-domain-helper"
-      design_record_to_update: "03-design-planner"
-      dag_record_to_update: "04-dag-builder"
-      user_facing_summary_for_main_skill: null
-    inferred_domain_assumptions:
-      expected_unit: null
-      expected_treatment_or_exposure: null
-      expected_outcome: null
-      expected_time_zero: null
-      expected_baseline_window: null
-      expected_follow_up_window: null
-      expected_grouping_or_repeated_structure: null
-      assumptions_to_verify: []
-    dataset_profile:
-      rows: null
-      columns: null
-      unique_units: null
-      candidate_unit_id_columns: []
-      candidate_time_columns: []
-      candidate_group_cluster_columns: []
-      wide_or_long_format: "wide | long | one-row-per-unit | one-row-per-unit-time | one-row-per-event | unknown"
-      numeric_columns: []
-      categorical_columns: []
-      high_cardinality_columns: []
-      constant_or_near_constant_columns: []
-      duplicate_key_rows: null
-      missingness_summary: null
-      outlier_or_range_issues: []
-      expected_schema_when_no_actual_data: []
-      diagnostics_not_observable_without_actual_data: []
-    variable_role_map:
-      treatment_variables: []
-      treatment_type: "binary | categorical | continuous | dose | time-varying | multi-arm | unknown"
-      treatment_unit_or_level: null
-      outcome_variables: []
-      outcome_type: "continuous | binary | count | ordinal | time-to-event | repeated | unknown"
-      candidate_baseline_covariates: []
-      plausible_confounders: []
-      effect_modifiers: []
-      propensity_score_candidates: []
-      mediators_or_post_treatment_variables: []
-      instruments_or_encouragements: []
-      censoring_or_observation_indicators: []
-      variables_with_unclear_role_or_timing: []
-      variables_to_exclude_from_adjustment: []
-    structure_checks:
-      cross_sectional: null
-      cohort_or_follow_up: null
-      repeated_measures_or_longitudinal: null
-      panel_or_time_series: null
-      clustered_or_multilevel: null
-      survival_or_censoring: null
-      network_or_spillover: null
-      high_dimensional_features: null
-      required_columns_missing: []
-    preprocessing_plan:
-      safe_cleaning_steps: []
-      recoding_or_type_conversion: []
-      treatment_label_construction: []
-      outcome_construction: []
-      baseline_covariate_construction: []
-      categorical_encoding_plan: []
-      transformation_or_scaling_plan: []
-      missingness_handling_plan: []
-      outlier_handling_plan: []
-      dimension_reduction_or_screening_plan: []
-      leakage_checks: []
-      reproducibility_notes: []
-    modeling_difficulty_flags:
-      small_sample_or_few_treated: null
-      high_dimension_relative_to_sample: null
-      rare_outcome_or_separation: null
-      treatment_imbalance: null
-      limited_overlap_or_positivity: null
-      too_few_clusters_or_time_periods: null
-      irregular_follow_up_or_visit_times: null
-      high_missingness_in_key_variables: null
-      high_cardinality_or_sparse_levels: null
-      post_treatment_covariate_risk: null
-      likely_modeling_handoffs: []
-    route_recommendation:
-      likely_primary_causal_routes: []
-      routes_to_avoid_or_defer: []
-      required_data_fixes_before_modeling: []
-      issues_requiring_explicit_modeling_not_preprocessing: []
-      open_questions_for_user: []
+evaluators:
+  data_inspector_02:
+    status: "active | inactive | unknown"
+    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    readiness_scope: "not assessed | exploratory review | route comparison | design-data fit | dag-data fit | preprocessing | method-specific modeling | gate commitment | user-directed execution | unknown"
+    data_status: "existing | partially existing | conceptual | unknown"
+    summary: null
+    key_findings: []
+    data_enabled_opportunities: []
+    implications:
+      domain_helper_01: []
+      design_planner_03: []
+      dag_builder_04: []
+    requests_for_main_skill: []
+    nonharmful_assumptions: []
+    load_bearing_assumptions: []

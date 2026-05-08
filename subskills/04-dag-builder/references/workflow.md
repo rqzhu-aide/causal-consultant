@@ -1,133 +1,129 @@
-# Workflow: Causal DAG and Identification
+# Workflow: Causal-Structure Audit and Analytic Handoff
 
 ## Purpose
 
-Use this workflow when the user needs causal-structure support: a DAG, variable-role map, target-trial framing, adjustment set, or identification audit before estimation.
+Use this workflow after `03-design-planner` has proposed, shortlisted, or asked to audit a candidate design. The DAG builder's job is to turn that design into practical causal logic: assumptions, timing, variable roles, identification, adjustment or non-adjustment strategy, sensitivity needs, and downstream analytic handoff.
 
-In the main-skill architecture, this workflow is the backend causal-logic record. It should usually produce a better route and clearer assumptions, not a final estimator by itself. The main skill normally speaks with the user; this workflow maintains the `04-dag-builder` YAML entry and feeds method-selection implications to the main skill.
+In the main-skill architecture, this workflow is the backend practical causal-logic evaluator. It maintains `project.yaml > evaluators.dag_builder_04` and feeds compact analytic implications to the main skill, feedback to the design planner, data checks to the data inspector, domain checks to Domain Helper, and handoff notes to method subskills.
+
+Start each evaluator pass by reading `evaluator_loop`. The trigger, selected next action, action queue, readiness signals, summaries, and loop-control state tell DAG Builder whether this is a targeted causal-logic audit, route-hypothesis review, route-commitment check, user-directed support, or a loop-breaking pass. Answer that selected action first before adding broader graph alternatives.
 
 Coordinate continuously with:
 
-- main skill state for user goal, deliverable, understanding, and explanation depth;
-- `01-domain-helper` for domain terminology, substantive constraints, and plausible causal roles;
-- `02-data-inspector` for actual or conceptual variables, measurement timing, missingness, censoring, clustering, network links, and data-quality constraints;
-- `03-design-planner` for the actual or planned design, assignment/exposure mechanism, time zero, follow-up, and feasibility constraints.
+- `evaluators.design_planner_03` for the design to audit, comparison, population, time zero, follow-up, route hypotheses, preferred route ID, and specific design questions;
+- `routes.current_route_id` and `routes.hypotheses` for the main skill's promoted route state;
+- `evaluators.domain_helper_01` for field context, scientific conventions, mechanisms, candidate formulations, and domain cautions;
+- `evaluators.data_inspector_02` for observed variables, measurement timing, missingness, censoring, clustering, network links, data-enabled opportunities, and data-readiness limitations;
+- `main_skill` and `evaluator_loop` for user goal, selected action, action priority, deliverable, and explanation depth.
 
-Use this record as the main causal-logic basis for selecting methods after the high-level design route is framed, but never select methods from causal logic alone. Check whether the data and design records can actually support the route.
+Do not lead the high-level design conversation. If causal logic breaks the proposed design, record the problem, possible causal-logic alternatives, and feed them back to `03-design-planner`.
 
-## Stage 1: Question and Timing
+## Stage 1: Receive the Design
 
-Start with the practical question:
+Start from the current design planner record:
 
-- treatment or action;
-- comparator;
-- outcome;
-- target population;
-- time zero;
-- follow-up window;
-- requested deliverable.
+- candidate or preferred design;
+- action/exposure and comparator;
+- target and analysis populations;
+- time zero and follow-up;
+- assignment/exposure process;
+- design status: promising, feasible, fragile, blocked, or unknown;
+- route hypotheses and selected route ID when available;
+- design questions that `03` wants audited.
 
-If any of these are unclear, ask the smallest number of questions needed to proceed. Do not ask the user to provide a formal DAG unless they already have one.
+If these are too vague, return a clarification request to `03`/main skill rather than inventing a design.
 
-## Stage 2: Variable Role Map
+## Stage 2: Build the Smallest Useful Structure
 
-Classify variables in a table before recommending adjustment:
+Choose the lightest causal-structure representation that supports the analytic decision:
 
-- pre-treatment common causes of treatment and outcome;
+- timing table when timing is the main issue;
+- variable-role map when adjustment or forbidden variables are the main issue;
+- DAG when confounding, mediation, colliders, selection, instruments, or transport matter;
+- SWIG-style structure when interventions and counterfactual comparisons need emphasis;
+- selection/censoring diagram when observed data depend on follow-up, survival, or inclusion;
+- alternative structures when plausible causal stories imply different adjustment or handoff decisions.
+
+Mark uncertain edges, uncertain timing, and unobserved variables explicitly.
+
+## Stage 2b: Review Route And Data-Enabled Hypotheses
+
+When `03` or `02` proposes a route, audit it as a causal claim rather than as a design decision. For each route or opportunity worth keeping:
+
+- identify the required causal story and target effect;
+- state which assumptions carry identification;
+- mark whether the logic is supported, fragile, blocked, needs design revision, or needs clarification;
+- record required domain checks, data checks, design implications, and method handoff;
+- keep feasibility decisions with `03-design-planner`.
+
+## Stage 3: Classify Roles for the Proposed Design
+
+For the design's target effect, classify:
+
+- pre-treatment common causes;
 - pre-treatment precision variables;
 - effect modifiers;
-- mediators or post-treatment variables;
-- colliders or selection variables;
-- instruments or encouragement variables;
-- missingness, censoring, or sample-inclusion variables;
-- unmeasured common causes;
-- outcome variables or outcome proxies.
+- mediators or intermediate variables;
+- colliders and selection variables;
+- instruments or encouragements;
+- missingness, censoring, and observation-process variables;
+- post-treatment variables to avoid for a total effect;
+- important unmeasured or unavailable variables;
+- variables requiring data timing checks from `02`.
 
-Plain-language rule: ask whether the variable was known before treatment and whether it helped cause treatment choice, outcome risk, both, or selection into the dataset.
+The same variable may need different classification under a different design, time zero, or estimand. If that happens, feed the ambiguity back to `03`.
 
-## Stage 3: Provisional Structure
-
-Create one of these, depending on what helps most:
-
-- a lightweight DAG;
-- a target-trial protocol;
-- a SWIG-style intervention diagram;
-- a variable-role map;
-- a selection/censoring diagram;
-- a small set of alternative plausible graphs.
-
-Mark uncertainty explicitly. If two plausible graphs imply different adjustment sets, keep both until domain knowledge resolves the difference or report the result as a sensitivity concern.
-
-## Stage 4: Identification Check
+## Stage 4: Audit Identification
 
 For a total effect:
 
-- identify forbidden variables: mediators, colliders, descendants of treatment, selection variables, and post-treatment variables;
-- find candidate adjustment sets among pre-treatment variables;
-- prefer adjustment sets that are scientifically justified, measured reliably, and preserve overlap;
-- route to matching/weighting or DR/ML only after the adjustment variables are structurally defensible.
+- identify forbidden variables: mediators, colliders, descendants of treatment, post-treatment variables, and selection variables;
+- find candidate adjustment sets among variables measured before treatment/time zero;
+- prefer adjustment sets that are scientifically justified, measured reliably, and preserve support;
+- record assumptions needed for exchangeability, positivity, consistency, and no relevant interference when they matter.
 
-For direct or mediated effects:
+For other targets:
 
-- route to mediation;
-- specify whether the target is total, controlled direct, natural direct/indirect, or interventional direct/indirect;
-- record mediator-outcome confounding and treatment-induced confounding concerns.
+- direct or mediated effects: route to mediation and record mediator-outcome and treatment-induced confounding concerns;
+- unmeasured confounding: ordinary adjustment is insufficient; consider sensitivity analysis or alternative designs only if `03` supports them;
+- IV, RD, DiD, synthetic control, or front-door logic: audit the structural conditions and hand off to the relevant method subskill if the design can support them;
+- selection, censoring, missingness, or transport: record the selection/observation structure and route to the relevant method or sensitivity workflow.
 
-For unmeasured confounding:
+## Stage 5: Produce the Analytic Skeleton
 
-- check whether IV, front-door, RD, DiD, negative controls, sensitivity analysis, or prospective data collection is plausible;
-- do not pretend ordinary adjustment solves missing common causes.
+Record:
 
-For selection, censoring, or missingness:
-
-- draw or describe the selection node;
-- route to missingness/measurement/selection;
-- avoid complete-case adjustment without a selection argument.
-
-## Stage 5: Tool Use
-
-Use tools only after the structure is meaningful:
-
-- `dagitty` or `ggdag` for adjustment sets, implied independencies, and visualization;
-- `DoWhy` for model-identify-estimate-refute workflows, especially when Python is requested;
-- `causaleffect` for do-calculus/ID-style identification when simple adjustment is insufficient;
-- discovery packages only through `subskills/18-causal-discovery/`.
-
-Software output is not a proof of causal assumptions. It checks implications of the graph the user supplied.
-
-## Stage 6: Output and Route Handoff
-
-Return a compact result:
-
-- causal question;
-- variable role map;
-- graph status and uncertainties;
-- candidate and preferred adjustment sets;
+- target effect or estimand family;
+- supported status: supported, fragile, blocked, needs design revision, or unknown;
+- candidate and preferred adjustment sets, when relevant;
 - forbidden variables;
-- assumptions in plain language;
-- tests or negative controls that could reveal problems;
-- next subskill route for estimation or reporting.
+- non-adjustment strategy needed, if any;
+- required data checks before implementation;
+- diagnostics or sensitivity checks;
+- assumptions and limitations to report;
+- downstream method handoff.
+- supported scope, route ID, rationale, and what the route is not supported for.
 
-If identification fails, state what is missing and offer a fallback:
+This is not final model code. It is the causal skeleton that method subskills should implement or challenge.
 
-- collect missing confounders;
-- redefine the estimand or target population;
-- use sensitivity/descriptive analysis;
-- consider IV/RD/DiD/front-door only if the design actually supports it;
-- plan future data collection.
+## Stage 6: Feedback
+
+Return compact feedback:
+
+- to `main_skill`: plain-language assumptions and analytic status;
+- to `03-design-planner`: design features that need revision, clarification, or fallback;
+- to `02-data-inspector`: variable timing or data availability checks needed before implementation;
+- to `01-domain-helper`: mechanisms, timing claims, or field-common assumptions that need domain review;
+- to method subskills: adjustment set, forbidden variables, diagnostics, sensitivity checks, and warnings.
 
 ## Suggested Response Pattern
 
 ```markdown
-I would treat this as a DAG/identification problem because [reason].
+For the design currently proposed by `03`, the causal structure looks [supported/fragile/blocked/unknown].
 
-The causal comparison seems to be [A] versus [comparator] for [Y] starting at [time zero].
+The main assumption load is [plain-language assumptions]. For a total-effect analysis, the candidate adjustment variables are [set], and these variables should not be adjusted for: [forbidden variables].
 
-Before choosing a model, I would classify the variables this way: [short role map].
-
-Under the current graph, a defensible adjustment set is [set], and these variables should not be adjusted for in a total-effect analysis: [forbidden variables].
-
-This depends on [plain-language assumption]. If [unresolved structural concern] is true, I would route to [subskill/fallback].
+Before implementation, `02` should verify [data timing/availability checks]. If that fails, `03` should consider [design revision or fallback].
 ```
 
 ## Code Template Index
@@ -136,7 +132,7 @@ Root template:
 
 - `scripts/python/dowhy_point_treatment_template.py`
 
-Use this only after graph assumptions, variable timing, and the target estimand are explicit. For R DAG checks, prefer short project-specific `dagitty` code generated from the variable names and graph.
+Use this only after the proposed design, graph assumptions, variable timing, and target effect are explicit. For R DAG checks, prefer short project-specific `dagitty` code generated from the variable names and graph.
 
 ## Literature and Software Map
 

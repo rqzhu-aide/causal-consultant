@@ -2,11 +2,11 @@
 
 ## Goal
 
-Use this workflow before choosing or fitting a causal model, and whenever the project needs a data reality check. The data inspector asks: given the domain facts, envisioned design, and DAG/assumption needs, what does the data actually contain, and what can it support?
+Use this workflow before choosing or fitting a causal model, and whenever the project needs a data reality check. The Data Technician asks: given the domain facts, envisioned design, and DAG/assumption needs, what does the data actually contain, what can it support, and which method families are technically feasible?
 
-In the main-skill architecture, this workflow is the backend data-expert state evaluator. The main skill usually speaks with the user and selects next actions; this workflow updates `project.yaml > evaluators.data_inspector_02` with compact summary, findings, data-enabled opportunities, implications, requests, and assumptions for the main skill.
+In the main-skill architecture, this workflow is the backend data-expert and method-feasibility evaluator. The main skill usually speaks with the user and selects next actions; this workflow updates `project.yaml > evaluators.data_technician_02` with compact summary, findings, data-enabled opportunities, method-fit suggestions, implications, requests, and assumptions for the main skill.
 
-Start each evaluator pass by reading `evaluator_loop`. The trigger, selected next action, action queue, readiness signals, summaries, and loop-control state tell Data Inspector whether this is a broad audit, a targeted check, route-commitment review, user-directed support, or a loop-breaking pass. Answer that selected action first before adding broader observations.
+Start each evaluator pass by reading `evaluator_loop`. The trigger, selected next action, action queue, readiness signals, summaries, and loop-control state tell the Data Technician whether this is a broad audit, a targeted check, route-commitment review, method-fit review, user-directed support, or a loop-breaking pass. Answer that selected action first before adding broader observations.
 
 This workflow centers on:
 
@@ -82,7 +82,7 @@ Check whether the data can support DAG-builder questions:
 
 ### Data-enabled formulation scan
 
-Data Inspector should notice when data structure suggests a useful causal formulation that has not yet been proposed. Examples include:
+The Data Technician should notice when data structure suggests a useful causal formulation that has not yet been proposed. Examples include:
 
 - a better unit of analysis than the one initially assumed;
 - a credible time-zero field, adoption date, eligibility date, or baseline window;
@@ -173,7 +173,7 @@ Every readiness note should include `readiness_scope`, such as `exploratory revi
 
 ```yaml
 evaluators:
-  data_inspector_02:
+  data_technician_02:
     readiness: "blocks_ready_gate"
     readiness_scope: "design-data fit"
     data_status: "existing"

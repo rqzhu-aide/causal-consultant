@@ -9,7 +9,7 @@ evaluators:
     route_hypotheses: []
     implications:
       domain_helper_01: []
-      data_inspector_02: []
+      data_technician_02: []
       dag_builder_04: []
     requests_for_main_skill: []
     nonharmful_assumptions: []

@@ -12,11 +12,11 @@ When this skill is invoked, act as the persistent human-facing coordinator for t
 The main skill is the policy actor and action selector. The four foundation subskills are evaluators:
 
 - `01-domain-helper`: domain facts, user expertise, field norms, measurement practice, and candidate formulations.
-- `02-data-inspector`: observed or conceptual data structure, data quality, constructability, and data-enabled opportunities.
+- `02-data-technician`: Data Technician; observed or conceptual data structure, data quality, constructability, data-enabled opportunities, and method-fit feasibility.
 - `03-design-planner`: route hypotheses, design feasibility, fallback routes, and design-level responses to evaluator feedback.
 - `04-dag-builder`: causal logic, variable timing/roles, assumptions, identification status, and method handoff warnings.
 
-Keep the project YAML lean. It is a live state ledger, not a complete knowledge base. Record only the current state, evaluator summaries, active route hypotheses, blockers, assumptions, and next actions needed for coordination. Put detailed data profiles, codebooks, DAG edge lists, route memos, diagnostics, and report drafts under `artifacts/` or `analyses/`, then summarize or link them from `project.yaml`.
+Keep the project YAML lean. It is a live state ledger, not a complete knowledge base. Record only the current state, evaluator summaries, active route hypotheses, blockers, assumptions, execution checkpoints, and next actions needed for coordination. Put detailed data profiles, codebooks, DAG edge lists, route memos, diagnostics, and report drafts under `artifacts/` or `analyses/`, then summarize or link them from `project.yaml`.
 
 Respect data-security and privacy boundaries. Keep raw data, identifiers, credentials, secrets, PHI/PII, proprietary information, and sensitive study materials local unless the user explicitly authorizes another path. When additional domain or literature context is useful, keep requests generalized and avoid project-identifying details; summarize the relevance rather than copying long source material into the project state.
 
@@ -30,10 +30,10 @@ Use this loop throughout the project:
 4. Use `evaluator_loop` as the action selector record. Set its trigger, selected next action, action queue, readiness signals, summaries, and loop-control state.
 5. Refresh only the evaluator(s) needed for the selected action. Each foundation subskill updates only its own entry under `evaluators.<id>`.
 6. Read evaluator readiness, summaries, implications, requests, nonharmful assumptions, and load-bearing assumptions.
-7. Choose the next action: ask the user, inspect data, request targeted external context, refresh another evaluator, record a working assumption, demote or block a route, proceed with caveats, activate a method subskill, or mark the gate ready.
+7. Choose the next action: ask the user, inspect data, request targeted external context, refresh another evaluator, record a working assumption, demote or block a route, proceed with caveats, request Data Technician method-fit review, confirm the analysis plan, activate a method subskill, run a first pass, run diagnostics, prepare final reporting, or mark the gate ready.
 8. Speak to the user through the main skill only, unless the user explicitly asks to inspect a specific subskill record.
 
-Default first-pass order is `01-domain-helper`, `02-data-inspector`, `03-design-planner`, then `04-dag-builder` when no evaluator is clearly urgent. After the first pass, do not run a fixed cycle by habit. Let the main skill select the next evaluator by priority, usually the smallest check with the highest chance of changing the next state. Data checks may come before design refinement if constructability is doubtful; DAG checks may come before data checks if timing or causal roles are the blocker; domain checks may come first when the scientific meaning is unstable.
+Default first-pass order is `01-domain-helper`, `02-data-technician` (Data Technician), `03-design-planner`, then `04-dag-builder` when no evaluator is clearly urgent. After the first pass, do not run a fixed cycle by habit. Let the main skill select the next evaluator by priority, usually the smallest check with the highest chance of changing the next state. Data checks may come before design refinement if constructability is doubtful; DAG checks may come before data checks if timing or causal roles are the blocker; domain checks may come first when the scientific meaning is unstable.
 
 Use loop control when evaluator feedback stops making progress. If two rounds return the same blocker, same cross-evaluator dependency, or no material readiness change, record the issue under `evaluator_loop.loop_control` and choose a loop-break action: ask one decisive user question, make and record a permissible nonharmful assumption, surface a load-bearing assumption, demote or block the route, choose a fallback, or proceed user-directed if the user clearly prefers progress.
 
@@ -48,11 +48,11 @@ Use these top-level YAML sections:
 | `foundation_gate` | Main skill | Whether the current route is not needed, exploratory, ready, blocked, or unknown; causal support status; blockers; unresolved required information; surfaced/deferred assumptions; allowed claim strength. |
 | `evaluator_loop` | Main skill | Trigger, selected next action, action queue, readiness signals, evaluator summaries, and loop-control state. |
 | `evaluators.domain_helper_01` | Domain Helper | Domain summary, key findings, candidate formulations, implications, requests, and assumptions. |
-| `evaluators.data_inspector_02` | Data Inspector | Data status, readiness scope, key findings, data-enabled opportunities, implications, requests, and assumptions. |
+| `evaluators.data_technician_02` | Data Technician | Data status, readiness scope, key findings, data-enabled opportunities, method-fit suggestions, implications, requests, and assumptions. |
 | `evaluators.design_planner_03` | Design Planner | Design status, preferred route ID, route hypotheses, implications, requests, and assumptions. |
 | `evaluators.dag_builder_04` | DAG Builder | Supported status, supported scope, identification status, causal-logic hypotheses, implications, requests, and assumptions. |
 | `routes` | Main skill, informed by evaluators | Current route ID, active hypotheses, and rejected or deferred routes. |
-| `analysis` | Main skill | Route commitment status, active/recommended method subskills, analysis summaries, claim strength, and limitations. |
+| `analysis` | Main skill | Route commitment status, execution stage, plan confirmation, first-pass summary, recommended diagnostics, active/recommended method subskills, claim strength, and limitations. |
 | `subskill_analyses` | Main skill and method subskills | Compact index of activated route-specific analysis files. |
 | `artifacts` | Main skill and subskills | Compact index of reusable notes, DAGs, data audits, plots, reports, or other outputs. |
 
@@ -71,7 +71,7 @@ Use the four foundation subskills as a coordinated evaluator team rather than a 
 - Each evaluator writes only its own `evaluators.<id>` section.
 - Cross-evaluator communication flows through `implications.<other_evaluator_id>` and `requests_for_main_skill`. The main skill decides whether to refresh another evaluator, ask the user, inspect data, defer a request, block a route, or continue.
 - `evaluator_loop.summaries` are main-skill snapshots copied or condensed from the evaluator sections; the evaluator sections remain the canonical source.
-- Innovation flows from seeds to routes: Domain Helper records `candidate_formulations`, Data Inspector records `data_enabled_opportunities`, Design Planner converts viable seeds into `route_hypotheses`, DAG Builder audits them as `causal_logic_hypotheses`, and the main skill promotes the selected route into `routes.current_route_id` and `routes.hypotheses`.
+- Innovation flows from seeds to routes: Domain Helper records `candidate_formulations`, the Data Technician records `data_enabled_opportunities` and method-fit suggestions, Design Planner converts viable seeds into `route_hypotheses`, DAG Builder audits them as `causal_logic_hypotheses`, and the main skill promotes the selected route into `routes.current_route_id` and `routes.hypotheses`.
 - When a route is revised, demoted, or replaced, the main skill updates `routes`, marks stale requests or summaries as resolved/deferred where appropriate, and refreshes only the evaluator checks that could change the next state.
 
 ## Rigor Modes
@@ -104,9 +104,12 @@ Before setting the gate to `ready`:
 - no open evaluator request with `readiness_impact: blocks_ready_gate` may remain in `evaluator_loop.action_queue` or any `evaluators.<id>.requests_for_main_skill`;
 - `foundation_gate.blockers` and `foundation_gate.unresolved_required_information` must be empty or explicitly resolved;
 - load-bearing assumptions in `main_skill.assumptions_to_surface`, `foundation_gate.assumptions_to_surface`, or any evaluator's `load_bearing_assumptions` must be surfaced, acknowledged, or explicitly deferred in `foundation_gate.surfaced_or_acknowledged_assumptions` or `foundation_gate.deferred_assumptions`;
-- DAG-triggered data/timing checks must be refreshed by `02-data-inspector` before the gate becomes ready if they could change constructability or timing fit.
+- DAG-triggered data/timing checks must be refreshed by `02-data-technician` before the gate becomes ready if they could change constructability or timing fit.
+- Data Technician method-fit suggestions should be recorded or explicitly deferred before activating substantial method execution when multiple methods appear plausible.
 
 The main skill may still mark the gate `ready` when some evaluator signals are `sufficient_for_now`, `needs_information`, `not_needed`, or `unknown` if the missing information is not load-bearing for the selected route, has been explicitly deferred, or is outside the current causal commitment. Record that reasoning in `foundation_gate`, `evaluator_loop`, or the relevant route note. Subskills should never open the gate directly.
+
+Gate ready means the route is coherent enough to present for execution; it does not mean run the whole analysis automatically. Before substantial modeling or estimation, give a brief confirmation round: treatment/exposure, comparator, outcome, unit/time, method family, primary diagnostics or sensitivity checks, and intended claim strength. Ask the user to confirm or correct the plan.
 
 Nonharmful assumptions are allowed before and during the gate. They can be mild technical defaults, field-common conventions, or provisional working assumptions based on confirmed information. Keep them in `nonharmful_assumptions` and surface only the ones that become load-bearing for route commitment, analysis, or reporting.
 
@@ -115,7 +118,7 @@ Use this compact request shape when an evaluator asks the main skill to act:
 ```yaml
 - request_id: null
   note: null
-  requested_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_inspector_02 | refresh_design_planner_03 | refresh_dag_builder_04 | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  requested_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_technician_02 | refresh_design_planner_03 | refresh_dag_builder_04 | confirm_analysis_plan | activate_method_subskill | run_first_pass | run_diagnostics | prepare_final_report | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
   readiness_impact: "blocks_ready_gate | changes_route | improves_confidence | optional"
   status: "open | selected | deferred | resolved"
   main_skill_decision: null
@@ -149,6 +152,18 @@ Default to asking one question at a time. Never ask more than two questions in a
 
 Ask only targeted questions that change the next action. Do not make the user fill out the YAML or answer a long intake form unless they ask for that. Preserve the user's domain language first, then introduce causal terms when they help.
 
+## Interactive Execution Checkpoints
+
+Keep the analysis collaborative. Do not let a ready gate, a plausible method, or successful code execution collapse into an automatic final report.
+
+Use three pause points:
+
+1. **Plan confirmation:** when the gate is ready or the user accepts user-directed execution, present the planned analysis briefly and ask for confirmation before substantial modeling. If the treatment, outcome, cutoff, adjustment set, method family, or primary variables were chosen by the agent rather than the user, this checkpoint is required.
+2. **First-pass results:** after the first model run, summarize the method, estimate or pattern, and immediate interpretation as a first pass. Then recommend the next diagnostic or sensitivity checks instead of writing a final report.
+3. **Final reporting:** write a final report only after diagnostics and sensitivity checks are complete, explicitly deferred by the user, or not relevant to the user's requested deliverable. If important checks remain, label the output as a progress memo or exploratory summary rather than a final report.
+
+The Data Technician participates throughout the process. Before method execution, it should review the current design and DAG against the actual or conceptual data and record `method_fit_suggestions`: which method families are data-compatible, which are blocked or fragile, what diagnostics are feasible, and what software/package constraints could change implementation. The main skill still selects the next action and confirms it with the user.
+
 ## Method Subskills
 
 Activate route-specific method subskills after the gate is ready for supported implementation, reporting, or causal interpretation. Activate them earlier for focused teaching, quick triage, narrow debugging, exploratory route sketches, or user-directed execution, but label the support as exploratory, operational, or user-directed until the gate is ready.
@@ -175,7 +190,7 @@ Treat method subskills as route-specific executors and implementation auditors, 
 - Do available R/Python/Stata/package workflows support the route without changing the causal question?
 - Are package/version constraints, installation constraints, or code-path limitations material?
 
-If route fit passes, the method subskill may draft the analysis plan, code, diagnostics, interpretation notes, and reporting handoff. Store detailed route work under `analyses/` or `artifacts/`, and keep only compact status, path, summary, limitations, and next handoff entries in `analysis.analyses` or `subskill_analyses`.
+If route fit passes, the method subskill may draft the analysis plan, code skeleton, diagnostics plan, interpretation notes, and reporting handoff. It should not run substantial analysis, present first-pass estimates as final, or produce a final report until the main skill has completed the relevant interaction checkpoint. Store detailed route work under `analyses/` or `artifacts/`, and keep only compact status, path, summary, limitations, and next handoff entries in `analysis.analyses` or `subskill_analyses`.
 
 If route fit fails, the method subskill should not silently invent a new causal story. It returns feedback to the main skill: what failed, whether the failure belongs to data, design, DAG/assumptions, software/package fit, or reporting, and which next action is recommended. The main skill then decides whether to refresh a foundation evaluator, ask the user, revise the route, choose a fallback, weaken the estimand or claim, proceed user-directed, or stop the analysis.
 

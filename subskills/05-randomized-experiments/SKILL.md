@@ -9,6 +9,10 @@ description: "Primary route subskill for randomized or allegedly randomized trea
 
 Use this as a **primary route subskill** when the planned causal route relies on randomized assignment. The main skill owns route activation and gate status; this subskill audits whether the randomized route can actually be implemented and interpreted as planned.
 
+## Interaction Boundary
+
+This subskill may audit fit and prepare a plan, code skeleton, diagnostics, or reporting handoff, but it should not run substantial analysis, present first-pass estimates as final, or produce a final report on its own. Execution must return through the main skill's interaction checkpoints: user-confirmed plan, first-pass result review, diagnostics/sensitivity decision, and final-report approval or explicit deferral. If activated directly, summarize the proposed next step and ask one focused confirmation question before running models or writing final results.
+
 ## Route-Fit Check
 
 Given the main skill's route handoff, check:

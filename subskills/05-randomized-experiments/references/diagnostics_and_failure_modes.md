@@ -8,7 +8,7 @@
 | Unit randomized vs unit analyzed | Prevents wrong standard errors and pseudo-replication | Aggregate or cluster-robust/repeated-measure analysis |
 | Duplicated or multiply assigned units | Detects bucketing and data errors | Fix data or redefine analysis population |
 | Baseline covariate balance | Audits implementation and chance imbalance | Investigate if extreme; adjust only for pre-treatment variables |
-| Missing outcome rate by arm | Differential attrition threatens interpretation | Activate `02-data-inspector`; sensitivity/bounds/IPW/imputation |
+| Missing outcome rate by arm | Differential attrition threatens interpretation | Activate `02-data-technician`; sensitivity/bounds/IPW/imputation |
 | Post-randomization exclusions | Can change estimand and induce selection bias | Report all exclusions; analyze ITT if possible |
 | Compliance/exposure table | Assignment may not equal treatment received | ITT primary; activate `13-instrumental-variables` for CACE/LATE |
 | Cluster sizes and number of clusters | Determines valid inference | Cluster-level or cluster-robust inference |

@@ -40,7 +40,7 @@
     "13-instrumental-variables",
     "15-survival-competing-risks",
     "17-interference-spillovers",
-    "02-data-inspector"
+    "02-data-technician"
   ],
   "preferred_r_packages": [
     "MatchIt",

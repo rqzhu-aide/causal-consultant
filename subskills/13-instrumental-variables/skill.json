@@ -20,7 +20,7 @@
     "../05-randomized-experiments/",
     "../09-heterogeneous-effects-policy/",
     "../12-regression-discontinuity/",
-    "../02-data-inspector/"
+    "../02-data-technician/"
   ],
   "primary_packages": {
     "R": [

@@ -6,7 +6,7 @@ evaluators:
     key_findings: []
     candidate_formulations: []
     implications:
-      data_inspector_02: []
+      data_technician_02: []
       design_planner_03: []
       dag_builder_04: []
     requests_for_main_skill: []

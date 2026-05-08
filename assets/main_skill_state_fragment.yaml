@@ -3,7 +3,7 @@ main_skill:
   primary_intent: "estimate effect | choose method | inspect data | design study | critique paper | review assumptions | interpret results | write report | debug code | learn concept | rescue analysis | unknown"
   rigor_mode: "not needed | exploratory | ready | blocked | user-directed | unknown"
   conversation_style: "suggest-and-invite | suggest-and-confirm | direct answer | teaching | unknown"
-  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_inspector_02 | refresh_design_planner_03 | refresh_dag_builder_04 | activate_method_subskill | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_technician_02 | refresh_design_planner_03 | refresh_dag_builder_04 | confirm_analysis_plan | activate_method_subskill | run_first_pass | run_diagnostics | prepare_final_report | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
   summary_for_user: null
   open_questions: []
   assumptions_to_surface: []
@@ -28,16 +28,16 @@ foundation_gate:
 
 evaluator_loop:
   trigger: "user_update | data_update | design_change | dag_feedback | route_commitment | user-directed | unknown"
-  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_inspector_02 | refresh_design_planner_03 | refresh_dag_builder_04 | activate_method_subskill | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_technician_02 | refresh_design_planner_03 | refresh_dag_builder_04 | confirm_analysis_plan | activate_method_subskill | run_first_pass | run_diagnostics | prepare_final_report | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
   action_queue: []
   readiness_signals:
     domain_helper_01: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-    data_inspector_02: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    data_technician_02: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
     design_planner_03: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
     dag_builder_04: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
   summaries:
     domain_helper_01: null
-    data_inspector_02: null
+    data_technician_02: null
     design_planner_03: null
     dag_builder_04: null
   loop_control:

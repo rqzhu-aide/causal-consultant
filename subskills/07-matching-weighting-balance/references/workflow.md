@@ -75,7 +75,7 @@ Route out when:
 | Cutoff assignment | `12-regression-discontinuity` |
 | Survival/censoring/competing risks outcome | `15-survival-competing-risks` after baseline design |
 | Interference/spillovers | `17-interference-spillovers` |
-| Severe missingness, measurement error, selection | `02-data-inspector` |
+| Severe missingness, measurement error, selection | `02-data-technician` |
 | Final estimator is AIPW/TMLE/DML | `08-doubly-robust-ml` after balance design |
 
 ## Step 3: Define the Estimand Before the Method
@@ -118,7 +118,7 @@ Before estimating propensities:
 - identify impossible exact-matching constraints;
 - confirm the analysis sample.
 
-If a large number of units are dropped due to missing covariates, route to `02-data-inspector` or report a complete-case target population.
+If a large number of units are dropped due to missing covariates, route to `02-data-technician` or report a complete-case target population.
 
 ## Step 6: Initial Overlap Assessment
 

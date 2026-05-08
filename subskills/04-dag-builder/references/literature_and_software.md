@@ -53,7 +53,7 @@ This is a compact map, not an exhaustive bibliography. Use it to audit the causa
 - If the user asks "what should I adjust for", start with variable timing and a DAG or role map, then use `dagitty` to check adjustment sets.
 - If the graph has unmeasured common causes between treatment and outcome, ordinary adjustment is not enough; consider sensitivity analysis, IV, front-door, RD, DiD, or prospective design only if the required structure is plausible.
 - If the user wants a direct or indirect effect, route to mediation before choosing adjustment variables.
-- If selection into the dataset or complete-case analysis depends on treatment or outcome risk, route to `02-data-inspector` before final estimation.
+- If selection into the dataset or complete-case analysis depends on treatment or outcome risk, route to `02-data-technician` before final estimation.
 - If the user has a graph learned from data, treat it as an uncertain CPDAG/PAG or candidate graph and coordinate with causal discovery.
 - If the user's practical question is still vague, ask `03-design-planner` to clarify the design target before drawing a detailed DAG.
-- If `03-design-planner` records structured route hypotheses or `02-data-inspector` records data-enabled opportunities, audit each promising route for timing, identification, forbidden variables, unobserved causes, and assumptions before method handoff.
+- If `03-design-planner` records structured route hypotheses or `02-data-technician` records data-enabled opportunities, audit each promising route for timing, identification, forbidden variables, unobserved causes, and assumptions before method handoff.

@@ -70,7 +70,7 @@ Method composition examples:
 | Interference/spillovers | direct/indirect/spillover effects | exposure mapping, cluster/network estimators, TMLE/IPW | 17 | R `inferference`, `tmlenet` |
 | Causal graph learning | DAG/CPDAG/PAG | PC, FCI, GES/GIES, LiNGAM, ANM | 18 | R `pcalg`; Python `causal-learn`, `lingam` |
 | Genomics/omics | MR effect, colocalized effect, mediated effect | MR, colocalization, fine mapping, pleiotropy checks | 19 | R `TwoSampleMR`, `MendelianRandomization`, `coloc`, `MR-PRESSO` |
-| Causal data inspection/preprocessing | analysis-ready dataset and route constraints | data profiling, structure checks, domain/design/DAG fit checks, leakage audit, readiness triage | 02 + primary route | route-specific diagnostics and sensitivity tools |
+| Data Technician review/preprocessing | analysis-ready dataset and route constraints | data profiling, structure checks, domain/design/DAG fit checks, method-fit suggestions, leakage audit, readiness triage | 02 + primary route | route-specific diagnostics and sensitivity tools |
 | Report, interpretation, or reproducibility | causal claim and communication | assumption ledger, diagnostic summary, limitations, report skeleton | 20 + primary route | Quarto/R Markdown/Jupyter; package version records |
 
 ## Primary Method Selection Heuristics

@@ -29,11 +29,11 @@ Maintain the main skill and four backend foundation subskills concurrently once 
 
 - `main_skill`: tracks user goal, intent, rigor mode, conversation style, open questions, assumptions to surface, user-directed continuation, and next conversation moves.
 - `evaluators.domain_helper_01`: tracks domain facts, user terminology, field norms, scientific conventions, measurement practices, ethical/privacy/access constraints, candidate formulations, implications, requests, and assumptions.
-- `evaluators.data_inspector_02`: tracks actual or expected data, row/unit meaning, data status, scoped readiness, data quality, constructability, data-enabled opportunities, implications, requests, and assumptions.
+- `evaluators.data_technician_02`: Data Technician; tracks actual or expected data, row/unit meaning, data status, scoped readiness, data quality, constructability, data-enabled opportunities, method-fit suggestions, implications, requests, and assumptions.
 - `evaluators.design_planner_03`: actively tracks design strategy, preferred route ID, route hypotheses, feasibility, route-changing user questions, data-check requests, DAG-audit instructions, and assumptions.
 - `evaluators.dag_builder_04`: audits the proposed route's causal structure, variable timing/roles, assumptions, identification, adjustment concerns, forbidden variables, causal-logic hypotheses, and analytic handoff.
 
-The backend foundation subskills are not alternatives. They provide different project memory and state evaluations. Analysis/modeling subskills are selected after these components make the user goal, domain context, data situation, design options, and causal logic clearer. Domain helper preserves subject-matter knowledge and candidate formulations; data inspector provides data reality checks; design planner actively proposes and compares feasible study strategies; DAG builder audits the proposed design's causal logic, identification, assumptions, adjustment implications, and analytic handoff. Each evaluator reports implications and requests to the main skill, and the main skill selects the next action. Design and DAG reasoning should be informed by, but not dictated by, domain facts from `domain_helper_01` and data facts from `data_inspector_02`.
+The backend foundation subskills are not alternatives. They provide different project memory and state evaluations. Analysis/modeling subskills are selected after these components make the user goal, domain context, data situation, design options, and causal logic clearer. Domain helper preserves subject-matter knowledge and candidate formulations; the Data Technician provides data reality checks and method-fit suggestions; design planner actively proposes and compares feasible study strategies; DAG builder audits the proposed design's causal logic, identification, assumptions, adjustment implications, and analytic handoff. Each evaluator reports implications and requests to the main skill, and the main skill selects the next action. Design and DAG reasoning should be informed by, but not dictated by, domain facts from `domain_helper_01` and data facts from `data_technician_02`.
 
 Use `foundation_gate.status` to summarize whether the foundation records support causal commitment: `not needed`, `exploratory`, `ready`, `blocked`, or `unknown`. Before `ready`, the route being supported should be named under `routes.current_route_id` or `evaluators.design_planner_03.preferred_route_id`, and any load-bearing assumptions recorded by the main skill or foundation evaluators should be surfaced, acknowledged, or deferred with rationale under `foundation_gate.surfaced_or_acknowledged_assumptions` or `foundation_gate.deferred_assumptions`.
 
@@ -72,17 +72,18 @@ evaluators:
     key_findings: []
     candidate_formulations: []
     implications:
-      data_inspector_02: []
+      data_technician_02: []
       design_planner_03: []
       dag_builder_04: []
     requests_for_main_skill: []
-  data_inspector_02:
+  data_technician_02:
     status: active
     readiness: "sufficient_for_now | needs_information | unknown"
     readiness_scope: "route comparison | design-data fit | gate commitment | unknown"
-    data_status: conceptual
-    summary: null
-    data_enabled_opportunities: []
+      data_status: conceptual
+      summary: null
+      data_enabled_opportunities: []
+      method_fit_suggestions: []
   design_planner_03:
     status: active
     readiness: "sufficient_for_now | needs_information | blocks_ready_gate | unknown"
@@ -99,7 +100,7 @@ routes:
   hypotheses: []
 ```
 
-Do not add a separate top-level prospective schema unless the project truly needs it. Prospective planning details should live primarily in `evaluators.design_planner_03` and route artifacts, with `evaluators.data_inspector_02.data_status` labeled as conceptual unless actual or partial data appear.
+Do not add a separate top-level prospective schema unless the project truly needs it. Prospective planning details should live primarily in `evaluators.design_planner_03` and route artifacts, with `evaluators.data_technician_02.data_status` labeled as conceptual unless actual or partial data appear.
 
 ## Core Intake Fields
 
@@ -173,7 +174,7 @@ Minimum data-structure fields:
 
 ```yaml
 evaluators:
-  data_inspector_02:
+  data_technician_02:
     data_status: "existing | partially existing | conceptual | unknown"
     readiness_scope: "exploratory review | route comparison | design-data fit | dag-data fit | preprocessing | gate commitment | unknown"
     summary: null
@@ -183,6 +184,7 @@ evaluators:
       - "Time zero observable: yes | no | partial | unknown"
       - "Required design fields missing: []"
     data_enabled_opportunities: []
+    method_fit_suggestions: []
   design_planner_03:
     design_status: "promising | feasible | fragile | blocked | needs clarification | unknown"
     preferred_route_id: null

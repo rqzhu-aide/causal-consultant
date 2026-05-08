@@ -9,6 +9,10 @@ description: "Discovery and exploration module for learning or comparing causal 
 
 Use this as a **discovery and exploration module**. It proposes or compares graph hypotheses; it does not by itself validate causal claims. Any discovered graph that supports an effect claim must return to `04-dag-builder` and the main skill gate before claim strength is increased.
 
+## Interaction Boundary
+
+This subskill may audit fit and prepare a plan, code skeleton, diagnostics, or reporting handoff, but it should not run substantial analysis, present first-pass estimates as final, or produce a final report on its own. Execution must return through the main skill's interaction checkpoints: user-confirmed plan, first-pass result review, diagnostics/sensitivity decision, and final-report approval or explicit deferral. If activated directly, summarize the proposed next step and ask one focused confirmation question before running models or writing final results.
+
 ## Fit Check
 
 Given the handoff, check:

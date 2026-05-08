@@ -9,6 +9,10 @@ description: "Primary route subskill for instrumental-variable designs, encourag
 
 Use this as a **primary route subskill** when the route relies on an instrument or encouragement. The instrument claim is the design argument; do not accept a variable as an instrument just because it is labeled that way.
 
+## Interaction Boundary
+
+This subskill may audit fit and prepare a plan, code skeleton, diagnostics, or reporting handoff, but it should not run substantial analysis, present first-pass estimates as final, or produce a final report on its own. Execution must return through the main skill's interaction checkpoints: user-confirmed plan, first-pass result review, diagnostics/sensitivity decision, and final-report approval or explicit deferral. If activated directly, summarize the proposed next step and ask one focused confirmation question before running models or writing final results.
+
 ## Route-Fit Check
 
 Given the route handoff, check:

@@ -1,12 +1,12 @@
 {
   "package": "causal-skills",
-  "version": "0.1.10-design-dag-renumber",
+  "version": "0.1.12-data-technician-rename",
   "created_for": "modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Renumbered the foundation workflow so 03-design-planner precedes 04-dag-builder, with design as the high-level route frame and DAG/identification as the causal-logic method-selection layer.",
+  "last_updated_focus": "Fully renamed the second foundation evaluator to Data Technician and added method-subskill interaction boundaries so execution returns through main-skill confirmation checkpoints.",
   "subskills": [
     "01-domain-helper",
-    "02-data-inspector",
+    "02-data-technician",
     "03-design-planner",
     "04-dag-builder",
     "05-randomized-experiments",
@@ -26,5 +26,5 @@
     "19-causal-genomics",
     "20-reporting-interpretation"
   ],
-  "notes": "Preliminary skill package. The top-level main skill normally speaks with the user, while Domain Helper, Data Inspector, Design Planner, and DAG Builder maintain backend YAML records that guide method routing and conversation."
+  "notes": "Preliminary skill package. The top-level main skill normally speaks with the user, while Domain Helper, Data Technician, Design Planner, and DAG Builder maintain backend YAML records that guide method routing and conversation."
 }

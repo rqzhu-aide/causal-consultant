@@ -41,7 +41,7 @@ Choose one method family:
 - DoubleML PLR when the target is a partially linear coefficient;
 - DoubleML IRM when the target is an ATE/ATTE under binary treatment with flexible nuisances;
 - DRLearner or causal forest DML when heterogeneity is the target, usually with `09-heterogeneous-effects-policy`;
-- survival or censoring-specific DR/TMLE when the endpoint requires `15-survival-competing-risks` or `02-data-inspector`.
+- survival or censoring-specific DR/TMLE when the endpoint requires `15-survival-competing-risks` or `02-data-technician`.
 
 Choose one simpler comparator, such as adjusted regression, IPW, matching/weighting estimate, or a simpler learner library.
 

@@ -34,9 +34,13 @@ Say one of the following phrases in your request:
 
 This skill treats causal inference as a sequence of design decisions, not as a single modeling command. The agent should first understand the user's need and data situation, then define the causal target, inspect or plan the data structure, compare feasible design routes, state assumptions, and only then choose methods, packages, or code resources.
 
-Before moving to actual analysis, the skill maintains four key records in parallel: **domain** context, **data** structure and quality, study **design**, and the causal **DAG** / identification logic. These are kept by the four backend foundation subskills (Domain Helper, Data Inspector, Design Planner, and DAG Builder).
+The core workflow is organized as a reinforcement-learning-style coordination loop. The main skill is the policy actor: it speaks with the user, records the selected action, chooses which evaluator to refresh, decides when to ask for information, promotes or rejects routes, and owns the foundation gate. The four foundation subskills are state evaluators: Domain Helper, Data Inspector, Design Planner, and DAG Builder each update only their own compact evaluator record and return readiness signals, implications, requests, blockers, and assumptions.
 
-When no data exist yet, the skill should help plan data collection so future causal analysis is possible. When data exist but are messy, it should map rows, timing, variables, and possible feature construction before fitting models. When results exist, it should use diagnostics and user feedback to iterate on the estimand, model, or interpretation.
+The evaluator loop is not a rigid cycle. A first pass usually starts with domain, data, design, and DAG checks, but later rounds are selected by priority. The main skill should run the smallest next check that is most likely to change the project state, break circular loops when feedback stops improving, and preserve user-directed continuation when the user prefers progress with clear validity limits.
+
+Innovation is part of the architecture. Domain Helper can propose candidate formulations, Data Inspector can surface data-enabled opportunities, Design Planner can convert those seeds into route hypotheses, DAG Builder can audit their causal logic, and the main skill can promote the selected route into the shared route state.
+
+The shared YAML is intentionally lean. It is a live state ledger for coordination, not a complete knowledge base. Detailed data audits, DAGs, route memos, diagnostics, code, and reports should live under `artifacts/` or `analyses/`, with compact summaries and links in `project.yaml`.
 
 Tool fit, data suitability, and causal validity should be checked together. User-preferred packages or tools can be used, but only when their assumptions, supported estimands, diagnostics, and uncertainty estimates match the planned analysis.
 
@@ -46,7 +50,7 @@ The skill's role is not to make causal inference automatic. Its role is to make 
 
 ## 🏗️ Overall Structure
 
-The package is organized around an interactive consulting workflow.
+The package is organized around an interactive consulting workflow. In the reinforcement-learning analogy, the user and project data provide observations, the foundation evaluators produce next-state signals and route-changing feedback, and the main skill chooses the next action while protecting causal validity.
 
 See the canonical workflow diagram: [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md).
 
@@ -83,30 +87,34 @@ The top-level `SKILL.md` should be loaded first. It uses progressive disclosure:
 
 ## 📈 Current Status & Completion Progress
 
-The top-level workflow and routing architecture are in place. The main skill is the user-facing coordinator, while Domain Helper, Data Inspector, Design Planner, and DAG Builder maintain backend records for domain context, data, study design, and causal logic. Randomized experiments, DAG/identification, point-treatment observational analysis, matching/weighting/balance, doubly robust ML, heterogeneous effects/policy, longitudinal g-methods, DiD/event studies, regression discontinuity, instrumental variables, and causal discovery are among the most developed analysis subskills. Several remaining subskills still need deeper examples, diagnostics, and package-specific recipes.
+The top-level workflow has been refactored around the lean actor/evaluator design. The main skill is the user-facing policy actor and gate owner. Domain Helper, Data Inspector, Design Planner, and DAG Builder are the four foundation evaluators. Method subskills are now organized as lighter role modules: primary route modules, estimation and diagnostic support modules, target/outcome/decision modules, discovery modules, and reporting modules.
+
+The strongest part of the package is now the foundation loop and project-state contract. The method stack is usable as a route-specific execution and feasibility layer, but many method modules are intentionally concise and should grow through focused examples, diagnostics, and software/package recipes rather than by adding more global YAML fields.
 
 | Component | Status | Notes |
 |---|---:|---|
-| Main skill framework | 90% | User-facing coordination, interaction modes, concurrent backend foundation architecture, project spec schema, router, route-out loop, assumption ledger, workflow assets, and code templates are in place. |
-| 01 - Domain Helper | 55% | Backend domain-knowledge component for terminology translation, common working pictures, substantive constraints, domain-specific risks, and coordination with data/DAG/design records. |
-| 02 - Data Inspector | 90% | Expanded preprocessing workflow for dataset profiling, structure validation, variable-role mapping, treatment/outcome/covariate preparation, leakage checks, and modeling-difficulty triage before causal analysis. |
-| 03 - Design Planner | 55% | Backend study-design component for actual or planned designs, variable-to-design mapping, future data collection, retrospective design critique, and high-level route support. |
-| 04 - DAG Builder | 80% | Backend causal-logic component with project-spec entry, DAG/target-trial workflow, adjustment guardrails, method-selection implications, and literature/software map. |
-| 05 - Randomized Experiments | 85% | Deep workflow with R/Python examples, SRM/CUPED, cluster trials, factorial/crossover/SMART considerations, and diagnostics. |
-| 06 - Point-Treatment Observational | 75% | Expanded target-trial framing, measured-confounding assumptions, route handoff logic, diagnostics, and literature/software map. |
-| 07 - Matching / Weighting / Balance | 85% | Deep workflow with formal estimands, overlap diagnostics, failure modes, software notes, examples, and templates. |
-| 08 - Doubly Robust & Machine Learning | 75% | Expanded AIPW/TMLE/DoubleML guidance with nuisance-model, cross-fitting, diagnostics, and literature/software map. |
-| 09 - Heterogeneous Effects & Policy | 75% | Expanded CATE/GATE/policy workflow with adaptive method selection, validation, diagnostics, and literature/software map. |
-| 10 - Longitudinal G-Methods | 75% | Expanded timeline-first workflow for MSM/IPW, g-formula, longitudinal TMLE, LMTP, and regime diagnostics. |
-| 11 - Diff-in-Diff & Event Studies | 75% | Expanded modern DiD workflow with group-time ATT, staggered adoption guardrails, pretrend diagnostics, and software map. |
-| 12 - Regression Discontinuity | 75% | Expanded RD workflow with local estimands, fuzzy RD, manipulation checks, bandwidth sensitivity, and software map. |
-| 13 - Instrumental Variables | 90% | Deep workflow with R/Python examples, LATE/CACE guardrails, diagnostics, and bibliography. |
-| 14 - Synthetic Control & Time Series | 75% | Expanded SCM/ITS workflow with classic, augmented, generalized, synthetic DiD, matrix-completion, BSTS/CausalImpact, diagnostics, and literature/software map. |
-| 15 - Survival & Competing Risks | 75% | Expanded survival/competing-risk workflow with time-zero audit, risk/RMST/CIF estimands, IPCW/AIPW/TMLE, causal survival forests, diagnostics, and literature/software map. |
-| 16 - Mediation | 90% | Expanded causal mediation workflow with estimand routing, multiple/high-dimensional mediators, domain guidance, sensitivity checks, and literature/software map. |
-| 17 - Interference & Spillovers | 90% | Expanded interference workflow with exposure mappings, partial/network/spatial/marketplace spillovers, recent methods, custom implementation recipes, diagnostics, and literature/software map. |
-| 18 - Causal Discovery | 85% | Deep workflow with PC/FCI examples across R/Python/Java, recommender script, and JSON schemas. |
-| 19 - Causal Genomics | 90% | Expanded causal genomics workflow with MR, colocalization, fine mapping, TWAS/SMR, drug-target MR, multi-omics, ancestry/sample-overlap guardrails, diagnostics, and literature/software map. |
-| 20 - Reporting & Interpretation | 40% | Scaffold plus report skeleton and final report template; needs stronger reporting rubrics and examples. |
+| Main skill framework | Strong | User-facing policy actor, action selector, route promoter, foundation gate owner, user-directed continuation handler, and method-stack composer. |
+| Lean project state and validator | Strong | `project.yaml` is now a compact live-state ledger with invariants for gate readiness, blocking evaluator requests, user-directed caution fields, route-scoped readiness, and load-bearing assumptions. |
+| 01 - Domain Helper | Strong foundation evaluator | Integrates user expertise, field norms, measurement practice, candidate formulations, domain cautions, and implications for data, design, and DAG checks. |
+| 02 - Data Inspector | Strong foundation evaluator | Handles existing, partial, or conceptual data; records scoped data readiness, constructability, data-enabled opportunities, and implications for domain/design/DAG review. |
+| 03 - Design Planner | Strong foundation evaluator | Central route strategist that converts domain and data seeds into route hypotheses, records feasibility status, proposes fallbacks, and recommends route-changing next actions. |
+| 04 - DAG Builder | Strong foundation evaluator | Audits causal logic, timing, variable roles, assumptions, identification status, method handoff warnings, and causal-logic alternatives. |
+| 05 - Randomized Experiments | Lean primary route module | Checks experimental route fit, randomization/assignment structure, estimand support, diagnostics, and package/code feasibility. |
+| 06 - Point-Treatment Observational | Lean primary route module | Checks target-trial framing, measured-confounding route fit, adjustment logic, overlap needs, and implementation handoff. |
+| 07 - Matching / Weighting / Balance | Lean support module | Supports overlap, matching, weighting, balance diagnostics, and route-specific feasibility feedback. |
+| 08 - Doubly Robust & Machine Learning | Lean support module | Supports AIPW, TMLE, DML, nuisance modeling, cross-fitting, and software/package fit after the causal route is explicit. |
+| 09 - Heterogeneous Effects & Policy | Lean target/decision module | Supports subgroup effects, CATE/GATE, policy learning, individualized decisions, and validation requirements. |
+| 10 - Longitudinal G-Methods | Lean primary route module | Supports time-varying treatments, regimes, MSM/IPW, g-formula, longitudinal TMLE, and time-order diagnostics. |
+| 11 - Diff-in-Diff & Event Studies | Lean primary route module | Supports panel/staggered-adoption/event-study routes, parallel-trend logic, pre-period diagnostics, and modern DiD software handoff. |
+| 12 - Regression Discontinuity | Lean primary route module | Supports cutoff-based routes, fuzzy/sharp RD distinctions, manipulation checks, bandwidth sensitivity, and package fit. |
+| 13 - Instrumental Variables | Lean primary route module | Supports IV/LATE/CACE route checks, relevance/exclusion/monotonicity cautions, diagnostics, and user-directed caveats. |
+| 14 - Synthetic Control & Time Series | Lean primary route module | Supports SCM, ITS, synthetic DiD, matrix-completion, and time-series counterfactual route checks. |
+| 15 - Survival & Competing Risks | Lean target/outcome module | Supports time-to-event and competing-risk outcomes, time-zero audits, censoring concerns, and survival-scale estimands. |
+| 16 - Mediation | Lean primary/target module | Supports total/direct/indirect effect routing, mediator timing, mediator-outcome confounding, and sensitivity handoff. |
+| 17 - Interference & Spillovers | Lean primary route module | Supports spillover, network, cluster, market, and exposure-mapping route checks when SUTVA/simple no-interference fails. |
+| 18 - Causal Discovery | Lean discovery module | Supports graph-hypothesis generation and comparison, with handoff back to foundation evaluators before effect-estimation claims. |
+| 19 - Causal Genomics | Lean domain-specific route module | Supports genomics-specific causal routes such as MR, colocalization, fine mapping, TWAS/SMR, multi-omics, and ancestry/sample-overlap checks. |
+| 20 - Reporting & Interpretation | Needs strengthening | Provides reporting handoff, but still needs stronger rubrics, examples, and claim-strength language tied to the lean gate. |
+| 21 - Negative Controls & Proximal Causal Inference | New lean primary route module | Supports negative-control and proximal causal route checks when ordinary adjustment is fragile or unmeasured confounding is central. |
 
-Overall: approximately 85% complete. The structural backbone is solid, with the concurrent foundation architecture now defined and most analysis subskills deep and usable. The remaining major work is concentrated in reporting/interpretation, richer examples for the main skill plus four backend foundation subskills, and additional route-specific templates.
+Overall: the architecture is now strong enough for real iterative use. The main improvement area is no longer the foundation design; it is focused hardening of the method modules with concrete examples, diagnostics, software recipes, and route-failure feedback patterns.

@@ -30,12 +30,21 @@ Say one of the following phrases in your request:
 
 ---
 
-## How to Install
+## 📦 How to Install
 
 In Codex, Claude Code, or another coding agent that can access GitHub and local files, use this prompt:
 
 ```text
 I want to install the causal-skills skill from https://github.com/rqzhu-aide/causal-skills so I can use it locally. Please install it as a local skill and tell me whether I need to restart the app.
+```
+
+Or install directly from a Windows PowerShell command line:
+
+```powershell
+python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" `
+  --repo rqzhu-aide/causal-skills `
+  --path . `
+  --name causal-skills
 ```
 
 After installation, restart the agent app if needed so it can discover the new skill.

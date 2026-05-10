@@ -1,16 +1,12 @@
 evaluators:
   design_planner_03:
-    status: "active | inactive | unknown"
-    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-    design_status: "promising | feasible | fragile | blocked | needs clarification | unknown"
+    # Allowed enum values live in ../../../assets/workflow_enums.yaml.
+    readiness: "unknown"
+    design_status: "unknown"
     preferred_route_id: null
     summary: null
     key_findings: []
     route_hypotheses: []
-    implications:
-      domain_helper_01: []
-      data_technician_02: []
-      dag_builder_04: []
+    handoff_notes: []
     requests_for_main_skill: []
-    nonharmful_assumptions: []
     load_bearing_assumptions: []

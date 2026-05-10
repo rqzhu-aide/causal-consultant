@@ -19,16 +19,29 @@ import datetime
 import re
 
 
-ACTION_CHOICES = (
-    "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | "
-    "refresh_data_technician_02 | refresh_design_planner_03 | refresh_dag_builder_04 | "
-    "confirm_analysis_plan | activate_method_subskill | run_first_pass | run_diagnostics | "
-    "prepare_final_report | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
-)
+def load_enum_values():
+    repo_root = Path(__file__).resolve().parents[1]
+    enum_path = repo_root / "assets" / "workflow_enums.yaml"
+    values = {}
+    current = None
+    for raw_line in enum_path.read_text(encoding="utf-8").splitlines():
+        stripped = raw_line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if not raw_line.startswith(" ") and stripped.endswith(":"):
+            current = stripped[:-1]
+            values[current] = []
+            continue
+        if current and stripped.startswith("- "):
+            values[current].append(stripped[2:].strip("\"'"))
+    return values
 
-READINESS_CHOICES = (
-    "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-)
+
+ENUMS = load_enum_values()
+
+
+def choices(enum_name: str) -> str:
+    return " | ".join(ENUMS[enum_name])
 
 
 def load_template() -> str:
@@ -65,34 +78,41 @@ def fill_template(
         text = text.replace(old, new, 1)
 
     replacements = {
-        'project_status: "active | paused | completed | unknown"': 'project_status: "active"',
-        'current_phase: "intake | foundation loop | method selection | analysis | reporting | unknown"': 'current_phase: "intake"',
-        'primary_intent: "estimate effect | choose method | inspect data | design study | critique paper | review assumptions | interpret results | write report | debug code | learn concept | rescue analysis | unknown"': 'primary_intent: "unknown"',
-        'rigor_mode: "not needed | exploratory | ready | blocked | user-directed | unknown"': 'rigor_mode: "unknown"',
-        'conversation_style: "suggest-and-invite | suggest-and-confirm | direct answer | teaching | unknown"': 'conversation_style: "unknown"',
-        f'selected_next_action: "{ACTION_CHOICES}"': 'selected_next_action: "unknown"',
-        'intent_basis: "none | explicit user request | inferred urgency | repeated preference to continue | accepted caveated analysis | declined further gate work | unknown"': 'intent_basis: "none"',
-        'status: "not needed | exploratory | ready | blocked | unknown"': 'status: "exploratory"',
-        'claim_strength_allowed: "causal | cautious causal | associational | descriptive | exploratory | unknown"': 'claim_strength_allowed: "exploratory"',
-        'trigger: "user_update | data_update | design_change | dag_feedback | route_commitment | user-directed | unknown"': 'trigger: "unknown"',
-        'status: "not assessed | no loop | possible loop | loop detected | resolved | unknown"': 'status: "not assessed"',
-        'break_action: "ask_decisive_user_question | make_nonharmful_working_assumption | surface_load_bearing_assumption | demote_or_block_route | choose_fallback | proceed_user_directed | no_action | unknown"': 'break_action: "unknown"',
-        'status: "active | inactive | unknown"': 'status: "active"',
-        f'readiness: "{READINESS_CHOICES}"': 'readiness: "unknown"',
-        f'domain_helper_01: "{READINESS_CHOICES}"': 'domain_helper_01: "unknown"',
-        f'data_technician_02: "{READINESS_CHOICES}"': 'data_technician_02: "unknown"',
-        f'design_planner_03: "{READINESS_CHOICES}"': 'design_planner_03: "unknown"',
-        f'dag_builder_04: "{READINESS_CHOICES}"': 'dag_builder_04: "unknown"',
-        'readiness_scope: "not assessed | exploratory review | route comparison | design-data fit | dag-data fit | preprocessing | method-specific modeling | gate commitment | user-directed execution | unknown"': 'readiness_scope: "unknown"',
-        'data_status: "existing | partially existing | conceptual | unknown"': 'data_status: "unknown"',
-        'design_status: "promising | feasible | fragile | blocked | needs clarification | unknown"': 'design_status: "unknown"',
-        'supported_status: "supported | fragile | blocked | needs design revision | unknown"': 'supported_status: "unknown"',
-        'supported_scope: "not assessed | exploratory audit | route support | design revision | method handoff | gate commitment | user-directed execution | unknown"': 'supported_scope: "unknown"',
-        'identification_status: "yes | no | partial | unknown"': 'identification_status: "unknown"',
-        'route_commitment_status: "exploratory | ready | committed | blocked | user-directed | unknown"': 'route_commitment_status: "unknown"',
-        'execution_stage: "not started | plan proposed | plan confirmed | first pass run | diagnostics proposed | diagnostics confirmed | diagnostics complete | final reporting proposed | final report approved | completed | unknown"': 'execution_stage: "not started"',
-        'confirmation_basis: "explicit user approval | user-directed continuation | not required | unknown"': 'confirmation_basis: "unknown"',
-        'claim_strength: "causal | cautious causal | associational | descriptive | exploratory | unknown"': 'claim_strength: "unknown"',
+        f'project_status: "{choices("project_status")}"': 'project_status: "active"',
+        f'current_phase: "{choices("project_phase")}"': 'current_phase: "foundation"',
+        f'primary_intent: "{choices("primary_intent")}"': 'primary_intent: "unknown"',
+        f'rigor_mode: "{choices("rigor_mode")}"': 'rigor_mode: "unknown"',
+        f'conversation_style: "{choices("conversation_style")}"': 'conversation_style: "unknown"',
+        f'selected_next_action: "{choices("main_actions")}"': 'selected_next_action: "unknown"',
+        f'selected_next_action: "{choices("foundation_actions")}"': 'selected_next_action: "unknown"',
+        f'intent_basis: "{choices("user_directed_intent_basis")}"': 'intent_basis: "none"',
+        f'status: "{choices("foundation_gate_status")}"': 'status: "exploratory"',
+        f'claim_strength_allowed: "{choices("claim_strength")}"': 'claim_strength_allowed: "exploratory"',
+        f'status: "{choices("production_gate_status")}"': 'status: "not ready"',
+        f'diagnostics_status: "{choices("production_diagnostics_status")}"': 'diagnostics_status: "not started"',
+        f'claim_strength_for_report: "{choices("claim_strength")}"': 'claim_strength_for_report: "unknown"',
+        f'trigger: "{choices("evaluator_loop_trigger")}"': 'trigger: "unknown"',
+        f'status: "{choices("loop_status")}"': 'status: "not assessed"',
+        f'break_action: "{choices("foundation_loop_break_actions")}"': 'break_action: "unknown"',
+        f'readiness: "{choices("foundation_reviewer_readiness")}"': 'readiness: "unknown"',
+        f'readiness_scope: "{choices("data_readiness_scope")}"': 'readiness_scope: "unknown"',
+        f'data_status: "{choices("data_status")}"': 'data_status: "unknown"',
+        f'design_status: "{choices("design_status")}"': 'design_status: "unknown"',
+        f'supported_status: "{choices("dag_supported_status")}"': 'supported_status: "unknown"',
+        f'supported_scope: "{choices("dag_supported_scope")}"': 'supported_scope: "unknown"',
+        f'identification_status: "{choices("dag_identification_status")}"': 'identification_status: "unknown"',
+        f'route_commitment_status: "{choices("route_commitment_status")}"': 'route_commitment_status: "unknown"',
+        f'execution_stage: "{choices("execution_stage")}"': 'execution_stage: "not started"',
+        f'review_purpose: "{choices("production_review_purpose")}"': 'review_purpose: "not needed"',
+        f'readiness: "{choices("production_loop_readiness")}"': 'readiness: "not started"',
+        f'recommended_next_action: "{choices("main_actions")}"': 'recommended_next_action: "unknown"',
+        f'severity: "{choices("foundation_recheck_severity")}"': 'severity: "none"',
+        f'main_skill_decision: "{choices("foundation_recheck_decisions")}"': 'main_skill_decision: "none"',
+        f'break_action: "{choices("production_loop_break_actions")}"': 'break_action: "unknown"',
+        f'mode: "{choices("report_writer_modes")}"': 'mode: "not selected"',
+        f'status: "{choices("report_writer_statuses")}"': 'status: "not needed"',
+        f'confirmation_basis: "{choices("execution_confirmation_basis")}"': 'confirmation_basis: "unknown"',
+        f'claim_strength: "{choices("claim_strength")}"': 'claim_strength: "unknown"',
     }
     for old, new in replacements.items():
         text = text.replace(old, new)

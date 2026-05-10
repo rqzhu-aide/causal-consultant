@@ -1,3 +1,7 @@
+---
+# Lean causal project state template.
+# Allowed enum values live in assets/workflow_enums.yaml.
+
 project:
   project_name: null
   short_label: null
@@ -8,120 +12,105 @@ project:
   project_yaml: "project.yaml"
   analyses_dir: "analyses/"
   artifacts_dir: "artifacts/"
-  project_status: "active | paused | completed | unknown"
-  current_phase: "intake | foundation loop | method selection | analysis | reporting | unknown"
+  project_status: "active"
+  current_phase: "foundation"
 
 main_skill:
   user_goal: null
-  primary_intent: "estimate effect | choose method | inspect data | design study | critique paper | review assumptions | interpret results | write report | debug code | learn concept | rescue analysis | unknown"
-  rigor_mode: "not needed | exploratory | ready | blocked | user-directed | unknown"
-  conversation_style: "suggest-and-invite | suggest-and-confirm | direct answer | teaching | unknown"
-  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_technician_02 | refresh_design_planner_03 | refresh_dag_builder_04 | confirm_analysis_plan | activate_method_subskill | run_first_pass | run_diagnostics | prepare_final_report | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  primary_intent: "unknown"
+  rigor_mode: "unknown"
+  conversation_style: "unknown"
+  selected_next_action: "unknown"
   summary_for_user: null
   open_questions: []
   assumptions_to_surface: []
   user_directed:
     requested: false
-    intent_basis: "none | explicit user request | inferred urgency | repeated preference to continue | accepted caveated analysis | declined further gate work | unknown"
+    intent_basis: "none"
     acknowledged_limits: false
     requested_scope: []
     allowed_scope: []
     prohibited_claims: []
     warning: null
 
+# User-directed/user-forced continuation is intentionally not a foundation_gate.status.
+# Track it in main_skill.user_directed and analysis.route_commitment_status.
 foundation_gate:
-  status: "not needed | exploratory | ready | blocked | unknown"
+  status: "exploratory"
   can_support_causal_commitment: false
   blockers: []
   unresolved_required_information: []
   assumptions_to_surface: []
   surfaced_or_acknowledged_assumptions: []
   deferred_assumptions: []
-  claim_strength_allowed: "causal | cautious causal | associational | descriptive | exploratory | unknown"
+  claim_strength_allowed: "exploratory"
+
+production_gate:
+  status: "not ready"
+  can_handoff_to_report_writer: false
+  blockers: []
+  unresolved_required_materials: []
+  required_outputs: []
+  completed_outputs: []
+  diagnostics_status: "not started"
+  reportable_evidence: false
+  claim_strength_for_report: "unknown"
+  handoff_summary: null
 
 evaluator_loop:
-  trigger: "user_update | data_update | design_change | dag_feedback | route_commitment | user-directed | unknown"
-  selected_next_action: "ask_user | inspect_data | literature_search | refresh_domain_helper_01 | refresh_data_technician_02 | refresh_design_planner_03 | refresh_dag_builder_04 | confirm_analysis_plan | activate_method_subskill | run_first_pass | run_diagnostics | prepare_final_report | proceed_with_caveat | block_ready_gate | mark_ready | no_action | unknown"
+  trigger: "unknown"
+  selected_next_action: "unknown"
+  selected_reviewers: []
+  review_purpose: null
   action_queue: []
-  readiness_signals:
-    domain_helper_01: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-    data_technician_02: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-    design_planner_03: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-    dag_builder_04: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-  summaries:
-    domain_helper_01: null
-    data_technician_02: null
-    design_planner_03: null
-    dag_builder_04: null
   loop_control:
-    status: "not assessed | no loop | possible loop | loop detected | resolved | unknown"
+    status: "not assessed"
     repeated_cycle_count: 0
     issue_signature: null
-    break_action: "ask_decisive_user_question | make_nonharmful_working_assumption | surface_load_bearing_assumption | demote_or_block_route | choose_fallback | proceed_user_directed | no_action | unknown"
+    break_action: "unknown"
     rationale: null
     decisive_question_or_assumption: null
 
 evaluators:
   domain_helper_01:
-    status: "active | inactive | unknown"
-    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
+    readiness: "unknown"
     summary: null
     key_findings: []
     candidate_formulations: []
-    implications:
-      data_technician_02: []
-      design_planner_03: []
-      dag_builder_04: []
+    handoff_notes: []
     requests_for_main_skill: []
-    nonharmful_assumptions: []
     load_bearing_assumptions: []
   data_technician_02:
-    status: "active | inactive | unknown"
-    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-    readiness_scope: "not assessed | exploratory review | route comparison | design-data fit | dag-data fit | preprocessing | method-specific modeling | gate commitment | user-directed execution | unknown"
-    data_status: "existing | partially existing | conceptual | unknown"
+    readiness: "unknown"
+    readiness_scope: "unknown"
+    data_status: "unknown"
     summary: null
     key_findings: []
     data_enabled_opportunities: []
     method_fit_suggestions: []
-    implications:
-      domain_helper_01: []
-      design_planner_03: []
-      dag_builder_04: []
+    handoff_notes: []
     requests_for_main_skill: []
-    nonharmful_assumptions: []
     load_bearing_assumptions: []
   design_planner_03:
-    status: "active | inactive | unknown"
-    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-    design_status: "promising | feasible | fragile | blocked | needs clarification | unknown"
+    readiness: "unknown"
+    design_status: "unknown"
     preferred_route_id: null
     summary: null
     key_findings: []
     route_hypotheses: []
-    implications:
-      domain_helper_01: []
-      data_technician_02: []
-      dag_builder_04: []
+    handoff_notes: []
     requests_for_main_skill: []
-    nonharmful_assumptions: []
     load_bearing_assumptions: []
   dag_builder_04:
-    status: "active | inactive | unknown"
-    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-    supported_status: "supported | fragile | blocked | needs design revision | unknown"
-    supported_scope: "not assessed | exploratory audit | route support | design revision | method handoff | gate commitment | user-directed execution | unknown"
-    identification_status: "yes | no | partial | unknown"
+    readiness: "unknown"
+    supported_status: "unknown"
+    supported_scope: "unknown"
+    identification_status: "unknown"
     summary: null
     key_findings: []
     causal_logic_hypotheses: []
-    implications:
-      domain_helper_01: []
-      design_planner_03: []
-      data_technician_02: []
-      method_subskills: []
+    handoff_notes: []
     requests_for_main_skill: []
-    nonharmful_assumptions: []
     load_bearing_assumptions: []
 
 routes:
@@ -130,21 +119,52 @@ routes:
   rejected_or_deferred: []
 
 analysis:
-  route_commitment_status: "exploratory | ready | committed | blocked | user-directed | unknown"
-  execution_stage: "not started | plan proposed | plan confirmed | first pass run | diagnostics proposed | diagnostics confirmed | diagnostics complete | final reporting proposed | final report approved | completed | unknown"
+  route_commitment_status: "unknown"
+  execution_stage: "not started"
   execution_confirmation:
     plan_summary: null
     user_confirmed_plan: false
-    confirmation_basis: "explicit user approval | user-directed continuation | not required | unknown"
+    confirmation_basis: "unknown"
     confirmed_at: null
-  active_or_recommended_subskills: []
+  recommended_method_job_subskills: []
+  activated_method_job_subskills: []
   analyses: []
   first_pass_summary: null
   recommended_diagnostics: []
-  claim_strength: "causal | cautious causal | associational | descriptive | exploratory | unknown"
+  production_loop:
+    selected_reviewers: []
+    review_purpose: "not needed"
+    action_queue: []
+    # Reviewer summaries are for production reviewers without activated
+    # subskill_analyses chunks, usually Data Technician or Report Writer
+    # production-reviewer mode. Method/job feedback lives in subskill_analyses.
+    reviewer_summaries: []
+    readiness: "not started"
+    recommended_next_action: "unknown"
+    foundation_recheck:
+      triggered: false
+      reason: null
+      severity: "none"
+      affected_foundation_sections: []
+      recommended_reviewers: []
+      main_skill_decision: "none"
+    loop_control:
+      status: "not assessed"
+      repeated_cycle_count: 0
+      issue_signature: null
+      break_action: "unknown"
+      rationale: null
+  report_writer_20:
+    mode: "not selected"
+    status: "not needed"
+    production_feedback: []
+    summary: null
+    artifacts: []
+    revision_questions: []
+  claim_strength: "unknown"
   limitations: []
 
+# Append one method/job record only when that subskill is activated.
+# Use assets/method_job_subskill_record_template.yaml as the chunk shape.
 subskill_analyses: []
 artifacts: []
-limitations: []
-open_questions: []

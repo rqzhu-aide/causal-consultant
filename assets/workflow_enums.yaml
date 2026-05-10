@@ -1,0 +1,350 @@
+# Canonical workflow enum values for project.yaml, scaffolding, validation,
+# and subskill instructions. Keep this file as the source of truth when
+# adding, removing, or renaming action/status values.
+
+project_status:
+  - active
+  - paused
+  - completed
+  - unknown
+
+project_phase:
+  - foundation
+  - production
+  - reporting
+  - final_delivery
+  - unknown
+
+primary_intent:
+  - estimate effect
+  - choose method
+  - inspect data
+  - design study
+  - critique paper
+  - review assumptions
+  - interpret results
+  - write report
+  - debug code
+  - learn concept
+  - rescue analysis
+  - unknown
+
+rigor_mode:
+  - not needed
+  - exploratory
+  - ready
+  - blocked
+  - user-directed
+  - unknown
+
+conversation_style:
+  - suggest-and-invite
+  - suggest-and-confirm
+  - direct answer
+  - teaching
+  - unknown
+
+main_actions:
+  - ask_user
+  - inspect_data
+  - literature_search
+  - refresh_domain_helper_01
+  - refresh_data_technician_02
+  - refresh_design_planner_03
+  - refresh_dag_builder_04
+  - refresh_report_writer_20
+  - confirm_analysis_plan
+  - activate_method_subskill
+  - run_first_pass
+  - run_diagnostics
+  - activate_report_writer
+  - proceed_with_caveat
+  - block_foundation_gate
+  - mark_foundation_ready
+  - mark_production_ready
+  - return_to_foundation
+  - no_action
+  - unknown
+
+foundation_actions:
+  - ask_user
+  - inspect_data
+  - literature_search
+  - refresh_domain_helper_01
+  - refresh_data_technician_02
+  - refresh_design_planner_03
+  - refresh_dag_builder_04
+  - proceed_with_caveat
+  - block_foundation_gate
+  - mark_foundation_ready
+  - return_to_foundation
+  - no_action
+  - unknown
+
+user_directed_intent_basis:
+  - none
+  - explicit user request
+  - inferred urgency
+  - repeated preference to continue
+  - accepted caveated analysis
+  - declined further gate work
+  - unknown
+
+foundation_gate_status:
+  - not needed
+  - exploratory
+  - ready
+  - blocked
+  - unknown
+
+production_gate_status:
+  - not needed
+  - not ready
+  - ready
+  - blocked
+  - unknown
+
+claim_strength:
+  - causal
+  - cautious causal
+  - associational
+  - descriptive
+  - exploratory
+  - unknown
+
+production_diagnostics_status:
+  - not started
+  - needed
+  - complete
+  - deferred
+  - not needed
+  - blocked
+  - unknown
+
+evaluator_loop_trigger:
+  - user_update
+  - data_update
+  - design_change
+  - dag_feedback
+  - route_commitment
+  - user-directed
+  - unknown
+
+loop_status:
+  - not assessed
+  - no loop
+  - possible loop
+  - loop detected
+  - resolved
+  - unknown
+
+foundation_loop_break_actions:
+  - ask_decisive_user_question
+  - make_nonharmful_working_assumption
+  - surface_load_bearing_assumption
+  - demote_or_block_route
+  - choose_fallback
+  - proceed_user_directed
+  - no_action
+  - unknown
+
+foundation_reviewer_readiness:
+  - ready
+  - sufficient_for_now
+  - needs_information
+  - blocks_foundation_gate
+  - not_needed
+  - unknown
+
+data_readiness_scope:
+  - not assessed
+  - exploratory review
+  - route comparison
+  - design-data fit
+  - dag-data fit
+  - preprocessing
+  - method-specific modeling
+  - gate commitment
+  - user-directed execution
+  - unknown
+
+foundation_readiness_effect:
+  - unchanged
+  - narrowed
+  - recheck_needed
+  - unknown
+
+blocking_signal_severity:
+  - none
+  - caution
+  - serious
+  - fatal
+  - unknown
+
+data_status:
+  - existing
+  - partially existing
+  - conceptual
+  - unknown
+
+design_status:
+  - promising
+  - feasible
+  - fragile
+  - blocked
+  - needs clarification
+  - unknown
+
+route_hypothesis_status:
+  - promising
+  - feasible
+  - fragile
+  - blocked
+  - needs clarification
+  - rejected
+  - unknown
+
+dag_supported_status:
+  - supported
+  - fragile
+  - blocked
+  - needs design revision
+  - unknown
+
+dag_supported_scope:
+  - not assessed
+  - exploratory audit
+  - route support
+  - design revision
+  - method handoff
+  - gate commitment
+  - user-directed execution
+  - unknown
+
+dag_identification_status:
+  - yes
+  - no
+  - partial
+  - unknown
+
+route_commitment_status:
+  - exploratory
+  - ready
+  - committed
+  - blocked
+  - user-directed
+  - unknown
+
+execution_stage:
+  - not started
+  - plan proposed
+  - plan confirmed
+  - first pass run
+  - diagnostics proposed
+  - diagnostics confirmed
+  - diagnostics complete
+  - report writer activated
+  - final report delivered
+  - completed
+  - unknown
+
+execution_confirmation_basis:
+  - explicit user approval
+  - user-directed continuation
+  - not required
+  - unknown
+
+production_review_purpose:
+  - not needed
+  - method_selection
+  - implementation_plan
+  - first_pass
+  - diagnostics
+  - sensitivity
+  - route_fit
+  - package_fit
+  - material_polish
+  - presentation_review
+  - production_gate_readiness
+  - foundation_recheck
+  - unknown
+
+production_loop_readiness:
+  - not started
+  - needs production review
+  - ready for first pass
+  - first pass complete
+  - diagnostics needed
+  - diagnostics complete
+  - diagnostics deferred
+  - diagnostics not needed
+  - materials incomplete
+  - materials ready
+  - reportable
+  - foundation recheck needed
+  - blocked
+  - unknown
+
+production_loop_break_actions:
+  - ask_user
+  - refresh_data_technician_02
+  - refresh_production_reviewer
+  - revise_route
+  - simplify_method
+  - run_diagnostics
+  - proceed_with_caveat
+  - mark_production_ready
+  - return_to_foundation
+  - no_action
+  - unknown
+
+foundation_recheck_severity:
+  - none
+  - caution
+  - serious
+  - fatal
+  - unknown
+
+foundation_recheck_decisions:
+  - none
+  - return_to_foundation
+  - revise_route_in_production
+  - ask_user
+  - block_project
+  - unknown
+
+report_writer_modes:
+  - not selected
+  - production reviewer
+  - handoff writer
+  - unknown
+
+report_writer_statuses:
+  - not needed
+  - not ready
+  - production feedback recorded
+  - ready to activate
+  - activated
+  - diagnostic reviewed
+  - final report delivered
+  - blocked
+  - unknown
+
+method_job_roles:
+  - primary_route
+  - support_module
+  - target_or_outcome_module
+  - discovery_module
+  - diagnostic_module
+  - unknown
+
+method_job_statuses:
+  - activated
+  - reviewing
+  - plan proposed
+  - first pass supported
+  - diagnostics reviewed
+  - materials ready
+  - blocked
+  - deferred
+  - unknown

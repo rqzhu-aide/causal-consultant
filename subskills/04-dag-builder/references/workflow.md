@@ -4,9 +4,9 @@
 
 Use this workflow after `03-design-planner` has proposed, shortlisted, or asked to audit a candidate design. The DAG builder's job is to turn that design into practical causal logic: assumptions, timing, variable roles, identification, adjustment or non-adjustment strategy, sensitivity needs, and downstream analytic handoff.
 
-In the main-skill architecture, this workflow is the backend practical causal-logic evaluator. It maintains `project.yaml > evaluators.dag_builder_04` and feeds compact analytic implications to the main skill, feedback to the design planner, data and method-feasibility checks to the Data Technician, domain checks to Domain Helper, and handoff notes to method subskills.
+In the main-skill architecture, this workflow is the backend practical causal-logic evaluator. It maintains `project.yaml > evaluators.dag_builder_04` and feeds compact analytic handoff notes to the main skill for design planning, data and method-feasibility checks, domain checks, and method subskills.
 
-Start each evaluator pass by reading `evaluator_loop`. The trigger, selected next action, action queue, readiness signals, summaries, and loop-control state tell DAG Builder whether this is a targeted causal-logic audit, route-hypothesis review, route-commitment check, user-directed support, or a loop-breaking pass. Answer that selected action first before adding broader graph alternatives.
+Start each evaluator pass by reading `evaluator_loop` and the current `evaluators.*` records. The trigger, selected next action, action queue, evaluator readiness values, handoff notes, requests, and loop-control state tell DAG Builder whether this is a targeted causal-logic audit, route-hypothesis review, route-commitment check, user-directed support, or a loop-breaking pass. Answer that selected action first before adding broader graph alternatives.
 
 Coordinate continuously with:
 
@@ -53,7 +53,7 @@ When `03` or `02` proposes a route, audit it as a causal claim rather than as a 
 - identify the required causal story and target effect;
 - state which assumptions carry identification;
 - mark whether the logic is supported, fragile, blocked, needs design revision, or needs clarification;
-- record required domain checks, data checks, design implications, and method handoff;
+- record required domain checks, data checks, design handoff notes, and method handoff;
 - keep feasibility decisions with `03-design-planner`.
 
 ## Stage 3: Classify Roles for the Proposed Design

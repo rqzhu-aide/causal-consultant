@@ -1,18 +1,13 @@
 evaluators:
   dag_builder_04:
-    status: "active | inactive | unknown"
-    readiness: "ready | sufficient_for_now | needs_information | blocks_ready_gate | not_needed | unknown"
-    supported_status: "supported | fragile | blocked | needs design revision | unknown"
-    supported_scope: "not assessed | exploratory audit | route support | design revision | method handoff | gate commitment | user-directed execution | unknown"
-    identification_status: "yes | no | partial | unknown"
+    # Allowed enum values live in ../../../assets/workflow_enums.yaml.
+    readiness: "unknown"
+    supported_status: "unknown"
+    supported_scope: "unknown"
+    identification_status: "unknown"
     summary: null
     key_findings: []
     causal_logic_hypotheses: []
-    implications:
-      domain_helper_01: []
-      design_planner_03: []
-      data_technician_02: []
-      method_subskills: []
+    handoff_notes: []
     requests_for_main_skill: []
-    nonharmful_assumptions: []
     load_bearing_assumptions: []

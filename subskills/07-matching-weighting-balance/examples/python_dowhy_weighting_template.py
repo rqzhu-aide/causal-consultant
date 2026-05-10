@@ -69,7 +69,7 @@ def main() -> None:
     print("\nRefutation example")
     print(refute)
 
-    print("\nDiagnostic reminder: run explicit SMD, overlap, and weight diagnostics outside DoWhy before final reporting.")
+    print("\nDiagnostic reminder: run explicit SMD, overlap, and weight diagnostics outside DoWhy before Report Writer handoff.")
 
 
 if __name__ == "__main__":

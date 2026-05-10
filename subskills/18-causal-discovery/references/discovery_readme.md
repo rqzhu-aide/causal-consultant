@@ -1,20 +1,18 @@
-# causal_discovery_skill (merged into subskill 18)
+# Causal Discovery Tool Orientation
 
-This folder now contains the merged causal discovery skill for algorithm recommendation and code generation in Python, R, and Java.
+This folder contains the causal-discovery support module for algorithm recommendation, graph-hypothesis generation, code templates, and DAG Builder handoff.
 
-Main file: `../SKILL.md`.
+Use discovery tools to produce graph hypotheses, not final causal proof. Any discovered structure that changes route commitment, adjustment, or claim language must return to the main skill and `04-dag-builder`.
 
 Supporting files:
 
 - `../scripts/recommend.py`: rule-based algorithm recommender.
 - `../schemas/`: JSON input and output schemas for the recommender.
-- `../examples/`: Python, R, and Java workflow templates.
-- `discovery_references.md`: source links.
+- `../examples/`: Python, R, and Java/Tetrad workflow templates.
+- `discovery_references.md`: literature and software notes.
 
 Example:
 
 ```bash
 python ../scripts/recommend.py ../sample_input.json
 ```
-
-This content was merged from the standalone `causal_discovery_skill` package to enrich subskill 18.

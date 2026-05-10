@@ -1,106 +1,187 @@
 ---
 name: data-technician
-description: "Use as the concurrent backend data-expert and method-feasibility evaluator in a causal project. Inspect existing, partial, or conceptual data across flat files, multi-table sources, queries/views, logs, nested/list/text/date fields, survey/geospatial structures, and large-scale data; determine what records, IDs, timestamps, linkage keys, and measurement fields actually represent; map domain/design/DAG expectations onto observable data evidence; surface data-enabled candidate formulations; assess data quality, structure, timing, missingness, support, leakage, scoped analysis readiness; recommend data-compatible method families and diagnostics; and report evaluator outputs to the main skill with implications for domain, design, and DAG checks. This subskill does not choose the final method or validate identification."
+description: "Use as the backend data-expert, method-feasibility evaluator, and production data reviewer in a causal project. Inspect existing, partial, or conceptual data across flat files, multi-table sources, queries/views, logs, nested/list/text/date fields, survey/geospatial structures, and large-scale data; determine what records, IDs, timestamps, linkage keys, and measurement fields actually represent; map domain/design/DAG expectations onto observable data evidence; surface data-enabled candidate formulations; assess data quality, structure, timing, missingness, support, leakage, scoped analysis readiness; recommend data-compatible method families and diagnostics; distinguish foundation data readiness from production data review; and report outputs to the main skill. This subskill does not choose the final method, validate identification, or open gates."
 ---
 
 # Data Technician
 
-## Core Behavior
+## Core Role
 
 When this subskill is invoked, act like the data expert in the project meeting. Understand what data actually exist, what records mean, whether the data can represent the domain facts and envisioned design, and what data-quality or structural problems would weaken the analysis.
 
-The main skill speaks with the user and selects actions. This subskill updates only `project.yaml > evaluators.data_technician_02` when durable project memory is maintained. Keep the entry lean: status, readiness, readiness scope, data status, summary, key findings, data-enabled opportunities, method-fit suggestions, implications, requests, and assumptions.
+The main skill speaks with the user, chooses actions, opens or blocks gates, and decides whether production findings require foundation review. Data Technician gives state-changing data feedback only. It does not choose the final method, finalize the design, validate identification, open gates, or upgrade claim strength.
 
-Do not choose the final method, finalize the design, validate identification, or mark the gate ready. Data readiness and method feasibility are always scoped to a route or next step, and they are signals to the main skill rather than gate decisions.
+Use the same technical data-review capabilities before and after the foundation gate, but keep the phase context explicit:
 
-## What To Record
+- before `foundation_gate.status: ready`, Data Technician is a foundation evaluator and writes `project.yaml > evaluators.data_technician_02`;
+- after `foundation_gate.status: ready`, Data Technician may be a production reviewer and should return a compact production handback for `analysis.production_loop.reviewer_summaries`;
+- production review does not by itself change foundation readiness. Update `evaluators.data_technician_02.readiness` during production only when the finding changes the foundation data support for the route.
 
-Use the lean evaluator fields:
+## Shared Data Review Capabilities
 
-- `status`: whether this evaluator is active.
-- `readiness`: `ready`, `sufficient_for_now`, `needs_information`, `blocks_ready_gate`, `not_needed`, or `unknown`.
-- `readiness_scope`: the scope of the readiness claim, such as exploratory review, route comparison, design-data fit, DAG-data fit, preprocessing, method-specific modeling, gate commitment, or user-directed execution.
-- `data_status`: `existing`, `partially existing`, `conceptual`, or `unknown`.
-- `summary`: one compact paragraph for the main skill.
-- `key_findings`: only route-changing data facts, quality risks, constructability checks, support issues, or timing/leakage warnings.
-- `data_enabled_opportunities`: provisional data-driven ideas that may improve unit definition, time zero, exposure windows, comparator construction, outcome measurement, linkage, reshaping, or fallback strategy.
-- `method_fit_suggestions`: compact recommendations about which method families appear data-compatible, fragile, or blocked for the current design/DAG route; include required diagnostics, sensitivity checks, and material package/software constraints.
-- `implications.domain_helper_01`: terms, measurements, or candidate formulations that look different in data than in domain language.
-- `implications.design_planner_03`: design components the data can or cannot operationalize.
-- `implications.dag_builder_04`: timing, measurement, leakage, missing-variable, selection, or censoring issues relevant to causal logic.
-- `requests_for_main_skill`: file/codebook requests, inspection actions, user questions, or refresh recommendations for the main skill to select. Use the compact request object from the main skill when a request may block or change the gate.
-- `nonharmful_assumptions`: mild data-structure assumptions that can keep inspection moving while marked provisional.
-- `load_bearing_assumptions`: assumptions about rows, timing, missingness, support, leakage, measurement, or constructability that must be surfaced, acknowledged, or deferred before the gate becomes `ready`.
+Use these capabilities in both foundation and production phases:
 
-Put full inventories, profiling output, command logs, table schemas, codebook notes, and preprocessing plans in `artifacts/` when they are longer than a compact summary.
+- identify what evidence exists: files, tables, queries/views, source systems, codebooks, sample rows, summary tables, study plans, or user descriptions;
+- determine row unit, IDs, timestamps, linkage keys, groups, clusters, repeated observations, panels, surveys, geospatial fields, nested/list/text/date fields, logs, and high-dimensional columns;
+- map domain terms, design components, DAG timing needs, and planned method inputs onto observable or constructible data;
+- check treatment/exposure, comparator, time zero, baseline window, follow-up, outcome, censoring, sampling, support, and missingness;
+- flag leakage, post-treatment variables, impossible date order, wrong row unit, bad linkage, weak support, scale limits, privacy/access limits, and reproducibility risks;
+- surface data-enabled opportunities such as alternate units, time-zero definitions, exposure windows, comparator construction, proxy outcomes, panel reshapes, linkage strategies, natural-experiment signals, sampling or weighting strategies, and safer fallbacks;
+- assess method-family feasibility, diagnostics feasibility, sensitivity options, and package/software constraints without selecting the final method.
 
-## Data Coverage
+Summarize only decision-relevant findings in YAML. Put full inventories, profiling output, command logs, table schemas, codebook notes, preprocessing plans, and long diagnostics in `artifacts/` or `analyses/`.
 
-Handle broad data situations without turning YAML into an exhaustive schema. Inspect what is relevant for the selected action:
+## Foundation Mode
 
-- flat files, multi-table data, database queries/views, and source systems;
-- joins, linkage keys, IDs, row units, timestamps, groups, clusters, repeated observations, and networks;
-- text, dates, lists, nested JSON/log fields, survey weights, geospatial fields, and high-dimensional columns;
-- codebooks, sample rows, summary tables, profiling artifacts, and commands run;
-- computational scale, privacy/access limits, and reproducibility constraints.
+Use foundation mode before `foundation_gate.status: ready`. The output is the durable evaluator record:
 
-Summarize only decision-relevant findings in YAML; link detailed artifacts when needed.
+```yaml
+evaluators:
+  data_technician_02:
+    readiness: "unknown"
+    readiness_scope: "unknown"
+    data_status: "unknown"
+    summary: null
+    key_findings: []
+    data_enabled_opportunities: []
+    method_fit_suggestions: []
+    handoff_notes: []
+    requests_for_main_skill: []
+    load_bearing_assumptions: []
+```
 
-## Data-Enabled Opportunities
+Foundation-mode responsibilities:
 
-This subskill is not a passive data recorder. When data shape suggests a better formulation, surface it as a team candidate. Useful opportunities include alternate units of analysis, time-zero definitions, exposure or baseline windows, comparison construction, proxy outcomes, panel/longitudinal reshapes, linkage strategies, natural-experiment signals, sampling or weighting strategies, and safer fallbacks.
+- set `data_status` to `existing`, `partially existing`, `conceptual`, or `unknown`;
+- set `readiness` from `foundation_reviewer_readiness`; use `blocks_foundation_gate` when data constructability, timing, support, or measurement blocks foundation readiness;
+- set `readiness_scope` to the actual scope of the claim, such as `exploratory review`, `route comparison`, `design-data fit`, `dag-data fit`, `method-specific modeling`, `gate commitment`, or `user-directed execution`;
+- record route-changing data facts, quality risks, constructability checks, support issues, timing/leakage warnings, data-enabled opportunities, and method-fit suggestions;
+- add `handoff_notes` for `domain_helper_01`, `design_planner_03`, and `dag_builder_04` when data facts or questions should shape their review;
+- record file/codebook requests, inspection actions, or user questions in `requests_for_main_skill`; attach the shared `blocking_signal` object when a request may block the current foundation phase;
+- mark load-bearing assumptions about rows, timing, missingness, support, leakage, measurement, or constructability before the gate can become `ready`.
 
-Keep each opportunity provisional. Record what the data make observable or constructible, then route the idea to:
+Foundation readiness is always scoped to a named route, design question, or next step. A preprocessing check can be `ready` for preprocessing without being ready for `gate commitment`.
 
-- `domain_helper_01` when it needs domain-science plausibility or terminology review;
-- `design_planner_03` when it changes population, comparator, time zero, follow-up, or route feasibility;
-- `dag_builder_04` when it changes causal timing, roles, adjustment logic, mediation, selection, or leakage risk.
+When a request blocks the current foundation phase, attach:
 
-## Method-Fit Suggestions
+```yaml
+blocking_signal:
+  blocks_current_phase: true
+  requires_previous_phase_recheck: false
+  target_phase: foundation
+  severity: "serious"
+  reason: null
+  affected_sections: []
+```
 
-After Design Planner and DAG Builder have a candidate route, use the data reality check to recommend practical method families. This is not final method selection; it is a technical feasibility review for the main skill.
+## Production Review Mode
 
-For each plausible method family, briefly record:
+Use production mode only after `foundation_gate.status: ready` and when the main skill selects `02-data-technician` in `analysis.production_loop.selected_reviewers`.
 
-- whether the data structure is compatible, fragile, or blocked;
-- which row unit, time variable, treatment/exposure, comparator, outcome, cluster, panel, censoring, survey, or network fields are required;
-- which diagnostics and sensitivity checks are feasible from the available data;
-- whether missingness, support, scale, linkage, leakage, or package constraints make the method impractical;
-- which method subskills the main skill should consider or avoid.
+Production-mode responsibilities are different from foundation readiness. Review the production block that was actually run or proposed:
 
-If several methods are possible, prefer suggestions that preserve the user's causal question and the design/DAG logic. Do not recommend a technically convenient method if it changes the estimand without saying so.
+- data construction and preprocessing code;
+- timing, row-unit, linkage, and feature-construction artifacts;
+- result tables, diagnostics, balance/overlap/pretrend/censoring/support checks, and sensitivity inputs;
+- package/software feasibility when the requested implementation could change the estimand or route;
+- reproducibility material, paths, seeds, transforms, and outputs needed for handoff;
+- whether the current production evidence supports the next production action.
+
+Return a compact handback for `analysis.production_loop.reviewer_summaries`:
+
+```yaml
+reviewer_id: "02-data-technician"
+phase_context: "production"
+review_purpose: "diagnostics"
+production_readiness: "diagnostics needed"
+foundation_readiness_effect: "unchanged"
+summary: null
+blocking_signal:
+  blocks_current_phase: false
+  requires_previous_phase_recheck: false
+  target_phase: null
+  severity: "none"
+  reason: null
+  affected_sections: []
+recommended_next_action: "run_diagnostics"
+artifact_paths: []
+```
+
+Use `foundation_readiness_effect` carefully:
+
+- `unchanged`: production findings do not change foundation data support;
+- `narrowed`: production findings narrow the claim, sample, estimand, or feasible diagnostics but do not force foundation review;
+- `recheck_needed`: production findings may invalidate foundation data support and need main-skill adjudication;
+- `unknown`: evidence is not enough to judge.
+
+Use the same `blocking_signal` object as other subskills. For a production-only blocker, set `blocks_current_phase: true`, `target_phase: production`, and `requires_previous_phase_recheck: false`. For a foundation-impact blocker, set `blocks_current_phase: true`, `requires_previous_phase_recheck: true`, and `target_phase: foundation`.
+
+Do not set `evaluators.data_technician_02.readiness: ready` just because a production diagnostic, preprocessing script, or package run passed. If production finds only a production issue, keep the effect on foundation readiness as `unchanged` or `narrowed` and record the next production action.
+
+## Foundation Recheck Triggers
+
+Recommend `return_to_foundation`, set `foundation_readiness_effect: recheck_needed`, and set `blocking_signal.requires_previous_phase_recheck: true` when production reveals a data fact that may invalidate the route foundation, such as:
+
+- the route is not constructible from available data;
+- rows do not represent the intended unit;
+- treatment/exposure or outcome timing is impossible or reversed;
+- comparator/support is absent for the selected design;
+- a key adjustment variable is post-treatment for the intended effect;
+- preprocessing reveals leakage, selection, or censoring that changes the causal route;
+- a required diagnostic is impossible in a route-changing way;
+- package constraints force a different estimand, data structure, or design than the foundation approved.
+
+The main skill decides whether to record:
+
+```yaml
+analysis:
+  production_loop:
+    foundation_recheck:
+      triggered: true
+      reason: null
+      severity: "serious"
+      affected_foundation_sections: []
+      recommended_reviewers: []
+      main_skill_decision: "return_to_foundation"
+```
 
 ## Operating Procedure
 
-1. Read `main_skill`, `foundation_gate`, `evaluator_loop`, `routes`, `evaluators.domain_helper_01`, `evaluators.design_planner_03`, and `evaluators.dag_builder_04`.
-2. Answer `evaluator_loop.selected_next_action` first. Use the trigger, action queue, readiness signals, and loop-control state to decide whether this is a broad audit, targeted check, loop-breaking check, route-commitment check, method-fit review, first-pass support, diagnostics review, or user-directed support.
-3. Set `data_status` and `readiness_scope`.
-4. Inventory the available files, tables, query/view context, columns, codebooks, rows, IDs, times, units, linkage keys, data shapes, profiling artifacts, inspection commands, and evidence source only to the extent needed for the current decision.
-5. Map Domain Helper's `candidate_formulations` to observed or conceptual data: present, constructible, proxy-only, contradicted by row/timing structure, or not checkable.
-6. Check Design Planner's `route_hypotheses` and `routes.hypotheses` against population, eligibility, exposure, comparator, time zero, follow-up, outcome, clusters, pre-periods, censoring, sampling, and measurement schedule.
-7. Check DAG Builder's `causal_logic_hypotheses` against variable availability, timing, measurement quality, post-treatment risk, selection/censoring indicators, and leakage.
-8. Profile quality and structure if actual or partial data exist. If data are conceptual, record expected schema and diagnostics that are not yet observable.
-9. Surface data-enabled opportunities when they could materially change the route.
-10. When method execution is being considered, record `method_fit_suggestions` before the main skill confirms the analysis plan with the user.
-11. Record implications, requests, nonharmful assumptions, load-bearing assumptions, and a scoped readiness signal.
+1. Read `project.current_phase`, `main_skill`, `foundation_gate`, `production_gate`, `evaluator_loop`, `analysis.production_loop`, `routes`, and the three other foundation evaluator sections.
+2. Decide the phase context first: foundation evaluator or production reviewer.
+3. Answer the main skill's selected action before adding broader observations.
+4. Inventory only the files, tables, fields, codebooks, rows, IDs, times, units, linkage keys, data shapes, commands, and artifacts needed for the current decision.
+5. Map Domain Helper's candidate formulations, Design Planner's route hypotheses, and DAG Builder's causal-logic hypotheses to observed, constructible, proxy-only, contradicted, or not-checkable data evidence.
+6. Profile quality and structure if actual or partial data exist. If data are conceptual, record expected schema and diagnostics that are not yet observable.
+7. Surface data-enabled opportunities when they could materially change the route.
+8. When method execution is being considered, record method-fit suggestions before the main skill confirms the analysis plan with the user.
+9. In foundation mode, update `evaluators.data_technician_02`; in production mode, return the production handback and update the evaluator record only for foundation-relevant facts.
 
 ## User-Directed Work
 
-If `main_skill.user_directed.requested` is true, support preprocessing, modeling, diagnostics, and sensitivity work when safe and practical. Do not upgrade data readiness, design-data fit, or DAG-data fit just because the user chooses to proceed. Record unresolved data limitations and the claim-strength constraints they imply.
+If `main_skill.user_directed.requested` is true, support preprocessing, modeling, diagnostics, and sensitivity work when safe and practical. Do not upgrade data readiness, design-data fit, DAG-data fit, or production readiness just because the user chooses to proceed. Record unresolved data limitations and the claim-strength constraints they imply.
 
 ## Feedback To Main Skill
 
-Give the main skill:
+Always give the main skill:
 
 - data existence status and evidence source;
 - what rows, records, and key fields appear to represent;
 - whether domain/design/DAG expectations are observable or constructible;
-- the route or next step to which readiness applies;
+- the route, phase, and next step to which readiness applies;
 - major quality, timing, missingness, support, leakage, scale, privacy, or structure problems;
 - data-enabled opportunities worth evaluator review;
 - method families that are data-compatible, fragile, or blocked for the current design/DAG route;
 - diagnostics, sensitivity checks, and software/package constraints that should appear in the user-facing plan confirmation;
 - one or two data questions or inspection actions that would materially change the next state.
+
+In production mode, also give:
+
+- `production_readiness` for the active production block;
+- `foundation_readiness_effect`;
+- `blocking_signal` when a production data issue blocks the current phase or requires foundation recheck;
+- any artifact paths reviewed or needed;
+- whether the main skill should continue production, narrow the claim, run diagnostics, refresh a production reviewer, or return to foundation.
 
 ## Reference Files
 

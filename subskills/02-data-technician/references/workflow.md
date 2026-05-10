@@ -4,9 +4,9 @@
 
 Use this workflow before choosing or fitting a causal model, and whenever the project needs a data reality check. The Data Technician asks: given the domain facts, envisioned design, and DAG/assumption needs, what does the data actually contain, what can it support, and which method families are technically feasible?
 
-In the main-skill architecture, this workflow is the backend data-expert and method-feasibility evaluator. The main skill usually speaks with the user and selects next actions; this workflow updates `project.yaml > evaluators.data_technician_02` with compact summary, findings, data-enabled opportunities, method-fit suggestions, implications, requests, and assumptions for the main skill.
+In the main-skill architecture, this workflow is the backend data-expert, method-feasibility evaluator, and production data reviewer. The main skill usually speaks with the user and selects next actions. Before the foundation gate is ready, this workflow updates `project.yaml > evaluators.data_technician_02`; after the foundation gate is ready, production review belongs in `analysis.production_loop.reviewer_summaries` unless a finding changes foundation data support.
 
-Start each evaluator pass by reading `evaluator_loop`. The trigger, selected next action, action queue, readiness signals, summaries, and loop-control state tell the Data Technician whether this is a broad audit, a targeted check, route-commitment review, method-fit review, user-directed support, or a loop-breaking pass. Answer that selected action first before adding broader observations.
+Start each evaluator pass by reading `evaluator_loop` and the current `evaluators.*` records. The trigger, selected next action, action queue, evaluator readiness values, handoff notes, requests, and loop-control state tell the Data Technician whether this is a broad audit, a targeted check, route-commitment review, method-fit review, user-directed support, or a loop-breaking pass. Answer that selected action first before adding broader observations.
 
 This workflow centers on:
 
@@ -18,10 +18,19 @@ This workflow centers on:
 - quality and readiness: missingness, outliers, duplicates, support, sparsity, dimensionality, and reproducible preprocessing needs;
 - data-enabled opportunities: alternate units, time-zero definitions, exposure windows, linkages, reshapes, proxy outcomes, or natural-experiment signals to route back to the foundation team.
 
+## Phase Boundary
+
+Use the same data-review toolkit in both phases, but keep readiness labels separate.
+
+- Foundation mode answers whether the data can support the route, design, DAG timing, method-family feasibility, and foundation-gate commitment. It writes `evaluators.data_technician_02`.
+- Production mode answers whether a specific production block, such as preprocessing, diagnostics, artifacts, package feasibility, or reproducibility, can move forward. It writes a reviewer summary with `reviewer_id: "02-data-technician"`, `phase_context: "production"`, `production_readiness`, `foundation_readiness_effect`, and the shared `blocking_signal` object when something blocks the current phase or requires foundation recheck.
+
+Set `foundation_readiness_effect: recheck_needed` only when production reveals a data fact that may invalidate the approved foundation route. Otherwise use `unchanged`, `narrowed`, or `unknown`; use `blocking_signal.blocks_current_phase: true` for production-only blockage.
+
 ## Coordination With Other Foundation Components
 
 - Use `main_skill` for the user goal, requested deliverable, and what needs to be explained plainly.
-- Use `evaluator_loop` for the main skill's selected action, active queue, readiness signals, summaries, and loop-control state.
+- Use `evaluator_loop` for the main skill's selected action, active queue, and loop-control state.
 - Use `01-domain-helper` to check how domain terms, field norms, measurement practices, and privacy/access constraints appear in the data.
 - Use `03-design-planner` to check whether actual or conceptual data support the envisioned design components.
 - Use `04-dag-builder` to check timing evidence, candidate variables for DAG review, unavailable variables, and leakage-prone or late-measured variables.
@@ -92,7 +101,7 @@ The Data Technician should notice when data structure suggests a useful causal f
 - proxy outcomes or measurement composites that need domain review;
 - discontinuities, rollouts, cutoffs, shocks, eligibility rules, or other natural-experiment signals.
 
-Record these as `data_enabled_opportunities`, then route plausibility to `domain_helper_01`, route feasibility to `design_planner_03`, and causal timing/role concerns to `dag_builder_04`. Keep them provisional until the main skill selects a next action.
+Record these as `data_enabled_opportunities`, then use `handoff_notes` to route plausibility to `domain_helper_01`, route feasibility to `design_planner_03`, and causal timing/role concerns to `dag_builder_04`. Keep them provisional until the main skill selects a next action.
 
 ## Data Profile Checklist
 
@@ -150,7 +159,7 @@ Use the canonical evaluator readiness statuses:
 - `ready`: data structure and quality are adequate for a named route, design, or next step;
 - `sufficient_for_now`: data evidence is enough for the current exploratory or routing action, but not necessarily enough for gate commitment;
 - `needs_information`: key meanings, timing, IDs, files, tables, fields, or preprocessing evidence are ambiguous;
-- `blocks_ready_gate`: a required design/DAG component is absent, contradicted, or cannot be constructed from available data;
+- `blocks_foundation_gate`: a required design/DAG component is absent, contradicted, or cannot be constructed from available data;
 - `not_needed`: no data check is needed for the current non-causal, teaching, or descriptive task;
 - `unknown`: data evidence is too limited to judge.
 
@@ -167,14 +176,14 @@ Common blockers:
 - key domain measurements are only proxies or unavailable;
 - data include only triggered/exposed/observed units when the design needs assigned or eligible units.
 
-Every readiness note should include `readiness_scope`, such as `exploratory review`, `route comparison`, `design-data fit`, `dag-data fit`, `preprocessing`, `method-specific modeling`, `gate commitment`, or `user-directed execution`. If readiness is narrow, record `not_ready_for` so a preprocessing pass is not mistaken for route or gate readiness.
+Every foundation readiness note should include `readiness_scope`, such as `exploratory review`, `route comparison`, `design-data fit`, `dag-data fit`, `preprocessing`, `method-specific modeling`, `gate commitment`, or `user-directed execution`. If readiness is narrow, record what it does not cover so a preprocessing pass is not mistaken for route or gate readiness. Production readiness belongs in `analysis.production_loop.reviewer_summaries`, not in `evaluators.data_technician_02.readiness`.
 
 ## Evaluator Output Examples
 
 ```yaml
 evaluators:
   data_technician_02:
-    readiness: "blocks_ready_gate"
+    readiness: "blocks_foundation_gate"
     readiness_scope: "design-data fit"
     data_status: "existing"
     summary: "The file appears to include only treated users, so a treatment-versus-control effect is not currently supported by these data."
@@ -182,20 +191,26 @@ evaluators:
       - note: "No comparator group is visible in the observed data."
         basis: "observed data"
         severity: "blocker"
-    implications:
-      design_planner_03:
-        - note: "The current cohort design needs a comparator source or a fallback route."
-          basis: "observed data"
-          suggested_next_action: "refresh_design_planner_03"
-      dag_builder_04:
-        - note: "Several candidate severity variables are measured after treatment initiation."
-          basis: "data dictionary"
-          suggested_next_action: "refresh_dag_builder_04"
+    handoff_notes:
+      - target: "design_planner_03"
+        note: "The current cohort design needs a comparator source or a fallback route."
+        basis: "observed data"
+        suggested_next_action: "refresh_design_planner_03"
+      - target: "dag_builder_04"
+        note: "Several candidate severity variables are measured after treatment initiation."
+        basis: "data dictionary"
+        suggested_next_action: "refresh_dag_builder_04"
     requests_for_main_skill:
       - request_id: "data-01"
         note: "Ask whether an untreated, not-yet-treated, or eligible-but-unexposed comparator source exists."
         requested_action: "ask_user"
-        readiness_impact: "blocks_ready_gate"
+        blocking_signal:
+          blocks_current_phase: true
+          requires_previous_phase_recheck: false
+          target_phase: foundation
+          severity: "serious"
+          reason: "No comparator source is currently visible for the proposed effect estimate."
+          affected_sections: ["foundation_gate", "evaluators.data_technician_02", "routes"]
         status: "open"
         main_skill_decision: null
 ```

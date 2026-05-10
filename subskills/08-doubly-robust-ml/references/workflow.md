@@ -81,7 +81,7 @@ Interpret:
 - what assumptions come from the parent route;
 - what double robustness protects against;
 - what it does not protect against;
-- whether diagnostics support final reporting or only exploratory analysis.
+- whether diagnostics support Report Writer handoff or only exploratory analysis.
 
 If diagnostics fail:
 

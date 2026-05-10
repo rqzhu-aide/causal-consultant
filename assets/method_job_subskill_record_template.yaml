@@ -1,0 +1,24 @@
+# Append one copy of this chunk to project.yaml > subskill_analyses only
+# when the main skill activates the method/job subskill for production work.
+# Allowed enum values live in assets/workflow_enums.yaml.
+subskill_id: null
+role: "unknown"
+status: "unknown"
+activation_reason: null
+selected_route_id: null
+inputs_reviewed: []
+outputs_created: []
+diagnostics_reviewed: []
+limitations: []
+feedback_for_main_skill: []
+requests_for_main_skill: []
+readiness: "unknown"
+blocking_signal:
+  blocks_current_phase: false
+  requires_previous_phase_recheck: false
+  target_phase: null
+  severity: "none"
+  reason: null
+  affected_sections: []
+recommended_next_action: "unknown"
+artifact_paths: []

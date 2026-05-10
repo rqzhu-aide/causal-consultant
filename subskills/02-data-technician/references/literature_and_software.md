@@ -12,8 +12,8 @@ This is intentionally narrower than a missing-data or measurement-error methods 
 
 Before touching variables, read the current project context:
 
-- `evaluator_loop`: trigger, selected next action, action queue, readiness signals, summaries, and loop-control state;
-- `evaluators.domain_helper_01`: domain terms, measurement conventions, field norms, privacy/access constraints, candidate formulations, and implications;
+- `evaluator_loop`: trigger, selected next action, action queue, and loop-control state;
+- `evaluators.domain_helper_01`: domain terms, measurement conventions, field norms, privacy/access constraints, candidate formulations, and handoff notes;
 - `evaluators.design_planner_03`: route hypotheses, envisioned population, eligibility, exposure/assignment, comparator, time zero, follow-up, clusters, pre-periods, and measurement schedule;
 - `evaluators.dag_builder_04`: causal-logic hypotheses, timing claims, proposed variable roles, variables that may be forbidden or late, and unobserved-variable concerns.
 

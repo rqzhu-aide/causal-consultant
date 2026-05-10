@@ -1,8 +1,0 @@
-{
-  "name": "causal_discovery",
-  "title": "Causal Discovery",
-  "description": "Recommend, run, explain, and validate causal discovery pipelines for tabular, time series, mixed, and text-derived data in Python, R, and Java.",
-  "entrypoint": "SKILL.md",
-  "languages": ["python", "r", "java"],
-  "version": "0.1.0"
-}

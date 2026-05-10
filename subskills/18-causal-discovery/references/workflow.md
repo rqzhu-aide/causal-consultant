@@ -2,133 +2,130 @@
 
 ## Goal
 
-Use for learning or comparing causal graphs from data using constraint-based, score-based, functional, or time-series discovery methods.
+Use for learning or comparing causal graph hypotheses from data. Discovery is exploratory support unless the user explicitly asks for a discovery deliverable. It does not validate an effect-estimation route by itself.
 
 ## Intake Checklist
 
-- [ ] Is the goal graph discovery or effect estimation?
-- [ ] Are there hidden confounders?
-- [ ] Are variables temporally ordered?
-- [ ] Are cycles possible?
-- [ ] What assumptions are plausible: linearity, non-Gaussianity, additive noise, stationarity?
-- [ ] What prior knowledge can constrain the graph?
-- [ ] What language backend does the user prefer: Python, R, or Java?
-- [ ] What is the sample size and number of variables?
-- [ ] Is the data continuous, discrete, mixed, or text?
-- [ ] Are there missing values?
-- [ ] Is the data IID or time series / nonstationary?
-- [ ] Does the user need a unique DAG or accept an equivalence class (CPDAG/PAG)?
+- Is the user asking for graph discovery, graph comparison, variable screening, or effect estimation?
+- What graph object is needed: DAG, CPDAG, PAG, ancestral relations, candidate adjustment hints, IDA-style bounds, or a variable-screening list?
+- Are hidden confounders plausible?
+- Are variables temporally ordered?
+- Are cycles, feedback, or nonstationarity plausible?
+- What assumptions are plausible: linearity, non-Gaussianity, additive noise, stationarity, causal sufficiency, faithfulness?
+- What prior knowledge can constrain the graph: required edges, forbidden edges, tiers, known interventions?
+- What backend does the user prefer: Python, R, Java/Tetrad, or no preference?
+- What are sample size, variable count, missingness, data types, and measurement quality?
+- Is the data IID, clustered, panel, longitudinal, time series, mixed, or text-derived?
+- Does the user need a unique graph or can they accept an equivalence class?
 
-## Estimand Checklist
+## Planning Steps
 
-- DAG
-- CPDAG
-- PAG
-- ancestral relations
-- candidate adjustment sets
-- IDA-style effect bounds
-
-The agent should state which estimand is being targeted and what estimands are not being targeted.
-
-## Analysis Planning
-
-1. Describe the data structure and timing.
-2. Define the target estimand and scale.
-3. Choose a primary method from the candidate methods.
-4. List required assumptions and diagnostics.
-5. State what would invalidate or weaken the analysis.
-6. Specify software and code templates.
-7. Plan sensitivity analyses.
-8. State the expected graph type (DAG, CPDAG, PAG).
+1. Clarify whether discovery is a support step or the user's deliverable.
+2. Inventory data structure, timing, background knowledge, and preprocessing risks.
+3. Choose the target graph object and state what it can and cannot mean.
+4. Choose candidate algorithms that match assumptions and graph target.
+5. Define diagnostics before running: stability, tuning sensitivity, background-knowledge consistency, hidden-confounding checks, and domain plausibility.
+6. Decide what artifact to produce for DAG Builder: edge list, graph plot, equivalence-class notes, stability table, and assumptions memo.
+7. Record why the output should return to DAG Builder before affecting route commitment.
 
 ## Candidate Methods
 
-- PC / stable-PC / MV-PC
-- FCI / RFCI / GFCI / GRaSP-FCI
-- GES / FGES / GIES / GRaSP / BOSS
-- LiNGAM / DirectLiNGAM / ICA-LiNGAM / VAR-LiNGAM
-- additive noise models (ANM)
-- post-nonlinear models (PNL)
-- Granger causality / PCMCI / CD-NOD
-- IDA
+- PC or stable-PC for constraint-based DAG/CPDAG exploration under causal sufficiency.
+- FCI, RFCI, GFCI, or related PAG methods when latent confounding is plausible.
+- GES, FGES, GIES, GRaSP, BOSS, or score-based search when score assumptions and scale fit.
+- LiNGAM, DirectLiNGAM, ICA-LiNGAM, or VAR-LiNGAM when non-Gaussian functional assumptions are plausible.
+- Additive noise or post-nonlinear models when functional-form assumptions are central.
+- Granger, PCMCI, CD-NOD, or lagged discovery workflows for time series or nonstationary settings.
+- IDA-style effect bounds only as graph-implied exploratory bounds, not final effect estimates.
 
 ## Recommendation Workflow
 
-Run `../scripts/recommend.py` with a JSON input matching `../schemas/recommendation_input.schema.json` to get a structured recommendation.
+Run `../scripts/recommend.py` with JSON input matching `../schemas/recommendation_input.schema.json` when a quick algorithm recommendation is useful.
 
-Or follow the manual rules:
+Manual routing rules:
 
-1. If text data -> COAT-style pipeline then FCI/PC/CD-NOD.
-2. If time series or non-IID -> VAR-LiNGAM, PCMCI, Granger, or CD-NOD.
-3. If missing values -> MV-PC or missing-value Fisher Z.
-4. If latent confounders possible -> FCI (+ RFCI/GFCI fallback).
-5. If unique DAG needed -> DirectLiNGAM.
-6. If discrete -> PC with Chi-square/G-square.
-7. If large (p>100 or n>=3000) -> GRaSP, BOSS, or FGES.
-8. Default -> PC with Fisher Z.
+1. Text-derived variables: treat NLP extraction as a preprocessing risk; prefer DAG Builder review before discovery claims.
+2. Time series or non-IID data: consider VAR-LiNGAM, PCMCI, Granger, or CD-NOD.
+3. Missing values: use methods that explicitly handle missingness or ask Data Technician to review imputation/selection first.
+4. Latent confounding plausible: prefer FCI/PAG-style output over unique DAG claims.
+5. Unique DAG requested: only consider DirectLiNGAM or functional models if assumptions are plausible; otherwise explain why uniqueness is not supported.
+6. Discrete data: use tests/scores appropriate for discrete variables.
+7. Large variable sets: reduce variables with domain/data logic first, or use scalable algorithms with stability checks.
+8. Default: PC/stable-PC or FCI depending on latent-confounding plausibility, with strong caveats.
 
 ## Diagnostics
 
-- sensitivity to alpha/test or score choice
-- bootstrap edge stability
-- prior-knowledge constraints
-- hidden-variable assumptions
-- orientation confidence
-- domain validation
-- Markov and faithfulness plausibility
-- held-out likelihood when score-based
-
-## Common Packages
-
-- Python causal-learn
-- Python py-tetrad
-- Python lingam
-- Python tigramite
-- R pcalg
-- R bnlearn
-- R causalDisco
-- Java Tetrad (GUI, causal-cmd, tetrad-lib)
+- Sensitivity to alpha, conditional-independence test, score choice, and preprocessing.
+- Bootstrap/subsample edge and orientation stability.
+- Agreement with temporal tiers and required/forbidden edges.
+- Hidden-variable assumptions and whether PAG output changes interpretation.
+- Orientation confidence and equivalence-class ambiguity.
+- Markov and faithfulness plausibility.
+- Held-out likelihood or score diagnostics when score-based methods are used.
+- Domain validation with Domain Helper and DAG Builder.
 
 ## Failure Modes
 
-- discovery result treated as proof
-- ignoring hidden confounding
-- using cross-sectional data for temporal claims without assumptions
-- data preprocessing creates collider/selection bias
-- low sample size relative to variables
-- high dimensional conditioning causing unstable CI tests
-- non-IID data treated as IID
-- strong faithfulness violations and near cancellations
-- mixed data handled by an inappropriate continuous or discrete test
-- overinterpreting CPDAG or PAG edge marks as unique directions
+- Treating discovery output as proof.
+- Ignoring hidden confounding or selection.
+- Using cross-sectional data for temporal claims without explicit assumptions.
+- Letting preprocessing create collider, leakage, or selection artifacts.
+- Running high-dimensional conditioning with too few observations.
+- Treating non-IID data as IID.
+- Overinterpreting CPDAG/PAG marks as unique causal directions.
+- Using discovered adjustment hints without DAG Builder review.
 
-## Suggested Response Pattern
+## Handoff To Main Skill
 
-```markdown
-I would treat this as a [causal-discovery] problem because [design reason].
+Return a compact handoff:
 
-The target estimand appears to be [estimand], defined as [definition].
-
-A reasonable primary analysis is [method], implemented with [package], because [justification].
-
-This requires [assumptions]. I would check [diagnostics].
-
-If [main diagnostic] fails, I would [fallback plan].
+```yaml
+subskill_id: "18-causal-discovery"
+role: "discovery_module"
+status: "one value from assets/workflow_enums.yaml > method_job_statuses"
+activation_reason: null
+selected_route_id: null
+inputs_reviewed: []
+outputs_created: []
+diagnostics_reviewed: []
+limitations: []
+feedback_for_main_skill: []
+requests_for_main_skill: []
+readiness: "one value from assets/workflow_enums.yaml > production_loop_readiness"
+blocking_signal:
+  blocks_current_phase: false
+  requires_previous_phase_recheck: false
+  target_phase: null
+  severity: "none"
+  reason: null
+  affected_sections: []
+recommended_next_action: "one value from assets/workflow_enums.yaml > main_actions"
+artifact_paths: []
 ```
+
+End with one of:
+
+- ready for DAG Builder review;
+- needs more discovery diagnostics;
+- useful only as exploratory variable screening;
+- discovery deliverable can be drafted with exploratory language;
+- return to foundation because timing, latent structure, or route assumptions changed.
 
 ## Code Template Index
 
-See the following files in this subskill folder:
-- `../examples/python_pc.py` — causal-learn PC baseline
-- `../examples/python_fci.py` — causal-learn FCI baseline
-- `../examples/r_pcalg_pc.R` — pcalg PC baseline
-- `../examples/r_pcalg_fci.R` — pcalg FCI baseline
-- `../examples/r_bnlearn_hc.R` — bnlearn hill-climbing
-- `../examples/java_tetrad_workflow.md` — Tetrad CLI and Java workflow
-- `../scripts/recommend.py` — rule-based algorithm recommender
-- `../sample_input.json` — example recommender input
+Subskill examples:
 
-And at the package root:
+- `../examples/python_pc.py`: causal-learn PC baseline.
+- `../examples/python_fci.py`: causal-learn FCI baseline.
+- `../examples/r_pcalg_pc.R`: pcalg PC baseline.
+- `../examples/r_pcalg_fci.R`: pcalg FCI baseline.
+- `../examples/r_bnlearn_hc.R`: bnlearn hill-climbing.
+- `../examples/java_tetrad_workflow.md`: Tetrad CLI and Java workflow.
+- `../scripts/recommend.py`: rule-based algorithm recommender.
+- `../sample_input.json`: example recommender input.
+
+Root templates:
+
 - `scripts/python/causal_learn_pc_template.py`
 - `scripts/python/causal_learn_fci_template.py`
 - `scripts/R/pcalg_template.R`

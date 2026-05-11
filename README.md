@@ -2,7 +2,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
-*An interactive consultant for causal reasoning, discovery, design, analysis, and reporting.*
+*An interactive, mini-MoE-style skill for consulting in causal reasoning, discovery, design, analysis, and reporting.*
 
 ---
 

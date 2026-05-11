@@ -48,6 +48,8 @@ After installation, restart the agent app if needed so it can discover the new s
 
 ## Interactive mini-MOE Architecture
 
+For a visual map, see the rendered Mermaid workflow diagram in [`assets/workflow-mermaid.md`](assets/workflow-mermaid.md).
+
 This workflow is interactive because it treats causal work as an adaptive conversation rather than a one-shot checklist. The user, available data, and current `project.yaml` state provide observations. The main skill reads those observations, chooses the next useful action, asks only for information that can change the decision, activates the relevant expert skill, and then updates the shared state before speaking back to the user.
 
 The mini-MOE structure is a small mixture of specialized causal experts coordinated by one user-facing router. The main skill is the router, state manager, and gatekeeper. It does not try to be every method manual at once. Instead, it selects the smallest useful expert set for the current turn, receives compact signals from those experts, resolves conflicts, and keeps the conversation coherent.

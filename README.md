@@ -2,7 +2,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
-*An interactive, mini-MoE-style skill for consulting in causal reasoning, discovery, design, analysis, and reporting.*
+*An interactive, mini-MOE-style skill for consulting in causal reasoning, discovery, design, analysis, and reporting.*
 
 ---
 
@@ -46,11 +46,20 @@ After installation, restart the agent app if needed so it can discover the new s
 
 ---
 
-## Interactive Architecture
+## Interactive mini-MOE Architecture
 
-This workflow is different from a standard causal checklist because it treats causal work as an adaptive conversation. The user and project state provide observations. The main skill acts like a policy actor in a reinforcement-learning-style loop: it chooses the next useful action, asks for only the information that can change the decision, activates the relevant evaluator or method subskill, and updates the shared state. Subskills act like evaluators: each one focuses on a narrow part of the causal problem and reports compact readiness, implications, requests, and blockers back to the main skill.
+This workflow is interactive because it treats causal work as an adaptive conversation rather than a one-shot checklist. The user, available data, and current `project.yaml` state provide observations. The main skill reads those observations, chooses the next useful action, asks only for information that can change the decision, activates the relevant expert skill, and then updates the shared state before speaking back to the user.
 
-Two gates organize the loop. `foundation_gate` decides whether the causal question, data context, design route, and DAG logic are coherent enough to begin method production. `production_gate` decides whether the completed analysis evidence, diagnostics, outputs, limitations, and handoff summary are ready for final reporting. Relevant subskills use the same blocking language so the main skill does not have to interpret many incompatible statuses: a subskill can block the current phase, request a previous-phase recheck, or allow progress with stated cautions.
+The mini-MOE structure is a small mixture of specialized causal experts coordinated by one user-facing router. The main skill is the router, state manager, and gatekeeper. It does not try to be every method manual at once. Instead, it selects the smallest useful expert set for the current turn, receives compact signals from those experts, resolves conflicts, and keeps the conversation coherent.
+
+The expert set has four main parts:
+
+- **Foundation experts:** `01-domain-helper`, `02-data-technician`, `03-design-planner`, and `04-dag-builder` evaluate the causal question, data constructability, design route, and DAG logic before the foundation gate.
+- **Method/job experts:** route-specific subskills such as randomized experiments, observational treatment analysis, DiD, RD, IV, longitudinal methods, mediation, interference, genomics, and negative controls review or execute production work only when relevant.
+- **Causal discovery:** `18-causal-discovery` is selected only when graph discovery, graph comparison, variable screening, or structure-learning support is useful; discovered graph outputs remain exploratory until reviewed by DAG Builder.
+- **Report Writer:** `20-report-writer` can review reportability during production, then becomes the final synthesis expert only after `production_gate.status` is `ready`.
+
+Two gates organize the interactive loop. `foundation_gate` decides whether the causal question, data context, design route, and DAG logic are coherent enough to begin method production. `production_gate` decides whether the completed analysis evidence, diagnostics, outputs, limitations, and handoff summary are ready for final reporting. Relevant experts use the same blocking language so the main skill can arbitrate rather than merge many incompatible statuses.
 
 With those gates in place, the practical loop is step by step:
 
@@ -66,7 +75,7 @@ With those gates in place, the practical loop is step by step:
 
 This gate principle keeps the YAML compact while still preserving the information needed for causal accountability.
 
-The key foundation subskills are:
+Within the foundation expert group, each specialist owns a different part of the pre-gate review:
 
 - `01-domain-helper`: translates the user's goal into domain-grounded causal formulations, measurement concerns, and practical constraints.
 - `02-data-technician`: checks existing, partial, or conceptual data; audits constructability; and later rechecks production data or method-fit concerns.

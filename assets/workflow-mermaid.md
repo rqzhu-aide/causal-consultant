@@ -4,45 +4,70 @@ This diagram is a visual map of the workflow. The source of truth is the main `S
 
 ```mermaid
 flowchart TB
-    U["User question, goal, or dataset"] --> M["Main causal skill<br/>policy actor and user-facing conversation"]
-    M --> Y["Lean project.yaml<br/>main_skill, foundation_gate, production_gate,<br/>evaluator_loop, routes, analysis"]
+    U["User goal / data / constraints"]
+    M["Main Skill<br/>conversation, routing, state updates"]
+    Y["project.yaml<br/>lean coordination state"]
 
-    Y --> E["Foundation evaluator loop<br/>01 domain, 02 Data Technician, 03 design, 04 DAG"]
-    E --> S["Evaluator signals<br/>summaries, handoff notes, requests, assumptions, blockers"]
-    S --> M
-    E --> I["Innovation seeds<br/>candidate formulations, data opportunities,<br/>method-fit suggestions, route hypotheses,<br/>causal-logic hypotheses"]
-    I --> M
+    U --> M
+    M <--> Y
 
-    M --> A{"Main skill selected action"}
-    A -->|"ask / inspect / search / refresh"| E
-    A -->|"loop detected"| LB["Loop break<br/>decisive question, labeled assumption, surface assumption, block, fallback, or user-directed"]
-    LB --> M
+    M --> FSEL["Select foundation reviewers"]
 
-    M --> RT["Promote, defer, revise, or reject routes<br/>routes.current_route_id and routes.hypotheses"]
-    RT --> G{"Foundation gate decision"}
-    G -->|"not ready / blocked"| ALT["Revise route, ask user, collect data, refresh evaluator,<br/>choose fallback, or continue user-directed with caveats"]
-    ALT --> M
-    G -->|"foundation ready"| C["User confirmation checkpoint<br/>planned treatment, outcome, unit/time,<br/>method family, diagnostics, claim strength"]
-    C --> R["Selected route handoff<br/>route_id, estimand, data status, assumptions, limitations, software preference"]
+    subgraph F["Foundation Review Loop"]
+        direction TB
+        DH["01 Domain Helper"]
+        DT["02 Data Technician"]
+        DP["03 Design Planner"]
+        DAG["04 DAG Builder"]
+    end
 
-    R --> MS["Compose method stack<br/>primary route + optional support/target modules"]
-    MS --> ML["Production loop<br/>selected method/job reviewers,<br/>Causal Discovery when graph support is needed,<br/>Data Technician and Report Writer when useful"]
-    ML --> PF{"Route fit and package/code fit pass?"}
-    PF -->|"no"| FB["Method feedback to main skill<br/>failed condition, owner of fix, recommended next action"]
-    FB --> M
-    FB -->|"severe foundation flaw"| REG["foundation_recheck<br/>return_to_foundation"]
-    REG --> E
-    PF -->|"yes"| PLAN["Confirmed analysis plan<br/>estimator, diagnostics, sensitivity, fallback"]
-    PLAN --> CODE["First-pass code/package workflow<br/>R, Python, Stata, or documented manual workflow"]
-    CODE --> RES["First-pass results<br/>preliminary interpretation and recommended checks"]
-    RES --> ML2["Refresh production loop<br/>what was done, diagnostics, failures,<br/>remaining checks, next action"]
-    ML2 --> DIAG["Diagnostics and sensitivity<br/>run, defer with reason, or revise"]
-    DIAG --> ML3["Production-loop report-readiness review<br/>materials, diagnostics, limitations,<br/>presentation, handoff summary"]
-    ML3 --> OK{"Production gate ready?"}
-    OK -->|"revise route/model/data processing"| M
-    OK -->|"foundation recheck needed"| REG
-    OK -->|"yes"| PG["production_gate.status: ready"]
-    PG --> REP["20 Report Writer handoff<br/>final synthesis from collected evidence,<br/>diagnostics, figures, tables, limitations"]
+    FSEL --> F
+    F --> FS["Foundation signals<br/>assumptions, blockers,<br/>route and DAG feedback"]
+    FS --> M
+
+    M --> FG{"Foundation Gate<br/>ready?"}
+    FG -->|"No"| M
+    FG -->|"Yes"| PC["Plan Confirmation<br/>estimand, treatment, outcome,<br/>unit/time, diagnostics,<br/>claim strength"]
+
+    PC --> PA["Production Analysis Loop"]
+    PA --> PSEL["Select production reviewers"]
+
+    subgraph P["Production Reviewers"]
+        direction TB
+        MJ["Method/job subskills<br/>05-17, 19, 21"]
+        CD["18 Causal Discovery<br/>currently graph support when needed"]
+        DT2["02 Data Technician<br/>production review"]
+        RW2["20 Report Writer<br/>production review"]
+    end
+
+    PSEL --> P
+    P --> PS["Production signals<br/>route fit, diagnostics,<br/>artifacts, limitations,<br/>foundation recheck signals"]
+    PS --> PA
+
+    PA --> FR{"Foundation<br/>recheck needed?"}
+    FR -->|"Yes"| M
+    FR -->|"No"| PG{"Production Gate<br/>ready?"}
+
+    PG -->|"No"| PA
+    PG -->|"Yes"| RW["20 Report Writer<br/>final synthesis"]
+
+    RW --> D["Final deliverable<br/>report, memo, slides,<br/>or artifacts"]
+
+    classDef user fill:#E3F2FD,stroke:#1565C0,color:#0D47A1,stroke-width:2px;
+    classDef gate fill:#FFF3E0,stroke:#EF6C00,color:#5D3000,stroke-width:2px;
+    classDef keyskill fill:#E8F5E9,stroke:#2E7D32,color:#143D1B,stroke-width:2px;
+    classDef discovery fill:#F3E5F5,stroke:#7B1FA2,color:#3D0B52,stroke-width:3px;
+    classDef method fill:#ECEFF1,stroke:#546E7A,color:#263238,stroke-width:2px;
+    classDef report fill:#FCE4EC,stroke:#C2185B,color:#5C1230,stroke-width:2px;
+    classDef state fill:#F5F5F5,stroke:#757575,color:#212121,stroke-width:1px;
+
+    class U,D user;
+    class FG,FR,PG gate;
+    class M,DH,DT,DP,DAG,DT2,FSEL,FS,PC,PA,PSEL,PS keyskill;
+    class CD discovery;
+    class MJ method;
+    class RW2,RW report;
+    class Y state;
 ```
 
 ## Key Design Principles

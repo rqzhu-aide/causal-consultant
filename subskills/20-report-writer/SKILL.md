@@ -9,7 +9,7 @@ description: "Causal Report Writer/evaluator for two post-foundation roles: prod
 
 Use this as the causal Report Writer/evaluator and presentation consultant after the foundation gate is ready. During production, it reviews reportability, claim language, diagnostic presentation, figure/table choices, audience framing, limitations, and reproducibility needs. After the production gate is ready, it takes over final report synthesis from the accumulated foundation and production records.
 
-This subskill is not a foundation evaluator and does not validate identification. It does not choose the causal route, open either gate, or make unsupported claim language stronger. If the foundation gate is not `ready`, return to the main skill with the missing gate condition instead of editing or writing a report.
+This subskill is not a foundation evaluator and does not validate identification. It does not choose the causal route, open either gate, or make unsupported claim language stronger. If the foundation gate is not `ready`, return to the main skill with the missing gate condition instead of editing or writing an effect-estimation report. The exception is a user-requested discovery-only report: when `analysis.discovery_sidecar` has discovery artifacts and the gates are `not needed`, synthesize an exploratory discovery report without implying effect-estimation readiness.
 
 ## Activation Modes
 
@@ -40,6 +40,17 @@ Use this mode only when all are true:
 - Data Technician warnings, method-fit suggestions, feasible diagnostics, and production-loop reviewer comments have been reviewed or explicitly deferred by the main skill.
 
 In handoff mode, do not start another interaction loop and do not ask new preference questions. Finish the report using the available project state, `production_gate.handoff_summary`, method/job handoff notes, Data Technician warnings, and artifacts. Only return a compact blocked handback if required gate or material inputs are missing. Otherwise produce the best final-ready report the recorded evidence can support, with uncertainty, limitations, and deferred checks visible.
+
+### Discovery-Only Report Mode
+
+Use this mode when all are true:
+
+- the user's requested deliverable is a causal-discovery report, not an effect-estimation report;
+- `analysis.discovery_sidecar.purpose: discovery-only report` or equivalent discovery deliverable intent is recorded;
+- discovery artifacts, graph findings, diagnostics status, limitations, and artifact paths are available or explicitly marked as missing;
+- `foundation_gate.status` and `production_gate.status` are `not needed`, or no effect-estimation route is being validated.
+
+In this mode, use `assets/discovery_report_template.md`. Keep claim strength exploratory, do not require normal production-gate handoff, and do not create treatment-effect conclusions. If a discovery finding suggests a later effect-estimation question, list it as a recommended follow-up and ask the main skill to start a separate route only if the user chooses that next step.
 
 If any condition is missing, produce a compact handback:
 
@@ -72,7 +83,7 @@ If Data Technician says a diagnostic is infeasible or a data warning is unresolv
 
 ## Report Output Boundary
 
-Reports, slide outlines, captions, appendices, and user-facing summaries must not expose secrets, credentials, private tokens, raw sensitive records, direct identifiers, unnecessary PII, or sensitive small-cell details. Use only the evidence needed to support the causal claim, diagnostic interpretation, limitations, and reproducibility summary.
+Reports, slide outlines, captions, appendices, and user-facing summaries must not expose secrets, credentials, private tokens, raw sensitive records, direct identifiers, unnecessary PII, or sensitive small-cell details. Use only the evidence needed to support the causal claim, discovery interpretation, diagnostic interpretation, limitations, and reproducibility summary.
 
 Prefer safe presentation forms:
 
@@ -125,6 +136,19 @@ Default to the final report structure in `assets/final_report_template.md`. Adap
 If a section has no supporting evidence, include a short transparent statement rather than inventing content. Use method/job and Data Technician records to decide which figures/tables belong in the main text and which belong in appendix or artifact index.
 Before including any result, diagnostic, table value, or robustness claim, verify that its source is visible in user-provided material, project state, an artifact, Data Technician output, or an activated method/job subskill record.
 
+## Discovery Report Synthesis
+
+For discovery-only report mode, synthesize from:
+
+- `main_skill`: discovery goal, audience hints, and deliverable request;
+- `analysis.discovery_sidecar`: purpose, return phase, artifact paths, and whether findings affect the main route;
+- optional `subskill_analyses` record for `18-causal-discovery`: inputs reviewed, outputs created, diagnostics, limitations, and feedback for the main skill;
+- `artifacts` and `analysis.analyses`: graph plots, edge lists, stability tables, method notes, code paths, and memos.
+
+Use `assets/discovery_report_template.md`. Required content is the discovery question, data and variable inventory, graph target and method, candidate graph findings, candidate causal paths or a statement that stable paths are unavailable, diagnostics, exploratory interpretation, limitations, reproducibility notes, and recommended next effect-estimation questions when useful.
+
+Discovery reports must say what the graph can and cannot mean. They can discuss candidate causal paths in the discovered graph, but they cannot present a final adjustment set, treatment effect, intervention recommendation, or upgraded claim strength unless a separate main-workflow route validates it.
+
 ## Diagnostic Review
 
 Before drafting results or final prose, produce or request a diagnostic review. Classify each important check as `pass`, `concern`, `fail`, `not run`, or `not applicable`, and state how it changes interpretation.
@@ -147,6 +171,7 @@ Use labels precisely:
 - `Draft Report`: pre-handoff or user-requested prose expected to be revised; do not use this label for the final handoff artifact.
 - `Revision Pass`: edited report text or presentation language after user feedback on an already delivered artifact.
 - `Final Report`: after `production_gate.status: ready`, handoff mode is active, diagnostics are complete or explicitly deferred, and the report reflects the recorded claim strength and limitations.
+- `Discovery Report`: a discovery-only report synthesized from `18-causal-discovery` artifacts with exploratory claim strength; this is not an effect-estimation final report.
 - `Presentation Outline`: slide, executive, policy, academic, or public-facing narrative plan.
 
 Reports should be assembled in sections when the project is substantial. In handoff mode, complete the report rather than asking for another round of choices. If the user later requests revisions, treat that as a separate revision pass.
@@ -203,7 +228,7 @@ artifact_paths: []
 Also map compact Report Writer state to `analysis.report_writer_20`:
 
 ```yaml
-mode: "production reviewer | handoff writer"
+  mode: "production reviewer | handoff writer | discovery report writer"
 status: "one value from assets/workflow_enums.yaml > report_writer_statuses"
 production_feedback: []
 summary: null
@@ -213,8 +238,11 @@ revision_questions: []
 
 During production reviewer mode, keep feedback compact for `analysis.production_loop.reviewer_summaries` and `analysis.report_writer_20.production_feedback`. During handoff mode, put full reports, diagnostic tables, slide outlines, captions, and reproducibility appendices in `artifacts/`; keep only summaries and paths in `project.yaml`.
 
+During discovery-only report mode, put the full discovery report in `artifacts/`; keep only `analysis.discovery_sidecar.artifact_paths`, optional `analysis.report_writer_20` summary, and optional compact `18-causal-discovery` trace records in `project.yaml`.
+
 ## Reference Files
 
 - `references/workflow.md`: detailed diagnostic-review, final-report synthesis, presentation, and handoff workflow.
 - `references/examples.md`: reusable examples for production-review handback, diagnostic review, final report pattern, revision pass, presentation consulting, and final handoff checks.
 - `assets/final_report_template.md`: final report structure for handoff mode.
+- `assets/discovery_report_template.md`: discovery-only report structure for exploratory graph deliverables.

@@ -2,7 +2,7 @@
 
 ## Goal
 
-Review reportability, claim language, diagnostic presentation, draft reports, report revisions, final reports, presentation outlines, methods/results sections, limitations, and reproducibility appendices for causal projects. The main skill owns both gates and routing. This skill participates as a production reviewer after the foundation gate opens, then owns report composition after the production gate opens.
+Review reportability, claim language, diagnostic presentation, draft reports, report revisions, final reports, discovery-only reports, presentation outlines, methods/results sections, limitations, and reproducibility appendices for causal projects. The main skill owns both gates and routing. This skill participates as a production reviewer after the foundation gate opens, owns report composition after the production gate opens, and may synthesize a discovery-only report when the user requested graph discovery rather than effect estimation.
 
 In handoff mode, the job is synthesis and completion. Do not restart the interactive workflow, ask new preference questions, or re-open method choice. Use the foundation and production records already collected to write the final-ready report, making limitations and deferred diagnostics explicit.
 
@@ -28,6 +28,16 @@ Return one compact production-reviewer summary for `analysis.production_loop.rev
 - [ ] Remaining diagnostics are complete, not applicable, infeasible, or explicitly deferred.
 
 If any item is missing, return a handback to the main skill instead of writing a final report.
+
+## Discovery-Only Report Checklist
+
+- [ ] The requested deliverable is causal discovery, graph exploration, graph comparison, variable screening, discovery diagnostics, or a discovery-only report.
+- [ ] `analysis.discovery_sidecar` records the discovery purpose, artifact paths, and whether findings affect the main route.
+- [ ] Discovery artifacts or placeholders exist for graph findings, causal-path notes, diagnostics, limitations, and reproducibility.
+- [ ] The report will use exploratory claim strength.
+- [ ] `foundation_gate.status` and `production_gate.status` are `not needed`, unless a separate effect-estimation route is also being validated.
+
+Use `assets/discovery_report_template.md`. Do not require normal production-gate handoff for this mode, and do not present a treatment effect, final adjustment set, or intervention recommendation.
 
 ## Evidence Intake
 
@@ -91,6 +101,23 @@ After the production gate opens, assemble the report as a final-ready artifact r
 
 For short requests, compress these into a brief memo but keep design logic, diagnostics, claim strength, and limitations visible.
 
+## Discovery Report Assembly Sequence
+
+For discovery-only reports, assemble:
+
+1. Title or exploratory framing line.
+2. Executive summary with discovery goal, bottom line, artifact, and main caution.
+3. Discovery question and scope, including the difference between workflow path and graph path.
+4. Data and variable inventory.
+5. Discovery target and method.
+6. Candidate graph findings.
+7. Candidate causal paths, or why stable paths cannot be stated.
+8. Possible confounders, mediators, colliders, and adjustment warnings.
+9. Diagnostics and stability checks.
+10. Interpretation, limitations, recommended next effect-estimation questions, and artifact index.
+
+Keep follow-up effect-estimation questions optional. The report should not silently start a new causal-estimation route.
+
 ## Revision Passes
 
 Do not embed open revision questions in the handoff report. If the user later asks for changes, handle those as a separate revision pass and revise only the requested layer:
@@ -122,6 +149,8 @@ Suggested wording:
 - `associational`: "The data show an association between..."
 - `descriptive`: "In this dataset, the observed pattern is..."
 - `exploratory`: "This first-pass analysis is useful for hypothesis generation, but..."
+
+For discovery-only reports, prefer: "The discovered structure suggests graph hypotheses for review" or "This path is a candidate causal chain in the learned graph, not a validated effect estimate."
 
 Avoid:
 

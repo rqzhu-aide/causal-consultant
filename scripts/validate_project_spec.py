@@ -50,12 +50,14 @@ REPORT_WRITER_MODES = enum("report_writer_modes")
 REPORT_WRITER_STATUSES = enum("report_writer_statuses")
 METHOD_JOB_ROLES = enum("method_job_roles")
 METHOD_JOB_STATUSES = enum("method_job_statuses")
+DISCOVERY_SUBSKILL_ID = "18-causal-discovery"
 FOUNDATION_HANDOFF_TARGETS = {
     "domain_helper_01",
     "data_technician_02",
     "design_planner_03",
     "dag_builder_04",
     "method_subskills",
+    DISCOVERY_SUBSKILL_ID,
 }
 
 REQUIRED_PATHS = [
@@ -161,6 +163,11 @@ REQUIRED_PATHS = [
     ("analysis", "execution_confirmation", "confirmed_at"),
     ("analysis", "recommended_method_job_subskills"),
     ("analysis", "activated_method_job_subskills"),
+    ("analysis", "discovery_sidecar", "active"),
+    ("analysis", "discovery_sidecar", "purpose"),
+    ("analysis", "discovery_sidecar", "return_to_phase"),
+    ("analysis", "discovery_sidecar", "affects_main_route"),
+    ("analysis", "discovery_sidecar", "artifact_paths"),
     ("analysis", "analyses"),
     ("analysis", "first_pass_summary"),
     ("analysis", "recommended_diagnostics"),
@@ -256,6 +263,8 @@ REQUIRED_NONEMPTY_PATHS = [
     ("analysis", "route_commitment_status"),
     ("analysis", "execution_stage"),
     ("analysis", "execution_confirmation", "user_confirmed_plan"),
+    ("analysis", "discovery_sidecar", "active"),
+    ("analysis", "discovery_sidecar", "affects_main_route"),
     ("analysis", "production_loop", "review_purpose"),
     ("analysis", "production_loop", "readiness"),
     ("analysis", "production_loop", "recommended_next_action"),
@@ -550,8 +559,8 @@ def validate_subskill_analyses(value):
             continue
         if not has_recorded_value(item.get("subskill_id")):
             errors.append(f"{label}.subskill_id is missing")
-        elif not is_method_job_subskill_id(str(item.get("subskill_id"))):
-            errors.append(f"{label}.subskill_id is not a method/job subskill ID")
+        elif not is_subskill_analysis_id(str(item.get("subskill_id"))):
+            errors.append(f"{label}.subskill_id is not a method/job or discovery subskill ID")
         role = item.get("role", "unknown")
         if role not in METHOD_JOB_ROLES:
             errors.append(f"{label}.role has unsupported value {role!r}")
@@ -566,11 +575,52 @@ def validate_subskill_analyses(value):
             errors.append(f"{label}.recommended_next_action has unsupported value {action!r}")
         signal = item.get("blocking_signal")
         errors.extend(validate_blocking_signal(signal, f"{label}.blocking_signal"))
-        _blocks, recheck, _target_phase = blocking_signal_state(signal)
+        blocks, recheck, _target_phase = blocking_signal_state(signal)
+        if is_discovery_subskill_id(str(item.get("subskill_id"))) and (blocks or recheck):
+            errors.append(
+                f"{label} is a discovery sidecar record but its blocking_signal is active; route implications through an existing owner instead"
+            )
         if recheck and action != "return_to_foundation":
             errors.append(
                 f"{label}.blocking_signal.requires_previous_phase_recheck is true but recommended_next_action is not return_to_foundation"
             )
+    return errors
+
+
+def validate_discovery_sidecar(value):
+    errors = []
+    if value in (MISSING, None):
+        return errors
+    if not isinstance(value, dict):
+        return ["analysis.discovery_sidecar is not a mapping"]
+
+    active = value.get("active")
+    purpose = value.get("purpose")
+    return_to_phase = value.get("return_to_phase")
+    affects_main_route = value.get("affects_main_route")
+    artifact_paths = value.get("artifact_paths")
+
+    if not isinstance(active, bool):
+        errors.append("analysis.discovery_sidecar.active is not a boolean")
+    if not isinstance(affects_main_route, bool):
+        errors.append("analysis.discovery_sidecar.affects_main_route is not a boolean")
+    if artifact_paths is not None and not isinstance(artifact_paths, list):
+        errors.append("analysis.discovery_sidecar.artifact_paths is not a list")
+    if return_to_phase is not None and return_to_phase not in enum("project_phase"):
+        errors.append(
+            "analysis.discovery_sidecar.return_to_phase has unsupported value "
+            f"{return_to_phase!r}"
+        )
+    if active is True:
+        if not has_recorded_value(purpose):
+            errors.append("analysis.discovery_sidecar is active but purpose is not recorded")
+        if not has_recorded_value(return_to_phase):
+            errors.append("analysis.discovery_sidecar is active but return_to_phase is not recorded")
+    if affects_main_route is True and active is True:
+        errors.append(
+            "analysis.discovery_sidecar.affects_main_route is true while sidecar is active; "
+            "pause/close the sidecar and route the implication through an existing owner"
+        )
     return errors
 
 
@@ -664,6 +714,8 @@ def compact_list_ids(value, key="subskill_id"):
 def is_method_job_subskill_id(value):
     if not isinstance(value, str):
         return False
+    if value == DISCOVERY_SUBSKILL_ID:
+        return False
     prefix = value.split("-", 1)[0]
     if not prefix.isdigit():
         return False
@@ -671,11 +723,20 @@ def is_method_job_subskill_id(value):
     return 5 <= number <= 19 or number == 21
 
 
+def is_discovery_subskill_id(value):
+    return value == DISCOVERY_SUBSKILL_ID
+
+
+def is_subskill_analysis_id(value):
+    return is_method_job_subskill_id(value) or is_discovery_subskill_id(value)
+
+
 def validate_workflow_invariants(data):
     errors = []
 
     gate_status = get_path(data, ("foundation_gate", "status"))
     can_support = get_path(data, ("foundation_gate", "can_support_causal_commitment"))
+    foundation_selected_reviewers = get_path(data, ("evaluator_loop", "selected_reviewers"))
     action_queue = get_path(data, ("evaluator_loop", "action_queue"))
     blocking_actions = blocking_items(action_queue)
     action_signal_errors, _action_blocks_foundation, _action_blocks_production, _action_requires_recheck = (
@@ -836,6 +897,7 @@ def validate_workflow_invariants(data):
     recommended_method_job_subskills = get_path(data, ("analysis", "recommended_method_job_subskills"))
     activated_method_job_subskills = get_path(data, ("analysis", "activated_method_job_subskills"))
     active_method_subskills = activated_method_job_subskills
+    errors.extend(validate_discovery_sidecar(get_path(data, ("analysis", "discovery_sidecar"))))
     if data_readiness == "ready" and not has_recorded_value(data_scope):
         errors.append("data_technician_02.readiness is ready but readiness_scope is not recorded")
     stages_after_method_fit = stages_after_confirmation
@@ -915,6 +977,17 @@ def validate_workflow_invariants(data):
     )
     production_reviewer_ids = set(compact_list_ids(production_selected_reviewers))
     production_reviewer_ids.update(compact_list_ids(production_selected_reviewers, key="reviewer_id"))
+    foundation_reviewer_ids = set(compact_list_ids(foundation_selected_reviewers))
+    foundation_reviewer_ids.update(compact_list_ids(foundation_selected_reviewers, key="reviewer_id"))
+
+    if DISCOVERY_SUBSKILL_ID in foundation_reviewer_ids:
+        errors.append(
+            "18-causal-discovery is a sidecar and must not be recorded in evaluator_loop.selected_reviewers; use analysis.discovery_sidecar"
+        )
+    if DISCOVERY_SUBSKILL_ID in production_reviewer_ids:
+        errors.append(
+            "18-causal-discovery is a sidecar and must not be recorded in analysis.production_loop.selected_reviewers; use analysis.discovery_sidecar"
+        )
 
     if (
         "02-data-technician" in production_reviewer_ids
@@ -1170,7 +1243,11 @@ def validate_workflow_invariants(data):
                 + ", ".join(missing_records)
             )
     if analysis_record_ids:
-        unactivated_records = [item for item in analysis_record_ids if item not in activated_ids]
+        unactivated_records = [
+            item
+            for item in analysis_record_ids
+            if item not in activated_ids and not is_discovery_subskill_id(item)
+        ]
         if unactivated_records:
             errors.append(
                 "subskill_analyses contains records for method/job subskills not listed in analysis.activated_method_job_subskills: "

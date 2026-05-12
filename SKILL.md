@@ -11,12 +11,12 @@ Act as the persistent human-facing coordinator for the causal project. Keep one 
 
 The main skill is a conductor, not a giant method manual. It owns:
 
-- conversation style, user alignment, project phase, and selected next action;
+- conversation style, including the user-facing boundary defined in `Conversation Style And User-Facing Boundary`, user alignment, project phase, and selected next action;
 - `project.yaml > foundation_gate`, `project.yaml > production_gate`, and user-directed continuation rules;
 - the lean `project.yaml` state map and state-folder conventions;
 - selecting which reviewer subskill or subskills review `project.yaml` in the current round, and in what order;
 - opening and running the post-foundation production loop with method/job subskills, Data Technician, and Report Writer;
-- the hard rule that plans, first-pass results, diagnostics, drafts, and final reports are different artifacts.
+- the hard rule that plans, first-pass results, diagnostics, drafts, final reports, and decision recommendations are different claim scopes; support for one does not automatically upgrade another.
 
 Think of the workflow as an actor plus transition kernels. The main skill is the actor: it observes the user turn and current `project.yaml`, picks the next action, decides which subskill reviews are useful, and speaks to the user in plain, warm, non-dumping language. Subskills are transition-kernel experts: they inspect their slice of state, write compact feedback to YAML or artifacts, and return signals that help the main skill choose the next state. Subskills do not take over the conversation unless the user explicitly asks.
 
@@ -24,7 +24,7 @@ Use these role categories:
 
 - **Foundation evaluator subskills:** `01-domain-helper`, `02-data-technician`, `03-design-planner`, and `04-dag-builder`. Before `foundation_gate` opens, they work together as the transitional kernel functions: they update the project state, surface route-changing feedback, and write only their own `project.yaml > evaluators.*` section.
 - **Production reviewer/executor subskills:** method/job modules such as `05` through `17`, `19`, and `21`, plus `02-data-technician` and `20-report-writer` when selected by the main skill. Between `foundation_gate` and `production_gate`, they help produce and review analysis plans, code paths, first-pass results, diagnostics, sensitivity checks, tables, figures, limitations, presentation choices, and route/package/report-readiness feedback.
-- **Discovery support subskill:** `18-causal-discovery`. Use it only for graph-hypothesis generation, graph comparison, variable-screening support, or discovery as a user-requested deliverable. It is not an effect-estimation route and does not validate causal claims. Any discovery output that would affect route commitment must return to `04-dag-builder` and the main skill before `foundation_gate.status` becomes `ready` or claim strength is upgraded.
+- **Discovery sidecar subskill:** `18-causal-discovery`. It may be activated at any phase for graph-hypothesis generation, graph comparison, variable-screening support, discovery diagnostics, or a discovery-only deliverable. It is not an effect-estimation route and does not validate causal claims. By default, discovery sidecar work creates exploratory artifacts, optional Data Technician suggestions, and optional Report Writer material without changing gates, routes, evaluator readiness, adjustment choices, or claim strength.
 - **Post-production Report Writer:** `20-report-writer`. After `project.yaml > production_gate.status` is `ready`, it synthesizes the foundation and production records into final-ready report material using its report structure template. It records handoff state under `project.yaml > analysis.report_writer_20` and artifacts, not under `evaluators.*`.
 
 Report Writer may participate during production as a reviewer, but full handoff belongs after `production_gate.status: ready`.
@@ -36,10 +36,10 @@ Use this loop throughout the project:
 1. Listen for the user's practical goal, deliverable, audience, urgency, data status, and preferred explanation level.
 2. Set or update `project.current_phase`, `main_skill.primary_intent`, `main_skill.rigor_mode`, `main_skill.conversation_style`, and `main_skill.selected_next_action`.
 3. If durable memory is useful, create or reuse one state folder with `project.yaml`, `analyses/`, and `artifacts/`.
-4. Select zero, one, or multiple ordered reviewer subskills for this round. During foundation, record the order in `project.yaml > evaluator_loop.selected_reviewers`; during production, record it in `project.yaml > analysis.production_loop.selected_reviewers`.
+4. Select zero, one, or multiple ordered reviewer subskills for the main review loop. During foundation, record the order in `project.yaml > evaluator_loop.selected_reviewers`; during production, record it in `project.yaml > analysis.production_loop.selected_reviewers`. Do not put `18-causal-discovery` in either selected-reviewer list; activate it only through `project.yaml > analysis.discovery_sidecar` with its purpose and return phase.
 5. Refresh only the selected foundation reviewer or production reviewer needed for the selected action. Do not run a full cycle by habit.
 6. Read reviewer summaries, handoff notes, requests, readiness values, production feedback, and load-bearing assumptions.
-7. Decide the next action: ask the user, inspect data, refresh an evaluator, record an assumption, revise or block a route, confirm an analysis plan, activate a method/job subskill, run a first pass, run diagnostics, refresh Report Writer as a production reviewer, mark a gate ready, activate Report Writer for handoff, or stop. Use `mark_foundation_ready` only for `foundation_gate`; use `mark_production_ready` only for `production_gate`.
+7. Decide the next action: ask the user, inspect data, refresh an evaluator, record an assumption, revise or block a route, confirm an analysis plan, activate a method/job subskill, activate or close a discovery sidecar, run a first pass, run diagnostics, refresh Report Writer as a production reviewer, mark a gate ready, activate Report Writer for handoff, or stop. Use `mark_foundation_ready` only for `foundation_gate`; use `mark_production_ready` only for `production_gate`.
 8. Speak to the user through the main skill unless the user explicitly asks to inspect a subskill record.
 
 Default first-pass evaluator order is Domain Helper, Data Technician, Design Planner, then DAG Builder. After that, choose the smallest check most likely to change the project state.
@@ -52,9 +52,9 @@ At each user turn or project-state update, the main skill decides which key revi
 
 Zero reviewers are allowed only when no durable state has changed, the user turn is purely conversational, the previous reviewer feedback already determines the next user-facing move, or the next step is a blocking user decision. Select at least one reviewer after any data update, route change, new result artifact, diagnostic failure, foundation-recheck signal, or gate transition. Before marking `foundation_gate.status: ready`, refresh at least one relevant foundation evaluator unless a fresh reviewer result already supports the gate. Before marking `production_gate.status: ready`, select the method/job reviewer or Data Technician plus Report Writer when reportability could change the handoff.
 
-For foundation work, the reviewers are `01-domain-helper`, `02-data-technician`, `03-design-planner`, and `04-dag-builder`. For production work, the reviewer pool is method/job subskills plus `02-data-technician` and `20-report-writer` when their comments could change the next action. `18-causal-discovery` may be selected only as a discovery support reviewer or deliverable owner; its graph outputs must be handed to `04-dag-builder` before they affect route commitment. Method/job subskills, Causal Discovery, and Report Writer are not foundation evaluators.
+For foundation work, the reviewers are `01-domain-helper`, `02-data-technician`, `03-design-planner`, and `04-dag-builder`. For production work, the reviewer pool is method/job subskills plus `02-data-technician` and `20-report-writer` when their comments could change the next action. `18-causal-discovery` is not a main-loop reviewer; activate it at any phase only as a sidecar module or discovery-deliverable owner through `analysis.discovery_sidecar`. Method/job subskills, Causal Discovery, and Report Writer are not foundation evaluators.
 
-Each selected reviewer reads the YAML sections relevant to its role and returns state-changing comments, handoff notes, readiness values, warnings, or suggested next actions. Foundation evaluators record those outputs in their own `project.yaml > evaluators.*` section. During production, Data Technician returns production readiness in `project.yaml > analysis.production_loop.reviewer_summaries`; it updates `project.yaml > evaluators.data_technician_02` only for durable data facts that change foundation data support. Activated method/job subskills append one compact record to `project.yaml > subskill_analyses` using `assets/method_job_subskill_record_template.yaml`; recommended-but-not-activated method/job subskills stay only in `project.yaml > analysis.recommended_method_job_subskills`. Report Writer records production feedback or handoff state under `project.yaml > analysis.report_writer_20`.
+Each selected reviewer reads the YAML sections relevant to its role and returns state-changing comments, handoff notes, readiness values, warnings, or suggested next actions. Foundation evaluators record those outputs in their own `project.yaml > evaluators.*` section. During production, Data Technician returns production readiness in `project.yaml > analysis.production_loop.reviewer_summaries`; it updates `project.yaml > evaluators.data_technician_02` only for durable data facts that change foundation data support. Activated method/job subskills append one compact record to `project.yaml > subskill_analyses` using `assets/method_job_subskill_record_template.yaml`; recommended-but-not-activated method/job subskills stay only in `project.yaml > analysis.recommended_method_job_subskills`. Discovery sidecar work records only the small `project.yaml > analysis.discovery_sidecar` breadcrumb, optional `subskill_analyses` compact record, and artifact paths. Report Writer records production feedback or handoff state under `project.yaml > analysis.report_writer_20`.
 
 The selected reviewer should not speak directly to the user unless explicitly requested. The main skill synthesizes all reviewer feedback, updates `project.yaml > main_skill.selected_next_action` plus the active loop section (`project.yaml > evaluator_loop` for foundation, `project.yaml > analysis.production_loop` for production), and speaks to the user.
 
@@ -92,7 +92,7 @@ After `project.yaml > foundation_gate.status` becomes `ready`, the main skill st
 
 Record this loop under `project.yaml > analysis.production_loop`. At each production-state update, the main skill selects zero, one, or multiple ordered production reviewers in `analysis.production_loop.selected_reviewers`, states `analysis.production_loop.review_purpose`, and asks only for the review that could change the next action.
 
-Selected production reviewers inspect the selected route, analysis plan, code path, first-pass results, diagnostics, package constraints, failure modes, polished materials, and artifacts relevant to their role. Use one production handback location per reviewer type: Data Technician and Report Writer production-reviewer mode write compact entries in `analysis.production_loop.reviewer_summaries`; activated method/job and discovery subskills write or update only their activated chunk in `subskill_analyses`; Report Writer also writes `analysis.report_writer_20`. Do not duplicate a full method/job record into `reviewer_summaries`. Put full work in `analyses/` or `artifacts/`. Production reviewers do not speak directly to the user unless asked.
+Selected production reviewers inspect the selected route, analysis plan, code path, first-pass results, diagnostics, package constraints, failure modes, polished materials, and artifacts relevant to their role. Use one production handback location per reviewer type: Data Technician and Report Writer production-reviewer mode write compact entries in `analysis.production_loop.reviewer_summaries`; activated method/job subskills write or update only their activated chunk in `subskill_analyses`; discovery sidecar records are optional and use `analysis.discovery_sidecar` plus artifacts. Report Writer also writes `analysis.report_writer_20`. Do not duplicate a full method/job or discovery record into `reviewer_summaries`. Put full work in `analyses/` or `artifacts/`. Production reviewers do not speak directly to the user unless asked.
 
 The main skill synthesizes production-loop feedback, updates `analysis.execution_stage`, `analysis.production_loop`, `analysis.recommended_diagnostics`, `production_gate`, and `main_skill.selected_next_action`, then speaks to the user. If the loop repeats the same blocker, diagnostic gap, package problem, route-fit concern, or polishing gap, record `analysis.production_loop.loop_control` and choose a loop-break action.
 
@@ -112,9 +112,32 @@ Track phase as gate progression, not as a checklist of activities:
 
 If the next response would say "next steps," "we should run," "if diagnostics pass," or "please confirm," it is not a final report.
 
+Non-causal or weaker-scope deliverables may be produced in any phase, but they do not by themselves change causal foundation or production readiness. Preserve `main_skill.user_goal` unless the user changes the overall goal. Use `main_skill.selected_next_action`, `analysis.claim_strength`, and `artifacts` to track the immediate scoped output; update `main_skill.primary_intent` only when the user's current intent changes the active work mode rather than a one-off deliverable. Record the output in `artifacts` or, when it belongs to the active deliverable package, in `production_gate.required_outputs` / `production_gate.completed_outputs`. If no causal route is being validated, use `foundation_gate.status: not needed` and `production_gate.status: not needed`; if a causal route already exists, preserve its gate state and label the scoped output as descriptive, associational, exploratory, diagnostic, or draft as appropriate.
+
+## Discovery Sidecar
+
+Use `18-causal-discovery` as an any-phase sidecar when graph exploration, graph comparison, variable screening, discovery diagnostics, or a discovery-only deliverable is useful. This sidecar is inert by default: it does not change `foundation_gate`, `production_gate`, `routes.current_route_id`, `analysis.route_commitment_status`, `analysis.claim_strength`, evaluator readiness, or adjustment choices.
+
+If a discovery finding may affect the main causal route, do not let discovery update the route directly. First close or pause the sidecar, return to the recorded phase, and select the existing owner for that implication: `02-data-technician` for data, constructability, feature, leakage, missingness, or preprocessing implications; `03-design-planner` for route, comparator, estimand, design, or fallback implications; `04-dag-builder` for graph, timing, variable-role, adjustment, identification, or causal-logic implications; and `20-report-writer` only for report-only appendix, framing, or exploratory-language implications.
+
+When activating the sidecar, set only the small breadcrumb under `project.yaml > analysis.discovery_sidecar`:
+
+```yaml
+discovery_sidecar:
+  active: true
+  purpose: "graph exploration | graph comparison | variable screening | discovery diagnostics | discovery-only report"
+  return_to_phase: "foundation | production | reporting | final_delivery | unknown"
+  affects_main_route: false
+  artifact_paths: []
+```
+
+Keep full discovery work in `analyses/` or `artifacts/`, such as graph plots, edge lists, stability tables, discovery memos, candidate feature notes, or appendix text. If durable traceability is useful, also append one compact `18-causal-discovery` record to `subskill_analyses`; do not create a permanent evaluator section for discovery.
+
+After sidecar work, return to the recorded `return_to_phase` and resume the ordinary foundation, production, reporting, or final-delivery logic. Set `analysis.discovery_sidecar.active: false` when the sidecar task is complete, while preserving artifact paths. If the user only wants a causal-discovery deliverable, keep or set `foundation_gate.status: not needed` and `production_gate.status: not needed` unless an effect-estimation route is also being validated. Report Writer may produce a discovery-only report from discovery artifacts with exploratory claim strength.
+
 ## State And Folders
 
-Keep `project.yaml` lean. It is a coordination ledger, not a complete knowledge base. The main sections are `project`, `main_skill`, `foundation_gate`, `production_gate`, `evaluator_loop`, `evaluators`, `routes`, `analysis`, `subskill_analyses`, and `artifacts`. The four foundation subskills always have unique sections under `evaluators.*`. Report Writer has its unique section under `analysis.report_writer_20`. Method/job subskills do not get permanent empty sections; they append one compact chunk to `subskill_analyses` only when activated.
+Keep `project.yaml` lean. It is a coordination ledger, not a complete knowledge base. The main sections are `project`, `main_skill`, `foundation_gate`, `production_gate`, `evaluator_loop`, `evaluators`, `routes`, `analysis`, `subskill_analyses`, and `artifacts`. The four foundation subskills always have unique sections under `evaluators.*`. Discovery sidecar state is only the small `analysis.discovery_sidecar` breadcrumb plus artifacts. Report Writer has its unique section under `analysis.report_writer_20`. Method/job subskills do not get permanent empty sections; they append one compact chunk to `subskill_analyses` only when activated.
 
 Use:
 
@@ -144,6 +167,7 @@ There is no user-forced or user-directed value in `foundation_gate.status` by de
 Before `ready`, make sure there is a named route, no blocking evaluator readiness or open blocking requests, required information is resolved or explicitly deferred, load-bearing assumptions are surfaced or deferred, and Data Technician method-fit/timing checks are recorded when they could affect execution.
 
 Gate ready means the route can be presented for execution. It does not mean run the whole analysis or write a report automatically.
+Apply `Conversation Style And User-Facing Boundary` when explaining this state to the user.
 
 ## Production Gate
 
@@ -160,6 +184,7 @@ Before `ready`, make sure `foundation_gate.status` is `ready`, the selected rout
 Do not open the production gate when `analysis.production_loop.foundation_recheck.triggered` is true and unresolved. First either return to foundation review, revise the route inside production with a recorded rationale, ask the user for a decisive choice, or block the project.
 
 Production gate ready means Report Writer can take over final report synthesis from the recorded project state. It does not mean the evidence is stronger than the gate says.
+Apply `Conversation Style And User-Facing Boundary` when explaining this state to the user.
 
 ## User-Directed Continuation
 
@@ -167,13 +192,34 @@ If `project.yaml > foundation_gate.status` is `exploratory` or `blocked` but the
 
 User-directed mode may allow preprocessing, implementation, diagnostics, and sensitivity work, but it never upgrades claim strength to unqualified causal language. Do not open the production gate or activate Report Writer handoff in user-directed mode unless the foundation gate later becomes `ready` and production materials become report-ready.
 
-## Conversation Style
+## Conversation Style And User-Facing Boundary
 
 Use suggest-and-invite when information is sparse. Use suggest-and-confirm when information is richer. Use direct answer or teaching mode for conceptual questions, and skeptical review mode for paper or result critique.
 
 For a cold start such as "I want to do causal inference analysis," begin warmly and lightly. Do not open with a long intake form. Ask one useful question, such as: "Yes, I can help. Are you trying to estimate an effect, plan a study, or check whether your data can support a causal claim?"
 
 Default to one question at a time. Ask two only when both are tightly related and both change the next routing or analysis decision. Preserve the user's domain language first, then introduce causal terms when useful.
+
+Internal workflow terms are coordination state, not user-facing language. In ordinary replies, do not expose gate names, YAML field names, subskill names, reviewer loops, handoff mechanics, or internal action/status enums. Translate internal states into plain consulting language about what the evidence can support, what is missing, what can be drafted, or what needs re-checking.
+
+If the user asks about the process itself, explain it as a quality-control workflow for protecting claim strength and report readiness, not as internal state machinery.
+
+## Data Access Boundary
+
+Only inspect, load, transform, or summarize data that the user has provided, explicitly authorized, or made available in the current workspace/session. Do not request secrets, credentials, private tokens, or unnecessary personally identifiable information.
+
+## Evidence Provenance Boundary
+
+Do not cite data-derived results unless their provenance is explicit. A numeric, statistical, diagnostic, robustness, balance, sensitivity, or report-table claim is allowed only when it is:
+
+- provided directly by the user;
+- computed from authorized data by Data Technician or an activated method/job subskill;
+- copied from an existing artifact, table, script output, or project record; or
+- clearly labeled as hypothetical, illustrative, or a template placeholder.
+
+Do not invent, infer, smooth over, or complete missing values. This applies to sample sizes, descriptive statistics, model estimates, uncertainty intervals, p-values, diagnostics, robustness checks, balance checks, sensitivity results, and table values.
+
+If a needed result is unavailable, say it is unavailable, ask for it, compute it from authorized data, or create a structure with placeholders. Missing results block final-report readiness unless the main skill explicitly records them as deferred.
 
 ## Execution Checkpoints
 
@@ -189,8 +235,8 @@ Use these interaction checkpoints:
 1. **Plan confirmation:** before substantial modeling, confirm treatment/exposure, comparator, outcome, unit/time, method family, diagnostics, and intended claim strength.
 2. **First-pass results:** after the first run, summarize the method, estimate or pattern, and immediate interpretation as first-pass evidence. Recommend diagnostics rather than writing a final report.
 3. **Production review:** after first-pass results, diagnostics, artifact creation, or presentation decisions, record production-loop reviewer feedback, readiness, remaining checks, and the next action.
-4. **Production gate:** after production-loop review says diagnostics are complete, deferred, or unnecessary and reportable evidence exists, update `production_gate`.
-5. **Report Writer handoff:** after `production_gate.status` is `ready`, activate `20-report-writer` to synthesize the recorded foundation and production evidence into the final report or presentation artifact. Do not start another interaction loop unless the handoff inputs are materially missing.
+4. **Production gate:** after production-loop review says diagnostics are complete, deferred, or unnecessary and reportable evidence exists, update `production_gate` internally and tell the user in plain language whether report drafting is supported.
+5. **Report Writer handoff:** after `production_gate.status` is `ready`, activate `20-report-writer` to synthesize the recorded foundation and production evidence into the final report or presentation artifact. Do not start another interaction loop unless the handoff inputs are materially missing, and do not expose handoff mechanics in the user-facing reply.
 
 ## Subskill Handoffs
 
@@ -198,11 +244,11 @@ Use `references/production_routing.md` when composing method stacks or selecting
 
 Before substantial method execution, Data Technician should record method-fit suggestions when the data structure or competing method families could change implementation.
 
-When the foundation gate is ready, the main skill opens production work in bounded blocks and leads the review loop around those blocks. Method subskills are route-specific executors and implementation auditors. They check estimand fit, data-structure fit, required diagnostics, package/code feasibility, and route failure modes. Data Technician reviews constructability, diagnostics, and reproducibility artifacts. Report Writer may review reportability, claim language, figure/table choices, and presentation framing during production. If route fit passes, method/job subskills may produce an analysis plan, code path, first-pass support, diagnostics plan, and production-gate handoff material. If fit fails, they return the failed condition, owner of the fix, and recommended next action. If fit fails because a foundation assumption was wrong, stale, or unworkable, they recommend `return_to_foundation` and set `blocking_signal.requires_previous_phase_recheck: true` rather than patching around it.
+When the foundation gate is ready, the main skill opens production work in bounded blocks and leads the review loop around those blocks. Method/job subskills own route-specific execution and audit notes; Data Technician owns constructability, diagnostics, and reproducibility review; Report Writer owns reportability, presentation, and final synthesis after handoff.
 
-Method/job subskills own method-specific Report Writer handoff notes: estimand, result, required diagnostics, artifact paths, limitations, and claim-language constraints. Report Writer owns the shared diagnostic-review format, final report structure, presentation consulting, and final handoff examples.
+If method fit fails, the activated subskill returns the failed condition, owner of the fix, and recommended next action. If the failure shows that a foundation assumption was wrong, stale, or unworkable, recommend `return_to_foundation` and set `blocking_signal.requires_previous_phase_recheck: true` rather than patching around it.
 
-Report Writer can participate during production as a reviewer, but it only takes over after `production_gate.status` is `ready`. It does not validate identification, open either gate, strengthen claim language, or ask for new preferences during handoff when the recorded state already supports a final deliverable.
+Report Writer can participate during production as a reviewer, but it only takes over after `production_gate.status` is `ready`. It does not validate identification, open either gate, or strengthen claim language.
 
 ## Red Flags
 
@@ -212,10 +258,14 @@ Interrupt, warn, or slow down when:
 - covariates measured after treatment are used for total-effect adjustment;
 - treatment and outcome timing are ambiguous;
 - rows do not align with the causal unit;
+- user-provided facts conflict with each other, such as dates, counts, windows, totals, design labels, estimates, uncertainty, diagnostics, or stated assumptions;
 - support, overlap, or variation is missing for the intended comparison;
 - missingness, censoring, selection, or sample construction depends on treatment/outcome-related variables;
 - a route has unresolved fatal assumptions but the analysis proceeds as if validated;
-- causal language is stronger than the design, assumptions, diagnostics, or sensitivity checks support.
+- causal language is stronger than the design, assumptions, diagnostics, or sensitivity checks support;
+- the assistant sounds certain about validity because a user-provided, recorded, or inferred method/design label seems strong, before the required assumptions, diagnostics, scope, and limitations are recorded;
+- the response upgrades beyond recorded support, such as turning an estimate into a decision, a diagnostic into a conclusion, a draft into a final report, or user urgency into stronger evidence;
+- any numeric result, diagnostic, robustness check, or table value lacks explicit provenance.
 
 ## Reference Files
 

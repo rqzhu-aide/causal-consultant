@@ -128,6 +128,12 @@ analysis:
     confirmed_at: null
   recommended_method_job_subskills: []
   activated_method_job_subskills: []
+  discovery_sidecar:
+    active: false
+    purpose: null
+    return_to_phase: null
+    affects_main_route: false
+    artifact_paths: []
   analyses: []
   first_pass_summary: null
   recommended_diagnostics: []
@@ -165,6 +171,7 @@ analysis:
   limitations: []
 
 # Append one method/job record only when that subskill is activated.
+# Optional causal-discovery trace records may also use the same chunk shape.
 # Use assets/method_job_subskill_record_template.yaml as the chunk shape.
 subskill_analyses: []
 artifacts: []

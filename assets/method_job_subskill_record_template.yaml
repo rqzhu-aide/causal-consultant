@@ -1,5 +1,6 @@
 # Append one copy of this chunk to project.yaml > subskill_analyses only
-# when the main skill activates the method/job subskill for production work.
+# when the main skill activates a method/job subskill for production work
+# or when a causal-discovery sidecar needs a compact traceability record.
 # Allowed enum values live in assets/workflow_enums.yaml.
 subskill_id: null
 role: "unknown"

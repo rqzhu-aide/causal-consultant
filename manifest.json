@@ -1,9 +1,9 @@
 {
   "package": "causal-consultant",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "created_for": "modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Normalized package versioning and canonical subskill metadata, added conversation transition fixtures, and hardened Windows/Python install guidance.",
+  "last_updated_focus": "Refined causal discovery into an any-phase sidecar with lean discovery_sidecar state, optional trace records, owner-routed promotion, and selected-reviewer safeguards.",
   "subskills": [
     "01-domain-helper",
     "02-data-technician",
@@ -169,9 +169,9 @@
       "id": "18-causal-discovery",
       "display_name": "Causal Discovery",
       "role": "discovery_module",
-      "phase": "production_support_or_discovery_deliverable",
+      "phase": "any_phase_sidecar_or_discovery_deliverable",
       "entrypoint": "subskills/18-causal-discovery/SKILL.md",
-      "state_owner": "subskill_analyses"
+      "state_owner": "analysis.discovery_sidecar_and_optional_subskill_analyses"
     },
     {
       "id": "19-causal-genomics",
@@ -201,5 +201,5 @@
   "evaluation_fixtures": [
     "fixtures/conversation_transition_cases.yaml"
   ],
-  "notes": "The top-level main skill is the user-facing actor: it selects ordered reviewers, owns foundation_gate and production_gate, and speaks in plain language. Domain Helper, Data Technician, Design Planner, and DAG Builder maintain foundation evaluator YAML records before foundation_gate. After foundation_gate opens, method/job subskills, Causal Discovery when graph support is needed, Data Technician, and Report Writer participate as production transition kernels through analysis.production_loop. Activated method/job and discovery subskills append compact records to subskill_analyses only when selected. Severe production findings can trigger return_to_foundation. Report Writer owns analysis.report_writer_20 and takes over final report synthesis only after production_gate is ready, using recorded foundation and production evidence rather than starting a new interaction loop. Canonical workflow enum values live in assets/workflow_enums.yaml. Canonical subskill metadata lives in this manifest; legacy per-subskill skill.json files are intentionally not used."
+  "notes": "The top-level main skill is the user-facing actor: it selects ordered reviewers, owns foundation_gate and production_gate, and speaks in plain language. Domain Helper, Data Technician, Design Planner, and DAG Builder maintain foundation evaluator YAML records before foundation_gate. After foundation_gate opens, method/job subskills, Data Technician, and Report Writer participate as production transition kernels through analysis.production_loop. Causal Discovery is an any-phase sidecar recorded under analysis.discovery_sidecar, with optional compact subskill_analyses records when traceability is useful; discovery artifacts do not change gates, routes, adjustment, or claim strength unless routed back through an existing owner. Severe production findings can trigger return_to_foundation. Report Writer owns analysis.report_writer_20 and takes over final report synthesis only after production_gate is ready, using recorded foundation and production evidence rather than starting a new interaction loop. Canonical workflow enum values live in assets/workflow_enums.yaml. Canonical subskill metadata lives in this manifest; legacy per-subskill skill.json files are intentionally not used."
 }

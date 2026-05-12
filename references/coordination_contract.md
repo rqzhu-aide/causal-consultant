@@ -24,9 +24,9 @@ Keep `project.yaml` as a lean coordination ledger:
 | `evaluators.design_planner_03` | Design Planner | Route hypotheses, preferred route, design feasibility, fallback logic. |
 | `evaluators.dag_builder_04` | DAG Builder | Causal logic, timing, variable roles, identification status, assumptions. |
 | `routes` | Main skill | Current route, active hypotheses, rejected or deferred routes. |
-| `analysis` | Main skill | Route commitment, execution stage, production loop, diagnostics, method/job recommendations and activations, report writer state, claim strength. |
+| `analysis` | Main skill | Route commitment, execution stage, production loop, discovery sidecar breadcrumb, diagnostics, method/job recommendations and activations, report writer state, claim strength. |
 | `analysis.report_writer_20` | Report Writer | Production feedback and post-production handoff state. |
-| `subskill_analyses` | Activated method/job subskills | Compact records appended only when method/job subskills are activated. |
+| `subskill_analyses` | Activated method/job subskills and optional discovery sidecar records | Compact records appended only when method/job subskills are activated or discovery traceability is useful. |
 | `artifacts` | Main skill and subskills | Index of external notes, analyses, tables, plots, reports, and reproducibility material. |
 
 Full data audits, DAGs, route memos, code, diagnostic tables, report drafts, and slide outlines belong in `analyses/` or `artifacts/`, with compact summaries in YAML.
@@ -41,6 +41,8 @@ Before `foundation_gate.status` is `ready`, the reviewer pool is:
 - `02-data-technician`
 - `03-design-planner`
 - `04-dag-builder`
+
+`18-causal-discovery` may be activated during foundation only as a sidecar, not as a foundation evaluator. The main skill records this with `analysis.discovery_sidecar`, not `evaluator_loop.selected_reviewers`, keeps discovery artifacts in `analyses/` or `artifacts/`, and returns to the foundation loop afterward unless the user only requested a discovery deliverable.
 
 At each user turn or project-state update, the main skill records the selected foundation reviewers in `evaluator_loop.selected_reviewers`. It may select zero reviewers only when the user turn is purely conversational, a fresh reviewer result already determines the next action, durable state is not being updated, or a blocking user decision must come first. It must select at least one relevant reviewer after data updates, design or route changes, new foundation evidence, diagnostic failures that affect foundation support, or any foundation-gate transition.
 
@@ -70,9 +72,10 @@ After `foundation_gate.status` is `ready` and before `production_gate.status` is
 The production reviewer pool is:
 
 - activated or candidate method/job subskills;
-- `18-causal-discovery` only for graph-hypothesis generation, graph comparison, variable screening, discovery diagnostics, or a discovery deliverable; graph outputs must return to `04-dag-builder` before affecting route commitment;
 - `02-data-technician` for data construction, diagnostics, reproducibility, timing, and package feasibility;
 - `20-report-writer` for reportability, claim language, diagnostic presentation, figure/table choice, audience framing, and presentation structure.
+
+`18-causal-discovery` can still be activated during production, but it remains a sidecar rather than a production reviewer. It uses `analysis.discovery_sidecar` plus artifacts, not `analysis.production_loop.selected_reviewers`, and any implication for the main causal route must be routed back through Data Technician, Design Planner, DAG Builder, or Report Writer as appropriate.
 
 Record ordered production reviewers in `analysis.production_loop.selected_reviewers`, not in `evaluator_loop.selected_reviewers`.
 
@@ -81,7 +84,7 @@ Select at least one production reviewer after new result artifacts, diagnostic f
 Production reviewer write rules:
 
 - Data Technician records production readiness in `analysis.production_loop.reviewer_summaries`; it updates `evaluators.data_technician_02` only for durable data facts that change foundation data support.
-- Method/job and discovery subskills append or update one compact record in `subskill_analyses` only when activated. Do not duplicate full method/job feedback in `analysis.production_loop.reviewer_summaries`. Recommended-but-not-activated method/job subskills stay in `analysis.recommended_method_job_subskills`.
+- Method/job subskills append or update one compact record in `subskill_analyses` only when activated. Discovery sidecar records are optional and also use `subskill_analyses` when traceability is useful. Do not duplicate full method/job or discovery feedback in `analysis.production_loop.reviewer_summaries`. Recommended-but-not-activated method/job subskills stay in `analysis.recommended_method_job_subskills`.
 - Report Writer production-reviewer mode records a compact entry in `analysis.production_loop.reviewer_summaries` and updates `analysis.report_writer_20`. Handoff mode writes `analysis.report_writer_20` plus artifacts.
 - Full code, diagnostics, plots, tables, and draft material go to `analyses/` or `artifacts/`.
 

@@ -70,6 +70,32 @@ Use Data Technician outputs to verify:
 
 If Data Technician says a diagnostic is infeasible or a data warning is unresolved, report that visibly and adjust claim strength instead of smoothing it away.
 
+## Report Output Boundary
+
+Reports, slide outlines, captions, appendices, and user-facing summaries must not expose secrets, credentials, private tokens, raw sensitive records, direct identifiers, unnecessary PII, or sensitive small-cell details. Use only the evidence needed to support the causal claim, diagnostic interpretation, limitations, and reproducibility summary.
+
+Prefer safe presentation forms:
+
+- aggregate tables, model outputs, diagnostics, masked examples, ranges, or schema descriptions instead of raw rows;
+- de-identified labels or stable pseudonyms when individual, site, school, patient, customer, employee, or vendor identifiers are not necessary;
+- appendix links or artifact paths for sensitive materials rather than reproducing their contents;
+- explicit privacy, access, or disclosure limitations when they affect what can be reported or audited.
+
+If a requested report would require exposing sensitive raw data, ask the main skill for explicit approval or a safer reporting form before including it. Do not make the report look more reproducible by copying confidential or identifying source data into the prose.
+
+## No Unsupported Results
+
+Report Writer must not create, infer, or complete data-derived results. Include a numeric, statistical, diagnostic, robustness, balance, sensitivity, or table claim only when it is:
+
+- provided directly by the user;
+- computed from authorized data by Data Technician or an activated method/job subskill;
+- copied from an existing artifact, table, script output, or project record; or
+- clearly labeled as hypothetical, illustrative, or a template placeholder.
+
+If a report section needs a missing result, write a transparent placeholder, request the missing result through the main skill, or state that the result is not yet available. Do not make the report look complete by inventing sample sizes, descriptive statistics, model estimates, uncertainty intervals, p-values, diagnostics, robustness checks, balance checks, sensitivity results, or table values.
+
+Unsupported or unprovenanced results block final-report readiness unless the main skill explicitly records the result as deferred and the report labels the gap clearly.
+
 ## Final Report Synthesis
 
 In handoff mode, synthesize rather than re-investigate. Use the information already collected in:
@@ -97,6 +123,7 @@ Default to the final report structure in `assets/final_report_template.md`. Adap
 10. limitations, cautions, deferred checks, and reproducibility notes.
 
 If a section has no supporting evidence, include a short transparent statement rather than inventing content. Use method/job and Data Technician records to decide which figures/tables belong in the main text and which belong in appendix or artifact index.
+Before including any result, diagnostic, table value, or robustness claim, verify that its source is visible in user-provided material, project state, an artifact, Data Technician output, or an activated method/job subskill record.
 
 ## Diagnostic Review
 
@@ -147,7 +174,9 @@ Match wording to support:
 - `descriptive`: the work summarizes patterns without a causal route.
 - `exploratory`: early-stage, discovery-oriented, or diagnostic evidence is incomplete.
 
-Never write "proved," "established causality," or "definitively caused" unless the main skill explicitly records that such wording is allowed, which should be rare.
+Reserve strongest causal language for rare cases where the main skill records that the design, diagnostics, assumptions, and scope support it. In most reports, use calibrated language that names the assumptions and population or margin of validity.
+
+Keep action recommendation strength separate from effect claim strength. A valid causal estimate can support an effect conclusion without supporting an unconditional rollout, scale-up, renewal, shutdown, expansion, or targeting recommendation. Make action recommendations conditional unless the recorded evidence also supports the decision scope, target population, implementation context, uncertainty, external validity, and decision-relevant costs, harms, constraints, or guardrails.
 
 ## Output Contract
 

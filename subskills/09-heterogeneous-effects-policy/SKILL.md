@@ -43,6 +43,7 @@ Given the route handoff, check:
 - effect modification variables are pre-treatment or otherwise valid for the target decision;
 - subgroup/CATE targets are confirmatory, exploratory, policy-oriented, or personalized;
 - sample size, support, overlap, multiplicity, and validation/honesty are adequate;
+- the requested action recommendation has a defined decision objective, target population, action set, implementation scope, constraints, and decision-relevant costs, harms, guardrails, or fairness requirements when relevant;
 - policy learning has a defined action set, utility/outcome, constraints, and evaluation strategy.
 
 If the base causal route is weak, keep HTE/policy results exploratory or user-directed. Do not report individualized recommendations as validated decisions without support.
@@ -84,6 +85,7 @@ Main-skill feedback should include:
 - whether HTE/policy output is confirmatory, exploratory, or not supportable;
 - which subgroups, modifiers, or decision rules are defensible enough to present;
 - which diagnostics and validation checks constrain interpretation;
+- whether rollout, scale-up, renewal, shutdown, expansion, targeting, or prioritization language should be conditional, exploratory, or avoided because decision evidence is incomplete;
 - the next user question, if any, such as choosing the decision objective, acceptable policy constraints, or whether exploratory subgroup findings are useful;
 - this subskill's `subskill_analyses` chunk, artifact paths, and recommendations for main-owned updates to `analysis.recommended_diagnostics` and `production_gate.diagnostics_status`. Do not duplicate this method/job record in `analysis.production_loop.reviewer_summaries`.
 

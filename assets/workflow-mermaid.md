@@ -10,6 +10,8 @@ flowchart TB
 
     U --> M
     M <--> Y
+    M -.-> CD["18 Causal Discovery<br/>any-phase sidecar<br/>exploratory graph support"]
+    CD -.-> Y
 
     M --> FSEL["Select foundation reviewers"]
 
@@ -35,7 +37,6 @@ flowchart TB
     subgraph P["Production Reviewers"]
         direction TB
         MJ["Method/job subskills<br/>05-17, 19, 21"]
-        CD["18 Causal Discovery<br/>currently graph support when needed"]
         DT2["02 Data Technician<br/>production review"]
         RW2["20 Report Writer<br/>production review"]
     end
@@ -56,7 +57,7 @@ flowchart TB
     classDef user fill:#E3F2FD,stroke:#1565C0,color:#0D47A1,stroke-width:2px;
     classDef gate fill:#FFF3E0,stroke:#EF6C00,color:#5D3000,stroke-width:2px;
     classDef keyskill fill:#E8F5E9,stroke:#2E7D32,color:#143D1B,stroke-width:2px;
-    classDef discovery fill:#F3E5F5,stroke:#7B1FA2,color:#3D0B52,stroke-width:3px;
+    classDef sidecar fill:#E0F7FA,stroke:#00838F,color:#00363A,stroke-width:3px,stroke-dasharray: 6 3;
     classDef method fill:#ECEFF1,stroke:#546E7A,color:#263238,stroke-width:2px;
     classDef report fill:#FCE4EC,stroke:#C2185B,color:#5C1230,stroke-width:2px;
     classDef state fill:#F5F5F5,stroke:#757575,color:#212121,stroke-width:1px;
@@ -64,7 +65,7 @@ flowchart TB
     class U,D user;
     class FG,FR,PG gate;
     class M,DH,DT,DP,DAG,DT2,FSEL,FS,PC,PA,PSEL,PS keyskill;
-    class CD discovery;
+    class CD sidecar;
     class MJ method;
     class RW2,RW report;
     class Y state;
@@ -74,10 +75,10 @@ flowchart TB
 
 1. **Main skill owns both gates** - Foundation evaluator and production reviewer readiness values are signals, not automatic gate openers.
 2. **Foundation evaluators are transitional kernel functions** - Domain, Data Technician, design, and DAG subskills update only their lean evaluator records and provide handoff notes to the main skill before `foundation_gate`.
-3. **Production reviewers make materials real** - Method/job subskills, Data Technician, Causal Discovery for graph support, and Report Writer can be selected in `analysis.production_loop` after `foundation_gate` opens.
+3. **Production reviewers make materials real** - Method/job subskills, Data Technician, and Report Writer can be selected in `analysis.production_loop` after `foundation_gate` opens.
 4. **Production work has its own review loop** - `analysis.production_loop` records selected reviewers, review purpose, what has been done, remaining checks, diagnostics readiness, polishing needs, loop control, and the next action.
 5. **Production can return to foundation** - Severe production findings can trigger `analysis.production_loop.foundation_recheck` and `return_to_foundation`.
-6. **Method/job and discovery YAML is append-only when activated** - Use `assets/method_job_subskill_record_template.yaml` for compact `subskill_analyses` records; do not pre-create blank method/job or discovery sections.
+6. **Causal Discovery is a sidecar** - `18-causal-discovery` can be activated at any phase for exploratory graph support, with only a small `analysis.discovery_sidecar` breadcrumb and artifact links unless its findings are routed back through the main workflow.
 7. **Report Writer handoff is after production gate** - `20-report-writer` may advise during production, but only takes over final report synthesis after `production_gate.status: ready`; handoff uses recorded foundation and production evidence rather than starting another interaction loop.
 8. **Data Technician informs method fit** - Method suggestions should reflect the current design, DAG, observed data structure, feasible diagnostics, and package constraints.
 9. **Package lists are candidate maps** - A package is appropriate only if the method stack confirms it supports the estimand, data structure, diagnostics, and uncertainty needs.

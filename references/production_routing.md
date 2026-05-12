@@ -1,6 +1,6 @@
 # Production Routing
 
-Use this reference only when the main skill needs to choose method/job subskills or production reviewers after the foundation gate is ready. It is not a method textbook. Each method/job subskill owns its own detailed assumptions, diagnostics, software notes, and failure modes.
+Use this reference only when the main skill needs to choose method/job subskills or production reviewers after the foundation gate is ready. It is not a method textbook. Each method/job subskill owns its own detailed assumptions, diagnostics, software notes, and failure modes. Causal Discovery is an any-phase sidecar; use the main `SKILL.md` discovery-sidecar rule when graph discovery, graph comparison, variable screening, or discovery-only deliverables are requested.
 
 ## Routing Rule
 
@@ -14,10 +14,10 @@ Method/job subskills do not open gates and do not own permanent blank YAML secti
 
 Use one canonical handback location for each production reviewer type:
 
-- Activated method/job and discovery subskills write one compact `subskill_analyses` record. They do not duplicate full feedback in `analysis.production_loop.reviewer_summaries`.
+- Activated method/job subskills write one compact `subskill_analyses` record. Discovery sidecar records are optional and should not duplicate full feedback in `analysis.production_loop.reviewer_summaries`.
 - Data Technician and Report Writer in production-reviewer mode write compact entries in `analysis.production_loop.reviewer_summaries`, because they do not own activated method/job chunks.
 - Report Writer also updates its unique `analysis.report_writer_20` section when selected.
-- The main skill owns `analysis.production_loop`, `production_gate`, `analysis.recommended_diagnostics`, `analysis.recommended_method_job_subskills`, `analysis.activated_method_job_subskills`, and user-facing synthesis. Production reviewers recommend changes; the main skill applies them.
+- The main skill owns `analysis.production_loop`, `production_gate`, `analysis.discovery_sidecar`, `analysis.recommended_diagnostics`, `analysis.recommended_method_job_subskills`, `analysis.activated_method_job_subskills`, and user-facing synthesis. Production reviewers recommend changes; the main skill applies them.
 
 ## Method/Job Subskill Editing Standard
 
@@ -48,7 +48,6 @@ Subskills should keep detailed scripts, plots, diagnostics, tables, and memos in
 | Time-to-event outcomes, censoring, competing risks | `15-survival-competing-risks` | primary route module |
 | Direct, indirect, pathway, or mechanism effects | `16-mediation` | primary route module, `15-survival-competing-risks`, `19-causal-genomics` |
 | Interference, spillovers, networks, contamination | `17-interference-spillovers` | primary route module, `09-heterogeneous-effects-policy`, `15-survival-competing-risks` |
-| Graph discovery, graph comparison, variable screening, or exploratory structure learning | `18-causal-discovery` | `04-dag-builder` before route commitment; `02-data-technician` for data/preprocessing risk |
 | Genetic or omics causal evidence | `19-causal-genomics` | `13-instrumental-variables`, `16-mediation`, `21-negative-controls-proximal` |
 | Negative controls, proxy variables, proximal causal inference | `21-negative-controls-proximal` | `04-dag-builder`, `06-point-treatment-observational`, `08-doubly-robust-ml` |
 
@@ -58,11 +57,11 @@ Select `20-report-writer` during production when reportability, claim language, 
 
 Method/job subskills own method-specific reporting handoff notes. Report Writer owns prose, diagnostic-review formatting, the final report structure template, presentation consulting, and final handoff checks. When both are selected in production, the main skill should ask the method/job subskill for method-specific materials first, then ask Report Writer to assess reportability and presentation.
 
-## Causal Discovery Special Case
+## Causal Discovery Sidecar
 
-`18-causal-discovery` is a discovery support module, not a normal effect-estimation route. Select it only when graph hypotheses, graph comparison, variable screening, discovery diagnostics, or a discovery deliverable could change the next action.
+`18-causal-discovery` is a sidecar, not a production reviewer or normal effect-estimation route. Activate it only through `analysis.discovery_sidecar`, not `analysis.production_loop.selected_reviewers`, when graph hypotheses, graph comparison, variable screening, discovery diagnostics, or a discovery deliverable could change the next action or produce useful exploratory material.
 
-Discovery output should usually recommend `refresh_dag_builder_04` before route commitment. It may recommend `return_to_foundation` when learned or compared graph structure contradicts current timing, variable roles, latent-confounding assumptions, or the selected route. It should recommend production-gate readiness only for a discovery deliverable or discovery artifact, not for an effect claim, and only with exploratory wording plus diagnostics and limitations recorded.
+Discovery output should remain inert unless the main skill routes it through an existing owner. Use `02-data-technician` for feature, constructability, leakage, missingness, or preprocessing implications; `03-design-planner` for route, comparator, estimand, design, or fallback implications; `04-dag-builder` for graph, timing, variable-role, adjustment, identification, or causal-logic implications; and `20-report-writer` for report-only appendix, framing, or exploratory-language implications. Discovery-only deliverables may be materials-ready with exploratory wording, but that does not imply production-gate readiness for an effect claim.
 
 ## Review Purposes
 

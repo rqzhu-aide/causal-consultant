@@ -2,7 +2,7 @@
 
 ## Goal
 
-Use for learning or comparing causal graph hypotheses from data. Discovery is exploratory support unless the user explicitly asks for a discovery deliverable. It does not validate an effect-estimation route by itself.
+Use for learning or comparing causal graph hypotheses from data as an any-phase sidecar. Discovery is exploratory support unless the user explicitly asks for a discovery deliverable. It does not validate an effect-estimation route by itself and does not change gates, routes, adjustment choices, or claim strength directly.
 
 ## Intake Checklist
 
@@ -20,13 +20,13 @@ Use for learning or comparing causal graph hypotheses from data. Discovery is ex
 
 ## Planning Steps
 
-1. Clarify whether discovery is a support step or the user's deliverable.
+1. Clarify whether discovery is a sidecar support step or the user's deliverable.
 2. Inventory data structure, timing, background knowledge, and preprocessing risks.
 3. Choose the target graph object and state what it can and cannot mean.
 4. Choose candidate algorithms that match assumptions and graph target.
 5. Define diagnostics before running: stability, tuning sensitivity, background-knowledge consistency, hidden-confounding checks, and domain plausibility.
-6. Decide what artifact to produce for DAG Builder: edge list, graph plot, equivalence-class notes, stability table, and assumptions memo.
-7. Record why the output should return to DAG Builder before affecting route commitment.
+6. Decide what artifact to produce: edge list, graph plot, equivalence-class notes, stability table, assumptions memo, owner-review note, or discovery-only report material.
+7. Record whether the output should stay sidecar-only or be routed through Data Technician, Design Planner, DAG Builder, or Report Writer before affecting the main workflow.
 
 ## Candidate Methods
 
@@ -62,7 +62,7 @@ Manual routing rules:
 - Orientation confidence and equivalence-class ambiguity.
 - Markov and faithfulness plausibility.
 - Held-out likelihood or score diagnostics when score-based methods are used.
-- Domain validation with Domain Helper and DAG Builder.
+- Domain validation with the appropriate main-workflow owner.
 
 ## Failure Modes
 
@@ -74,10 +74,21 @@ Manual routing rules:
 - Treating non-IID data as IID.
 - Overinterpreting CPDAG/PAG marks as unique causal directions.
 - Using discovered adjustment hints without DAG Builder review.
+- Treating a discovery sidecar artifact as a gate or route update.
 
 ## Handoff To Main Skill
 
-Return a compact handoff:
+Return the sidecar breadcrumb and, when useful, a compact optional `subskill_analyses` handoff:
+
+```yaml
+analysis:
+  discovery_sidecar:
+    active: true
+    purpose: null
+    return_to_phase: null
+    affects_main_route: false
+    artifact_paths: []
+```
 
 ```yaml
 subskill_id: "18-causal-discovery"
@@ -106,10 +117,11 @@ artifact_paths: []
 End with one of:
 
 - ready for DAG Builder review;
+- ready for Data Technician, Design Planner, or Report Writer review;
 - needs more discovery diagnostics;
 - useful only as exploratory variable screening;
 - discovery deliverable can be drafted with exploratory language;
-- return to foundation because timing, latent structure, or route assumptions changed.
+- close sidecar and route the implication through the appropriate existing owner.
 
 ## Code Template Index
 

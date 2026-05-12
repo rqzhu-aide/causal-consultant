@@ -217,23 +217,26 @@ cases:
       - "We have 80 variables from sensors and operations logs. Can causal discovery suggest a graph before we choose adjustment variables?"
       - "I can provide temporal tiers and forbidden directions."
     expected_transitions:
-      - path: "analysis.activated_method_job_subskills"
-        expected_contains:
-          - "18-causal-discovery"
-      - path: "subskill_analyses"
-        expected_contains_record:
-          subskill_id: "18-causal-discovery"
-          role: "discovery_module"
-      - path: "analysis.production_loop.review_purpose"
+      - path: "analysis.discovery_sidecar.active"
+        expected: true
+      - path: "analysis.discovery_sidecar.purpose"
         expected_any_of:
-          - "method_selection"
-          - "diagnostics"
-          - "route_fit"
-      - path: "analysis.production_loop.recommended_next_action"
+          - "graph exploration"
+          - "graph comparison"
+          - "variable screening"
+      - path: "analysis.discovery_sidecar.return_to_phase"
         expected_any_of:
-          - "refresh_dag_builder_04"
+          - "foundation"
+          - "unknown"
+      - path: "analysis.discovery_sidecar.affects_main_route"
+        expected: false
+      - path: "main_skill.selected_next_action"
+        expected_any_of:
           - "refresh_data_technician_02"
+          - "refresh_dag_builder_04"
           - "ask_user"
+          - "run_diagnostics"
+          - "no_action"
       - path: "analysis.claim_strength"
         expected_any_of:
           - "exploratory"

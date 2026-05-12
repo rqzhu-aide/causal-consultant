@@ -1,6 +1,6 @@
 # A Causal Consultant Skill
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-0.2.1-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
 *An interactive, mini-MOE-style skill for consulting in causal reasoning, discovery, design, analysis, and reporting.*
 
@@ -58,8 +58,10 @@ The expert set has four main parts:
 
 - **Foundation experts:** `01-domain-helper`, `02-data-technician`, `03-design-planner`, and `04-dag-builder` evaluate the causal question, data constructability, design route, and DAG logic before the foundation gate.
 - **Method/job experts:** route-specific subskills such as randomized experiments, observational treatment analysis, DiD, RD, IV, longitudinal methods, mediation, interference, genomics, and negative controls review or execute production work only when relevant.
-- **Causal discovery:** `18-causal-discovery` is selected only when graph discovery, graph comparison, variable screening, or structure-learning support is useful; discovered graph outputs remain exploratory until reviewed by DAG Builder.
+- **Causal discovery:** `18-causal-discovery` is an any-phase sidecar for graph discovery, graph comparison, variable screening, structure-learning diagnostics, or discovery-only deliverables. Its outputs remain exploratory by default and can add artifacts, feature suggestions, or report appendix material without changing gates, routes, adjustment choices, or claim strength.
 - **Report Writer:** `20-report-writer` can review reportability during production, then becomes the final synthesis expert only after `production_gate.status` is `ready`.
+
+Discovery sidecar work is designed to stay out of the main gate flow unless the main skill deliberately routes a finding back through an existing owner such as Data Technician, Design Planner, DAG Builder, or Report Writer. This lets the consultant produce useful discovery material without treating learned graph structure as causal proof.
 
 Two gates organize the interactive loop. `foundation_gate` decides whether the causal question, data context, design route, and DAG logic are coherent enough to begin method production. `production_gate` decides whether the completed analysis evidence, diagnostics, outputs, limitations, and handoff summary are ready for final reporting. Relevant experts use the same blocking language so the main skill can arbitrate rather than merge many incompatible statuses.
 

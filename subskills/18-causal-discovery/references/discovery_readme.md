@@ -1,8 +1,8 @@
 # Causal Discovery Tool Orientation
 
-This folder contains the causal-discovery support module for algorithm recommendation, graph-hypothesis generation, code templates, and DAG Builder handoff.
+This folder contains the causal-discovery sidecar module for algorithm recommendation, graph-hypothesis generation, code templates, and exploratory graph deliverables.
 
-Use discovery tools to produce graph hypotheses, not final causal proof. Any discovered structure that changes route commitment, adjustment, or claim language must return to the main skill and `04-dag-builder`.
+Use discovery tools to produce graph hypotheses, not final causal proof. Any discovered structure that could change route commitment, adjustment, features, design, or claim language must return to the main skill and be routed through the appropriate owner before it affects the main workflow.
 
 Supporting files:
 

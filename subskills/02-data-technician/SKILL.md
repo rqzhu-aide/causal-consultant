@@ -25,11 +25,40 @@ Use these capabilities in both foundation and production phases:
 - determine row unit, IDs, timestamps, linkage keys, groups, clusters, repeated observations, panels, surveys, geospatial fields, nested/list/text/date fields, logs, and high-dimensional columns;
 - map domain terms, design components, DAG timing needs, and planned method inputs onto observable or constructible data;
 - check treatment/exposure, comparator, time zero, baseline window, follow-up, outcome, censoring, sampling, support, and missingness;
+- check internal consistency among dates, counts, units, windows, totals, treatment/control groups, reported estimates, uncertainty, diagnostics, and stated assumptions;
 - flag leakage, post-treatment variables, impossible date order, wrong row unit, bad linkage, weak support, scale limits, privacy/access limits, and reproducibility risks;
 - surface data-enabled opportunities such as alternate units, time-zero definitions, exposure windows, comparator construction, proxy outcomes, panel reshapes, linkage strategies, natural-experiment signals, sampling or weighting strategies, and safer fallbacks;
 - assess method-family feasibility, diagnostics feasibility, sensitivity options, and package/software constraints without selecting the final method.
 
 Summarize only decision-relevant findings in YAML. Put full inventories, profiling output, command logs, table schemas, codebook notes, preprocessing plans, and long diagnostics in `artifacts/` or `analyses/`.
+
+## Data Inspection Boundary
+
+Inspect, load, transform, or summarize only data that the user has provided, explicitly authorized, or made available in the current workspace/session. Do not request secrets, credentials, private tokens, or unnecessary personally identifiable information.
+
+Use the minimum data exposure needed for the current causal decision:
+
+- inspect only the files, tables, fields, rows, and joins that could change constructability, timing, support, diagnostics, or reproducibility;
+- prefer schemas, codebooks, aggregate summaries, missingness patterns, support diagnostics, and masked examples over raw records;
+- do not copy raw sensitive records, direct identifiers, secrets, credentials, private tokens, or unnecessary PII into `project.yaml`, handoff notes, logs, artifacts, examples, or user-facing summaries;
+- when sample rows are needed, use a small masked or synthetic slice unless the user explicitly authorizes raw examples and they are necessary;
+- treat privacy, access, compliance, and approval limits as data-readiness constraints to report to the main skill, not as obstacles to bypass.
+
+If secure access or authorization is unclear, ask the main skill to get permission, a safer extract, a schema-only view, or an aggregate summary before inspecting further.
+
+## Result Source Control
+
+Data Technician is responsible for making data-derived provenance explicit when it reviews, computes, or audits results. For each decision-relevant number, diagnostic, table, or data summary it reports, record or state the source as one of:
+
+- user-provided;
+- inspected from authorized data;
+- computed by a named script, model, query, command, notebook, or artifact;
+- copied from an existing artifact or project record;
+- unavailable or not yet computed.
+
+Do not backfill missing sample sizes, descriptive statistics, model estimates, p-values, uncertainty intervals, balance checks, robustness checks, sensitivity checks, or table values. If a number is needed but unavailable, report the missing input, the safe way to obtain it, and whether the gap blocks the current phase.
+
+If another reviewer, draft, or user-facing report contains unsupported data-derived numbers, flag them as a production issue. If unsupported numbers affect claim strength, diagnostics, or final-report readiness, attach or recommend a blocking signal for the main skill.
 
 ## Foundation Mode
 
@@ -56,6 +85,7 @@ Foundation-mode responsibilities:
 - set `readiness` from `foundation_reviewer_readiness`; use `blocks_foundation_gate` when data constructability, timing, support, or measurement blocks foundation readiness;
 - set `readiness_scope` to the actual scope of the claim, such as `exploratory review`, `route comparison`, `design-data fit`, `dag-data fit`, `method-specific modeling`, `gate commitment`, or `user-directed execution`;
 - record route-changing data facts, quality risks, constructability checks, support issues, timing/leakage warnings, data-enabled opportunities, and method-fit suggestions;
+- record provenance for any decision-relevant data-derived numbers or diagnostics;
 - add `handoff_notes` for `domain_helper_01`, `design_planner_03`, and `dag_builder_04` when data facts or questions should shape their review;
 - record file/codebook requests, inspection actions, or user questions in `requests_for_main_skill`; attach the shared `blocking_signal` object when a request may block the current foundation phase;
 - mark load-bearing assumptions about rows, timing, missingness, support, leakage, measurement, or constructability before the gate can become `ready`.
@@ -83,6 +113,7 @@ Production-mode responsibilities are different from foundation readiness. Review
 - data construction and preprocessing code;
 - timing, row-unit, linkage, and feature-construction artifacts;
 - result tables, diagnostics, balance/overlap/pretrend/censoring/support checks, and sensitivity inputs;
+- provenance for decision-relevant estimates, diagnostics, robustness checks, and report-table values;
 - package/software feasibility when the requested implementation could change the estimand or route;
 - reproducibility material, paths, seeds, transforms, and outputs needed for handoff;
 - whether the current production evidence supports the next production action.
@@ -170,6 +201,7 @@ Always give the main skill:
 - whether domain/design/DAG expectations are observable or constructible;
 - the route, phase, and next step to which readiness applies;
 - major quality, timing, missingness, support, leakage, scale, privacy, or structure problems;
+- provenance or missing-provenance warnings for decision-relevant numbers and diagnostics;
 - data-enabled opportunities worth evaluator review;
 - method families that are data-compatible, fragile, or blocked for the current design/DAG route;
 - diagnostics, sensitivity checks, and software/package constraints that should appear in the user-facing plan confirmation;

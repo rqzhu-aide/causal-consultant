@@ -101,11 +101,13 @@ Return the sidecar breadcrumb and, when useful, a compact optional `subskill_ana
 analysis:
   discovery_sidecar:
     active: true
-    purpose: null
-    return_to_phase: null
+    purpose: "graph exploration"
+    return_to_phase: "foundation"
     affects_main_route: false
     artifact_paths: []
 ```
+
+Use a concrete `return_to_phase` while the sidecar is active: `foundation` for route/DAG/design support, `production` for active-analysis support, or `reporting` for discovery-only report or appendix work. If the destination is unclear, ask the main skill to clarify with the user before activating or closing the sidecar.
 
 ```yaml
 subskill_id: "18-causal-discovery"

@@ -51,6 +51,7 @@ REPORT_WRITER_STATUSES = enum("report_writer_statuses")
 METHOD_JOB_ROLES = enum("method_job_roles")
 METHOD_JOB_STATUSES = enum("method_job_statuses")
 DISCOVERY_SUBSKILL_ID = "18-causal-discovery"
+DISCOVERY_RETURN_PHASES = {"foundation", "production", "reporting"}
 FOUNDATION_HANDOFF_TARGETS = {
     "domain_helper_01",
     "data_technician_02",
@@ -606,16 +607,24 @@ def validate_discovery_sidecar(value):
         errors.append("analysis.discovery_sidecar.affects_main_route is not a boolean")
     if artifact_paths is not None and not isinstance(artifact_paths, list):
         errors.append("analysis.discovery_sidecar.artifact_paths is not a list")
-    if return_to_phase is not None and return_to_phase not in enum("project_phase"):
+    if (
+        active is not True
+        and return_to_phase is not None
+        and return_to_phase not in DISCOVERY_RETURN_PHASES
+    ):
         errors.append(
             "analysis.discovery_sidecar.return_to_phase has unsupported value "
-            f"{return_to_phase!r}"
+            f"{return_to_phase!r}; expected one of {sorted(DISCOVERY_RETURN_PHASES)}"
         )
     if active is True:
         if not has_recorded_value(purpose):
             errors.append("analysis.discovery_sidecar is active but purpose is not recorded")
-        if not has_recorded_value(return_to_phase):
-            errors.append("analysis.discovery_sidecar is active but return_to_phase is not recorded")
+        if return_to_phase not in DISCOVERY_RETURN_PHASES:
+            errors.append(
+                "analysis.discovery_sidecar is active but return_to_phase is not concrete; "
+                "use foundation, production, or reporting, and ask the user before activating "
+                "if the destination is unclear"
+            )
     if affects_main_route is True and active is True:
         errors.append(
             "analysis.discovery_sidecar.affects_main_route is true while sidecar is active; "

@@ -34,10 +34,12 @@ analysis:
   discovery_sidecar:
     active: true
     purpose: "graph exploration | graph comparison | variable screening | discovery diagnostics | discovery-only report"
-    return_to_phase: "foundation | production | reporting | final_delivery | unknown"
+    return_to_phase: "foundation | production | reporting"
     affects_main_route: false
     artifact_paths: []
 ```
+
+When the sidecar is active, `return_to_phase` must be concrete: `foundation` for route/DAG/design support, `production` for active-analysis support, or `reporting` for discovery-only report or appendix work. If the return destination is unclear, ask the main skill to resolve it with the user before activating or closing the sidecar.
 
 Write this subskill's record with:
 

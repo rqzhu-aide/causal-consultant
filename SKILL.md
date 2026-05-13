@@ -128,14 +128,16 @@ When activating the sidecar, set only the small breadcrumb under `project.yaml >
 discovery_sidecar:
   active: true
   purpose: "graph exploration | graph comparison | variable screening | discovery diagnostics | discovery-only report"
-  return_to_phase: "foundation | production | reporting | final_delivery | unknown"
+  return_to_phase: "foundation | production | reporting"
   affects_main_route: false
   artifact_paths: []
 ```
 
 Keep full discovery work in `analyses/` or `artifacts/`, such as graph plots, edge lists, stability tables, discovery memos, candidate feature notes, or appendix text. If durable traceability is useful, also append one compact `18-causal-discovery` record to `subskill_analyses`; do not create a permanent evaluator section for discovery.
 
-After sidecar work, return to the recorded `return_to_phase` and resume the ordinary foundation, production, reporting, or final-delivery logic. Set `analysis.discovery_sidecar.active: false` when the sidecar task is complete, while preserving artifact paths. If the user only wants a causal-discovery deliverable, keep or set `foundation_gate.status: not needed` and `production_gate.status: not needed` unless an effect-estimation route is also being validated. Report Writer may produce a discovery-only report from discovery artifacts with exploratory claim strength using `subskills/20-report-writer/assets/discovery_report_template.md`; this is report synthesis for a discovery deliverable, not production-gate handoff for an effect claim.
+When `analysis.discovery_sidecar.active: true`, use a concrete `return_to_phase`: `foundation` when discovery should feed route/DAG/design review, `production` when it supports an active analysis, or `reporting` when it becomes a discovery-only report or appendix. If that destination is unclear, set `main_skill.selected_next_action: ask_user` and resolve the destination before activating or closing the sidecar.
+
+After sidecar work, return to the recorded `return_to_phase` and resume the ordinary foundation, production, or reporting logic. Set `analysis.discovery_sidecar.active: false` when the sidecar task is complete, while preserving artifact paths. If the user only wants a causal-discovery deliverable, keep or set `foundation_gate.status: not needed` and `production_gate.status: not needed` unless an effect-estimation route is also being validated. Report Writer may produce a discovery-only report from discovery artifacts with exploratory claim strength using `subskills/20-report-writer/assets/discovery_report_template.md`; this is report synthesis for a discovery deliverable, not production-gate handoff for an effect claim.
 
 ## State And Folders
 

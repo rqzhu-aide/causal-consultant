@@ -225,9 +225,7 @@ cases:
           - "graph comparison"
           - "variable screening"
       - path: "analysis.discovery_sidecar.return_to_phase"
-        expected_any_of:
-          - "foundation"
-          - "unknown"
+        expected: "foundation"
       - path: "analysis.discovery_sidecar.affects_main_route"
         expected: false
       - path: "main_skill.selected_next_action"
@@ -262,6 +260,8 @@ cases:
         expected: true
       - path: "analysis.discovery_sidecar.purpose"
         expected: "discovery-only report"
+      - path: "analysis.discovery_sidecar.return_to_phase"
+        expected: "reporting"
       - path: "analysis.discovery_sidecar.affects_main_route"
         expected: false
       - path: "foundation_gate.status"
@@ -294,6 +294,8 @@ cases:
         expected_any_of:
           - "discovery-only report"
           - "graph exploration"
+      - path: "analysis.discovery_sidecar.return_to_phase"
+        expected: "reporting"
       - path: "analysis.discovery_sidecar.affects_main_route"
         expected: false
       - path: "analysis.route_commitment_status"

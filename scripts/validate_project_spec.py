@@ -52,6 +52,7 @@ METHOD_JOB_ROLES = enum("method_job_roles")
 METHOD_JOB_STATUSES = enum("method_job_statuses")
 DISCOVERY_SUBSKILL_ID = "18-causal-discovery"
 DISCOVERY_RETURN_PHASES = {"foundation", "production", "reporting"}
+PARKED_TASK_STATUSES = enum("parked_task_status")
 FOUNDATION_HANDOFF_TARGETS = {
     "domain_helper_01",
     "data_technician_02",
@@ -81,6 +82,8 @@ REQUIRED_PATHS = [
     ("main_skill", "summary_for_user"),
     ("main_skill", "open_questions"),
     ("main_skill", "assumptions_to_surface"),
+    ("main_skill", "task_parking_lot", "current_task"),
+    ("main_skill", "task_parking_lot", "parked_tasks"),
     ("main_skill", "user_directed", "requested"),
     ("main_skill", "user_directed", "intent_basis"),
     ("main_skill", "user_directed", "acknowledged_limits"),
@@ -588,6 +591,44 @@ def validate_subskill_analyses(value):
     return errors
 
 
+def validate_task_parking_lot(value):
+    errors = []
+    if value in (MISSING, None):
+        return errors
+    if not isinstance(value, dict):
+        return ["main_skill.task_parking_lot is not a mapping"]
+
+    current_task = value.get("current_task")
+    parked_tasks = value.get("parked_tasks")
+    if current_task is not None and not isinstance(current_task, str):
+        errors.append("main_skill.task_parking_lot.current_task is not a string or null")
+    if parked_tasks in (MISSING, None):
+        return errors
+    if not isinstance(parked_tasks, list):
+        return ["main_skill.task_parking_lot.parked_tasks is not a list"]
+    if len(parked_tasks) > 3:
+        errors.append("main_skill.task_parking_lot.parked_tasks has more than 3 entries")
+
+    for idx, item in enumerate(parked_tasks):
+        label = f"main_skill.task_parking_lot.parked_tasks[{idx}]"
+        if not isinstance(item, dict):
+            errors.append(f"{label} is not a mapping")
+            continue
+        if not has_recorded_value(item.get("summary")):
+            errors.append(f"{label}.summary is not recorded")
+        status = item.get("status")
+        if status not in PARKED_TASK_STATUSES:
+            errors.append(
+                f"{label}.status has unsupported value {status!r}; expected one of {sorted(PARKED_TASK_STATUSES)}"
+            )
+        if not has_recorded_value(item.get("resume_if")):
+            errors.append(f"{label}.resume_if is not recorded")
+        artifact_paths = item.get("artifact_paths", [])
+        if artifact_paths is not None and not isinstance(artifact_paths, list):
+            errors.append(f"{label}.artifact_paths is not a list")
+    return errors
+
+
 def validate_discovery_sidecar(value):
     errors = []
     if value in (MISSING, None):
@@ -906,6 +947,7 @@ def validate_workflow_invariants(data):
     recommended_method_job_subskills = get_path(data, ("analysis", "recommended_method_job_subskills"))
     activated_method_job_subskills = get_path(data, ("analysis", "activated_method_job_subskills"))
     active_method_subskills = activated_method_job_subskills
+    errors.extend(validate_task_parking_lot(get_path(data, ("main_skill", "task_parking_lot"))))
     errors.extend(validate_discovery_sidecar(get_path(data, ("analysis", "discovery_sidecar"))))
     if data_readiness == "ready" and not has_recorded_value(data_scope):
         errors.append("data_technician_02.readiness is ready but readiness_scope is not recorded")

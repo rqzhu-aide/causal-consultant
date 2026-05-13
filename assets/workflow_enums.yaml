@@ -93,6 +93,12 @@ user_directed_intent_basis:
   - declined further gate work
   - unknown
 
+parked_task_status:
+  - deferred
+  - superseded
+  - paused
+  - abandoned
+
 foundation_gate_status:
   - not needed
   - exploratory

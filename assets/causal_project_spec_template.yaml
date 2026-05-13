@@ -24,6 +24,9 @@ main_skill:
   summary_for_user: null
   open_questions: []
   assumptions_to_surface: []
+  task_parking_lot:
+    current_task: null
+    parked_tasks: []
   user_directed:
     requested: false
     intent_basis: "none"

@@ -15,7 +15,7 @@ Keep `project.yaml` as a lean coordination ledger:
 | Section | Owner | Purpose |
 |---|---|---|
 | `project` | Main skill | Metadata, state folder, current phase, project status. |
-| `main_skill` | Main skill | User goal, intent, rigor mode, conversation style, selected next action, open questions, user-directed continuation. |
+| `main_skill` | Main skill | User goal, intent, rigor mode, conversation style, selected next action, open questions, task parking lot, user-directed continuation. |
 | `foundation_gate` | Main skill | Validity status for route commitment and causal support. |
 | `production_gate` | Main skill | Readiness for Report Writer handoff after production work. |
 | `evaluator_loop` | Main skill | Foundation-loop trigger, selected reviewers, review purpose, action queue, loop control. |

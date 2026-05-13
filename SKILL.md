@@ -46,6 +46,18 @@ Default first-pass evaluator order is Domain Helper, Data Technician, Design Pla
 
 If two evaluator rounds repeat the same blocker or dependency, record loop control and break the loop with one decisive question, a labeled working assumption, a surfaced load-bearing assumption, route demotion/blocking, fallback selection, or user-directed continuation with limits.
 
+## Task Parking Lot
+
+Use `project.yaml > main_skill.task_parking_lot` only for major user-task pivots that could affect routing, artifacts, gates, or later expectations. It is a parking lot, not a turn log.
+
+Keep it compact:
+
+- `current_task`: one short phrase for the active task or deliverable.
+- `parked_tasks`: at most three deferred, superseded, paused, or abandoned major tasks.
+- Each parked task should include `summary`, `status`, `resume_if`, and optional `artifact_paths`.
+
+Update the parking lot only when the user changes the major goal, deliverable, route family, or gate path. Do not record minor substeps such as inspecting columns, making a plot, refreshing a reviewer, or editing prose. Drop parked tasks that are no longer decision-relevant.
+
 ## Round Review Selection
 
 At each user turn or project-state update, the main skill decides which key reviewer subskills, if any, should review the current `project.yaml` for this round and in what order. This may be zero, one, or several reviewers.

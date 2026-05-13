@@ -17,6 +17,7 @@ project_phase:
 
 primary_intent:
   - estimate effect
+  - causal discovery
   - choose method
   - inspect data
   - design study
@@ -48,6 +49,8 @@ main_actions:
   - ask_user
   - inspect_data
   - literature_search
+  - activate_discovery_sidecar
+  - close_discovery_sidecar
   - refresh_domain_helper_01
   - refresh_data_technician_02
   - refresh_design_planner_03
@@ -317,6 +320,7 @@ report_writer_modes:
   - not selected
   - production reviewer
   - handoff writer
+  - discovery report writer
   - unknown
 
 report_writer_statuses:
@@ -326,6 +330,7 @@ report_writer_statuses:
   - ready to activate
   - activated
   - diagnostic reviewed
+  - discovery report delivered
   - final report delivered
   - blocked
   - unknown

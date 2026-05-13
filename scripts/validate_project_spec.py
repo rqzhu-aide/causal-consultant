@@ -1133,10 +1133,13 @@ def validate_workflow_invariants(data):
 
     report_writer_mode = get_path(data, ("analysis", "report_writer_20", "mode"))
     report_writer_status = get_path(data, ("analysis", "report_writer_20", "status"))
+    discovery_purpose = get_path(data, ("analysis", "discovery_sidecar", "purpose"))
+    discovery_artifacts = get_path(data, ("analysis", "discovery_sidecar", "artifact_paths"))
     report_writer_active_statuses = {
         "ready to activate",
         "activated",
         "diagnostic reviewed",
+        "discovery report delivered",
         "final report delivered",
     }
     report_writer_execution_stages = {
@@ -1147,32 +1150,47 @@ def validate_workflow_invariants(data):
         report_writer_status in report_writer_active_statuses
         or execution_stage in report_writer_execution_stages
     ):
-        if report_writer_mode != "handoff writer":
-            errors.append("Report Writer handoff is active but analysis.report_writer_20.mode is not handoff writer")
-        if gate_status != "ready":
-            errors.append("Report Writer handoff is active but foundation_gate.status is not ready")
-        if production_gate_status != "ready":
-            errors.append("Report Writer handoff is active but production_gate.status is not ready")
-        if production_can_handoff is not True:
-            errors.append("Report Writer handoff is active but production_gate.can_handoff_to_report_writer is not true")
-        if route_status not in {"ready", "committed"}:
-            errors.append("Report Writer handoff is active but analysis.route_commitment_status is not ready/committed")
-        if not (
-            has_recorded_value(get_path(data, ("analysis", "first_pass_summary")))
-            or has_recorded_value(get_path(data, ("analysis", "analyses")))
-            or has_recorded_value(get_path(data, ("artifacts",)))
-        ):
-            errors.append("Report Writer handoff is active but no first-pass summary, analysis artifact, or artifact is recorded")
-        if production_readiness not in {
-            "diagnostics complete",
-            "diagnostics deferred",
-            "diagnostics not needed",
-            "materials ready",
-            "reportable",
-        }:
-            errors.append(
-                "Report Writer handoff is active but analysis.production_loop.readiness does not show diagnostics complete/deferred/not needed, materials ready, or reportable"
-            )
+        if report_writer_mode == "discovery report writer":
+            if discovery_purpose != "discovery-only report":
+                errors.append("Discovery Report Writer is active but discovery_sidecar.purpose is not discovery-only report")
+            if gate_status != "not needed":
+                errors.append("Discovery Report Writer is active but foundation_gate.status is not not needed")
+            if production_gate_status != "not needed":
+                errors.append("Discovery Report Writer is active but production_gate.status is not not needed")
+            if production_can_handoff is not False:
+                errors.append("Discovery Report Writer is active but production_gate.can_handoff_to_report_writer is not false")
+            if report_writer_status == "discovery report delivered" and not (
+                has_recorded_value(discovery_artifacts)
+                or has_recorded_value(get_path(data, ("artifacts",)))
+            ):
+                errors.append("Discovery report is delivered but no discovery artifact or report artifact is recorded")
+        else:
+            if report_writer_mode != "handoff writer":
+                errors.append("Report Writer handoff is active but analysis.report_writer_20.mode is not handoff writer")
+            if gate_status != "ready":
+                errors.append("Report Writer handoff is active but foundation_gate.status is not ready")
+            if production_gate_status != "ready":
+                errors.append("Report Writer handoff is active but production_gate.status is not ready")
+            if production_can_handoff is not True:
+                errors.append("Report Writer handoff is active but production_gate.can_handoff_to_report_writer is not true")
+            if route_status not in {"ready", "committed"}:
+                errors.append("Report Writer handoff is active but analysis.route_commitment_status is not ready/committed")
+            if not (
+                has_recorded_value(get_path(data, ("analysis", "first_pass_summary")))
+                or has_recorded_value(get_path(data, ("analysis", "analyses")))
+                or has_recorded_value(get_path(data, ("artifacts",)))
+            ):
+                errors.append("Report Writer handoff is active but no first-pass summary, analysis artifact, or artifact is recorded")
+            if production_readiness not in {
+                "diagnostics complete",
+                "diagnostics deferred",
+                "diagnostics not needed",
+                "materials ready",
+                "reportable",
+            }:
+                errors.append(
+                    "Report Writer handoff is active but analysis.production_loop.readiness does not show diagnostics complete/deferred/not needed, materials ready, or reportable"
+                )
 
     design_status = get_path(data, ("evaluators", "design_planner_03", "design_status"))
     dag_supported_status = get_path(data, ("evaluators", "dag_builder_04", "supported_status"))

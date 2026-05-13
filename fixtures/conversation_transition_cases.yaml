@@ -245,6 +245,78 @@ cases:
         expected_not_changed_by_discovery_alone: true
     user_facing_expectation: "Describe discovery output as graph hypotheses and send it to DAG Builder before it changes adjustment, route commitment, or claim strength."
 
+  - case_id: "causal_discovery_only_report"
+    title: "Discovery-only report stays exploratory and bypasses effect-estimation gates"
+    user_turns:
+      - "I do not want to estimate an intervention effect yet. Please run causal discovery on these operational variables and write a report about the likely graph and paths."
+      - "Use the discovered structure to suggest possible next effect-estimation questions, but do not run those estimates yet."
+    expected_transitions:
+      - path: "main_skill.primary_intent"
+        expected: "causal discovery"
+      - path: "main_skill.selected_next_action"
+        expected_any_of:
+          - "activate_discovery_sidecar"
+          - "refresh_report_writer_20"
+          - "close_discovery_sidecar"
+      - path: "analysis.discovery_sidecar.active"
+        expected_any_of:
+          - true
+          - false
+      - path: "analysis.discovery_sidecar.purpose"
+        expected: "discovery-only report"
+      - path: "analysis.discovery_sidecar.affects_main_route"
+        expected: false
+      - path: "foundation_gate.status"
+        expected: "not needed"
+      - path: "production_gate.status"
+        expected: "not needed"
+      - path: "analysis.claim_strength"
+        expected: "exploratory"
+      - path: "analysis.report_writer_20.mode"
+        expected_any_of:
+          - "discovery report writer"
+          - "not selected"
+      - path: "analysis.report_writer_20.status"
+        expected_any_of:
+          - "activated"
+          - "discovery report delivered"
+          - "not needed"
+      - path: "analysis.discovery_sidecar.artifact_paths"
+        expected_recorded_or_empty_until_run: true
+    user_facing_expectation: "Produce or prepare an exploratory discovery report using graph artifacts, causal-path notes, diagnostics, limitations, and optional next effect-estimation questions; do not present a treatment effect or open effect-estimation gates."
+
+  - case_id: "causal_discovery_paths_do_not_auto_estimate"
+    title: "Candidate graph paths become follow-up questions, not automatic estimates"
+    user_turns:
+      - "The discovery graph suggests marketing_spend -> site_visits -> signups -> revenue. Can you include that path in the report and tell me what we might estimate next?"
+    expected_transitions:
+      - path: "main_skill.primary_intent"
+        expected: "causal discovery"
+      - path: "analysis.discovery_sidecar.purpose"
+        expected_any_of:
+          - "discovery-only report"
+          - "graph exploration"
+      - path: "analysis.discovery_sidecar.affects_main_route"
+        expected: false
+      - path: "analysis.route_commitment_status"
+        expected_any_of:
+          - "exploratory"
+          - "unknown"
+      - path: "analysis.activated_method_job_subskills"
+        expected_not_contains_any:
+          - "06-point-treatment-observational"
+          - "08-doubly-robust-ml"
+          - "16-mediation"
+      - path: "main_skill.selected_next_action"
+        expected_any_of:
+          - "refresh_report_writer_20"
+          - "close_discovery_sidecar"
+          - "ask_user"
+          - "no_action"
+      - path: "analysis.claim_strength"
+        expected: "exploratory"
+    user_facing_expectation: "Call the chain a candidate graph path, list possible follow-up estimands, and ask before starting any effect-estimation route."
+
   - case_id: "production_gate_ready_report_writer_handoff"
     title: "Completed production materials activate Report Writer handoff"
     user_turns:

@@ -9,7 +9,7 @@ description: "Any-phase discovery sidecar for graph-hypothesis generation, graph
 
 Use this as a **discovery sidecar module**, not as an effect-estimation route. It can propose, compare, and stress-test graph hypotheses from data at any phase of the consultant workflow. It does not validate identification, open a gate, change a route, choose an adjustment set, or strengthen causal claim language.
 
-Discovery output is inert by default. If a discovery finding may affect the main causal project, ask the main skill to close or pause the sidecar and route the implication through the existing owner: `02-data-technician` for feature, constructability, leakage, missingness, or preprocessing implications; `03-design-planner` for route, comparator, estimand, design, or fallback implications; `04-dag-builder` for graph, timing, variable-role, adjustment, identification, or causal-logic implications; and `20-report-writer` only for report-only appendix, framing, or exploratory-language implications. If the user's deliverable is itself a discovery report, keep the claim exploratory unless a separate main-workflow review validates stronger interpretation.
+Discovery output is inert by default. If a discovery finding may affect the main causal project, ask the main skill to close or pause the sidecar and route the implication through the existing owner: `02-data-technician` for feature, constructability, leakage, missingness, or preprocessing implications; `03-design-planner` for route, comparator, estimand, design, or fallback implications; `04-dag-builder` for graph, timing, variable-role, adjustment, identification, or causal-logic implications; and `20-report-writer` only for discovery-only report synthesis, report appendix, framing, or exploratory-language implications. If the user's deliverable is itself a discovery report, keep the claim exploratory unless a separate main-workflow review validates stronger interpretation.
 
 ## Activation Boundary
 
@@ -21,7 +21,7 @@ Use this subskill when the main skill activates it as a sidecar for one of these
 - discovery diagnostics for a graph-learning result;
 - a user-requested discovery deliverable with clear exploratory limits.
 
-Do not use it as a routine companion to every project. Do not use it to replace domain knowledge, design planning, or DAG auditing. If the user asks to estimate an effect, this subskill is only supportive unless discovery is explicitly needed to form graph hypotheses. If the user only wants a discovery deliverable, produce discovery artifacts or report material with exploratory language and do not imply that an effect-estimation route has been validated.
+Do not use it as a routine companion to every project. Do not use it to replace domain knowledge, design planning, or DAG auditing. If the user asks to estimate an effect, this subskill is only supportive unless discovery is explicitly needed to form graph hypotheses. If the user only wants a discovery deliverable, produce discovery artifacts or report material with exploratory language and do not imply that an effect-estimation route has been validated. In that case, recommend Report Writer synthesis with `subskills/20-report-writer/assets/discovery_report_template.md` after graph artifacts, diagnostics, limitations, and paths are recorded.
 
 ## Discovery YAML Contract
 
@@ -116,13 +116,14 @@ Give the main skill:
 - whether the result should remain a sidecar artifact, be included in a discovery-only report, or be routed through Data Technician, Design Planner, DAG Builder, or Report Writer;
 - one focused user question if temporal order, background knowledge, or hidden-confounding tolerance is needed.
 
-Report Writer handoff notes should include:
+Report Writer handoff notes for discovery-only reports should include:
 
 - graph target, algorithm family, data type, temporal/background constraints, and whether output is DAG, CPDAG, PAG, edge list, or screening result;
 - stability, tuning/test/score sensitivity, background-knowledge consistency, hidden-confounding, and orientation-confidence diagnostics;
 - graph artifact paths, stability tables, and DAG Builder handoff memo;
 - limitations from equivalence classes, latent variables, sample size, non-IID data, preprocessing, or weak orientations;
 - exploratory wording that avoids treating discovered edges as proof and says whether the deliverable is graph exploration rather than effect estimation.
+- candidate next effect-estimation questions, if useful, framed as follow-up options rather than completed causal answers.
 
 ## Sidecar Closure
 
@@ -130,7 +131,7 @@ Recommend owner review when discovery contradicts current causal timing, reveals
 
 Close the sidecar with `recommended_next_action: no_action` when discovery is useful but remains exploratory, graph-equivalence is broad, orientations are weak, hidden confounding remains plausible, or the output is only report appendix material. Preserve cautious language and artifact paths.
 
-For a discovery-only deliverable, recommend `materials ready` only when the graph artifact, diagnostics, limitations, exploratory wording, and artifact paths are recorded. This does not imply foundation-gate or production-gate readiness for an effect claim.
+For a discovery-only deliverable, recommend `materials ready` only when the graph artifact, causal-path notes or a statement that paths are not stable, diagnostics, limitations, exploratory wording, recommended next effect-estimation questions if useful, and artifact paths are recorded. This does not imply foundation-gate or production-gate readiness for an effect claim.
 
 ## Reference Files
 

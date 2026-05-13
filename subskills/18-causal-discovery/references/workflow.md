@@ -25,8 +25,8 @@ Use for learning or comparing causal graph hypotheses from data as an any-phase 
 3. Choose the target graph object and state what it can and cannot mean.
 4. Choose candidate algorithms that match assumptions and graph target.
 5. Define diagnostics before running: stability, tuning sensitivity, background-knowledge consistency, hidden-confounding checks, and domain plausibility.
-6. Decide what artifact to produce: edge list, graph plot, equivalence-class notes, stability table, assumptions memo, owner-review note, or discovery-only report material.
-7. Record whether the output should stay sidecar-only or be routed through Data Technician, Design Planner, DAG Builder, or Report Writer before affecting the main workflow.
+6. Decide what artifact to produce: edge list, graph plot, equivalence-class notes, stability table, causal-path notes, assumptions memo, owner-review note, or discovery-only report material.
+7. Record whether the output should stay sidecar-only or be routed through Data Technician, Design Planner, DAG Builder, or Report Writer before affecting the main workflow. If the requested deliverable is a discovery-only report, route only the report synthesis to Report Writer and keep `foundation_gate.status` and `production_gate.status` as `not needed` unless an effect-estimation route is separately validated.
 
 ## Candidate Methods
 
@@ -63,6 +63,23 @@ Manual routing rules:
 - Markov and faithfulness plausibility.
 - Held-out likelihood or score diagnostics when score-based methods are used.
 - Domain validation with the appropriate main-workflow owner.
+
+## Discovery-Only Report Material
+
+When the user asks for a causal discovery report rather than an effect estimate, prepare material for `subskills/20-report-writer/assets/discovery_report_template.md`:
+
+- discovery question and scope;
+- data and variable inventory;
+- target graph object and method family;
+- candidate graph findings;
+- candidate causal paths, or a statement that stable paths are not supported;
+- possible confounders, mediators, colliders, and adjustment warnings;
+- diagnostics and stability checks;
+- exploratory interpretation;
+- recommended next effect-estimation questions, if useful;
+- limitations and artifact paths.
+
+Do not call this a final causal effect report. The report can recommend follow-up effect-estimation questions, but it must not run or imply effect estimation automatically.
 
 ## Failure Modes
 

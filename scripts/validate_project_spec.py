@@ -1158,7 +1158,7 @@ def validate_workflow_invariants(data):
             if production_gate_status != "not needed":
                 errors.append("Discovery Report Writer is active but production_gate.status is not not needed")
             if production_can_handoff is not False:
-                errors.append("Discovery Report Writer is active but production_gate.can_handoff_to_report_writer is not false")
+                errors.append("Discovery Report Writer is active but production_gate.can_handoff_to_report_writer must be false")
             if report_writer_status == "discovery report delivered" and not (
                 has_recorded_value(discovery_artifacts)
                 or has_recorded_value(get_path(data, ("artifacts",)))
@@ -1172,7 +1172,7 @@ def validate_workflow_invariants(data):
             if production_gate_status != "ready":
                 errors.append("Report Writer handoff is active but production_gate.status is not ready")
             if production_can_handoff is not True:
-                errors.append("Report Writer handoff is active but production_gate.can_handoff_to_report_writer is not true")
+                errors.append("Report Writer handoff is active but production_gate.can_handoff_to_report_writer must be true")
             if route_status not in {"ready", "committed"}:
                 errors.append("Report Writer handoff is active but analysis.route_commitment_status is not ready/committed")
             if not (

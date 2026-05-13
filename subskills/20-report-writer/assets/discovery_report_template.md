@@ -1,4 +1,4 @@
-# Causal Discovery Report Template
+<!-- Causal Discovery Report Template -->
 
 Use this template when the user's requested deliverable is a causal-discovery-only report. This report is for graph hypotheses, variable screening, causal-path exploration, and discovery diagnostics. It is not an effect-estimation report and must keep claim strength exploratory unless a separate main-workflow review validates stronger interpretation.
 

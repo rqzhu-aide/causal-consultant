@@ -259,9 +259,7 @@ cases:
           - "refresh_report_writer_20"
           - "close_discovery_sidecar"
       - path: "analysis.discovery_sidecar.active"
-        expected_any_of:
-          - true
-          - false
+        expected: true
       - path: "analysis.discovery_sidecar.purpose"
         expected: "discovery-only report"
       - path: "analysis.discovery_sidecar.affects_main_route"

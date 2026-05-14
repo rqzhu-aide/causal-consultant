@@ -1,6 +1,6 @@
 # A Causal Consultant Skill
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-0.2.1-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-0.2.2-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
 *An interactive, mini-MOE-style skill for consulting in causal reasoning, discovery, design, analysis, and reporting.*
 

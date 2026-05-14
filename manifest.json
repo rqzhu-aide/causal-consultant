@@ -1,6 +1,6 @@
 {
   "package": "causal-consultant",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "created_for": "modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
   "last_updated_focus": "Refined causal discovery into an any-phase sidecar with lean discovery_sidecar state, explicit discovery-only report handling, optional trace records, owner-routed promotion, and selected-reviewer safeguards.",

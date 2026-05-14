@@ -10,7 +10,7 @@ Start each evaluator pass by reading `evaluator_loop` and the current `evaluator
 
 This workflow centers on:
 
-- data existence and evidence basis: actual, partial, conceptual, or unknown;
+- data existence and evidence basis: observed, partial, user-described/conceptual, or unknown;
 - data inventory: rows, columns, files, tables, source systems, queries/views, codebooks, IDs, time variables, linkage keys, groups, records, and data shape;
 - data-to-domain fit: whether fields represent the domain objects, terms, measurements, and codes described by `01`;
 - data-to-design fit: whether the data can construct the population, treatment/exposure, comparator, time zero, follow-up, outcomes, clusters, pre-periods, or network links envisioned by `03`;
@@ -32,9 +32,9 @@ Set `foundation_readiness_effect: recheck_needed` only when production reveals a
 - Use `main_skill` for the user goal, requested deliverable, and what needs to be explained plainly.
 - Use `evaluator_loop` for the main skill's selected action, active queue, and loop-control state.
 - Use `01-domain-helper` to check how domain terms, field norms, measurement practices, and privacy/access constraints appear in the data.
-- Use `03-design-planner` to check whether actual or conceptual data support the envisioned design components.
+- Use `03-design-planner` to check whether observed data or user-described expectations support the envisioned design components.
 - Use `04-dag-builder` to check timing evidence, candidate variables for DAG review, unavailable variables, and leakage-prone or late-measured variables.
-- Do not let data shape alone choose the final method. Data inspector reports what the data can support, cannot support, or newly suggest; design and DAG records decide what that means for route validity.
+- Do not let data shape alone choose the final method. Data Technician reports what the data can support, cannot support, or newly suggest; design and DAG records decide what that means for route validity.
 
 ## Intake Checklist
 

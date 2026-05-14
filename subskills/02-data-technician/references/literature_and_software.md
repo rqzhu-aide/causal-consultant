@@ -17,7 +17,7 @@ Before touching variables, read the current project context:
 - `evaluators.design_planner_03`: route hypotheses, envisioned population, eligibility, exposure/assignment, comparator, time zero, follow-up, clusters, pre-periods, and measurement schedule;
 - `evaluators.dag_builder_04`: causal-logic hypotheses, timing claims, proposed variable roles, variables that may be forbidden or late, and unobserved-variable concerns.
 
-Then inspect whether the actual or conceptual data can represent those objects. Do not treat candidate data fields as final causal roles; record evidence for the design planner and DAG builder to use.
+Then inspect whether observed data can represent those objects, or label user-described expected data as unverified. Do not treat candidate data fields as final causal roles; record evidence for the design planner and DAG builder to use.
 
 ### Keep preprocessing reproducible
 

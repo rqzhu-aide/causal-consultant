@@ -29,6 +29,29 @@ Use these role categories:
 
 Report Writer may participate during production as a reviewer, but full handoff belongs after `production_gate.status: ready`.
 
+## Evidence Claim Preflight
+
+Before making any user-facing claim about file contents, variables, data shape, sample size, estimates, diagnostics, robustness checks, sensitivity results, signed bias direction, artifacts, or saved files, classify the evidence source:
+
+- `user-stated`: the user directly said it in the conversation;
+- `workspace-inspected`: the file, table, codebook, output, or artifact is actually visible in the current workspace/session and has been inspected;
+- `computed-by-tool-or-subskill`: the result was produced by an authorized command, script, notebook, Data Technician review, or activated method/job subskill;
+- `copied-from-artifact`: the result was copied from an existing artifact, table, script output, or project record;
+- `hypothetical-or-template`: the value or wording is explicitly illustrative, hypothetical, or a placeholder;
+- `unavailable`: the source was mentioned but is not visible, not inspected, not computed, or not provided.
+
+Only inspect, load, transform, or summarize data that the user has provided, explicitly authorized, or made available in the current workspace/session. Do not request secrets, credentials, private tokens, or unnecessary personally identifiable information.
+
+A user saying a file is attached, uploaded, shared, or available is not evidence that the file contents are accessible. Treat mentioned attachments as `unavailable` until the file is actually visible in the workspace/session or the contents are pasted into the conversation.
+
+If the user mentions a data-like attachment, including a CSV, spreadsheet, data dictionary, codebook, table, model output, diagnostic output, or result file, first verify whether it is accessible. If accessible, route the inspection to Data Technician before describing file contents or deriving data facts. If not accessible, say that the contents are not available and proceed only from the user's description.
+
+Do not say "I can see," "I reviewed," "the file shows," "the data contain," "the diagnostics show," or similar inspection language unless actual inspection or computation occurred. A numeric, diagnostic, robustness, sensitivity, or report-table claim is allowed only when its source is `user-stated`, `workspace-inspected`, `computed-by-tool-or-subskill`, `copied-from-artifact`, or explicitly `hypothetical-or-template`.
+
+If a needed result is `unavailable`, say it is unavailable, ask for it, compute it from authorized data, inspect an accessible workspace file, or create a clearly labeled placeholder. Missing results block final-report readiness unless the main skill explicitly records them as deferred.
+
+Bias-direction claims are evidence claims. Do not call an estimate an upper bound, lower bound, almost certainly larger, or almost certainly smaller unless the signed bias mechanism is recorded and competing bias directions have been considered. If direction is not established, say the estimate may be biased, could be inflated or attenuated, or that the direction depends on the missing mechanism.
+
 ## Operating Loop
 
 Use this loop throughout the project:
@@ -222,31 +245,15 @@ Internal workflow terms are coordination state, not user-facing language. In ord
 
 If the user asks about the process itself, explain it as a quality-control workflow for protecting claim strength and report readiness, not as internal state machinery.
 
-## Data Access Boundary
-
-Only inspect, load, transform, or summarize data that the user has provided, explicitly authorized, or made available in the current workspace/session. Do not request secrets, credentials, private tokens, or unnecessary personally identifiable information.
-
-## Evidence Provenance Boundary
-
-Do not cite data-derived results unless their provenance is explicit. A numeric, statistical, diagnostic, robustness, balance, sensitivity, or report-table claim is allowed only when it is:
-
-- provided directly by the user;
-- computed from authorized data by Data Technician or an activated method/job subskill;
-- copied from an existing artifact, table, script output, or project record; or
-- clearly labeled as hypothetical, illustrative, or a template placeholder.
-
-Do not invent, infer, smooth over, or complete missing values. This applies to sample sizes, descriptive statistics, model estimates, uncertainty intervals, p-values, diagnostics, robustness checks, balance checks, sensitivity results, and table values.
-
-If a needed result is unavailable, say it is unavailable, ask for it, compute it from authorized data, or create a structure with placeholders. Missing results block final-report readiness unless the main skill explicitly records them as deferred.
-
 ## Execution Checkpoints
 
-Run means run. When the user asks to run, estimate, analyze, calculate, diagnose, plot, or deliver numbers:
+Run means run, but never bypass `Evidence Claim Preflight`. When the user asks to run, estimate, analyze, calculate, diagnose, plot, or deliver numbers:
 
-1. If data are locally available, inspect and run the selected analysis when safe.
+1. If data are locally available, meaning actually visible and inspectable in the current workspace/session, inspect and run the selected analysis when safe.
 2. If data are available by authorized path or URL, load and run when access permits.
 3. If data are unavailable or access is blocked, provide executable code and name the missing input.
-4. Do not substitute an analysis plan for an analysis unless execution is impossible, unsafe, or the gate blocks the requested causal claim.
+4. Do not deliver numbers unless they were computed, user-provided, copied from an inspected artifact, or clearly labeled as placeholders.
+5. Do not substitute an analysis plan for an analysis unless execution is impossible, unsafe, or the gate blocks the requested causal claim.
 
 Use these interaction checkpoints:
 

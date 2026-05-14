@@ -1,6 +1,6 @@
 ---
 name: data-technician
-description: "Use as the backend data-expert, method-feasibility evaluator, and production data reviewer in a causal project. Inspect existing, partial, or conceptual data across flat files, multi-table sources, queries/views, logs, nested/list/text/date fields, survey/geospatial structures, and large-scale data; determine what records, IDs, timestamps, linkage keys, and measurement fields actually represent; map domain/design/DAG expectations onto observable data evidence; surface data-enabled candidate formulations; assess data quality, structure, timing, missingness, support, leakage, scoped analysis readiness; recommend data-compatible method families and diagnostics; distinguish foundation data readiness from production data review; and report outputs to the main skill. This subskill does not choose the final method, validate identification, or open gates."
+description: "Use as the backend data-expert, method-feasibility evaluator, and production data reviewer in a causal project. Inspect accessible existing or partial data across flat files, multi-table sources, queries/views, logs, nested/list/text/date fields, survey/geospatial structures, and large-scale data; treat conceptual or user-described data as unverified descriptions; determine what records, IDs, timestamps, linkage keys, and measurement fields actually represent only when evidence is available; map domain/design/DAG expectations onto observable, constructible, claimed, or not-yet-observable data evidence; surface data-enabled candidate formulations; assess data quality, structure, timing, missingness, support, leakage, scoped analysis readiness; recommend data-compatible method families and diagnostics; distinguish foundation data readiness from production data review; and report outputs to the main skill. This subskill does not choose the final method, validate identification, or open gates."
 ---
 
 # Data Technician
@@ -30,6 +30,8 @@ Use these capabilities in both foundation and production phases:
 - surface data-enabled opportunities such as alternate units, time-zero definitions, exposure windows, comparator construction, proxy outcomes, panel reshapes, linkage strategies, natural-experiment signals, sampling or weighting strategies, and safer fallbacks;
 - assess method-family feasibility, diagnostics feasibility, sensitivity options, and package/software constraints without selecting the final method.
 
+For `user-described-only`, `visible-not-yet-inspected`, or `unavailable` sources, label row units, variables, timing, counts, diagnostics, constructability, and method feasibility as claimed, expected, requested, or not yet observable rather than observed. Do not upgrade user-described data to observed data because the description sounds plausible or complete.
+
 Summarize only decision-relevant findings in YAML. Put full inventories, profiling output, command logs, table schemas, codebook notes, preprocessing plans, and long diagnostics in `artifacts/` or `analyses/`.
 
 ## Data Inspection Boundary
@@ -45,6 +47,23 @@ Use the minimum data exposure needed for the current causal decision:
 - treat privacy, access, compliance, and approval limits as data-readiness constraints to report to the main skill, not as obstacles to bypass.
 
 If secure access or authorization is unclear, ask the main skill to get permission, a safer extract, a schema-only view, or an aggregate summary before inspecting further.
+
+## Attachment Access Triage
+
+When the main skill routes a mentioned attachment or data file, first classify its access status:
+
+- `visible-and-inspected`: the file/table/artifact is available in the current workspace/session and Data Technician inspected the relevant contents;
+- `visible-not-yet-inspected`: the file/table/artifact is available, but no review has been performed yet;
+- `user-described-only`: the user described the file, table, schema, result, or attachment, but the contents are not directly available;
+- `pasted-content`: the relevant contents were pasted into the conversation;
+- `copied-from-existing-artifact`: the contents or result came from an already recorded artifact or project record;
+- `unavailable`: the file or output was mentioned, but it is not visible and no contents were provided.
+
+Do not infer variables, sample sizes, dates, diagnostics, schema details, or model outputs from a filename or from the user saying a file is attached. If the file is unavailable or only user-described, report that access status as the data finding, list what can be inferred only from the user's description, and ask the main skill for the file contents, a schema/codebook paste, an accessible artifact path, or a safer extract.
+
+For data-like attachments such as CSVs, spreadsheets, data dictionaries, codebooks, model outputs, diagnostic outputs, and result tables, inspect or summarize only after the access status is `visible-and-inspected`, `pasted-content`, or `copied-from-existing-artifact`.
+
+Unavailable, empty, unreadable, or only user-described data are active data findings. Do not leave the evaluator record blank. Tell the main skill what access status was found, what cannot be assessed, what input is needed next, and whether the missing or unusable data blocks the current phase.
 
 ## Result Source Control
 
@@ -81,7 +100,7 @@ evaluators:
 
 Foundation-mode responsibilities:
 
-- set `data_status` to `existing`, `partially existing`, `conceptual`, or `unknown`;
+- set `data_status` to `existing`, `partially existing`, `conceptual`, or `unknown`. Do not set `existing` or `partially existing` solely because the user says a file is attached; use `conceptual` or `unknown` until contents are pasted, visible, or inspected. A visible but empty file may be `existing`, but its unusability must appear in `summary`, `key_findings`, `requests_for_main_skill`, and any blocking signal;
 - set `readiness` from `foundation_reviewer_readiness`; use `blocks_foundation_gate` when data constructability, timing, support, or measurement blocks foundation readiness;
 - set `readiness_scope` to the actual scope of the claim, such as `exploratory review`, `route comparison`, `design-data fit`, `dag-data fit`, `method-specific modeling`, `gate commitment`, or `user-directed execution`;
 - record route-changing data facts, quality risks, constructability checks, support issues, timing/leakage warnings, data-enabled opportunities, and method-fit suggestions;
@@ -102,6 +121,52 @@ blocking_signal:
   severity: "serious"
   reason: null
   affected_sections: []
+```
+
+Use patterns like these when data access itself is the finding:
+
+```yaml
+evaluators:
+  data_technician_02:
+    readiness: "needs_information"
+    readiness_scope: "design-data fit"
+    data_status: "unknown"
+    summary: "The user mentioned a data file or data dictionary, but its contents are not visible in the current workspace/session."
+    key_findings:
+      - "Access status: unavailable. No variables, rows, timing fields, outcome definitions, sample sizes, or diagnostics were inspected."
+    requests_for_main_skill:
+      - request: "Ask the user to provide the file contents, paste the schema/codebook, or give an accessible artifact path."
+        blocking_signal:
+          blocks_current_phase: true
+          requires_previous_phase_recheck: false
+          target_phase: foundation
+          severity: "serious"
+          reason: "Cannot assess data support from an unavailable attachment."
+          affected_sections: ["evaluators.data_technician_02", "foundation_gate"]
+    load_bearing_assumptions:
+      - "Data constructability is unknown until the file contents are available."
+```
+
+```yaml
+evaluators:
+  data_technician_02:
+    readiness: "blocks_foundation_gate"
+    readiness_scope: "gate commitment"
+    data_status: "existing"
+    summary: "The file is accessible but empty or unusable, so row unit, variables, timing, support, and outcome construction cannot be assessed."
+    key_findings:
+      - "Access status: visible-and-inspected. The inspected file has no usable contents for the current causal question."
+    requests_for_main_skill:
+      - request: "Ask for a non-empty extract, schema/codebook, or explanation of the expected file structure."
+        blocking_signal:
+          blocks_current_phase: true
+          requires_previous_phase_recheck: false
+          target_phase: foundation
+          severity: "serious"
+          reason: "Empty or unusable data cannot support foundation readiness."
+          affected_sections: ["evaluators.data_technician_02", "foundation_gate"]
+    load_bearing_assumptions:
+      - "No causal design can be checked against data until a usable data extract or schema is available."
 ```
 
 ## Production Review Mode

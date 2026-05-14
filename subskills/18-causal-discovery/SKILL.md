@@ -33,7 +33,7 @@ The sidecar breadcrumb should stay small:
 analysis:
   discovery_sidecar:
     active: true
-    purpose: "graph exploration | graph comparison | variable screening | discovery diagnostics | discovery-only report"
+    purpose: "one value from assets/workflow_enums.yaml > discovery_sidecar_purpose"
     return_to_phase: "foundation | production | reporting"
     affects_main_route: false
     artifact_paths: []
@@ -56,7 +56,7 @@ Write this subskill's record with:
 - `requests_for_main_skill`: ask user for temporal order/background knowledge, refresh Data Technician, refresh Design Planner, refresh DAG Builder, refresh Report Writer, run stability diagnostics, narrow the graph task, or keep discovery as exploratory
 - `readiness`: use `materials ready` only when graph artifacts and diagnostics are ready for the requested sidecar deliverable or owner review; use `diagnostics needed`, `diagnostics deferred`, `foundation recheck needed`, or `blocked` otherwise
 - `blocking_signal`: leave inactive by default; request the appropriate owner review instead of directly changing gates or routes
-- `recommended_next_action`: one value from `assets/workflow_enums.yaml > main_actions`; usually `refresh_dag_builder_04`, `refresh_data_technician_02`, `refresh_design_planner_03`, `refresh_report_writer_20`, `ask_user`, `run_diagnostics`, `proceed_with_caveat`, or `no_action`
+- `recommended_next_action`: one value from `assets/workflow_enums.yaml > main_actions`; usually `refresh_dag_builder_04`, `refresh_data_technician_02`, `refresh_design_planner_03`, `refresh_report_writer_20`, `ask_user`, `run_diagnostics`, or `proceed_with_caveat`
 - `artifact_paths`: paths to graph outputs, code, diagnostics, plots, or handoff memos
 
 Keep discovery feedback in the sidecar breadcrumb, optional `subskill_analyses` chunk, and artifact paths. Do not duplicate the full discovery record in `analysis.production_loop.reviewer_summaries`.
@@ -131,7 +131,7 @@ Report Writer handoff notes for discovery-only reports should include:
 
 Recommend owner review when discovery contradicts current causal timing, reveals likely latent structure that may invalidate the current route, shows required variables may be downstream/collider-like, or makes the current DAG/route questionable. Do not change gates, routes, adjustment sets, or claim strength directly from discovery output.
 
-Close the sidecar with `recommended_next_action: no_action` when discovery is useful but remains exploratory, graph-equivalence is broad, orientations are weak, hidden confounding remains plausible, or the output is only report appendix material. Preserve cautious language and artifact paths.
+Close the sidecar with `recommended_next_action: ask_user` when discovery is useful but remains exploratory, graph-equivalence is broad, orientations are weak, hidden confounding remains plausible, or the output is only report appendix material and no owner review is immediately required. Preserve cautious language and artifact paths, and ask the main skill to offer a context-aware continuation choice such as keep it exploratory, route implications to DAG/Data/Design review, compare another discovery specification, turn it into a discovery report, resume the prior phase, or pause.
 
 For a discovery-only deliverable, recommend `materials ready` only when the graph artifact, causal-path notes or a statement that paths are not stable, diagnostics, limitations, exploratory wording, recommended next effect-estimation questions if useful, and artifact paths are recorded. This does not imply foundation-gate or production-gate readiness for an effect claim.
 

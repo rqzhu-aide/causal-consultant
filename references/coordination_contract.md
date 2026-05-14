@@ -14,7 +14,7 @@ Keep `project.yaml` as a lean coordination ledger:
 
 | Section | Owner | Purpose |
 |---|---|---|
-| `project` | Main skill | Metadata, state folder, current phase, project status. |
+| `project` | Main skill | Metadata, state folder, and current phase. |
 | `main_skill` | Main skill | User goal, intent, rigor mode, conversation style, selected next action, open questions, task parking lot, user-directed continuation. |
 | `foundation_gate` | Main skill | Validity status for route commitment and causal support. |
 | `production_gate` | Main skill | Readiness for Report Writer handoff after production work. |
@@ -25,7 +25,7 @@ Keep `project.yaml` as a lean coordination ledger:
 | `evaluators.dag_builder_04` | DAG Builder | Causal logic, timing, variable roles, identification status, assumptions. |
 | `routes` | Main skill | Current route, active hypotheses, rejected or deferred routes. |
 | `analysis` | Main skill | Route commitment, execution stage, production loop, discovery sidecar breadcrumb, diagnostics, method/job recommendations and activations, report writer state, claim strength. |
-| `analysis.report_writer_20` | Report Writer | Production feedback and post-production handoff state. |
+| `analysis.report_writer_20` | Report Writer | Production feedback, post-production handoff state, and discovery-only report state. |
 | `subskill_analyses` | Activated method/job subskills and optional discovery sidecar records | Compact records appended only when method/job subskills are activated or discovery traceability is useful. |
 | `artifacts` | Main skill and subskills | Index of external notes, analyses, tables, plots, reports, and reproducibility material. |
 
@@ -136,9 +136,12 @@ Production-gate readiness means Report Writer can take over final report synthes
 
 ## Report Writer Boundary
 
-`20-report-writer` has two roles:
+`20-report-writer` has three roles:
 
 - production reviewer before `production_gate.status: ready`;
 - handoff writer after `production_gate.status: ready` and `production_gate.can_handoff_to_report_writer: true`.
+- discovery report writer when the requested deliverable is causal discovery, `analysis.discovery_sidecar.purpose: discovery-only report`, and effect-estimation gates are `not needed`.
 
-Before handoff, it gives reportability and presentation feedback but does not write the final report. After handoff, it uses the Report Writer final report template to combine the foundation record, production loop, method/job handoff notes, Data Technician warnings, diagnostics, figures, tables, artifacts, limitations, and claim-strength constraints into final-ready report or presentation material. It should not start a new interaction loop unless a required handoff input is missing.
+Before handoff, it gives reportability and presentation feedback but does not write the final effect-estimation report. After handoff, it uses the Report Writer final report template to combine the foundation record, production loop, method/job handoff notes, Data Technician warnings, diagnostics, figures, tables, artifacts, limitations, and claim-strength constraints into final-ready report or presentation material. In discovery report mode, it uses the discovery report template and keeps claim strength exploratory rather than opening production-gate handoff. It should not start a new interaction loop unless a required input is missing.
+
+After Report Writer delivers a report, discovery report, memo, slides, or presentation artifact, the main skill sets `project.current_phase: post_delivery` and `main_skill.selected_next_action: ask_user`. `post_delivery` is not terminal: completed outputs live in `artifacts`, deferred user tasks live in `main_skill.task_parking_lot`, revisions or new same-evidence deliverables return to `reporting`, additional diagnostics or analysis return to `production`, and a new causal question returns to `foundation`.

@@ -50,6 +50,7 @@ REPORT_WRITER_MODES = enum("report_writer_modes")
 REPORT_WRITER_STATUSES = enum("report_writer_statuses")
 METHOD_JOB_ROLES = enum("method_job_roles")
 METHOD_JOB_STATUSES = enum("method_job_statuses")
+DISCOVERY_PURPOSES = enum("discovery_sidecar_purpose")
 DISCOVERY_SUBSKILL_ID = "18-causal-discovery"
 DISCOVERY_RETURN_PHASES = {"foundation", "production", "reporting"}
 PARKED_TASK_STATUSES = enum("parked_task_status")
@@ -65,23 +66,19 @@ FOUNDATION_HANDOFF_TARGETS = {
 REQUIRED_PATHS = [
     ("project", "project_name"),
     ("project", "short_label"),
-    ("project", "analyst"),
     ("project", "date_started"),
     ("project", "last_updated"),
     ("project", "state_folder"),
     ("project", "project_yaml"),
     ("project", "analyses_dir"),
     ("project", "artifacts_dir"),
-    ("project", "project_status"),
     ("project", "current_phase"),
     ("main_skill", "user_goal"),
     ("main_skill", "primary_intent"),
     ("main_skill", "rigor_mode"),
     ("main_skill", "conversation_style"),
     ("main_skill", "selected_next_action"),
-    ("main_skill", "summary_for_user"),
     ("main_skill", "open_questions"),
-    ("main_skill", "assumptions_to_surface"),
     ("main_skill", "task_parking_lot", "current_task"),
     ("main_skill", "task_parking_lot", "parked_tasks"),
     ("main_skill", "user_directed", "requested"),
@@ -164,7 +161,6 @@ REQUIRED_PATHS = [
     ("analysis", "execution_confirmation", "plan_summary"),
     ("analysis", "execution_confirmation", "user_confirmed_plan"),
     ("analysis", "execution_confirmation", "confirmation_basis"),
-    ("analysis", "execution_confirmation", "confirmed_at"),
     ("analysis", "recommended_method_job_subskills"),
     ("analysis", "activated_method_job_subskills"),
     ("analysis", "discovery_sidecar", "active"),
@@ -197,30 +193,10 @@ REQUIRED_PATHS = [
     ("analysis", "report_writer_20", "production_feedback"),
     ("analysis", "report_writer_20", "summary"),
     ("analysis", "report_writer_20", "artifacts"),
-    ("analysis", "report_writer_20", "revision_questions"),
     ("analysis", "claim_strength"),
     ("analysis", "limitations"),
     ("subskill_analyses",),
     ("artifacts",),
-]
-
-RETIRED_PATHS = [
-    ("evaluator_loop", "readiness_signals"),
-    ("evaluator_loop", "summaries"),
-    ("evaluators", "domain_helper_01", "status"),
-    ("evaluators", "domain_helper_01", "implications"),
-    ("evaluators", "domain_helper_01", "nonharmful_assumptions"),
-    ("evaluators", "data_technician_02", "status"),
-    ("evaluators", "data_technician_02", "implications"),
-    ("evaluators", "data_technician_02", "nonharmful_assumptions"),
-    ("evaluators", "design_planner_03", "status"),
-    ("evaluators", "design_planner_03", "implications"),
-    ("evaluators", "design_planner_03", "nonharmful_assumptions"),
-    ("evaluators", "dag_builder_04", "status"),
-    ("evaluators", "dag_builder_04", "implications"),
-    ("evaluators", "dag_builder_04", "nonharmful_assumptions"),
-    ("limitations",),
-    ("open_questions",),
 ]
 
 REQUIRED_NONEMPTY_PATHS = [
@@ -232,7 +208,6 @@ REQUIRED_NONEMPTY_PATHS = [
     ("project", "project_yaml"),
     ("project", "analyses_dir"),
     ("project", "artifacts_dir"),
-    ("project", "project_status"),
     ("project", "current_phase"),
     ("main_skill", "primary_intent"),
     ("main_skill", "rigor_mode"),
@@ -269,9 +244,7 @@ REQUIRED_NONEMPTY_PATHS = [
     ("analysis", "execution_confirmation", "user_confirmed_plan"),
     ("analysis", "discovery_sidecar", "active"),
     ("analysis", "discovery_sidecar", "affects_main_route"),
-    ("analysis", "production_loop", "review_purpose"),
     ("analysis", "production_loop", "readiness"),
-    ("analysis", "production_loop", "recommended_next_action"),
     ("analysis", "production_loop", "foundation_recheck", "triggered"),
     ("analysis", "production_loop", "foundation_recheck", "severity"),
     ("analysis", "production_loop", "foundation_recheck", "main_skill_decision"),
@@ -284,7 +257,6 @@ REQUIRED_NONEMPTY_PATHS = [
 ]
 
 ALLOWED_VALUES = {
-    ("project", "project_status"): enum("project_status"),
     ("project", "current_phase"): enum("project_phase"),
     ("main_skill", "primary_intent"): enum("primary_intent"),
     ("main_skill", "rigor_mode"): enum("rigor_mode"),
@@ -323,6 +295,11 @@ ALLOWED_VALUES = {
     ("analysis", "production_loop", "loop_control", "status"): enum("loop_status"),
     ("analysis", "production_loop", "loop_control", "break_action"): PRODUCTION_LOOP_BREAK_ACTIONS,
     ("analysis", "claim_strength"): enum("claim_strength"),
+}
+
+NULLABLE_ENUM_PATHS = {
+    ("analysis", "production_loop", "review_purpose"),
+    ("analysis", "production_loop", "recommended_next_action"),
 }
 
 
@@ -450,10 +427,6 @@ def collect_blocking_signal_states(items, label):
     for idx, item in enumerate(items):
         if not isinstance(item, dict):
             continue
-        if "readiness_impact" in item:
-            errors.append(
-                f"{label}[{idx}].readiness_impact is retired; use blocking_signal instead"
-            )
         signal = item.get("blocking_signal")
         signal_label = f"{label}[{idx}].blocking_signal"
         errors.extend(validate_blocking_signal(signal, signal_label))
@@ -482,7 +455,6 @@ def blocking_items(items):
 def collect_load_bearing(data):
     paths = [
         ("foundation_gate", "assumptions_to_surface"),
-        ("main_skill", "assumptions_to_surface"),
         ("evaluators", "domain_helper_01", "load_bearing_assumptions"),
         ("evaluators", "data_technician_02", "load_bearing_assumptions"),
         ("evaluators", "design_planner_03", "load_bearing_assumptions"),
@@ -565,17 +537,25 @@ def validate_subskill_analyses(value):
             errors.append(f"{label}.subskill_id is missing")
         elif not is_subskill_analysis_id(str(item.get("subskill_id"))):
             errors.append(f"{label}.subskill_id is not a method/job or discovery subskill ID")
-        role = item.get("role", "unknown")
-        if role not in METHOD_JOB_ROLES:
+        role = item.get("role")
+        if not has_recorded_value(role):
+            errors.append(f"{label}.role is not recorded")
+        elif role not in METHOD_JOB_ROLES:
             errors.append(f"{label}.role has unsupported value {role!r}")
-        status = item.get("status", "unknown")
-        if status not in METHOD_JOB_STATUSES:
+        status = item.get("status")
+        if not has_recorded_value(status):
+            errors.append(f"{label}.status is not recorded")
+        elif status not in METHOD_JOB_STATUSES:
             errors.append(f"{label}.status has unsupported value {status!r}")
-        readiness = item.get("readiness", "unknown")
-        if readiness not in PRODUCTION_LOOP_READINESS:
+        readiness = item.get("readiness")
+        if not has_recorded_value(readiness):
+            errors.append(f"{label}.readiness is not recorded")
+        elif readiness not in PRODUCTION_LOOP_READINESS:
             errors.append(f"{label}.readiness has unsupported value {readiness!r}")
-        action = item.get("recommended_next_action", "unknown")
-        if action not in ACTIONS:
+        action = item.get("recommended_next_action")
+        if not has_recorded_value(action):
+            errors.append(f"{label}.recommended_next_action is not recorded")
+        elif action not in ACTIONS:
             errors.append(f"{label}.recommended_next_action has unsupported value {action!r}")
         signal = item.get("blocking_signal")
         errors.extend(validate_blocking_signal(signal, f"{label}.blocking_signal"))
@@ -648,6 +628,11 @@ def validate_discovery_sidecar(value):
         errors.append("analysis.discovery_sidecar.affects_main_route is not a boolean")
     if artifact_paths is not None and not isinstance(artifact_paths, list):
         errors.append("analysis.discovery_sidecar.artifact_paths is not a list")
+    if has_recorded_value(purpose) and purpose not in DISCOVERY_PURPOSES:
+        errors.append(
+            "analysis.discovery_sidecar.purpose has unsupported value "
+            f"{purpose!r}; expected one of {sorted(DISCOVERY_PURPOSES)}"
+        )
     if (
         active is not True
         and return_to_phase is not None
@@ -784,6 +769,8 @@ def is_subskill_analysis_id(value):
 def validate_workflow_invariants(data):
     errors = []
 
+    current_phase = get_path(data, ("project", "current_phase"))
+    main_action = get_path(data, ("main_skill", "selected_next_action"))
     gate_status = get_path(data, ("foundation_gate", "status"))
     can_support = get_path(data, ("foundation_gate", "can_support_causal_commitment"))
     foundation_selected_reviewers = get_path(data, ("evaluator_loop", "selected_reviewers"))
@@ -870,7 +857,7 @@ def validate_workflow_invariants(data):
     if loop_status == "loop detected":
         if not isinstance(repeated_count, int) or isinstance(repeated_count, bool) or repeated_count < 2:
             errors.append("loop detected but repeated_cycle_count is not an integer >= 2")
-        if break_action in {"no_action", "unknown", MISSING}:
+        if break_action in {"unknown", MISSING}:
             errors.append("loop detected but break_action does not break the loop")
         if not has_recorded_value(break_rationale):
             errors.append("loop detected but rationale is not recorded")
@@ -927,7 +914,6 @@ def validate_workflow_invariants(data):
         "diagnostics complete",
         "report writer activated",
         "final report delivered",
-        "completed",
     }
     if (
         execution_stage in stages_after_confirmation
@@ -973,7 +959,6 @@ def validate_workflow_invariants(data):
         "diagnostics complete",
         "report writer activated",
         "final report delivered",
-        "completed",
     }
     if execution_stage in stages_after_first_pass and not has_recorded_value(active_method_subskills):
         errors.append("analysis.execution_stage indicates modeling/diagnostics but no activated method-job subskill is recorded")
@@ -1070,13 +1055,12 @@ def validate_workflow_invariants(data):
         "diagnostics complete",
         "report writer activated",
         "final report delivered",
-        "completed",
     }
     if (
         execution_stage in production_loop_required_stages
         or has_recorded_value(active_method_subskills)
     ):
-        if production_review_purpose in {"not needed", "unknown", MISSING}:
+        if not has_recorded_value(production_review_purpose):
             errors.append(
                 "analysis has production work active or underway but analysis.production_loop.review_purpose is not recorded"
             )
@@ -1084,7 +1068,7 @@ def validate_workflow_invariants(data):
             errors.append(
                 "analysis has production work active or underway but analysis.production_loop.readiness is not recorded"
             )
-        if production_recommended_action in {"unknown", MISSING}:
+        if not has_recorded_value(production_recommended_action):
             errors.append(
                 "analysis has production work active or underway but analysis.production_loop.recommended_next_action is not recorded"
             )
@@ -1104,7 +1088,7 @@ def validate_workflow_invariants(data):
             or production_repeated_count < 2
         ):
             errors.append("production loop detected but repeated_cycle_count is not an integer >= 2")
-        if production_break_action in {"no_action", "unknown", MISSING}:
+        if production_break_action in {"unknown", MISSING}:
             errors.append("production loop detected but break_action does not break the loop")
         if not has_recorded_value(production_break_rationale):
             errors.append("production loop detected but rationale is not recorded")
@@ -1186,22 +1170,72 @@ def validate_workflow_invariants(data):
     report_writer_status = get_path(data, ("analysis", "report_writer_20", "status"))
     discovery_purpose = get_path(data, ("analysis", "discovery_sidecar", "purpose"))
     discovery_artifacts = get_path(data, ("analysis", "discovery_sidecar", "artifact_paths"))
-    report_writer_active_statuses = {
-        "ready to activate",
-        "activated",
-        "diagnostic reviewed",
+    report_writer_statuses_by_mode = {
+        "not selected": {"not ready"},
+        "production reviewer": {
+            "not ready",
+            "production feedback recorded",
+            "blocked",
+        },
+        "handoff writer": {
+            "not ready",
+            "activated",
+            "final report delivered",
+            "blocked",
+        },
+        "discovery report writer": {
+            "not ready",
+            "activated",
+            "discovery report delivered",
+            "blocked",
+        },
+    }
+    allowed_report_writer_statuses = report_writer_statuses_by_mode.get(report_writer_mode)
+    if (
+        allowed_report_writer_statuses is not None
+        and report_writer_status not in allowed_report_writer_statuses
+    ):
+        errors.append(
+            "analysis.report_writer_20.status is not compatible with "
+            f"analysis.report_writer_20.mode {report_writer_mode!r}: {report_writer_status!r}"
+        )
+    delivered_report_status = report_writer_status in {
         "discovery report delivered",
         "final report delivered",
     }
+    delivered_report_stage = execution_stage == "final report delivered"
     report_writer_execution_stages = {
         "report writer activated",
         "final report delivered",
     }
-    if (
-        report_writer_status in report_writer_active_statuses
+    discovery_report_active = (
+        report_writer_mode == "discovery report writer"
+        or report_writer_status == "discovery report delivered"
+    )
+    effect_report_handoff_active = (
+        report_writer_mode == "handoff writer"
+        or report_writer_status in {"activated", "final report delivered"}
         or execution_stage in report_writer_execution_stages
-    ):
-        if report_writer_mode == "discovery report writer":
+    )
+    if discovery_report_active:
+        if report_writer_mode != "discovery report writer":
+            errors.append("Discovery Report Writer is active but analysis.report_writer_20.mode is not discovery report writer")
+        if report_writer_status in {"final report delivered"}:
+            errors.append("Discovery Report Writer is active but report_writer_20.status is an effect-report status")
+        if execution_stage in report_writer_execution_stages:
+            errors.append("Discovery Report Writer is active but analysis.execution_stage records effect-report handoff or delivery")
+        if not delivered_report_status and current_phase != "reporting":
+            errors.append("Discovery Report Writer is active before delivery but project.current_phase is not reporting")
+        if report_writer_status == "discovery report delivered" and current_phase != "post_delivery":
+            errors.append("Discovery report is delivered but project.current_phase is not post_delivery")
+        if report_writer_status == "discovery report delivered" and main_action != "ask_user":
+            errors.append("Discovery report is delivered but main_skill.selected_next_action is not ask_user")
+        if report_writer_status == "discovery report delivered" and not (
+            has_recorded_value(discovery_artifacts)
+            or has_recorded_value(get_path(data, ("artifacts",)))
+        ):
+            errors.append("Discovery report is delivered but no discovery artifact or report artifact is recorded")
+        if report_writer_status != "final report delivered":
             if discovery_purpose != "discovery-only report":
                 errors.append("Discovery Report Writer is active but discovery_sidecar.purpose is not discovery-only report")
             if gate_status != "not needed":
@@ -1210,38 +1244,74 @@ def validate_workflow_invariants(data):
                 errors.append("Discovery Report Writer is active but production_gate.status is not not needed")
             if production_can_handoff is not False:
                 errors.append("Discovery Report Writer is active but production_gate.can_handoff_to_report_writer must be false")
-            if report_writer_status == "discovery report delivered" and not (
-                has_recorded_value(discovery_artifacts)
-                or has_recorded_value(get_path(data, ("artifacts",)))
-            ):
-                errors.append("Discovery report is delivered but no discovery artifact or report artifact is recorded")
-        else:
-            if report_writer_mode != "handoff writer":
-                errors.append("Report Writer handoff is active but analysis.report_writer_20.mode is not handoff writer")
-            if gate_status != "ready":
-                errors.append("Report Writer handoff is active but foundation_gate.status is not ready")
-            if production_gate_status != "ready":
-                errors.append("Report Writer handoff is active but production_gate.status is not ready")
-            if production_can_handoff is not True:
-                errors.append("Report Writer handoff is active but production_gate.can_handoff_to_report_writer must be true")
-            if route_status not in {"ready", "committed"}:
-                errors.append("Report Writer handoff is active but analysis.route_commitment_status is not ready/committed")
-            if not (
-                has_recorded_value(get_path(data, ("analysis", "first_pass_summary")))
-                or has_recorded_value(get_path(data, ("analysis", "analyses")))
-                or has_recorded_value(get_path(data, ("artifacts",)))
-            ):
-                errors.append("Report Writer handoff is active but no first-pass summary, analysis artifact, or artifact is recorded")
-            if production_readiness not in {
-                "diagnostics complete",
-                "diagnostics deferred",
-                "diagnostics not needed",
-                "materials ready",
-                "reportable",
-            }:
-                errors.append(
-                    "Report Writer handoff is active but analysis.production_loop.readiness does not show diagnostics complete/deferred/not needed, materials ready, or reportable"
-                )
+    elif effect_report_handoff_active:
+        if not (delivered_report_status or delivered_report_stage) and current_phase != "reporting":
+            errors.append("Report Writer handoff is active before delivery but project.current_phase is not reporting")
+        if report_writer_status == "discovery report delivered":
+            errors.append("Report Writer handoff is active but report_writer_20.status is a discovery-report status")
+        if report_writer_mode != "handoff writer":
+            errors.append("Report Writer handoff is active but analysis.report_writer_20.mode is not handoff writer")
+        if gate_status != "ready":
+            errors.append("Report Writer handoff is active but foundation_gate.status is not ready")
+        if production_gate_status != "ready":
+            errors.append("Report Writer handoff is active but production_gate.status is not ready")
+        if production_can_handoff is not True:
+            errors.append("Report Writer handoff is active but production_gate.can_handoff_to_report_writer must be true")
+        if route_status not in {"ready", "committed"}:
+            errors.append("Report Writer handoff is active but analysis.route_commitment_status is not ready/committed")
+        if not (
+            has_recorded_value(get_path(data, ("analysis", "first_pass_summary")))
+            or has_recorded_value(get_path(data, ("analysis", "analyses")))
+            or has_recorded_value(get_path(data, ("artifacts",)))
+        ):
+            errors.append("Report Writer handoff is active but no first-pass summary, analysis artifact, or artifact is recorded")
+        if production_readiness not in {
+            "diagnostics complete",
+            "diagnostics deferred",
+            "diagnostics not needed",
+            "materials ready",
+            "reportable",
+        }:
+            errors.append(
+                "Report Writer handoff is active but analysis.production_loop.readiness does not show diagnostics complete/deferred/not needed, materials ready, or reportable"
+            )
+        if execution_stage == "report writer activated" and report_writer_status != "activated":
+            errors.append(
+                "analysis.execution_stage is report writer activated but analysis.report_writer_20.status is not activated"
+            )
+        if report_writer_status == "activated" and execution_stage != "report writer activated":
+            errors.append(
+                "analysis.report_writer_20.status is activated but analysis.execution_stage is not report writer activated"
+            )
+        if delivered_report_stage and report_writer_status != "final report delivered":
+            errors.append(
+                "analysis.execution_stage is final report delivered but analysis.report_writer_20.status is not final report delivered"
+            )
+        if report_writer_status == "final report delivered" and execution_stage != "final report delivered":
+            errors.append(
+                "analysis.report_writer_20.status is final report delivered but analysis.execution_stage is not final report delivered"
+            )
+    if delivered_report_status or delivered_report_stage:
+        if current_phase != "post_delivery":
+            errors.append(
+                "Report Writer delivery is recorded but project.current_phase is not post_delivery"
+            )
+        if main_action != "ask_user":
+            errors.append(
+                "Report Writer delivery is recorded but main_skill.selected_next_action is not ask_user"
+            )
+    if current_phase == "post_delivery":
+        if main_action != "ask_user":
+            errors.append("project.current_phase is post_delivery but main_skill.selected_next_action is not ask_user")
+        if not (
+            delivered_report_status
+            or delivered_report_stage
+            or has_recorded_value(get_path(data, ("analysis", "report_writer_20", "artifacts")))
+            or has_recorded_value(get_path(data, ("artifacts",)))
+        ):
+            errors.append(
+                "project.current_phase is post_delivery but no delivered report status or artifact is recorded"
+            )
 
     design_status = get_path(data, ("evaluators", "design_planner_03", "design_status"))
     dag_supported_status = get_path(data, ("evaluators", "dag_builder_04", "supported_status"))
@@ -1356,13 +1426,6 @@ def main() -> None:
             print(f"- {item}")
         raise SystemExit(1)
 
-    retired = [".".join(path) for path in RETIRED_PATHS if get_path(data, path) is not MISSING]
-    if retired:
-        print("Retired fields:")
-        for item in retired:
-            print(f"- {item}")
-        raise SystemExit(1)
-
     if not args.schema_only:
         empty = [
             ".".join(path)
@@ -1382,6 +1445,8 @@ def main() -> None:
                 continue
             if isinstance(value, str) and "|" in value:
                 invalid.append(f"{'.'.join(path)} still contains placeholder choices: {value!r}")
+            elif value is None and path in NULLABLE_ENUM_PATHS:
+                continue
             elif value not in allowed:
                 invalid.append(
                     f"{'.'.join(path)} has unsupported value {value!r}; expected one of {sorted(allowed)}"

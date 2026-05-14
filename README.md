@@ -59,7 +59,7 @@ The expert set has four main parts:
 - **Foundation experts:** `01-domain-helper`, `02-data-technician`, `03-design-planner`, and `04-dag-builder` evaluate the causal question, data constructability, design route, and DAG logic before the foundation gate.
 - **Method/job experts:** route-specific subskills such as randomized experiments, observational treatment analysis, DiD, RD, IV, longitudinal methods, mediation, interference, genomics, and negative controls review or execute production work only when relevant.
 - **Causal discovery:** `18-causal-discovery` is an any-phase sidecar for graph discovery, graph comparison, variable screening, structure-learning diagnostics, or discovery-only deliverables. Its outputs remain exploratory by default and can add artifacts, feature suggestions, report appendix material, or a discovery-only report without changing gates, routes, adjustment choices, or claim strength.
-- **Report Writer:** `20-report-writer` can review reportability during production, then becomes the final synthesis expert only after `production_gate.status` is `ready`.
+- **Report Writer:** `20-report-writer` can review reportability during production, becomes the effect-report synthesis expert after `production_gate.status` is `ready`, and can separately write exploratory discovery-only reports when effect-estimation gates are `not needed`.
 
 Discovery sidecar work is designed to stay out of the main gate flow unless the main skill deliberately routes a finding back through an existing owner such as Data Technician, Design Planner, DAG Builder, or Report Writer. When the user asks for a causal-discovery-only deliverable, Report Writer can synthesize an exploratory discovery report from the graph artifacts and diagnostics without treating learned graph structure as causal proof or effect-estimation evidence.
 
@@ -75,7 +75,8 @@ With those gates in place, the practical loop is step by step:
 6. Activate only the production subskills relevant to the selected route and current job.
 7. Review method fit, package fit, diagnostics, code, tables, figures, and claim strength through the production loop.
 8. Open `production_gate` only when evidence is reportable, diagnostics are handled, and unresolved foundation rechecks are closed.
-9. Hand off to Report Writer for final synthesis from recorded evidence, not for a new interaction cycle.
+9. For effect-estimation reports, hand off to Report Writer for final synthesis from recorded evidence, not for a new interaction cycle. For discovery-only reports, use Report Writer's exploratory discovery mode without opening effect-estimation gates.
+10. After delivery, return to `post_delivery` and let the main skill ask a context-aware continuation question rather than ending the conversation.
 
 This gate principle keeps the YAML compact while still preserving the information needed for causal accountability.
 
@@ -86,6 +87,6 @@ Within the foundation expert group, each specialist owns a different part of the
 - `03-design-planner`: compares feasible design routes, fallbacks, and next actions.
 - `04-dag-builder`: audits causal logic, timing, identification, adjustment, and route-changing assumptions.
 
-The production phase uses only the relevant method or job subskills for the selected route. These subskills contribute compact records under `subskill_analyses` rather than preloading every possible method. `20-report-writer` participates as a production reviewer when report materials need review, then becomes the final handoff skill only after `production_gate.status` is `ready`.
+The production phase uses only the relevant method or job subskills for the selected route. These subskills contribute compact records under `subskill_analyses` rather than preloading every possible method. `20-report-writer` participates as a production reviewer when report materials need review, becomes the final effect-report handoff skill only after `production_gate.status` is `ready`, and handles discovery-only reports through its separate exploratory mode.
 
-The result is a lean workflow that stays interactive while the user is still shaping the analysis, then becomes disciplined and non-interactive at handoff: the final report should summarize the problem, background, design logic, DAG reasoning, method and job analyses, diagnostics, figures, tables, conclusions, limitations, and cautions already collected during the foundation and production stages.
+The result is a lean workflow that stays interactive while the user is shaping the analysis, becomes disciplined during report handoff, and then returns to the main skill in `post_delivery` for a context-aware continuation question. The final report should summarize the problem, background, design logic, DAG reasoning, method and job analyses, diagnostics, figures, tables, conclusions, limitations, and cautions already collected during the foundation and production stages.

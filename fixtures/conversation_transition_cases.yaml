@@ -234,7 +234,6 @@ cases:
           - "refresh_dag_builder_04"
           - "ask_user"
           - "run_diagnostics"
-          - "no_action"
       - path: "analysis.claim_strength"
         expected_any_of:
           - "exploratory"
@@ -249,6 +248,8 @@ cases:
       - "I do not want to estimate an intervention effect yet. Please run causal discovery on these operational variables and write a report about the likely graph and paths."
       - "Use the discovered structure to suggest possible next effect-estimation questions, but do not run those estimates yet."
     expected_transitions:
+      - path: "project.current_phase"
+        expected: "reporting"
       - path: "main_skill.primary_intent"
         expected: "causal discovery"
       - path: "main_skill.selected_next_action"
@@ -257,7 +258,9 @@ cases:
           - "refresh_report_writer_20"
           - "close_discovery_sidecar"
       - path: "analysis.discovery_sidecar.active"
-        expected: true
+        expected_any_of:
+          - true
+          - false
       - path: "analysis.discovery_sidecar.purpose"
         expected: "discovery-only report"
       - path: "analysis.discovery_sidecar.return_to_phase"
@@ -277,8 +280,7 @@ cases:
       - path: "analysis.report_writer_20.status"
         expected_any_of:
           - "activated"
-          - "discovery report delivered"
-          - "not needed"
+          - "not ready"
       - path: "analysis.discovery_sidecar.artifact_paths"
         expected_recorded_or_empty_until_run: true
     user_facing_expectation: "Produce or prepare an exploratory discovery report using graph artifacts, causal-path notes, diagnostics, limitations, and optional next effect-estimation questions; do not present a treatment effect or open effect-estimation gates."
@@ -312,10 +314,42 @@ cases:
           - "refresh_report_writer_20"
           - "close_discovery_sidecar"
           - "ask_user"
-          - "no_action"
       - path: "analysis.claim_strength"
         expected: "exploratory"
     user_facing_expectation: "Call the chain a candidate graph path, list possible follow-up estimands, and ask before starting any effect-estimation route."
+
+  - case_id: "causal_discovery_report_delivery_enters_post_delivery"
+    title: "Delivered discovery report becomes a continuation checkpoint"
+    user_turns:
+      - "The discovery report is ready. Please deliver it and then ask what I want to do next."
+    expected_transitions:
+      - path: "project.current_phase"
+        expected: "post_delivery"
+      - path: "main_skill.primary_intent"
+        expected: "causal discovery"
+      - path: "analysis.discovery_sidecar.purpose"
+        expected: "discovery-only report"
+      - path: "analysis.discovery_sidecar.return_to_phase"
+        expected: "reporting"
+      - path: "analysis.discovery_sidecar.affects_main_route"
+        expected: false
+      - path: "foundation_gate.status"
+        expected: "not needed"
+      - path: "production_gate.status"
+        expected: "not needed"
+      - path: "production_gate.can_handoff_to_report_writer"
+        expected: false
+      - path: "analysis.report_writer_20.mode"
+        expected: "discovery report writer"
+      - path: "analysis.report_writer_20.status"
+        expected: "discovery report delivered"
+      - path: "main_skill.selected_next_action"
+        expected: "ask_user"
+      - path: "analysis.claim_strength"
+        expected: "exploratory"
+      - path: "artifacts"
+        expected_recorded: true
+    user_facing_expectation: "Deliver the exploratory discovery report as a completed artifact, keep causal language exploratory, and ask a focused continuation question rather than starting an effect-estimation route."
 
   - case_id: "production_gate_ready_report_writer_handoff"
     title: "Completed production materials activate Report Writer handoff"
@@ -324,9 +358,7 @@ cases:
       - "Please turn this into an executive memo with cautious causal language."
     expected_transitions:
       - path: "project.current_phase"
-        expected_any_of:
-          - "production"
-          - "reporting"
+        expected: "reporting"
       - path: "foundation_gate.status"
         expected: "ready"
       - path: "production_gate.status"
@@ -340,15 +372,53 @@ cases:
       - path: "analysis.report_writer_20.mode"
         expected: "handoff writer"
       - path: "analysis.report_writer_20.status"
-        expected_any_of:
-          - "activated"
-          - "final report delivered"
+        expected: "activated"
       - path: "analysis.execution_stage"
-        expected_any_of:
-          - "report writer activated"
-          - "final report delivered"
+        expected: "report writer activated"
+      - path: "main_skill.selected_next_action"
+        expected: "activate_report_writer"
       - path: "analysis.claim_strength"
         expected_any_of:
           - "cautious causal"
           - "causal"
     user_facing_expectation: "Create the final-ready memo from recorded foundation and production evidence after the production gate is ready; do not restart a draft/revision loop."
+
+  - case_id: "report_delivery_enters_post_delivery"
+    title: "Delivered report becomes a continuation checkpoint"
+    user_turns:
+      - "The executive memo is ready. Please deliver the final version and ask me what I want to do next."
+    expected_transitions:
+      - path: "project.current_phase"
+        expected: "post_delivery"
+      - path: "analysis.report_writer_20.mode"
+        expected: "handoff writer"
+      - path: "analysis.report_writer_20.status"
+        expected: "final report delivered"
+      - path: "analysis.execution_stage"
+        expected: "final report delivered"
+      - path: "main_skill.selected_next_action"
+        expected: "ask_user"
+      - path: "artifacts"
+        expected_recorded: true
+    user_facing_expectation: "Deliver the artifact, then ask a focused continuation question; do not treat delivery as the end of the conversation."
+
+  - case_id: "post_delivery_same_evidence_slides_request"
+    title: "After delivery, a same-evidence slide request returns to reporting"
+    user_turns:
+      - "The executive memo looks good. Can you also turn the same results into a short slide outline for leadership?"
+    expected_transitions:
+      - path: "project.current_phase"
+        expected: "reporting"
+      - path: "foundation_gate.status"
+        expected: "ready"
+      - path: "production_gate.status"
+        expected: "ready"
+      - path: "analysis.report_writer_20.mode"
+        expected: "handoff writer"
+      - path: "main_skill.selected_next_action"
+        expected_any_of:
+          - "activate_report_writer"
+          - "refresh_report_writer_20"
+      - path: "main_skill.task_parking_lot.parked_tasks"
+        expected_not_required_for_completed_prior_report: true
+    user_facing_expectation: "Treat the slide outline as a reporting pass from the existing evidence, not as a new causal route or a parked task unless the user defers it."

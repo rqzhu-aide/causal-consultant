@@ -5,14 +5,12 @@
 project:
   project_name: null
   short_label: null
-  analyst: null
   date_started: null
   last_updated: null
   state_folder: null
   project_yaml: "project.yaml"
   analyses_dir: "analyses/"
   artifacts_dir: "artifacts/"
-  project_status: "active"
   current_phase: "foundation"
 
 main_skill:
@@ -20,10 +18,8 @@ main_skill:
   primary_intent: "unknown"
   rigor_mode: "unknown"
   conversation_style: "unknown"
-  selected_next_action: "unknown"
-  summary_for_user: null
+  selected_next_action: "ask_user"
   open_questions: []
-  assumptions_to_surface: []
   task_parking_lot:
     current_task: null
     parked_tasks: []
@@ -62,7 +58,7 @@ production_gate:
 
 evaluator_loop:
   trigger: "unknown"
-  selected_next_action: "unknown"
+  selected_next_action: "ask_user"
   selected_reviewers: []
   review_purpose: null
   action_queue: []
@@ -128,7 +124,6 @@ analysis:
     plan_summary: null
     user_confirmed_plan: false
     confirmation_basis: "unknown"
-    confirmed_at: null
   recommended_method_job_subskills: []
   activated_method_job_subskills: []
   discovery_sidecar:
@@ -142,14 +137,14 @@ analysis:
   recommended_diagnostics: []
   production_loop:
     selected_reviewers: []
-    review_purpose: "not needed"
+    review_purpose: null
     action_queue: []
     # Reviewer summaries are for production reviewers without activated
     # subskill_analyses chunks, usually Data Technician or Report Writer
     # production-reviewer mode. Method/job feedback lives in subskill_analyses.
     reviewer_summaries: []
     readiness: "not started"
-    recommended_next_action: "unknown"
+    recommended_next_action: null
     foundation_recheck:
       triggered: false
       reason: null
@@ -165,11 +160,10 @@ analysis:
       rationale: null
   report_writer_20:
     mode: "not selected"
-    status: "not needed"
+    status: "not ready"
     production_feedback: []
     summary: null
     artifacts: []
-    revision_questions: []
   claim_strength: "unknown"
   limitations: []
 

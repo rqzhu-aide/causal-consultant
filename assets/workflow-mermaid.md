@@ -12,6 +12,7 @@ flowchart TB
     M <--> Y
     M -.-> CD["18 Causal Discovery<br/>any-phase sidecar<br/>exploratory graph support"]
     CD -.-> Y
+    CD -.->|"discovery-only report"| DRW["20 Report Writer<br/>discovery report mode"]
 
     M --> FSEL["Select foundation reviewers"]
 
@@ -52,7 +53,9 @@ flowchart TB
     PG -->|"No"| PA
     PG -->|"Yes"| RW["20 Report Writer<br/>final synthesis"]
 
-    RW --> D["Final deliverable<br/>report, memo, slides,<br/>or artifacts"]
+    RW --> D["Post-delivery checkpoint<br/>report, memo, slides,<br/>or artifacts delivered"]
+    DRW -.-> D
+    D -->|"ask_user continuation"| M
 
     classDef user fill:#E3F2FD,stroke:#1565C0,color:#0D47A1,stroke-width:2px;
     classDef gate fill:#FFF3E0,stroke:#EF6C00,color:#5D3000,stroke-width:2px;
@@ -67,7 +70,7 @@ flowchart TB
     class M,DH,DT,DP,DAG,DT2,FSEL,FS,PC,PA,PSEL,PS keyskill;
     class CD sidecar;
     class MJ method;
-    class RW2,RW report;
+    class RW2,RW,DRW report;
     class Y state;
 ```
 
@@ -79,10 +82,10 @@ flowchart TB
 4. **Production work has its own review loop** - `analysis.production_loop` records selected reviewers, review purpose, what has been done, remaining checks, diagnostics readiness, polishing needs, loop control, and the next action.
 5. **Production can return to foundation** - Severe production findings can trigger `analysis.production_loop.foundation_recheck` and `return_to_foundation`.
 6. **Causal Discovery is a sidecar** - `18-causal-discovery` can be activated at any phase for exploratory graph support, with only a small `analysis.discovery_sidecar` breadcrumb and artifact links unless its findings are routed back through the main workflow.
-7. **Report Writer handoff is after production gate** - `20-report-writer` may advise during production, but only takes over final report synthesis after `production_gate.status: ready`; handoff uses recorded foundation and production evidence rather than starting another interaction loop.
+7. **Report Writer has a narrow discovery exception** - `20-report-writer` may advise during production, takes over effect-report synthesis only after `production_gate.status: ready`, and can separately synthesize exploratory discovery-only reports when effect-estimation gates are `not needed`.
 8. **Data Technician informs method fit** - Method suggestions should reflect the current design, DAG, observed data structure, feasible diagnostics, and package constraints.
 9. **Package lists are candidate maps** - A package is appropriate only if the method stack confirms it supports the estimand, data structure, diagnostics, and uncertainty needs.
 10. **User-directed progress is allowed but labeled** - The user can force workflow pace, not unqualified causal validity.
-11. **Interactive checkpoints prevent runaway execution** - Foundation-ready routes require brief plan confirmation, first-pass results should lead to diagnostics or sensitivity decisions, production-loop review gates report handoff, and final reports are owned by Report Writer after production gate.
+11. **Interactive checkpoints prevent runaway execution** - Foundation-ready routes require brief plan confirmation, first-pass results should lead to diagnostics or sensitivity decisions, production-loop review gates effect-report handoff, discovery-only reports stay exploratory, and delivered artifacts move to `post_delivery` for a continuation question.
 12. **Loop control prevents circular evaluation** - Repeated unresolved blockers trigger a main-skill loop-break action.
 13. **Detailed work leaves the shared YAML** - Full audits, code, diagnostics, DAGs, reports, and route memos belong in `analyses/` or `artifacts/`, with compact summaries in `project.yaml`.

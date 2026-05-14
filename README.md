@@ -83,7 +83,7 @@ This gate principle keeps the YAML compact while still preserving the informatio
 Within the foundation expert group, each specialist owns a different part of the pre-gate review:
 
 - `01-domain-helper`: translates the user's goal into domain-grounded causal formulations, measurement concerns, and practical constraints.
-- `02-data-technician`: checks existing, partial, or conceptual data; audits constructability; and later rechecks production data or method-fit concerns.
+- `02-data-technician`: checks accessible existing or partial data, labels conceptual or user-described data as unverified, audits constructability, and later rechecks production data or method-fit concerns.
 - `03-design-planner`: compares feasible design routes, fallbacks, and next actions.
 - `04-dag-builder`: audits causal logic, timing, identification, adjustment, and route-changing assumptions.
 

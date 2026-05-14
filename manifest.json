@@ -3,7 +3,7 @@
   "version": "0.2.1",
   "created_for": "modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Refined causal discovery into an any-phase sidecar with lean discovery_sidecar state, optional trace records, owner-routed promotion, and selected-reviewer safeguards.",
+  "last_updated_focus": "Refined causal discovery into an any-phase sidecar with lean discovery_sidecar state, explicit discovery-only report handling, optional trace records, owner-routed promotion, and selected-reviewer safeguards.",
   "subskills": [
     "01-domain-helper",
     "02-data-technician",
@@ -43,7 +43,7 @@
       "role": "foundation_evaluator_and_production_data_reviewer",
       "phase": "foundation_and_production",
       "entrypoint": "subskills/02-data-technician/SKILL.md",
-      "state_owner": "evaluators.data_technician_02"
+      "state_owner": "evaluators.data_technician_02_and_analysis.production_loop.reviewer_summaries"
     },
     {
       "id": "03-design-planner",
@@ -184,10 +184,10 @@
     {
       "id": "20-report-writer",
       "display_name": "Report Writer",
-      "role": "production_reviewer_and_handoff_writer",
-      "phase": "production_and_reporting",
+      "role": "production_reviewer_handoff_writer_and_discovery_report_writer",
+      "phase": "production_reporting_and_discovery_deliverable",
       "entrypoint": "subskills/20-report-writer/SKILL.md",
-      "state_owner": "analysis.report_writer_20"
+      "state_owner": "analysis.report_writer_20_and_analysis.production_loop.reviewer_summaries"
     },
     {
       "id": "21-negative-controls-proximal",
@@ -201,5 +201,5 @@
   "evaluation_fixtures": [
     "fixtures/conversation_transition_cases.yaml"
   ],
-  "notes": "The top-level main skill is the user-facing actor: it selects ordered reviewers, owns foundation_gate and production_gate, and speaks in plain language. Domain Helper, Data Technician, Design Planner, and DAG Builder maintain foundation evaluator YAML records before foundation_gate. After foundation_gate opens, method/job subskills, Data Technician, and Report Writer participate as production transition kernels through analysis.production_loop. Causal Discovery is an any-phase sidecar recorded under analysis.discovery_sidecar, with optional compact subskill_analyses records when traceability is useful; discovery artifacts do not change gates, routes, adjustment, or claim strength unless routed back through an existing owner. Severe production findings can trigger return_to_foundation. Report Writer owns analysis.report_writer_20 and takes over final report synthesis only after production_gate is ready, using recorded foundation and production evidence rather than starting a new interaction loop. Canonical workflow enum values live in assets/workflow_enums.yaml. Canonical subskill metadata lives in this manifest; legacy per-subskill skill.json files are intentionally not used."
+  "notes": "The top-level main skill is the user-facing actor: it selects ordered reviewers, owns foundation_gate and production_gate, and speaks in plain language. Domain Helper, Data Technician, Design Planner, and DAG Builder maintain foundation evaluator YAML records before foundation_gate. After foundation_gate opens, method/job subskills, Data Technician, and Report Writer participate as production transition kernels through analysis.production_loop. Causal Discovery is an any-phase sidecar recorded under analysis.discovery_sidecar, with optional compact subskill_analyses records when traceability is useful; discovery artifacts do not change gates, routes, adjustment, or claim strength unless routed back through an existing owner. Severe production findings can trigger return_to_foundation. Report Writer owns analysis.report_writer_20 and takes over effect-report synthesis only after production_gate is ready, using recorded foundation and production evidence rather than starting a new interaction loop; it can also synthesize exploratory discovery-only reports when effect-estimation gates are not needed. Canonical workflow enum values live in assets/workflow_enums.yaml. Canonical subskill metadata lives in this manifest; legacy per-subskill skill.json files are intentionally not used."
 }

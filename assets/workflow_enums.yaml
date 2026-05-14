@@ -2,18 +2,11 @@
 # and subskill instructions. Keep this file as the source of truth when
 # adding, removing, or renaming action/status values.
 
-project_status:
-  - active
-  - paused
-  - completed
-  - unknown
-
 project_phase:
   - foundation
   - production
   - reporting
-  - final_delivery
-  - unknown
+  - post_delivery
 
 primary_intent:
   - estimate effect
@@ -66,8 +59,13 @@ main_actions:
   - mark_foundation_ready
   - mark_production_ready
   - return_to_foundation
-  - no_action
-  - unknown
+
+discovery_sidecar_purpose:
+  - graph exploration
+  - graph comparison
+  - variable screening
+  - discovery diagnostics
+  - discovery-only report
 
 foundation_actions:
   - ask_user
@@ -81,8 +79,6 @@ foundation_actions:
   - block_foundation_gate
   - mark_foundation_ready
   - return_to_foundation
-  - no_action
-  - unknown
 
 user_directed_intent_basis:
   - none
@@ -92,6 +88,12 @@ user_directed_intent_basis:
   - accepted caveated analysis
   - declined further gate work
   - unknown
+
+parked_task_status:
+  - deferred
+  - superseded
+  - paused
+  - abandoned
 
 foundation_gate_status:
   - not needed
@@ -148,7 +150,6 @@ foundation_loop_break_actions:
   - demote_or_block_route
   - choose_fallback
   - proceed_user_directed
-  - no_action
   - unknown
 
 foundation_reviewer_readiness:
@@ -248,8 +249,6 @@ execution_stage:
   - diagnostics complete
   - report writer activated
   - final report delivered
-  - completed
-  - unknown
 
 execution_confirmation_basis:
   - explicit user approval
@@ -258,7 +257,6 @@ execution_confirmation_basis:
   - unknown
 
 production_review_purpose:
-  - not needed
   - method_selection
   - implementation_plan
   - first_pass
@@ -270,7 +268,6 @@ production_review_purpose:
   - presentation_review
   - production_gate_readiness
   - foundation_recheck
-  - unknown
 
 production_loop_readiness:
   - not started
@@ -298,7 +295,6 @@ production_loop_break_actions:
   - proceed_with_caveat
   - mark_production_ready
   - return_to_foundation
-  - no_action
   - unknown
 
 foundation_recheck_severity:
@@ -321,19 +317,14 @@ report_writer_modes:
   - production reviewer
   - handoff writer
   - discovery report writer
-  - unknown
 
 report_writer_statuses:
-  - not needed
   - not ready
   - production feedback recorded
-  - ready to activate
   - activated
-  - diagnostic reviewed
   - discovery report delivered
   - final report delivered
   - blocked
-  - unknown
 
 method_job_roles:
   - primary_route
@@ -341,7 +332,6 @@ method_job_roles:
   - target_or_outcome_module
   - discovery_module
   - diagnostic_module
-  - unknown
 
 method_job_statuses:
   - activated
@@ -352,4 +342,3 @@ method_job_statuses:
   - materials ready
   - blocked
   - deferred
-  - unknown

@@ -14,8 +14,8 @@ Keep `project.yaml` as a lean coordination ledger:
 
 | Section | Owner | Purpose |
 |---|---|---|
-| `project` | Main skill | Metadata, state folder, current phase, project status. |
-| `main_skill` | Main skill | User goal, intent, rigor mode, conversation style, selected next action, open questions, user-directed continuation. |
+| `project` | Main skill | Metadata, state folder, and current phase. |
+| `main_skill` | Main skill | User goal, intent, rigor mode, conversation style, selected next action, open questions, task parking lot, user-directed continuation. |
 | `foundation_gate` | Main skill | Validity status for route commitment and causal support. |
 | `production_gate` | Main skill | Readiness for Report Writer handoff after production work. |
 | `evaluator_loop` | Main skill | Foundation-loop trigger, selected reviewers, review purpose, action queue, loop control. |
@@ -25,7 +25,7 @@ Keep `project.yaml` as a lean coordination ledger:
 | `evaluators.dag_builder_04` | DAG Builder | Causal logic, timing, variable roles, identification status, assumptions. |
 | `routes` | Main skill | Current route, active hypotheses, rejected or deferred routes. |
 | `analysis` | Main skill | Route commitment, execution stage, production loop, discovery sidecar breadcrumb, diagnostics, method/job recommendations and activations, report writer state, claim strength. |
-| `analysis.report_writer_20` | Report Writer | Production feedback and post-production handoff state. |
+| `analysis.report_writer_20` | Report Writer | Production feedback, post-production handoff state, and discovery-only report state. |
 | `subskill_analyses` | Activated method/job subskills and optional discovery sidecar records | Compact records appended only when method/job subskills are activated or discovery traceability is useful. |
 | `artifacts` | Main skill and subskills | Index of external notes, analyses, tables, plots, reports, and reproducibility material. |
 
@@ -42,7 +42,7 @@ Before `foundation_gate.status` is `ready`, the reviewer pool is:
 - `03-design-planner`
 - `04-dag-builder`
 
-`18-causal-discovery` may be activated during foundation only as a sidecar, not as a foundation evaluator. The main skill records this with `analysis.discovery_sidecar`, not `evaluator_loop.selected_reviewers`, keeps discovery artifacts in `analyses/` or `artifacts/`, and returns to the foundation loop afterward unless the user only requested a discovery deliverable. For a discovery-only report, keep effect-estimation gates `not needed` and let Report Writer synthesize the exploratory report from discovery artifacts rather than opening production-gate handoff.
+`18-causal-discovery` may be activated during foundation only as a sidecar, not as a foundation evaluator. The main skill records this with `analysis.discovery_sidecar`, not `evaluator_loop.selected_reviewers`, keeps discovery artifacts in `analyses/` or `artifacts/`, and returns to the foundation loop afterward unless the user only requested a discovery deliverable. Active discovery sidecars use a concrete `return_to_phase`: `foundation` for route/DAG/design support, `production` for active-analysis support, or `reporting` for discovery-only report or appendix work. If the return destination is unclear, the main skill asks the user before activating or closing the sidecar. For a discovery-only report, keep effect-estimation gates `not needed` and let Report Writer synthesize the exploratory report from discovery artifacts rather than opening production-gate handoff.
 
 At each user turn or project-state update, the main skill records the selected foundation reviewers in `evaluator_loop.selected_reviewers`. It may select zero reviewers only when the user turn is purely conversational, a fresh reviewer result already determines the next action, durable state is not being updated, or a blocking user decision must come first. It must select at least one relevant reviewer after data updates, design or route changes, new foundation evidence, diagnostic failures that affect foundation support, or any foundation-gate transition.
 
@@ -75,7 +75,7 @@ The production reviewer pool is:
 - `02-data-technician` for data construction, diagnostics, reproducibility, timing, and package feasibility;
 - `20-report-writer` for reportability, claim language, diagnostic presentation, figure/table choice, audience framing, and presentation structure.
 
-`18-causal-discovery` can still be activated during production, but it remains a sidecar rather than a production reviewer. It uses `analysis.discovery_sidecar` plus artifacts, not `analysis.production_loop.selected_reviewers`, and any implication for the main causal route must be routed back through Data Technician, Design Planner, DAG Builder, or Report Writer as appropriate. Report Writer may receive discovery-only report material, but that does not make discovery a production reviewer or effect-estimation route.
+`18-causal-discovery` can still be activated during production, but it remains a sidecar rather than a production reviewer. It uses `analysis.discovery_sidecar` plus artifacts, not `analysis.production_loop.selected_reviewers`, and any implication for the main causal route must be routed back through Data Technician, Design Planner, DAG Builder, or Report Writer as appropriate. Use `return_to_phase: production` when discovery is a temporary support pass for an already active analysis. Report Writer may receive discovery-only report material, but that does not make discovery a production reviewer or effect-estimation route.
 
 Record ordered production reviewers in `analysis.production_loop.selected_reviewers`, not in `evaluator_loop.selected_reviewers`.
 
@@ -136,9 +136,12 @@ Production-gate readiness means Report Writer can take over final report synthes
 
 ## Report Writer Boundary
 
-`20-report-writer` has two roles:
+`20-report-writer` has three roles:
 
 - production reviewer before `production_gate.status: ready`;
 - handoff writer after `production_gate.status: ready` and `production_gate.can_handoff_to_report_writer: true`.
+- discovery report writer when the requested deliverable is causal discovery, `analysis.discovery_sidecar.purpose: discovery-only report`, and effect-estimation gates are `not needed`.
 
-Before handoff, it gives reportability and presentation feedback but does not write the final report. After handoff, it uses the Report Writer final report template to combine the foundation record, production loop, method/job handoff notes, Data Technician warnings, diagnostics, figures, tables, artifacts, limitations, and claim-strength constraints into final-ready report or presentation material. It should not start a new interaction loop unless a required handoff input is missing.
+Before handoff, it gives reportability and presentation feedback but does not write the final effect-estimation report. After handoff, it uses the Report Writer final report template to combine the foundation record, production loop, method/job handoff notes, Data Technician warnings, diagnostics, figures, tables, artifacts, limitations, and claim-strength constraints into final-ready report or presentation material. In discovery report mode, it uses the discovery report template and keeps claim strength exploratory rather than opening production-gate handoff. It should not start a new interaction loop unless a required input is missing.
+
+After Report Writer delivers a report, discovery report, memo, slides, or presentation artifact, the main skill sets `project.current_phase: post_delivery` and `main_skill.selected_next_action: ask_user`. `post_delivery` is not terminal: completed outputs live in `artifacts`, deferred user tasks live in `main_skill.task_parking_lot`, revisions or new same-evidence deliverables return to `reporting`, additional diagnostics or analysis return to `production`, and a new causal question returns to `foundation`.

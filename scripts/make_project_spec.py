@@ -19,31 +19,6 @@ import datetime
 import re
 
 
-def load_enum_values():
-    repo_root = Path(__file__).resolve().parents[1]
-    enum_path = repo_root / "assets" / "workflow_enums.yaml"
-    values = {}
-    current = None
-    for raw_line in enum_path.read_text(encoding="utf-8").splitlines():
-        stripped = raw_line.strip()
-        if not stripped or stripped.startswith("#"):
-            continue
-        if not raw_line.startswith(" ") and stripped.endswith(":"):
-            current = stripped[:-1]
-            values[current] = []
-            continue
-        if current and stripped.startswith("- "):
-            values[current].append(stripped[2:].strip("\"'"))
-    return values
-
-
-ENUMS = load_enum_values()
-
-
-def choices(enum_name: str) -> str:
-    return " | ".join(ENUMS[enum_name])
-
-
 def load_template() -> str:
     repo_root = Path(__file__).resolve().parents[1]
     template_path = repo_root / "assets" / "causal_project_spec_template.yaml"
@@ -76,46 +51,6 @@ def fill_template(
     }
     for old, new in metadata_replacements.items():
         text = text.replace(old, new, 1)
-
-    replacements = {
-        f'project_status: "{choices("project_status")}"': 'project_status: "active"',
-        f'current_phase: "{choices("project_phase")}"': 'current_phase: "foundation"',
-        f'primary_intent: "{choices("primary_intent")}"': 'primary_intent: "unknown"',
-        f'rigor_mode: "{choices("rigor_mode")}"': 'rigor_mode: "unknown"',
-        f'conversation_style: "{choices("conversation_style")}"': 'conversation_style: "unknown"',
-        f'selected_next_action: "{choices("main_actions")}"': 'selected_next_action: "unknown"',
-        f'selected_next_action: "{choices("foundation_actions")}"': 'selected_next_action: "unknown"',
-        f'intent_basis: "{choices("user_directed_intent_basis")}"': 'intent_basis: "none"',
-        f'status: "{choices("foundation_gate_status")}"': 'status: "exploratory"',
-        f'claim_strength_allowed: "{choices("claim_strength")}"': 'claim_strength_allowed: "exploratory"',
-        f'status: "{choices("production_gate_status")}"': 'status: "not ready"',
-        f'diagnostics_status: "{choices("production_diagnostics_status")}"': 'diagnostics_status: "not started"',
-        f'claim_strength_for_report: "{choices("claim_strength")}"': 'claim_strength_for_report: "unknown"',
-        f'trigger: "{choices("evaluator_loop_trigger")}"': 'trigger: "unknown"',
-        f'status: "{choices("loop_status")}"': 'status: "not assessed"',
-        f'break_action: "{choices("foundation_loop_break_actions")}"': 'break_action: "unknown"',
-        f'readiness: "{choices("foundation_reviewer_readiness")}"': 'readiness: "unknown"',
-        f'readiness_scope: "{choices("data_readiness_scope")}"': 'readiness_scope: "unknown"',
-        f'data_status: "{choices("data_status")}"': 'data_status: "unknown"',
-        f'design_status: "{choices("design_status")}"': 'design_status: "unknown"',
-        f'supported_status: "{choices("dag_supported_status")}"': 'supported_status: "unknown"',
-        f'supported_scope: "{choices("dag_supported_scope")}"': 'supported_scope: "unknown"',
-        f'identification_status: "{choices("dag_identification_status")}"': 'identification_status: "unknown"',
-        f'route_commitment_status: "{choices("route_commitment_status")}"': 'route_commitment_status: "unknown"',
-        f'execution_stage: "{choices("execution_stage")}"': 'execution_stage: "not started"',
-        f'review_purpose: "{choices("production_review_purpose")}"': 'review_purpose: "not needed"',
-        f'readiness: "{choices("production_loop_readiness")}"': 'readiness: "not started"',
-        f'recommended_next_action: "{choices("main_actions")}"': 'recommended_next_action: "unknown"',
-        f'severity: "{choices("foundation_recheck_severity")}"': 'severity: "none"',
-        f'main_skill_decision: "{choices("foundation_recheck_decisions")}"': 'main_skill_decision: "none"',
-        f'break_action: "{choices("production_loop_break_actions")}"': 'break_action: "unknown"',
-        f'mode: "{choices("report_writer_modes")}"': 'mode: "not selected"',
-        f'status: "{choices("report_writer_statuses")}"': 'status: "not needed"',
-        f'confirmation_basis: "{choices("execution_confirmation_basis")}"': 'confirmation_basis: "unknown"',
-        f'claim_strength: "{choices("claim_strength")}"': 'claim_strength: "unknown"',
-    }
-    for old, new in replacements.items():
-        text = text.replace(old, new)
     return text
 
 

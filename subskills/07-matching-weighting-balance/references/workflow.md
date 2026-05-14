@@ -17,7 +17,7 @@ This requires measured-confounding control using pre-treatment covariates [X].
 My recommended primary design is [method] because [overlap/estimand/data justification].
 I would not report the treatment effect until we check [balance/overlap/weights].
 
-If diagnostics fail, I would [revise model, change method, restrict target population, switch to ATO, or stop causal interpretation].
+If diagnostics fail, I would [revise model, change method, restrict target population, switch to ATO, or present the result without causal interpretation].
 ```
 
 ## Step 1: Intake and Project Specification

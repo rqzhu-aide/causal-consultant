@@ -26,7 +26,7 @@ Use for learning or comparing causal graph hypotheses from data as an any-phase 
 4. Choose candidate algorithms that match assumptions and graph target.
 5. Define diagnostics before running: stability, tuning sensitivity, background-knowledge consistency, hidden-confounding checks, and domain plausibility.
 6. Decide what artifact to produce: edge list, graph plot, equivalence-class notes, stability table, causal-path notes, assumptions memo, owner-review note, or discovery-only report material.
-7. Record whether the output should stay sidecar-only or be routed through Data Technician, Design Planner, DAG Builder, or Report Writer before affecting the main workflow. If the requested deliverable is a discovery-only report, route only the report synthesis to Report Writer and keep `foundation_gate.status` and `production_gate.status` as `not needed` unless an effect-estimation route is separately validated.
+7. Record whether the output should stay sidecar-only or be routed through Data Technician, Design Planner, DAG Builder, or Report Writer before affecting the main workflow. If the requested deliverable is a discovery-only report, route only the report synthesis to Report Writer and keep `foundation_gate.status` and `production_gate.status` as `not needed`. If an effect-estimation route is separately validated, treat discovery material as an exploratory appendix or owner-routed implication instead of a discovery-only report handoff.
 
 ## Candidate Methods
 
@@ -101,11 +101,13 @@ Return the sidecar breadcrumb and, when useful, a compact optional `subskill_ana
 analysis:
   discovery_sidecar:
     active: true
-    purpose: null
-    return_to_phase: null
+    purpose: "one value from assets/workflow_enums.yaml > discovery_sidecar_purpose"
+    return_to_phase: "foundation"
     affects_main_route: false
     artifact_paths: []
 ```
+
+Use a concrete `return_to_phase` while the sidecar is active: `foundation` for route/DAG/design support, `production` for active-analysis support, or `reporting` for discovery-only report or appendix work. If the destination is unclear, ask the main skill to clarify with the user before activating or closing the sidecar.
 
 ```yaml
 subskill_id: "18-causal-discovery"

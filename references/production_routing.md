@@ -67,6 +67,8 @@ Discovery output should remain inert unless the main skill routes it through an 
 
 Use `analysis.production_loop.review_purpose` to keep the request narrow:
 
+Keep `analysis.production_loop.review_purpose` as `null` until production review is actually active. Once a production reviewer or method/job subskill is selected, use one concrete value from this list; do not write a placeholder value.
+
 - `method_selection`: compare candidate method/job reviewers.
 - `implementation_plan`: define estimand, inputs, code path, diagnostics, and fallback.
 - `first_pass`: support or inspect initial execution.
@@ -103,7 +105,7 @@ blocking_signal:
   severity: "one value from assets/workflow_enums.yaml > blocking_signal_severity"
   reason: null
   affected_sections: []
-recommended_next_action: null
+recommended_next_action: "one value from assets/workflow_enums.yaml > main_actions"
 artifact_paths: []
 ```
 

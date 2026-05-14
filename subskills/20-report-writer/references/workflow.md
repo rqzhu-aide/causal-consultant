@@ -2,9 +2,9 @@
 
 ## Goal
 
-Review reportability, claim language, diagnostic presentation, draft reports, report revisions, final reports, discovery-only reports, presentation outlines, methods/results sections, limitations, and reproducibility appendices for causal projects. The main skill owns both gates and routing. This skill participates as a production reviewer after the foundation gate opens, owns report composition after the production gate opens, and may synthesize a discovery-only report when the user requested graph discovery rather than effect estimation.
+Review reportability, claim language, diagnostic presentation, draft reports, report revisions, final effect reports, discovery-only reports, presentation outlines, methods/results sections, limitations, and reproducibility appendices for causal projects. The main skill owns both gates and routing. This skill participates as a production reviewer after the foundation gate opens, owns effect-report composition after the production gate opens, and may synthesize a discovery-only report when the user requested graph discovery rather than effect estimation.
 
-In handoff mode, the job is synthesis and completion. Do not restart the interactive workflow, ask new preference questions, or re-open method choice. Use the foundation and production records already collected to write the final-ready report, making limitations and deferred diagnostics explicit.
+In handoff mode, the job is synthesis and completion. While writing the report, do not restart the interactive workflow, ask new preference questions, or re-open method choice. Use the foundation and production records already collected to write the final-ready report, making limitations and deferred diagnostics explicit. After delivery, control returns to the main skill with `project.current_phase: post_delivery` and `main_skill.selected_next_action: ask_user`. Revision, slides, another report, or another same-evidence deliverable returns to `project.current_phase: reporting`.
 
 ## Production Reviewer Checklist
 
@@ -35,9 +35,13 @@ If any item is missing, return a handback to the main skill instead of writing a
 - [ ] `analysis.discovery_sidecar` records the discovery purpose, artifact paths, and whether findings affect the main route.
 - [ ] Discovery artifacts or placeholders exist for graph findings, causal-path notes, diagnostics, limitations, and reproducibility.
 - [ ] The report will use exploratory claim strength.
-- [ ] `foundation_gate.status` and `production_gate.status` are `not needed`, unless a separate effect-estimation route is also being validated.
+- [ ] `foundation_gate.status` and `production_gate.status` are `not needed` because no separate effect-estimation route is being validated.
 
 Use `assets/discovery_report_template.md`. Do not require normal production-gate handoff for this mode, and do not present a treatment effect, final adjustment set, or intervention recommendation.
+
+## Status Map
+
+Use the canonical mode/status lifecycle from `../SKILL.md > Status Writing Rules`. In this workflow reference, remember the operational rule: delivered statuses are only for completed artifacts already given to the user, and after either `final report delivered` or `discovery report delivered`, the main skill sets `project.current_phase: post_delivery` and `main_skill.selected_next_action: ask_user`.
 
 ## Evidence Intake
 
@@ -120,7 +124,7 @@ Keep follow-up effect-estimation questions optional. The report should not silen
 
 ## Revision Passes
 
-Do not embed open revision questions in the handoff report. If the user later asks for changes, handle those as a separate revision pass and revise only the requested layer:
+Do not embed open revision questions inside the handoff report body. After the report is delivered, the main skill may ask a separate continuation question. If the user asks for changes, handle those as a separate revision pass and revise only the requested layer:
 
 - audience level or tone;
 - causal wording;

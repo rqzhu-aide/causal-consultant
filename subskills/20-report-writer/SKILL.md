@@ -1,13 +1,13 @@
 ---
 name: report-writer
-description: "Causal Report Writer/evaluator for two post-foundation roles: production-phase review of reportability, diagnostics presentation, claim language, tables/figures, audience framing, and limitations after foundation_gate is ready; and final report synthesis after production_gate is ready. In handoff mode, consume the foundation and production records, use the final report structure template, and finish the report without starting another interaction loop. Works with Data Technician and method subskills; does not validate identification or open gates."
+description: "Causal Report Writer/evaluator for production-phase reportability review, post-production effect-report synthesis, and exploratory discovery-only reports. In handoff mode, consume the foundation and production records, use the final report structure template, and finish the report without starting another interaction loop. In discovery-only report mode, consume causal-discovery artifacts while effect-estimation gates are not needed. Works with Data Technician, method subskills, and Causal Discovery; does not validate identification or open gates."
 ---
 
 # Report Writer
 
 ## Role
 
-Use this as the causal Report Writer/evaluator and presentation consultant after the foundation gate is ready. During production, it reviews reportability, claim language, diagnostic presentation, figure/table choices, audience framing, limitations, and reproducibility needs. After the production gate is ready, it takes over final report synthesis from the accumulated foundation and production records.
+Use this as the causal Report Writer/evaluator and presentation consultant. For effect-estimation projects, use it after the foundation gate is ready: during production it reviews reportability, claim language, diagnostic presentation, figure/table choices, audience framing, limitations, and reproducibility needs; after the production gate is ready, it takes over final report synthesis from the accumulated foundation and production records. For discovery-only projects, use it to synthesize an exploratory discovery report from recorded discovery artifacts while effect-estimation gates remain `not needed`.
 
 This subskill is not a foundation evaluator and does not validate identification. It does not choose the causal route, open either gate, or make unsupported claim language stronger. If the foundation gate is not `ready`, return to the main skill with the missing gate condition instead of editing or writing an effect-estimation report. The exception is a user-requested discovery-only report: when `analysis.discovery_sidecar` has discovery artifacts and the gates are `not needed`, synthesize an exploratory discovery report without implying effect-estimation readiness.
 
@@ -22,9 +22,9 @@ Use this mode when all are true:
 - the main skill selects `20-report-writer` in `analysis.production_loop.selected_reviewers`, or explicitly asks for production-phase report/presentation review;
 - there is an analysis plan, result, diagnostic, artifact, table/figure, limitation, or audience/presentation decision to review.
 
-In this mode, do not take over. Return one compact production-reviewer summary for `analysis.production_loop.reviewer_summaries`: reportability, missing diagnostics/materials, claim-language risks, presentation suggestions, revision questions, blocking signal, and recommended next action.
+In this mode, do not take over. Return one compact production-reviewer summary for `analysis.production_loop.reviewer_summaries`: reportability, missing diagnostics/materials, claim-language risks, presentation suggestions, focused user questions if needed, blocking signal, and recommended next action.
 
-Also update the Report Writer's unique YAML section, `analysis.report_writer_20`, with `mode: production reviewer`, compact `production_feedback`, any `revision_questions`, and the recommended next action. Do not write to `evaluators.*`, and do not open either gate.
+Also update the Report Writer's unique YAML section, `analysis.report_writer_20`, with `mode: production reviewer`, compact `production_feedback`, summary/status, and the recommended next action. Do not write to `evaluators.*`, and do not open either gate.
 
 ### Handoff Mode
 
@@ -39,7 +39,7 @@ Use this mode only when all are true:
 - `analysis.production_loop.readiness` is `diagnostics complete`, `diagnostics deferred`, `diagnostics not needed`, `materials ready`, or `reportable`;
 - Data Technician warnings, method-fit suggestions, feasible diagnostics, and production-loop reviewer comments have been reviewed or explicitly deferred by the main skill.
 
-In handoff mode, do not start another interaction loop and do not ask new preference questions. Finish the report using the available project state, `production_gate.handoff_summary`, method/job handoff notes, Data Technician warnings, and artifacts. Only return a compact blocked handback if required gate or material inputs are missing. Otherwise produce the best final-ready report the recorded evidence can support, with uncertainty, limitations, and deferred checks visible.
+In handoff mode, do not start another interaction loop or ask new preference questions while synthesizing the report. Finish the report using the available project state, `production_gate.handoff_summary`, method/job handoff notes, Data Technician warnings, and artifacts. Only return a compact blocked handback if required gate or material inputs are missing. Otherwise produce the best final-ready report the recorded evidence can support, with uncertainty, limitations, and deferred checks visible. After delivery, the main skill sets `project.current_phase: post_delivery` and resumes with `main_skill.selected_next_action: ask_user`.
 
 ### Discovery-Only Report Mode
 
@@ -48,25 +48,46 @@ Use this mode when all are true:
 - the user's requested deliverable is a causal-discovery report, not an effect-estimation report;
 - `analysis.discovery_sidecar.purpose: discovery-only report` or equivalent discovery deliverable intent is recorded;
 - discovery artifacts, graph findings, diagnostics status, limitations, and artifact paths are available or explicitly marked as missing;
-- `foundation_gate.status` and `production_gate.status` are `not needed`, or no effect-estimation route is being validated.
+- `foundation_gate.status` and `production_gate.status` are `not needed` because no effect-estimation route is being validated.
 
 In this mode, use `assets/discovery_report_template.md`. Keep claim strength exploratory, do not require normal production-gate handoff, and do not create treatment-effect conclusions. If a discovery finding suggests a later effect-estimation question, list it as a recommended follow-up and ask the main skill to start a separate route only if the user chooses that next step.
 
 If any condition is missing, produce a compact handback:
 
 ```yaml
-report_writer_status: blocked
+analysis:
+  report_writer_20:
+    mode: "production reviewer | handoff writer | discovery report writer"
+    status: "blocked"
+    production_feedback: []
+    summary: null
+    artifacts: []
 missing_inputs: []
 blocking_signal:
-  blocks_current_phase: true
+  blocks_current_phase: false
   requires_previous_phase_recheck: false
-  target_phase: production
-  severity: "serious"
+  target_phase: null
+  severity: "caution"
   reason: null
   affected_sections: []
 recommended_main_skill_action: "one value from assets/workflow_enums.yaml > main_actions"
 safe_user_message: null
 ```
+
+## Status Writing Rules
+
+Use `analysis.report_writer_20.mode` to name the Report Writer role and `analysis.report_writer_20.status` to name the current lifecycle moment inside that role.
+
+- `not selected` + `not ready`: Report Writer is inactive and no reportability review or report synthesis is active yet.
+- `production reviewer` + `production feedback recorded`: Report Writer has returned compact production feedback about reportability, claim language, diagnostics, presentation, or missing materials.
+- `production reviewer` + `not ready` or `blocked`: reportability review found missing or blocking material that the main skill must resolve before production can advance.
+- `handoff writer` + `activated`: effect-report synthesis is underway and the final artifact has not been delivered.
+- `handoff writer` + `final report delivered`: the final effect-estimation report, memo, slides, or presentation artifact has been delivered. After writing this status, the main skill sets `project.current_phase: post_delivery` and `main_skill.selected_next_action: ask_user`.
+- `discovery report writer` + `activated`: exploratory discovery-report synthesis is underway and the artifact has not been delivered.
+- `discovery report writer` + `discovery report delivered`: the exploratory discovery report or discovery-only deliverable has been delivered. After writing this status, the main skill sets `project.current_phase: post_delivery` and `main_skill.selected_next_action: ask_user`.
+- Any mode + `blocked`: the selected Report Writer role cannot proceed because a required gate condition, artifact, diagnostic, or safe reporting input is missing.
+
+Readiness to start report synthesis is recorded by the relevant gate, sidecar state, and `main_skill.selected_next_action`, not by a Report Writer status. Diagnostic review details live in `analysis.production_loop.reviewer_summaries`; use `production feedback recorded` for the compact Report Writer status. Do not use `final report delivered` in discovery-report mode. Do not use `discovery report delivered` in handoff mode. Do not use either delivered status for planning, preparation, report activation, or materials-ready states; delivered statuses are only for completed artifacts that have been given to the user.
 
 ## Collaboration With Data Technician
 
@@ -174,11 +195,11 @@ Use labels precisely:
 - `Discovery Report`: a discovery-only report synthesized from `18-causal-discovery` artifacts with exploratory claim strength; this is not an effect-estimation final report.
 - `Presentation Outline`: slide, executive, policy, academic, or public-facing narrative plan.
 
-Reports should be assembled in sections when the project is substantial. In handoff mode, complete the report rather than asking for another round of choices. If the user later requests revisions, treat that as a separate revision pass.
+Reports should be assembled in sections when the project is substantial. In handoff mode, complete the report rather than asking for another round of choices during synthesis. After delivery, the main skill should ask the user whether they want revision, another deliverable, follow-up exploration, explanation, a parked task resumed, or a pause. If the user requests revisions, slides, another report, or a different same-evidence deliverable, treat that as a separate revision/reporting pass that returns to `project.current_phase: reporting`.
 
 ## Presentation Consulting
 
-During production reviewer mode, ask the main skill for audience or format clarification only when it would materially change reportability or artifact preparation. During handoff mode, infer audience and format from the recorded project state and finish the report; do not pause for new preferences.
+During production reviewer mode, ask the main skill for audience or format clarification only when it would materially change reportability or artifact preparation. During handoff synthesis, infer audience and format from the recorded project state and finish the report rather than pausing for new preferences.
 
 Use or infer:
 
@@ -228,12 +249,11 @@ artifact_paths: []
 Also map compact Report Writer state to `analysis.report_writer_20`:
 
 ```yaml
-  mode: "production reviewer | handoff writer | discovery report writer"
+mode: "production reviewer | handoff writer | discovery report writer"
 status: "one value from assets/workflow_enums.yaml > report_writer_statuses"
 production_feedback: []
 summary: null
 artifacts: []
-revision_questions: []
 ```
 
 During production reviewer mode, keep feedback compact for `analysis.production_loop.reviewer_summaries` and `analysis.report_writer_20.production_feedback`. During handoff mode, put full reports, diagnostic tables, slide outlines, captions, and reproducibility appendices in `artifacts/`; keep only summaries and paths in `project.yaml`.

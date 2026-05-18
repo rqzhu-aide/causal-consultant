@@ -96,6 +96,15 @@ Report Writer handoff notes should include:
 - comparison to simpler estimators when available;
 - plain-language warning that ML improves nuisance estimation but does not create identification.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** whether flexible nuisance modeling supports, changes, or destabilizes the parent-route estimate, and whether the result is report-ready or exploratory.
+- **Question, Data, And Design:** parent route, estimand, treatment/outcome scale, nuisance targets, and why DR/ML is being used rather than a simpler estimator.
+- **Data Readiness And Analysis Specification:** learners, cross-fitting folds, sample-splitting unit, nuisance models, clustering/censoring handling, truncation, and package path.
+- **Results And Diagnostics:** estimate, uncertainty, influence/score diagnostics, nuisance performance, fold or learner stability, overlap, and comparison to transparent baselines.
+- **Interpretation And Next Step:** whether divergence from simpler estimates, poor nuisance fit, small samples, or instability requires sensitivity, simplification, or cautious language.
+- **Reproducibility Appendix:** learner configurations, tuning choices, folds, seeds, package versions, code paths, and saved nuisance/diagnostic artifacts.
+
 Recommend `return_to_foundation` when the primary route's identification assumptions are unresolved, the adjustment set is invalid, treatment/outcome timing is wrong, positivity is absent for the intended comparison, or the needed nuisance functions cannot be defined from the data.
 
 Stay in production with a weaker claim when the route is valid but DR/ML is unstable, sample size is thin, learner sensitivity is high, nuisance fit is weak, or results diverge from simpler estimators. Then recommend simpler modeling, additional diagnostics, or cautious/associational wording.

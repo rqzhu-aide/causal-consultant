@@ -1,15 +1,15 @@
 ---
 name: report-writer
-description: "Causal Report Writer/evaluator for production-phase reportability review, post-production effect-report synthesis, and exploratory discovery-only reports. In handoff mode, consume the foundation and production records, use the final report structure template, and finish the report without starting another interaction loop. In discovery-only report mode, consume causal-discovery artifacts while effect-estimation gates are not needed. Works with Data Technician, method subskills, and Causal Discovery; does not validate identification or open gates."
+description: "Causal Report Writer/evaluator for production-phase reportability review, post-production effect-report synthesis, exploratory discovery-only reports, and report templates for gate-ready versus gate-not-ready analysis artifacts. In handoff mode, consume the foundation and production records, use the final report structure template, and finish the report without starting another interaction loop. In discovery-only report mode, consume causal-discovery artifacts while effect-estimation gates are not needed. Works with Data Technician, method subskills, and Causal Discovery; does not validate identification or open gates."
 ---
 
 # Report Writer
 
 ## Role
 
-Use this as the causal Report Writer/evaluator and presentation consultant. For effect-estimation projects, use it after the foundation gate is ready: during production it reviews reportability, claim language, diagnostic presentation, figure/table choices, audience framing, limitations, and reproducibility needs; after the production gate is ready, it takes over final report synthesis from the accumulated foundation and production records. For discovery-only projects, use it to synthesize an exploratory discovery report from recorded discovery artifacts while effect-estimation gates remain `not needed`.
+Use this as the causal Report Writer/evaluator and presentation consultant. For effect-estimation projects, use it after the foundation gate is ready: during production it reviews reportability, claim language, diagnostic presentation, figure/table choices, audience framing, limitations, and reproducibility needs; after the production gate is ready, it takes over final report synthesis from the accumulated foundation and production records. For discovery-only projects, use it to synthesize an exploratory discovery report from recorded discovery artifacts while effect-estimation gates remain `not needed`. It also owns lightweight artifact templates for no-data planning/communication memos and two data-backed report lanes: gate-ready reproducible reports and gate-not-ready exploratory/progress reports.
 
-This subskill is not a foundation evaluator and does not validate identification. It does not choose the causal route, open either gate, or make unsupported claim language stronger. If the foundation gate is not `ready`, return to the main skill with the missing gate condition instead of editing or writing an effect-estimation report. The exception is a user-requested discovery-only report: when `analysis.discovery_sidecar` has discovery artifacts and the gates are `not needed`, synthesize an exploratory discovery report without implying effect-estimation readiness.
+This subskill is not a foundation evaluator and does not validate identification. It does not choose the causal route, open either gate, or make unsupported claim language stronger. If the foundation gate is not `ready`, return to the main skill with the missing gate condition instead of editing or writing a gate-ready effect-estimation report. The exceptions are scoped non-final deliverables: a user-requested discovery-only report, a gate-not-ready exploratory/progress report explicitly routed by the main skill, or a short planning/communication memo when no analyzable data are available or the user mainly wants wording, slides, email, caveats, or planning advice. These exceptions do not imply effect-estimation readiness.
 
 ## Activation Modes
 
@@ -50,7 +50,7 @@ Use this mode when all are true:
 - discovery artifacts, graph findings, diagnostics status, limitations, and artifact paths are available or explicitly marked as missing;
 - `foundation_gate.status` and `production_gate.status` are `not needed` because no effect-estimation route is being validated.
 
-In this mode, use `assets/discovery_report_template.md`. Keep claim strength exploratory, do not require normal production-gate handoff, and do not create treatment-effect conclusions. If a discovery finding suggests a later effect-estimation question, list it as a recommended follow-up and ask the main skill to start a separate route only if the user chooses that next step.
+In this mode, use `assets/discovery_report_template.md`. Keep claim strength exploratory, do not require normal production-gate handoff, and do not create treatment-effect conclusions. If discovery is conceptual or based on user-provided graph output, a Markdown discovery report is acceptable. If discovery algorithms are run on data, produce a reproducible source report (`.ipynb`, `.qmd`, `.Rmd`, or equivalent) plus rendered `.html` when feasible. If a discovery finding suggests a later effect-estimation question, list it as a recommended follow-up and ask the main skill to start a separate route only if the user chooses that next step.
 
 If any condition is missing, produce a compact handback:
 
@@ -74,6 +74,61 @@ recommended_main_skill_action: "one value from assets/workflow_enums.yaml > main
 safe_user_message: null
 ```
 
+### Planning / Communication Memo Template
+
+Use `assets/planning_communication_memo_template.md` when the main skill asks for a short no-data planning deliverable or communication artifact. This template covers:
+
+- no analyzable data have been provided;
+- data are expected later but the user needs a plan, caveat, or design memo now;
+- the user asks for wording, slide bullets, email text, executive language, or a brief decision memo;
+- a memo can include requested wording in an appendix without becoming a final effect-estimation report.
+
+Keep the memo short by default, usually one to two pages. Do not include invented sample sizes, estimates, diagnostics, plots, or claims. Use candidate or anticipated language for DAGs and designs unless the relevant route has already been validated elsewhere. Suggested R/Python packages must be tied to the candidate route or method subskills that would plausibly be activated; if route choice is unclear, say package choices are provisional and name the design questions that must be answered first.
+
+This memo template is a lightweight artifact template, not a separate gate-opening mode. Record the finished memo under `artifacts`; do not use `final report delivered` or `discovery report delivered` for it unless later main-skill routing explicitly makes it part of a delivered report package.
+
+### Gate-Ready Reproducible Analysis Report Template
+
+Use `assets/reproducible_analysis_report_template.md` when analyzable data exist, the analysis is run in code, and the main workflow has enough support for a gate-ready effect-estimation report or presentation handoff. The expected deliverable is a source `.ipynb`, `.qmd`, `.Rmd`, or equivalent reproducible report plus a rendered `.html` report, with saved figures or tables when useful. The source file is the reproducible artifact; the HTML is the user-facing reading and sharing artifact.
+
+This is a flexible and informative template, not a rigid field-filling form. Keep numbered report sections, but adapt section titles, order, and length to the project. Write coherent technical prose around executed code, tables, and figures. Do not turn every section into a bullet-list form.
+
+Required coverage must appear somewhere in the report: data provenance, causal question and design, data readiness, analysis specification, results, diagnostics and sensitivity, interpretation and limits, and reproducibility. The Report Writer owns structure, claim language, and coverage; Data Technician and activated method/job subskills own data construction, computation, diagnostics, and method validity.
+
+Use prose for the main analytic specification by default. Put compact mathematical notation in the reproducibility or technical appendix unless the audience is technical or the equation is necessary to understand the result.
+
+All numeric results, diagnostics, plots, and model outputs must come from executed notebook cells, verified artifacts, or explicitly labeled user-provided outputs. If a result is missing, unavailable, not run, or illustrative, label it visibly and lower or block claim strength as appropriate.
+
+### Gate-Not-Ready Exploratory / Progress Analysis Report Template
+
+Use `assets/exploratory_analysis_report_template.md` when analyzable data exist and the user wants a report-like artifact even though one or more gatekeeper fields do not support final handoff. This lane covers user-directed first-pass modeling before foundation readiness and progress/diagnostic reports before production readiness. It is not handoff mode and not a final causal report.
+
+The gatekeeper fields must stay visible to the main skill and consistent with the report:
+
+```yaml
+foundation_gate.status: ready | exploratory | blocked
+foundation_gate.can_support_causal_commitment: true | false
+production_gate.status: not ready | blocked
+production_gate.can_handoff_to_report_writer: false
+analysis.route_commitment_status: user-directed | ready | committed | exploratory | blocked
+analysis.claim_strength: exploratory | associational | descriptive | cautious causal
+```
+
+The gate-not-ready report may include estimates, intervals, model output, and diagnostics only when they come from executed code, verified artifacts, or explicitly labeled user-provided outputs. It must state why the artifact is not a final gate-ready report. If foundation is not ready, estimates are exploratory model outputs and not validated causal effects. If foundation is ready but production is not ready, results may be first-pass or diagnostic outputs from the selected route, but still cannot be framed as final report conclusions. Do not use `final report delivered` or handoff-writer mode for this artifact.
+
+When this report summarizes actual modeling or diagnostics, the main skill should have an activated method/job owner, a compact `subskill_analyses` record, and minimal `analysis.production_loop` trace fields. Those records establish provenance; they do not make the artifact a final handoff report.
+
+## Report Lane Selection
+
+Before choosing a report template, read the gatekeeper fields:
+
+- Use `assets/reproducible_analysis_report_template.md` only when `foundation_gate.status: ready`, `foundation_gate.can_support_causal_commitment: true`, `production_gate.status: ready`, `production_gate.can_handoff_to_report_writer: true`, and `analysis.route_commitment_status` is `ready` or `committed`.
+- Use `assets/exploratory_analysis_report_template.md` when data exist but any gate-ready condition is false and the user still wants a first-pass, diagnostic, progress, or exploratory report.
+- Use `assets/planning_communication_memo_template.md` when no analyzable data exist or the user mainly wants wording, slides, email, caveats, or planning.
+- Use `assets/discovery_report_template.md` when the requested deliverable is causal discovery rather than effect estimation.
+
+The gate-ready and gate-not-ready data-backed templates share a common technical spine. The difference is tone and permission: gate-ready reports synthesize supported evidence at the recorded claim strength; gate-not-ready reports foreground the claim boundary and upgrade path.
+
 ## Status Writing Rules
 
 Use `analysis.report_writer_20.mode` to name the Report Writer role and `analysis.report_writer_20.status` to name the current lifecycle moment inside that role.
@@ -87,7 +142,7 @@ Use `analysis.report_writer_20.mode` to name the Report Writer role and `analysi
 - `discovery report writer` + `discovery report delivered`: the exploratory discovery report or discovery-only deliverable has been delivered. After writing this status, the main skill sets `project.current_phase: post_delivery` and `main_skill.selected_next_action: ask_user`.
 - Any mode + `blocked`: the selected Report Writer role cannot proceed because a required gate condition, artifact, diagnostic, or safe reporting input is missing.
 
-Readiness to start report synthesis is recorded by the relevant gate, sidecar state, and `main_skill.selected_next_action`, not by a Report Writer status. Diagnostic review details live in `analysis.production_loop.reviewer_summaries`; use `production feedback recorded` for the compact Report Writer status. Do not use `final report delivered` in discovery-report mode. Do not use `discovery report delivered` in handoff mode. Do not use either delivered status for planning, preparation, report activation, or materials-ready states; delivered statuses are only for completed artifacts that have been given to the user.
+Readiness to start report synthesis is recorded by the relevant gate, sidecar state, and `main_skill.selected_next_action`, not by a Report Writer status. Diagnostic review details live in `analysis.production_loop.reviewer_summaries`; use `production feedback recorded` for the compact Report Writer status. Do not use `final report delivered` in discovery-report mode or for gate-not-ready exploratory/progress reports. Do not use `discovery report delivered` in handoff mode. Do not use either delivered status for planning, preparation, report activation, or materials-ready states; delivered statuses are only for completed artifacts that have been given to the user through the matching mode.
 
 ## Collaboration With Data Technician
 
@@ -166,9 +221,29 @@ For discovery-only report mode, synthesize from:
 - optional `subskill_analyses` record for `18-causal-discovery`: inputs reviewed, outputs created, diagnostics, limitations, and feedback for the main skill;
 - `artifacts` and `analysis.analyses`: graph plots, edge lists, stability tables, method notes, code paths, and memos.
 
-Use `assets/discovery_report_template.md`. Required content is the discovery question, data and variable inventory, graph target and method, candidate graph findings, candidate causal paths or a statement that stable paths are unavailable, diagnostics, exploratory interpretation, limitations, reproducibility notes, and recommended next effect-estimation questions when useful.
+Use `assets/discovery_report_template.md`. Required content is the discovery question, data and variable inventory, graph target and method, candidate graph findings, candidate causal paths or a statement that stable paths are unavailable, diagnostics, exploratory interpretation, limitations, reproducibility notes, and recommended next effect-estimation questions when useful. Preserve discovery as a separate report type even when the report is generated from a reproducible source file and rendered to HTML.
 
 Discovery reports must say what the graph can and cannot mean. They can discuss candidate causal paths in the discovered graph, but they cannot present a final adjustment set, treatment effect, intervention recommendation, or upgraded claim strength unless a separate main-workflow route validates it.
+
+## Planning / Communication Memo Synthesis
+
+For no-data planning requests and communication-only requests, use `assets/planning_communication_memo_template.md`. Populate it from the user's request, conversation background, candidate causal structure, plausible design route, and audience needs. The memo should distinguish known facts from open questions and should avoid production-report language unless reportable evidence already exists.
+
+The template structure is flexible, but the required coverage elements must appear somewhere in numbered sections. Mention packages only when they match the likely route or subskill owner, such as DiD/event study, IV, RD, matching/weighting/doubly robust, synthetic control, survival, interference, mediation, causal discovery, or randomized design planning. If the route is not yet selected, write a short provisional package note rather than listing unrelated tools.
+
+## Gate-Ready Reproducible Analysis Report Synthesis
+
+For data-backed work with executed code and gate-ready effect-estimation support, use `assets/reproducible_analysis_report_template.md`. Require the report to be generated from the executed analysis source rather than written as free-standing prose after the fact. The rendered HTML should contain the technical narrative, outputs, diagnostics, and limitations needed to read the analysis without opening the source file, while the source remains sufficient to audit or rerun the computation.
+
+The template structure is flexible, but the required coverage elements must appear somewhere in numbered sections. Use a coverage ledger near the end when the project is substantial, diagnostics are fragile, or the handoff must be auditable. Package choices must be route-aware and should match the method owner actually used or plausibly activated.
+
+When Report Writer reviews a reproducible analysis report, check that `artifacts` include both the source path and rendered HTML path when available. If the rendered HTML is missing, treat the work as analysis material, not a completed shareable report, unless the user explicitly asked only for the source notebook or report document.
+
+## Gate-Not-Ready Exploratory / Progress Analysis Report Synthesis
+
+For data-backed reports before gate-ready handoff, use `assets/exploratory_analysis_report_template.md`. The main skill or activated method/job subskill may create the source report and rendered HTML; Report Writer may provide structure and claim-language guidance, but this is not handoff mode.
+
+The report must include the gatekeeper state, user-directed or progress-report scope, data actually inspected, method attempted, estimates or diagnostics from executed code, and the unresolved blockers that prevent final handoff. If foundation is not ready, use "exploratory estimate", "model-based first pass", "association under this specification", or similar language. If foundation is ready but production is not ready, use "first-pass result", "diagnostic result", or "not yet report-ready" language. Avoid "causal effect", "impact", "effect of treatment" without qualification, "validated", "policy-ready", or "final" unless the gates later support that wording.
 
 ## Diagnostic Review
 
@@ -188,6 +263,9 @@ If diagnostics are incomplete, return production-review feedback or write a `Dia
 
 Use labels precisely:
 
+- `Planning / Communication Memo`: short no-data, planning, wording, slide, email, caveat, or executive-language artifact. It may include requested drafts in an appendix, but it is not a final effect-estimation report.
+- `Gate-Ready Reproducible Analysis Report`: data-backed report consisting of an executed source notebook or report document plus rendered HTML, used when the relevant gates and claim strength support effect-estimation reporting.
+- `Exploratory / Progress Analysis Report`: data-backed report with executed model output while foundation or production readiness is not sufficient for final handoff. It may include effect-estimation-style sections, but must foreground whether the output is exploratory, associational, diagnostic, or first-pass rather than final.
 - `Diagnostic Review`: diagnostics and implications for claim strength.
 - `Draft Report`: pre-handoff or user-requested prose expected to be revised; do not use this label for the final handoff artifact.
 - `Revision Pass`: edited report text or presentation language after user feedback on an already delivered artifact.
@@ -258,11 +336,18 @@ artifacts: []
 
 During production reviewer mode, keep feedback compact for `analysis.production_loop.reviewer_summaries` and `analysis.report_writer_20.production_feedback`. During handoff mode, put full reports, diagnostic tables, slide outlines, captions, and reproducibility appendices in `artifacts/`; keep only summaries and paths in `project.yaml`.
 
-During discovery-only report mode, put the full discovery report in `artifacts/`; keep only `analysis.discovery_sidecar.artifact_paths`, optional `analysis.report_writer_20` summary, and optional compact `18-causal-discovery` trace records in `project.yaml`.
+During discovery-only report mode, put the full discovery report in `artifacts/`. For conceptual or user-provided discovery material, a `.md` report is acceptable. For data-backed discovery runs, include the source report and rendered `.html` when feasible, plus graph plots, edge lists, stability tables, and code paths. Keep only `analysis.discovery_sidecar.artifact_paths`, optional `analysis.report_writer_20` summary, and optional compact `18-causal-discovery` trace records in `project.yaml`.
+
+For planning/communication memos, put the full memo in `artifacts/`. Keep the user-facing response brief: say what was created, name the main caveat or next step, and ask one focused continuation question if needed.
+
+For gate-ready reproducible analysis reports and gate-not-ready exploratory/progress reports, put both the source file (`.ipynb`, `.qmd`, `.Rmd`, or equivalent) and rendered `.html` in `artifacts/` when available, plus any saved figures, tables, package-version notes, or environment files needed for audit. Keep YAML summaries compact; do not paste source output or full report text into `project.yaml`. For gate-not-ready reports before foundation readiness, leave `analysis.report_writer_20` as `not selected` / `not ready` unless the main skill explicitly asks Report Writer for separate claim-language feedback.
 
 ## Reference Files
 
 - `references/workflow.md`: detailed diagnostic-review, final-report synthesis, presentation, and handoff workflow.
 - `references/examples.md`: reusable examples for production-review handback, diagnostic review, final report pattern, revision pass, presentation consulting, and final handoff checks.
 - `assets/final_report_template.md`: final report structure for handoff mode.
-- `assets/discovery_report_template.md`: discovery-only report structure for exploratory graph deliverables.
+- `assets/discovery_report_template.md`: flexible discovery-only report template for exploratory graph deliverables, supporting Markdown memos or source-plus-HTML reports when discovery code is run.
+- `assets/planning_communication_memo_template.md`: flexible template for short no-data planning, communication, slide, email, caveat, or executive-language memos.
+- `assets/reproducible_analysis_report_template.md`: flexible template for gate-ready data-backed analysis notebooks or report documents and rendered HTML reports.
+- `assets/exploratory_analysis_report_template.md`: flexible template for gate-not-ready exploratory/progress reports when final handoff is not supported and claim strength must remain bounded by the gatekeeper fields.

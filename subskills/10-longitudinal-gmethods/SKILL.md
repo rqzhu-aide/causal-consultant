@@ -43,7 +43,7 @@ Given the route handoff, check:
 - time-varying confounders, mediators, censoring, competing events, adherence, and treatment history;
 - target estimand: sustained strategy, dynamic regime, modified treatment policy, regime value, risk difference, survival probability, or mean outcome;
 - positivity over histories, missing/censoring mechanisms, and whether data support the required histories;
-- whether survival, HTE/policy, or DR/ML support modules are needed.
+- whether survival, DR/ML, or a single-decision HTE/individualized-policy support module is needed.
 
 If the data cannot represent histories or timing, return feedback to the Data Technician and Design Planner through the main skill.
 
@@ -93,6 +93,15 @@ Report Writer handoff notes should include:
 - weight/positivity, censoring, missing-visit, model-fit, truncation, and regime-constructability diagnostics;
 - first-pass regime contrast, uncertainty, and sensitivity to truncation, grace periods, follow-up, or dynamic-rule definitions;
 - wording that makes the result explicitly regime- and assumption-dependent.
+
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** supported longitudinal regime contrast and whether it is gate-ready, assumption-dependent, or only exploratory.
+- **Question, Data, And Design:** time zero, visit grid, eligibility, treatment/confounder histories, censoring, target and comparator regimes, grace periods, and follow-up.
+- **Data Readiness And Analysis Specification:** long-data shape, history construction, estimator, treatment/censoring/outcome models, positivity over histories, truncation, and package path.
+- **Results And Diagnostics:** regime contrast, uncertainty, weight distributions, effective sample size, missing visits, censoring, model fit, and sensitivity to regime/follow-up choices.
+- **Interpretation And Next Step:** whether sparse histories, unstable weights, informative censoring, or regime ambiguity require simplification, shorter follow-up, or cautious language.
+- **Reproducibility Appendix:** reshaping scripts, regime definitions, model formulas, truncation levels, seeds, package versions, and paths to diagnostics or estimates.
 
 Recommend `return_to_foundation` when time zero, treatment history, confounder history, censoring, or outcome timing cannot be represented; when prior treatment affects later confounders but the route was built as a point-treatment design; or when the target regime is not observable/constructible from the data.
 

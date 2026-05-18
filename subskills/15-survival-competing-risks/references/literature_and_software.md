@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This map supports subskill 11. Use it when selecting methods for causal survival questions, censoring, competing risks, adjusted curves, RMST, survival CATEs, or treatment decisions with time-to-event endpoints.
+This map supports subskill 15. Use it when selecting methods for causal survival questions, censoring, competing risks, adjusted curves, RMST, survival CATEs, or single-stage treatment decisions with time-to-event endpoints.
 
 The field is large. This map focuses on references and tools that help choose safe, interpretable analyses rather than exhaustive survival modeling.
 
@@ -56,7 +56,7 @@ Separable effects are important in the causal competing-risk literature but not 
 
 ### Survival CATE and treatment decisions
 
-Use survival CATE methods when the user wants heterogeneity or treatment decisions with censored outcomes. `grf::causal_survival_forest` targets RMST or survival probability contrasts at a user-specified horizon under unconfoundedness and censoring assumptions. Pair it with simpler subgroup RMST/risk estimates and held-out validation.
+Use survival CATE methods when the user wants heterogeneity or single-stage treatment decisions with censored outcomes. `grf::causal_survival_forest` targets RMST or survival probability contrasts at a user-specified horizon under unconfoundedness and censoring assumptions. Pair it with simpler subgroup RMST/risk estimates and held-out validation.
 
 ## Software Map
 
@@ -121,7 +121,7 @@ Use survival CATE methods when the user wants heterogeneity or treatment decisio
 - censoring and treatment overlap;
 - horizon choice;
 - CATE calibration or subgroup validation;
-- RATE/TOC or held-out policy value when ranking treatment benefit;
+- RATE/TOC or held-out policy value when ranking treatment benefit at a fixed horizon;
 - comparison with subgroup RMST/risk estimates.
 
 ## Red Flags

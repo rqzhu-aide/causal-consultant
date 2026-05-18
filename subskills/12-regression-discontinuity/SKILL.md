@@ -95,6 +95,15 @@ Report Writer handoff notes should include:
 - explanation of the local population near the cutoff and limits on generalization;
 - wording that avoids implying effects away from the cutoff unless separately supported.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** supported local estimand and whether the RD evidence is credible enough for gate-ready local causal wording or only exploratory threshold analysis.
+- **Question, Data, And Design:** running variable, cutoff, assignment rule, sharp/fuzzy/kink status, score timing, local population, and target window.
+- **Data Readiness And Analysis Specification:** bandwidth choice, local polynomial order, covariates, clustering, fuzzy first-stage plan when relevant, and package path.
+- **Results And Diagnostics:** RD plot, local estimate, uncertainty, density/manipulation test, covariate continuity, placebo checks, donut/heaping checks, and bandwidth sensitivity.
+- **Interpretation And Next Step:** local-only generalization limits, manipulation or heaping concerns, fuzzy-IV handoff, bandwidth fragility, or need for cautious/exploratory wording.
+- **Reproducibility Appendix:** RD scripts, cutoff and bandwidth settings, polynomial/covariate choices, package versions, seeds if used, and saved plot/table paths.
+
 Recommend `return_to_foundation` when the cutoff is not assignment-relevant, the running variable is measured after treatment/outcome, manipulation dominates the cutoff, no observations exist near the cutoff, or the desired claim is not local and cannot be supported by RD.
 
 Stay in production with a weaker claim when RD logic is plausible but diagnostics are imperfect: mild sorting, heaping, small local samples, bandwidth sensitivity, fuzzy first stage, or covariate imbalance. Then recommend sensitivity checks, narrower local language, fuzzy RD support, or exploratory presentation.

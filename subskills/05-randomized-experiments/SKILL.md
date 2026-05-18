@@ -108,6 +108,15 @@ Report Writer handoff notes should include:
 - limitations that must travel with the result, especially noncompliance, attrition, interference, small clusters, or post-randomization exclusions;
 - recommended claim language and any figure caption caveat.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** whether the report is about ITT, assignment effect, cluster effect, or CACE/LATE handoff, plus the strongest safe randomized-claim wording.
+- **Question, Data, And Design:** randomization unit, analysis unit, arms, assignment probabilities, blocking/stratification, eligibility, and outcome timing.
+- **Data Readiness And Analysis Specification:** estimator, covariate adjustment/CUPED, block or cluster handling, ratio-metric handling, and uncertainty method.
+- **Results And Diagnostics:** effect table, confidence interval, SRM, balance, attrition, compliance, contamination, cluster diagnostics, and sensitivity to exclusions.
+- **Interpretation And Next Step:** whether limitations require ITT-only framing, IV/noncompliance support, interference review, more diagnostics, or cautious/exploratory language.
+- **Reproducibility Appendix:** assignment-log provenance, code path, package versions, seed/bootstrap/randomization-inference settings, and paths to tables or plots.
+
 Recommend `return_to_foundation` when assignment was not random or not recoverable, treatment/outcome timing contradicts the causal route, the assignment unit and analysis unit make the selected estimand incoherent, post-randomization exclusions redefine the population in a route-changing way, or interference/contamination invalidates the no-spillover route rather than merely weakening it.
 
 Stay in production with a weaker claim when randomization is real but diagnostics are imperfect: imbalance, attrition, noncompliance, contamination, small clusters, imprecision, or incomplete sensitivity checks. Then recommend `run_diagnostics`, `activate_method_subskill`, or `proceed_with_caveat`, and mark claim strength as cautious.

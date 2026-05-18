@@ -96,6 +96,15 @@ Report Writer handoff notes should include:
 - biological interpretation limits, including tissue specificity, locus specificity, pleiotropy, and triangulation status;
 - wording that avoids overclaiming causal genes or mechanisms when evidence is only instrumental, colocalization-limited, or exploratory.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** whether genomic evidence is causal-supporting, triangulating, exploratory, or blocked, and the safest biological claim language.
+- **Question, Data, And Design:** exposure, outcome, GWAS/QTL sources, ancestry, LD reference, instrument selection, harmonization, estimand, and biological target.
+- **Data Readiness And Analysis Specification:** data provenance, clumping/harmonization rules, MR/colocalization/fine-mapping/TWAS/SMR method, sensitivity plan, and package/API path.
+- **Results And Diagnostics:** MR or omics estimates, uncertainty, instrument strength, allele/strand checks, heterogeneity, pleiotropy, outlier, leave-one-out, ancestry/sample-overlap, and colocalization diagnostics.
+- **Interpretation And Next Step:** tissue/locus specificity, pleiotropy, non-colocalization, ancestry mismatch, sample overlap, triangulation limits, or need for follow-up biology review.
+- **Reproducibility Appendix:** harmonized data paths, instrument lists, clumping parameters, LD reference, package/API versions, seeds if used, and saved diagnostic/report artifacts.
+
 Recommend `return_to_foundation` when instruments are not relevant, exposure/outcome datasets cannot be harmonized, ancestry/LD mismatch invalidates the design, colocalization fails for a required locus-specific claim, pleiotropy undermines exclusion, or the user's requested claim requires a different genomic design.
 
 Stay in production with a weaker claim when instruments are modest, pleiotropy is possible, colocalization is incomplete, ancestry match is imperfect, sample overlap is uncertain, or evidence should be presented as triangulation. Then recommend sensitivity checks and cautious biological interpretation.

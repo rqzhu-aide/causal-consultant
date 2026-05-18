@@ -103,6 +103,15 @@ Report Writer handoff notes should include:
 - sensitivity to alternative control/proxy definitions and whether findings support, weaken, or undermine the main route;
 - wording that clearly separates primary causal evidence from falsification, sensitivity, or proximal-support evidence.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** whether negative controls/proxies support identification, provide falsification/sensitivity evidence, weaken the main route, or remain exploratory.
+- **Question, Data, And Design:** target effect, negative-control exposure/outcome or proxy definitions, timing, DAG rationale, bridge or falsification role, and target population.
+- **Data Readiness And Analysis Specification:** control/proxy constructability, bridge or falsification model, relevance and no-direct-effect checks, sensitivity plan, and package/custom-code path.
+- **Results And Diagnostics:** falsification estimates, bridge/proxy model results, uncertainty, stability, proxy relevance, timing/exclusion diagnostics, and sensitivity to control/proxy definitions.
+- **Interpretation And Next Step:** whether findings strengthen, weaken, or undermine the main route; whether bridge assumptions need user defense; or whether only cautionary language is justified.
+- **Reproducibility Appendix:** control/proxy tables, bridge scripts, model formulas, basis/learner settings, sensitivity parameters, package versions, seeds if used, and artifact paths.
+
 Recommend `return_to_foundation` when proposed controls/proxies are invalid, timing contradicts the DAG, unmeasured-confounding structure differs from the selected route, bridge assumptions cannot be stated, or falsification results undermine the main identification story.
 
 Stay in production with a weaker claim when controls/proxies are imperfect but informative, falsification is mixed, bridge estimation is unstable, or evidence is best treated as sensitivity analysis. Then recommend cautious causal, associational, or exploratory language.

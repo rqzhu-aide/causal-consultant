@@ -83,7 +83,7 @@ Route elsewhere when:
 - treatment or confounders vary over time (`10-longitudinal-gmethods`);
 - outcome is survival/censoring/competing risks (`15-survival-competing-risks`);
 - missingness, measurement, selection, or transportability dominates (`02-data-technician`);
-- CATE, treatment rules, or policy targeting are central (`09-heterogeneous-effects-policy`);
+- CATE, single-stage individualized treatment rules, or policy targeting are central (`09-heterogeneous-effects-individualized-policy`);
 - IV, RD, DiD, synthetic control, mediation, or interference better matches the design.
 
 ## Stage 5: Diagnostics Before Interpretation

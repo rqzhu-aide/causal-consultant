@@ -7,7 +7,7 @@ description: "Target and outcome module for causal questions with time-to-event 
 
 ## Role
 
-Use this as a **target/outcome module** when the outcome is time-to-event or censoring/competing risks are central. It usually combines with a primary route such as randomized experiments, point-treatment observational, longitudinal g-methods, or HTE/policy.
+Use this as a **target/outcome module** when the outcome is time-to-event or censoring/competing risks are central. It usually combines with a primary route such as randomized experiments, point-treatment observational, longitudinal g-methods, or single-stage HTE/individualized-policy at a fixed horizon.
 
 ## Interaction Boundary
 
@@ -95,6 +95,15 @@ Report Writer handoff notes should include:
 - censoring, competing-risk, delayed-entry, proportional-hazards, positivity, and risk-set diagnostics;
 - plot/table paths for survival curves, cumulative incidence, risk tables, or adjusted contrasts;
 - wording that avoids hazard-ratio overinterpretation and makes time horizon explicit.
+
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** supported survival scale and whether the result is causal, cautious, descriptive, or exploratory given the base route and censoring evidence.
+- **Question, Data, And Design:** time zero, entry, event, censoring, competing events, follow-up horizon, risk set, treatment timing, and target estimand scale.
+- **Data Readiness And Analysis Specification:** survival data construction, estimator, adjusted curves or weighting, censoring/competing-risk handling, clustering/weights, and package path.
+- **Results And Diagnostics:** survival/CIF/RMST/risk/hazard outputs, curve plots, risk tables, event counts, censoring summaries, risk-set support, and proportional-hazards checks if used.
+- **Interpretation And Next Step:** immortal-time risk, informative censoring, competing-risk interpretation, sparse risk sets, scale choice, or need for another outcome definition.
+- **Reproducibility Appendix:** survival scripts, time-origin and event-coding rules, model formulas, package versions, seeds if used, and saved curve/table paths.
 
 Recommend `return_to_foundation` when time zero is undefined or after treatment, immortal time is built into exposure definition, event/censoring data cannot define the target outcome, competing events invalidate the requested estimand, or treatment timing makes the base route impossible.
 

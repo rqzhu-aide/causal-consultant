@@ -109,6 +109,59 @@ cases:
           - "inspect_data"
     user_facing_expectation: "Give a brief validity warning, label the output as exploratory/associational, and proceed only within the allowed caveated scope."
 
+  - case_id: "user_directed_exploratory_report_keeps_gates_nonready"
+    title: "Exploratory effect-estimation-style report does not open gates"
+    user_turns:
+      - "We still do not have the baseline usage or selection reason, but the customer file is attached and has treatment, age, state, and 30-day spend."
+      - "I know this is not causal. Please run a first-pass model anyway and give me an exploratory HTML report."
+    expected_transitions:
+      - path: "project.current_phase"
+        expected: "post_delivery"
+      - path: "main_skill.user_directed.requested"
+        expected: true
+      - path: "main_skill.user_directed.acknowledged_limits"
+        expected: true
+      - path: "analysis.route_commitment_status"
+        expected: "user-directed"
+      - path: "analysis.claim_strength"
+        expected_any_of:
+          - "exploratory"
+          - "associational"
+      - path: "foundation_gate.status"
+        expected_any_of:
+          - "exploratory"
+          - "blocked"
+      - path: "foundation_gate.can_support_causal_commitment"
+        expected: false
+      - path: "production_gate.status"
+        expected: "not ready"
+      - path: "production_gate.can_handoff_to_report_writer"
+        expected: false
+      - path: "analysis.execution_stage"
+        expected: "first pass run"
+      - path: "evaluators.data_technician_02.method_fit_suggestions"
+        expected_recorded: true
+      - path: "analysis.activated_method_job_subskills"
+        expected_recorded: true
+      - path: "analysis.production_loop.review_purpose"
+        expected_any_of:
+          - "implementation_plan"
+          - "first_pass"
+      - path: "analysis.production_loop.readiness"
+        expected_any_of:
+          - "first pass complete"
+          - "diagnostics needed"
+          - "materials incomplete"
+      - path: "analysis.report_writer_20.mode"
+        expected: "not selected"
+      - path: "analysis.report_writer_20.status"
+        expected: "not ready"
+      - path: "artifacts"
+        expected_recorded: true
+      - path: "main_skill.selected_next_action"
+        expected: "ask_user"
+    user_facing_expectation: "Deliver a reproducible exploratory report with effect-estimation-style output clearly labeled as non-causal; do not activate Report Writer handoff or mark either gate ready."
+
   - case_id: "observational_first_pass_requires_diagnostics"
     title: "Foundation-ready observational route moves through first-pass production"
     user_turns:
@@ -145,6 +198,56 @@ cases:
       - path: "production_gate.status"
         expected: "not ready"
     user_facing_expectation: "Report first-pass evidence plainly and route immediately to balance/overlap, sensitivity, and reproducibility checks rather than final prose."
+
+  - case_id: "production_not_ready_progress_report_keeps_handoff_closed"
+    title: "Foundation-ready first-pass report stays non-final before production gate"
+    user_turns:
+      - "The first-pass adjusted model ran, but balance diagnostics and sensitivity checks are not done yet."
+      - "Can you make an HTML progress report with the estimate and diagnostics we have so far?"
+    expected_transitions:
+      - path: "project.current_phase"
+        expected: "post_delivery"
+      - path: "foundation_gate.status"
+        expected: "ready"
+      - path: "foundation_gate.can_support_causal_commitment"
+        expected: true
+      - path: "analysis.route_commitment_status"
+        expected_any_of:
+          - "ready"
+          - "committed"
+      - path: "analysis.execution_stage"
+        expected_any_of:
+          - "first pass run"
+          - "diagnostics proposed"
+      - path: "analysis.activated_method_job_subskills"
+        expected_recorded: true
+      - path: "analysis.production_loop.review_purpose"
+        expected_any_of:
+          - "first_pass"
+          - "diagnostics"
+          - "material_polish"
+      - path: "analysis.production_loop.readiness"
+        expected_any_of:
+          - "first pass complete"
+          - "diagnostics needed"
+          - "materials incomplete"
+      - path: "production_gate.status"
+        expected: "not ready"
+      - path: "production_gate.can_handoff_to_report_writer"
+        expected: false
+      - path: "analysis.report_writer_20.mode"
+        expected_any_of:
+          - "not selected"
+          - "production reviewer"
+      - path: "analysis.report_writer_20.status"
+        expected_any_of:
+          - "not ready"
+          - "production feedback recorded"
+      - path: "artifacts"
+        expected_recorded: true
+      - path: "main_skill.selected_next_action"
+        expected: "ask_user"
+    user_facing_expectation: "Create a gate-not-ready exploratory/progress report with the same general technical spine as a final report, but label the estimate as first-pass and state which diagnostics are still needed before final handoff."
 
   - case_id: "production_data_technician_review_keeps_phase_context"
     title: "Production Data Technician review does not blur foundation readiness"

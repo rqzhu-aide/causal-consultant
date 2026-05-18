@@ -94,6 +94,15 @@ Report Writer handoff notes should include:
 - limitations from unobserved ties, boundary leakage, equilibrium feedback, or approximate exposure mapping;
 - wording that states the no-interference assumption is relaxed or violated and defines the estimand accordingly.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** whether interference changes the estimand, weakens a no-spillover route, or supports a direct/spillover/total/policy effect.
+- **Question, Data, And Design:** causal unit, network/spatial/cluster structure, interference boundary, exposure mapping, saturation, timing, and target estimand.
+- **Data Readiness And Analysis Specification:** exposure-map construction, network/spatial completeness, estimator or sensitivity plan, dependence/uncertainty handling, and package or custom-code path.
+- **Results And Diagnostics:** exposure-support summaries, contamination or spillover diagnostics, cluster/network balance, effect estimates, sensitivity to radius/boundary/lag, and uncertainty.
+- **Interpretation And Next Step:** unobserved ties, boundary leakage, equilibrium feedback, approximate mapping, or need to shift from individual to policy/cluster language.
+- **Reproducibility Appendix:** exposure-map code, network/spatial definitions, radius or boundary settings, model formulas, package versions, seeds if used, and artifact paths.
+
 Recommend `return_to_foundation` when the original route depends on no interference but contamination/spillovers are central, the exposure mapping is unconstructible, the causal unit is wrong, network boundaries are missing, or equilibrium feedback changes the target question.
 
 Stay in production with a weaker claim when interference is plausible but limited, exposure mapping is approximate, spillover diagnostics are incomplete, or a policy/cluster estimand can still be reported with caveats. Then recommend sensitivity checks and cautious language.

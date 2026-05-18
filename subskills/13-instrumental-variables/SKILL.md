@@ -98,6 +98,15 @@ Report Writer handoff notes should include:
 - sensitivity or caveat notes for weak instruments, pleiotropy/exclusion concerns, or limited generalizability;
 - wording that clearly says "for compliers/local effect" when that is the supported estimand.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** supported IV estimand, usually LATE/CACE or another local effect, and whether assumptions support causal, cautious, or exploratory wording.
+- **Question, Data, And Design:** instrument, treatment, outcome, timing, complier/local population, comparator, and the source of instrument variation.
+- **Data Readiness And Analysis Specification:** IV model, first-stage specification, fixed effects or clustering, covariates, weak-IV approach, falsification plan, and package path.
+- **Results And Diagnostics:** first stage, reduced form, IV/Wald or 2SLS estimate, uncertainty, weak-IV diagnostics, balance/falsification, overidentification, and sensitivity outputs.
+- **Interpretation And Next Step:** exclusion, independence, monotonicity, weak-instrument, pleiotropy, or local-generalization limits, plus whether ITT/descriptive fallback is safer.
+- **Reproducibility Appendix:** IV scripts, formula/specification, instrument definitions, clustering/fixed-effect settings, package versions, seeds if used, and artifact paths.
+
 Recommend `return_to_foundation` when the instrument is not relevant, instrument timing follows treatment/outcome, exclusion is plainly implausible for the domain, independence/as-if-randomness fails with no defensible adjustment, monotonicity is impossible for the target, or the desired estimand is not a complier/local effect and no route revision has been agreed.
 
 Stay in production with a weaker claim when the instrument is relevant but assumptions are debatable, first stage is modest, falsification checks are mixed, overidentification is concerning, or LATE/CACE generalizability is limited. Then recommend sensitivity checks, narrower complier language, or cautious causal language.

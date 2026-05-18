@@ -48,7 +48,7 @@ Use this route when:
 Route out or coordinate when:
 
 - treatment is time-varying or adherence/regimes are central: longitudinal g-methods;
-- the user asks for individualized treatment rules or policy learning: HTE/policy;
+- the user asks for single-stage individualized treatment rules or policy learning at a fixed horizon: HTE/individualized-policy;
 - the design is IV, RD, DiD, synthetic control, or mediation with survival endpoint: keep that design active and use survival endpoint support here;
 - censoring, missingness, measurement, or selection is the central threat: missingness/measurement/selection;
 - the analysis is pure survival prediction without causal interpretation: use survival modeling outside the causal skill.
@@ -115,9 +115,9 @@ Use when the user wants patient-specific treatment effects or treatment choices:
 - survival CATE on RMST or survival probability at a specified horizon;
 - `grf::causal_survival_forest` when right-censoring, unconfoundedness, and a suitable horizon are defined;
 - subgroup RMST/risk contrasts as an interpretable comparator;
-- policy learning only after validation plans are clear.
+- single-stage policy learning only after validation plans are clear.
 
-Coordinate with the HTE/policy subskill for validation, policy value, fairness, and deployment concerns.
+Coordinate with the HTE/individualized-policy subskill for fixed-horizon validation, policy value, fairness, and deployment concerns.
 
 ## Stage 5: Diagnostics and Sensitivity
 

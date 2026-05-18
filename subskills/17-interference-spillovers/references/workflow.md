@@ -63,7 +63,7 @@ Interference is usually a design modifier, not a standalone data type.
 | Observational point treatment | model own treatment and spillover exposure; homophily/network confounding is a major threat |
 | Matching/weighting | balance must be checked by exposure condition, not only own treatment |
 | Doubly robust/ML | useful for flexible nuisance models, but exposure mapping remains a causal assumption |
-| HTE/policy | policies may have equilibrium/network effects; ordinary individual CATEs may fail |
+| HTE/individualized-policy | policies may have equilibrium/network effects; ordinary individual CATEs may fail |
 | Longitudinal g-methods | dynamic exposure, feedback, and changing links may require sequential interventions |
 | DiD/event study | spillovers contaminate controls; define exposure by treated neighbors, distance, or market contact |
 | RD | spillovers across cutoff/border can break local-control assumptions |

@@ -94,6 +94,15 @@ Report Writer handoff notes should include:
 - sensitivity to donor/comparison restrictions, event window, cohort aggregation, and calendar shocks;
 - wording that ties the claim to parallel-trends and no-anticipation assumptions.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** supported DiD/event-study estimand and whether the evidence is gate-ready, diagnostic, descriptive, or exploratory.
+- **Question, Data, And Design:** units, time periods, adoption timing, treated/control cohorts, comparison group, pre/post windows, and aggregation target.
+- **Data Readiness And Analysis Specification:** panel or repeated-cross-section shape, estimator, cohort/event-time construction, clustering level, covariates, anticipation window, and package path.
+- **Results And Diagnostics:** ATT or event-study table, event-time plot, pretrend/lead checks, placebo tests, support diagnostics, serial-correlation handling, and sensitivity outputs.
+- **Interpretation And Next Step:** parallel-trends and no-anticipation limits, comparison contamination, cohort heterogeneity, calendar shocks, or whether a descriptive trend report is safer.
+- **Reproducibility Appendix:** estimator code, cohort definitions, event windows, clustering settings, package versions, seeds if used, and saved plot/table paths.
+
 Recommend `return_to_foundation` when there are no credible pre-treatment periods, no usable comparison group, treatment timing is not observable, intervention timing follows outcome changes, spillovers dominate the comparison, or the route is really synthetic control/RD/IV rather than DiD.
 
 Stay in production with a weaker claim when pretrends are suggestive but imperfect, comparison support is limited, treatment heterogeneity complicates aggregation, placebo checks are mixed, or uncertainty is large. Then recommend sensitivity checks, narrower estimand, caveated policy framing, or descriptive language.

@@ -3,7 +3,7 @@
   "version": "0.2.2",
   "created_for": "modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Refined causal discovery into an any-phase sidecar with lean discovery_sidecar state, explicit discovery-only report handling, optional trace records, owner-routed promotion, and selected-reviewer safeguards.",
+  "last_updated_focus": "Refined report generation into gate-ready and gate-not-ready data-backed lanes, while preserving causal-discovery-only reports and gatekeeper claim-strength boundaries.",
   "subskills": [
     "01-domain-helper",
     "02-data-technician",
@@ -13,7 +13,7 @@
     "06-point-treatment-observational",
     "07-matching-weighting-balance",
     "08-doubly-robust-ml",
-    "09-heterogeneous-effects-policy",
+    "09-heterogeneous-effects-individualized-policy",
     "10-longitudinal-gmethods",
     "11-did-event-study",
     "12-regression-discontinuity",
@@ -94,11 +94,11 @@
       "state_owner": "subskill_analyses"
     },
     {
-      "id": "09-heterogeneous-effects-policy",
-      "display_name": "Heterogeneous Effects And Policy",
+      "id": "09-heterogeneous-effects-individualized-policy",
+      "display_name": "Heterogeneous Effects, Individualized Decisions, And Policy",
       "role": "target_or_outcome_module",
       "phase": "production",
-      "entrypoint": "subskills/09-heterogeneous-effects-policy/SKILL.md",
+      "entrypoint": "subskills/09-heterogeneous-effects-individualized-policy/SKILL.md",
       "state_owner": "subskill_analyses"
     },
     {
@@ -184,7 +184,7 @@
     {
       "id": "20-report-writer",
       "display_name": "Report Writer",
-      "role": "production_reviewer_handoff_writer_and_discovery_report_writer",
+      "role": "production_reviewer_handoff_writer_discovery_report_writer_and_report_template_owner",
       "phase": "production_reporting_and_discovery_deliverable",
       "entrypoint": "subskills/20-report-writer/SKILL.md",
       "state_owner": "analysis.report_writer_20_and_analysis.production_loop.reviewer_summaries"
@@ -201,5 +201,5 @@
   "evaluation_fixtures": [
     "fixtures/conversation_transition_cases.yaml"
   ],
-  "notes": "The top-level main skill is the user-facing actor: it selects ordered reviewers, owns foundation_gate and production_gate, and speaks in plain language. Domain Helper, Data Technician, Design Planner, and DAG Builder maintain foundation evaluator YAML records before foundation_gate. After foundation_gate opens, method/job subskills, Data Technician, and Report Writer participate as production transition kernels through analysis.production_loop. Causal Discovery is an any-phase sidecar recorded under analysis.discovery_sidecar, with optional compact subskill_analyses records when traceability is useful; discovery artifacts do not change gates, routes, adjustment, or claim strength unless routed back through an existing owner. Severe production findings can trigger return_to_foundation. Report Writer owns analysis.report_writer_20 and takes over effect-report synthesis only after production_gate is ready, using recorded foundation and production evidence rather than starting a new interaction loop; it can also synthesize exploratory discovery-only reports when effect-estimation gates are not needed. Canonical workflow enum values live in assets/workflow_enums.yaml. Canonical subskill metadata lives in this manifest; legacy per-subskill skill.json files are intentionally not used."
+  "notes": "The top-level main skill is the user-facing actor: it selects ordered reviewers, owns foundation_gate and production_gate, and speaks in plain language. Domain Helper, Data Technician, Design Planner, and DAG Builder maintain foundation evaluator YAML records before foundation_gate. After foundation_gate opens, method/job subskills, Data Technician, and Report Writer participate as production transition kernels through analysis.production_loop. A bounded user-directed exploratory run before foundation readiness may also use method/job records and analysis.production_loop as an audit ledger, without opening gates or upgrading claim strength. Causal Discovery is an any-phase sidecar recorded under analysis.discovery_sidecar, with optional compact subskill_analyses records when traceability is useful; discovery artifacts do not change gates, routes, adjustment, or claim strength unless routed back through an existing owner. Severe production findings can trigger return_to_foundation. Report Writer owns analysis.report_writer_20 and takes over effect-report synthesis only after production_gate is ready, using recorded foundation and production evidence rather than starting a new interaction loop; it can also synthesize exploratory discovery-only reports when effect-estimation gates are not needed. Data-backed reports use two related template lanes: gate-ready reproducible reports when handoff is supported, and gate-not-ready exploratory/progress reports when the user wants first-pass results, diagnostics, or model behavior without upgrading claim strength. Canonical workflow enum values live in assets/workflow_enums.yaml. Canonical subskill metadata lives in this manifest; legacy per-subskill skill.json files are intentionally not used."
 }

@@ -94,6 +94,15 @@ Report Writer handoff notes should include:
 - concurrent shocks, spillovers, seasonality, aggregation, and donor-quality limitations;
 - wording that frames the counterfactual comparison and avoids individual-level claims from aggregate data.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** supported counterfactual effect summary and whether donor/time-series evidence is gate-ready, fragile, descriptive, or exploratory.
+- **Question, Data, And Design:** treated unit, intervention date, outcome frequency, donor pool, pre/post periods, aggregation level, and post-period estimand.
+- **Data Readiness And Analysis Specification:** estimator, donor restrictions, covariates, seasonality or transformation choices, missingness handling, placebo design, and package path.
+- **Results And Diagnostics:** effect trajectory, average/cumulative gap, synthetic weights, pre-fit/RMSPE, balance, placebo/permutation checks, leave-one-out, and sensitivity outputs.
+- **Interpretation And Next Step:** donor contamination, concurrent shocks, poor pre-fit, limited uncertainty, aggregation limits, or need for descriptive monitoring instead of causal wording.
+- **Reproducibility Appendix:** donor-screening code, intervention/preperiod settings, estimator parameters, package versions, seeds if used, and saved plot/table paths.
+
 Recommend `return_to_foundation` when no plausible donor/comparison construction exists, intervention timing is wrong or endogenous to outcome shocks, treated/donor aggregation is incoherent, spillovers contaminate all donors, or the requested individual-level claim cannot follow from aggregate time-series data.
 
 Stay in production with a weaker claim when pre-fit is imperfect, donors are few, placebo evidence is mixed, concurrent shocks remain plausible, or uncertainty is limited. Then recommend sensitivity checks, descriptive framing, or cautious counterfactual language.

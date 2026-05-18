@@ -99,6 +99,15 @@ Report Writer handoff notes should include:
 - limitations from residual imbalance, poor overlap, extreme weights, trimming, or target-population narrowing;
 - recommended wording for whether the result supports causal, cautious causal, or associational interpretation.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** supported target population after matching or weighting and whether the estimand changed from the original route.
+- **Question, Data, And Design:** comparator, covariate set, matching or weighting design, discard/trim rules, and any target-population revision.
+- **Data Readiness And Analysis Specification:** method, weights or matching algorithm, caliper/ratio/stabilization/truncation, outcome-analysis handoff, and uncertainty requirements.
+- **Results And Diagnostics:** balance table, Love plot, overlap plot, effective sample size, weight distribution, dropped units, and residual-imbalance notes.
+- **Interpretation And Next Step:** support loss, target narrowing, residual imbalance, outcome-analysis requirements, or whether the artifact should stay exploratory.
+- **Reproducibility Appendix:** matched/weighted data path, weight formulas or matching settings, package versions, calipers, seeds, and diagnostic plot/table paths.
+
 Recommend `return_to_foundation` when the primary route requires covariates measured after treatment, key pre-treatment confounders are absent and no weaker supportable route is available, there is no common support for the intended comparison, treatment/comparator definitions are not constructible, or matching/weighting reveals that the target estimand cannot be represented by the data.
 
 Stay in production with a weaker claim when support exists only for a narrower estimand, balance is improved but imperfect, weights are somewhat unstable, or sensitivity to trimming/specification is material. Then recommend target revision, diagnostics, or cautious/associational presentation rather than forcing the original causal claim.

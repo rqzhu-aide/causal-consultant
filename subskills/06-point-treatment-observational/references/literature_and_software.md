@@ -52,7 +52,7 @@ This is a compact map, not an exhaustive bibliography. Use it to frame observati
 - `DoWhy`: model-identify-estimate-refute workflow for causal effects, useful for transparent graph and refutation workflows. Docs: <https://www.pywhy.org/dowhy/v0.9.1/user_guide/effect_inference/index.html>
 - `zepid`: g-formula, IPTW, AIPTW, TMLE, IPCW, and transportability utilities. Docs: <https://zepid.readthedocs.io/en/latest/Reference/Causal.html>
 - `statsmodels`, `scikit-learn`, `pandas`, and `numpy`: transparent regression, standardization, weighting, diagnostics, and custom sensitivity analyses.
-- `DoubleML`, `EconML`, and `causalml`: use through `08-doubly-robust-ml` or `09-heterogeneous-effects-policy` when flexible nuisance models or CATEs are needed.
+- `DoubleML`, `EconML`, and `causalml`: use through `08-doubly-robust-ml` or `09-heterogeneous-effects-individualized-policy` when flexible nuisance models, CATEs, or single-stage individualized policies are needed.
 
 ## Method Selection Heuristics
 

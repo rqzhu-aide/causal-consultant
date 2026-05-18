@@ -95,6 +95,15 @@ Report Writer handoff notes should include:
 - sensitivity to unmeasured mediator-outcome confounding, mediator measurement error, multiple mediators, and treatment-induced confounding;
 - wording that treats mechanism evidence as assumption-dependent or exploratory unless unusually well supported.
 
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** supported mechanism or direct/indirect-effect claim and whether it is assumption-dependent, exploratory, or strong enough for gate-ready wording.
+- **Question, Data, And Design:** treatment, mediator, outcome, timing order, mediator scale, total/direct/indirect or path-specific estimand, and base route.
+- **Data Readiness And Analysis Specification:** mediator/outcome models, exposure-mediator interaction, mediator-outcome confounder handling, sensitivity method, and package path.
+- **Results And Diagnostics:** total/direct/indirect estimates when appropriate, uncertainty, proportion mediated caveats, model fit, timing checks, interaction handling, and sensitivity outputs.
+- **Interpretation And Next Step:** sequential-ignorability limits, treatment-induced confounding, mediator measurement error, multiple-mediator ordering, or descriptive mechanism fallback.
+- **Reproducibility Appendix:** mediation scripts, DAG/timing tables, model formulas, sensitivity parameters, package versions, seeds if used, and artifact paths.
+
 Recommend `return_to_foundation` when the mediator is not temporally between treatment and outcome, mediator-outcome confounding is treatment-induced and not handled by the selected route, the requested mechanism claim changes the original causal question, or the DAG contradicts the mediation pathway.
 
 Stay in production with a weaker claim when timing is plausible but assumptions are strong, sensitivity is unfavorable, mediator measurement is noisy, multiple mediator ordering is uncertain, or mechanism evidence is exploratory. Then recommend sensitivity checks or descriptive mechanism wording.

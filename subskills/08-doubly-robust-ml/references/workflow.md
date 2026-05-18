@@ -27,7 +27,7 @@ Identify nuisance models:
 - outcome regression, often \(E[Y \mid A, X]\);
 - treatment or propensity model, often \(P(A=1 \mid X)\);
 - censoring or missingness model, when needed;
-- final-stage CATE/policy model, when HTE is the target.
+- CATE or single-stage policy-output model, when HTE is the target.
 
 Make sure all nuisance covariates are valid for the parent design. Do not include post-treatment variables for better prediction in a total-effect analysis.
 
@@ -40,7 +40,7 @@ Choose one method family:
 - one-step estimator when the influence-function approach is explicit;
 - DoubleML PLR when the target is a partially linear coefficient;
 - DoubleML IRM when the target is an ATE/ATTE under binary treatment with flexible nuisances;
-- DRLearner or causal forest DML when heterogeneity is the target, usually with `09-heterogeneous-effects-policy`;
+- DRLearner or causal forest DML when heterogeneity or single-stage individualized policy is the target, usually with `09-heterogeneous-effects-individualized-policy`;
 - survival or censoring-specific DR/TMLE when the endpoint requires `15-survival-competing-risks` or `02-data-technician`.
 
 Choose one simpler comparator, such as adjusted regression, IPW, matching/weighting estimate, or a simpler learner library.

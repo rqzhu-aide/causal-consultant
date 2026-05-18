@@ -1,10 +1,12 @@
 # Production Routing
 
-Use this reference only when the main skill needs to choose method/job subskills or production reviewers after the foundation gate is ready. It is not a method textbook. Each method/job subskill owns its own detailed assumptions, diagnostics, software notes, and failure modes. Causal Discovery is an any-phase sidecar; use the main `SKILL.md` discovery-sidecar rule when graph discovery, graph comparison, variable screening, or discovery-only deliverables are requested.
+Use this reference only when the main skill needs to choose method/job subskills or production reviewers after the foundation gate is ready, or when the user explicitly requests bounded user-directed exploratory execution before foundation readiness. It is not a method textbook. Each method/job subskill owns its own detailed assumptions, diagnostics, software notes, and failure modes. Causal Discovery is an any-phase sidecar; use the main `SKILL.md` discovery-sidecar rule when graph discovery, graph comparison, variable screening, or discovery-only deliverables are requested.
 
 ## Routing Rule
 
 Prefer the strongest supported design route over the most sophisticated estimator. The main skill chooses a small reviewer set that could change the next action, records it in `analysis.production_loop.selected_reviewers`, and summarizes the result before speaking to the user.
+
+For pre-foundation user-directed execution, use the routing map only to assign a method/job owner for a bounded exploratory run. Keep `analysis.route_commitment_status: user-directed`, keep both gates non-handoff, and label outputs as exploratory, associational, descriptive, or diagnostic. Record any activated method/job subskill and production-loop fields for traceability, not as evidence that production readiness has been reached.
 
 Do not load all method/job subskills to compare options. Use this routing map and the current project state to shortlist, then load only the selected primary route and any necessary support modules.
 
@@ -35,19 +37,19 @@ Subskills should keep detailed scripts, plots, diagnostics, tables, and memos in
 
 | Situation | Primary reviewer | Common companions |
 |---|---|---|
-| Randomized assignment, A/B test, randomized rollout, trial | `05-randomized-experiments` | `13-instrumental-variables` for noncompliance, `15-survival-competing-risks`, `17-interference-spillovers`, `09-heterogeneous-effects-policy` |
-| One main observational treatment time with measured pre-treatment confounders | `06-point-treatment-observational` | `07-matching-weighting-balance`, `08-doubly-robust-ml`, `09-heterogeneous-effects-policy`, `15-survival-competing-risks`, `16-mediation` |
-| Matching, weighting, balance, overlap, propensity scores | `07-matching-weighting-balance` | `06-point-treatment-observational`, `08-doubly-robust-ml`, `09-heterogeneous-effects-policy`, `15-survival-competing-risks` |
-| AIPW, TMLE, DML, flexible nuisance models, orthogonal ML | `08-doubly-robust-ml` | `06-point-treatment-observational`, `07-matching-weighting-balance`, `09-heterogeneous-effects-policy` |
-| Heterogeneous effects, CATE/GATE, treatment rules, policy value | `09-heterogeneous-effects-policy` | primary route module, `08-doubly-robust-ml` |
-| Time-varying treatment or dynamic regimes | `10-longitudinal-gmethods` | `08-doubly-robust-ml`, `09-heterogeneous-effects-policy`, `15-survival-competing-risks` |
-| Panel or policy adoption with pre/post periods | `11-did-event-study` | `09-heterogeneous-effects-policy`, `14-synthetic-control-time-series` |
-| Cutoff or threshold assignment | `12-regression-discontinuity` | `13-instrumental-variables` for fuzzy RD, `09-heterogeneous-effects-policy` |
+| Randomized assignment, A/B test, randomized rollout, trial | `05-randomized-experiments` | `13-instrumental-variables` for noncompliance, `15-survival-competing-risks`, `17-interference-spillovers`, `09-heterogeneous-effects-individualized-policy` |
+| One main observational treatment time with measured pre-treatment confounders | `06-point-treatment-observational` | `07-matching-weighting-balance`, `08-doubly-robust-ml`, `09-heterogeneous-effects-individualized-policy`, `15-survival-competing-risks`, `16-mediation` |
+| Matching, weighting, balance, overlap, propensity scores | `07-matching-weighting-balance` | `06-point-treatment-observational`, `08-doubly-robust-ml`, `09-heterogeneous-effects-individualized-policy`, `15-survival-competing-risks` |
+| AIPW, TMLE, DML, flexible nuisance models, orthogonal ML | `08-doubly-robust-ml` | `06-point-treatment-observational`, `07-matching-weighting-balance`, `09-heterogeneous-effects-individualized-policy` |
+| Heterogeneous effects, single-stage individualized decisions, CATE/GATE, treatment rules, multi-arm choices, bounded dose/intensity rules, policy value | `09-heterogeneous-effects-individualized-policy` | primary route module, `08-doubly-robust-ml` |
+| Time-varying treatment or dynamic regimes | `10-longitudinal-gmethods` | `08-doubly-robust-ml`, `15-survival-competing-risks` |
+| Panel or policy adoption with pre/post periods | `11-did-event-study` | `09-heterogeneous-effects-individualized-policy`, `14-synthetic-control-time-series` |
+| Cutoff or threshold assignment | `12-regression-discontinuity` | `13-instrumental-variables` for fuzzy RD, `09-heterogeneous-effects-individualized-policy` |
 | Instrument or encouragement design | `13-instrumental-variables` | `05-randomized-experiments`, `12-regression-discontinuity`, `08-doubly-robust-ml`, `19-causal-genomics`, `21-negative-controls-proximal` |
 | One/few treated aggregate units or intervention time series | `14-synthetic-control-time-series` | `11-did-event-study` |
 | Time-to-event outcomes, censoring, competing risks | `15-survival-competing-risks` | primary route module |
 | Direct, indirect, pathway, or mechanism effects | `16-mediation` | primary route module, `15-survival-competing-risks`, `19-causal-genomics` |
-| Interference, spillovers, networks, contamination | `17-interference-spillovers` | primary route module, `09-heterogeneous-effects-policy`, `15-survival-competing-risks` |
+| Interference, spillovers, networks, contamination | `17-interference-spillovers` | primary route module, `09-heterogeneous-effects-individualized-policy`, `15-survival-competing-risks` |
 | Genetic or omics causal evidence | `19-causal-genomics` | `13-instrumental-variables`, `16-mediation`, `21-negative-controls-proximal` |
 | Negative controls, proxy variables, proximal causal inference | `21-negative-controls-proximal` | `04-dag-builder`, `06-point-treatment-observational`, `08-doubly-robust-ml` |
 

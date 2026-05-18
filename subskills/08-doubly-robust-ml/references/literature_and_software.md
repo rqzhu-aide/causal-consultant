@@ -28,7 +28,7 @@ This is a compact map, not an exhaustive bibliography. Use it to choose a safe D
 - **Super Learner / sl3:** cross-validated ensemble nuisance estimation, commonly paired with TMLE or AIPW.
 - **DoubleML PLR:** partially linear regression model for low-dimensional treatment coefficient with high-dimensional controls.
 - **DoubleML IRM:** interactive regression model for binary treatment ATE/ATTE with flexible outcome and propensity models.
-- **DRLearner / orthogonal CATE methods:** heterogeneity-focused methods; coordinate with `09-heterogeneous-effects-policy`.
+- **DRLearner / orthogonal CATE methods:** heterogeneity-focused methods; coordinate with `09-heterogeneous-effects-individualized-policy`.
 - **Survival/missingness DR methods:** require outcome-specific or censoring-specific estimands; coordinate with `15-survival-competing-risks` and `02-data-technician`.
 
 ## Software Map
@@ -55,5 +55,5 @@ This is a compact map, not an exhaustive bibliography. Use it to choose a safe D
 - If binary outcome probabilities must remain bounded, prefer TMLE or carefully bounded nuisance predictions.
 - If sample size is small, keep the learner library conservative and compare to simpler estimators.
 - If propensities are extreme, fix the target population or design problem before fitting more complex learners.
-- If the target is CATE, policy, or uplift, use DR/orthogonal methods as inputs but coordinate with the HTE/policy subskill.
+- If the target is CATE, single-stage individualized policy, or uplift, use DR/orthogonal methods as inputs but coordinate with the HTE/individualized-policy subskill.
 - If the target involves censoring, competing risks, missingness, transportability, or time-varying treatment, use the specialized subskill before writing code.

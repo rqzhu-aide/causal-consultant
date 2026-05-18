@@ -43,7 +43,7 @@ Given the route handoff, check:
 - whether covariates are measured before treatment and plausibly cover the confounding story from `04-dag-builder`;
 - exchangeability, positivity/overlap, consistency, selection, missingness, and measurement quality;
 - whether treatment is binary, multivalued, continuous, dose-response, or needs another primary route;
-- whether survival, HTE/policy, mediation, interference, or longitudinal structure requires an additional module.
+- whether survival, single-stage HTE/individualized-policy, mediation, interference, or longitudinal structure requires an additional module.
 
 If timing is repeated, treatment evolves, assignment is threshold/policy/panel based, or unmeasured confounding is central, return feedback to the main skill and recommend a different primary route or support module.
 
@@ -56,7 +56,7 @@ Before `production_gate.status` is ready, consider these analysis paths:
 - transparent outcome regression or g-computation/standardization for the selected adjustment set;
 - propensity-score weighting or matching with `07-matching-weighting-balance` when design-stage balance matters;
 - AIPW, TMLE, or DML with `08-doubly-robust-ml` when nuisance flexibility is justified;
-- subgroup or policy extension with `09-heterogeneous-effects-policy` only after the base route is supportable;
+- subgroup, single-stage individualized-policy, or policy extension with `09-heterogeneous-effects-individualized-policy` only after the base route is supportable;
 - survival extension with `15-survival-competing-risks` when outcome timing/censoring changes the estimand.
 
 Candidate packages include R `fixest`, `marginaleffects`, `WeightIt`, `MatchIt`, `cobalt`, `tmle3`, `DoubleML`, and Python `statsmodels`, `dowhy`, `sklearn`, `DoubleML`, or `econml`. Keep the first pass simple unless the route needs the extra machinery.
@@ -101,6 +101,15 @@ Report Writer handoff notes should include:
 - overlap/support, missingness, sensitivity, model-dependence, and residual-confounding diagnostics;
 - first-pass estimate, uncertainty method, and artifact paths for code, tables, and plots;
 - claim-language limit, especially whether wording should be cautious causal, associational, or descriptive.
+
+When the Report Writer uses the gate-ready or exploratory data-backed templates, contribute:
+
+- **Summary / Claim Status:** supported estimand, target population, and whether the safest wording is cautious causal, associational, descriptive, or exploratory.
+- **Question, Data, And Design:** target-trial components, including eligibility, time zero, treatment/exposure, comparator, outcome window, follow-up, and analysis population.
+- **Data Readiness And Analysis Specification:** adjustment set, covariate timing, estimator, package path, support/overlap rules, missingness handling, and selection caveats.
+- **Results And Diagnostics:** estimate, uncertainty, balance or overlap summaries, model diagnostics, sensitivity results, and placebo or negative-control results when used.
+- **Interpretation And Next Step:** residual-confounding risk, target-population narrowing, needed sensitivity checks, missing design information, or the smallest gate-ready upgrade path.
+- **Reproducibility Appendix:** code paths, adjustment variables, trimming or exclusion rules, package versions, seeds, and saved diagnostic artifacts.
 
 Recommend `return_to_foundation` when treatment happens after outcome, time zero is incoherent, the row unit cannot represent the causal unit, required pre-treatment confounders are unavailable and central, all plausible adjustment variables are post-treatment, selection into the dataset is outcome/treatment-defined in a route-changing way, or the situation is really longitudinal, IV, RD, DiD, mediation, or interference rather than point treatment.
 

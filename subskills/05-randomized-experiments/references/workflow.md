@@ -232,7 +232,7 @@ The estimate should be interpreted as [assignment/treatment/exposure] effect amo
 | Only triggered/exposed users are in dataset | Warn about post-randomization selection; use `02-data-technician`; define triggered estimand if scientifically intended. |
 | Outcome is time-to-event | Use `15-survival-competing-risks`; keep `05-randomized-experiments` for randomization audit. |
 | Interference/spillovers plausible | Use `17-interference-spillovers`; redefine exposure mapping. |
-| CATE/uplift requested | Use `09-heterogeneous-effects-policy`; require honest or held-out evaluation. |
+| CATE/uplift/single-stage individualized policy requested | Use `09-heterogeneous-effects-individualized-policy`; require honest or held-out evaluation. |
 | Dynamic regimes/SMART | Use `10-longitudinal-gmethods`; define regime-level estimands. |
 | Mechanism/mediator requested | Use `16-mediation`; do not adjust for mediator in primary total-effect analysis. |
 

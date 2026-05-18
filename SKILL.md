@@ -1,6 +1,6 @@
 ---
 name: causal-consultant
-description: "Main user-facing coordinator for causal inference projects, including causal question formulation, study or trial design, data suitability, DAG/assumption reasoning, effect estimation, causal discovery, policy or treatment decisions, diagnostics, interpretation, and reporting."
+description: "Main user-facing coordinator for causal inference projects, including causal question formulation, study or trial design, data suitability, DAG/assumption reasoning, effect estimation, causal discovery, individualized treatment rules, policy or treatment decisions, diagnostics, interpretation, and reporting."
 ---
 
 # Causal Consultant
@@ -16,16 +16,16 @@ The main skill is a conductor, not a giant method manual. It owns:
 - the lean `project.yaml` state map and state-folder conventions;
 - selecting which reviewer subskill or subskills review `project.yaml` in the current round, and in what order;
 - opening and running the post-foundation production loop with method/job subskills, Data Technician, and Report Writer;
-- the hard rule that plans, first-pass results, diagnostics, drafts, final reports, and decision recommendations are different claim scopes; support for one does not automatically upgrade another.
+- the hard rule that plans, first-pass results, diagnostics, drafts, final reports, individualized decision rules, and decision recommendations are different claim scopes; support for one does not automatically upgrade another.
 
 Think of the workflow as an actor plus transition kernels. The main skill is the actor: it observes the user turn and current `project.yaml`, picks the next action, decides which subskill reviews are useful, and speaks to the user in plain, warm, non-dumping language. Subskills are transition-kernel experts: they inspect their slice of state, write compact feedback to YAML or artifacts, and return signals that help the main skill choose the next state. Subskills do not take over the conversation unless the user explicitly asks.
 
 Use these role categories:
 
 - **Foundation evaluator subskills:** `01-domain-helper`, `02-data-technician`, `03-design-planner`, and `04-dag-builder`. Before `foundation_gate` opens, they work together as the transitional kernel functions: they update the project state, surface route-changing feedback, and write only their own `project.yaml > evaluators.*` section.
-- **Production reviewer/executor subskills:** method/job modules such as `05` through `17`, `19`, and `21`, plus `02-data-technician` and `20-report-writer` when selected by the main skill. Between `foundation_gate` and `production_gate`, they help produce and review analysis plans, code paths, first-pass results, diagnostics, sensitivity checks, tables, figures, limitations, presentation choices, and route/package/report-readiness feedback.
+- **Production reviewer/executor subskills:** method/job modules such as `05` through `17`, `19`, and `21`, plus `02-data-technician` and `20-report-writer` when selected by the main skill. Between `foundation_gate` and `production_gate`, they help produce and review analysis plans, code paths, first-pass results, diagnostics, sensitivity checks, tables, figures, individualized treatment-rule or policy-value material, limitations, presentation choices, and route/package/report-readiness feedback.
 - **Discovery sidecar subskill:** `18-causal-discovery`. It may be activated at any phase for graph-hypothesis generation, graph comparison, variable-screening support, discovery diagnostics, or a discovery-only deliverable. It is not an effect-estimation route and does not validate causal claims. By default, discovery sidecar work creates exploratory artifacts, optional Data Technician suggestions, optional Report Writer material, and, when requested, a discovery-only report without changing gates, routes, evaluator readiness, adjustment choices, or claim strength.
-- **Report Writer:** `20-report-writer`. During production it can review reportability. After `project.yaml > production_gate.status` is `ready`, it synthesizes effect-estimation report material from the foundation and production records. For a discovery-only deliverable, it can instead synthesize an exploratory discovery report when effect-estimation gates are `not needed`. It records handoff or discovery-report state under `project.yaml > analysis.report_writer_20` and artifacts, not under `evaluators.*`.
+- **Report Writer:** `20-report-writer`. During production it can review reportability. After `project.yaml > production_gate.status` is `ready`, it synthesizes effect-estimation report material from the foundation and production records. It also owns gate-ready versus gate-not-ready report templates: gate-ready reports use handoff, while gate-not-ready exploratory/progress reports remain non-final artifacts with visible claim boundaries. For a discovery-only deliverable, it can instead synthesize an exploratory discovery report when effect-estimation gates are `not needed`. It records handoff or discovery-report state under `project.yaml > analysis.report_writer_20` and artifacts, not under `evaluators.*`.
 
 Report Writer may participate during production as a reviewer, but full handoff belongs after `production_gate.status: ready`.
 
@@ -124,7 +124,9 @@ If a lower-priority reviewer says "reportable" or "run it" while a higher-priori
 
 ## Production Loop
 
-After `project.yaml > foundation_gate.status` becomes `ready`, the main skill starts the production loop. This is the phase where the project step-by-step produces the material needed to answer, or partially answer with limitations, the user's goal: analysis plan, executable code, first-pass results, diagnostics, sensitivity checks, tables, figures, limitations, reproducibility notes, and presentation choices.
+After `project.yaml > foundation_gate.status` becomes `ready`, the main skill starts the production loop. This is the phase where the project step-by-step produces the material needed to answer, or partially answer with limitations, the user's goal: analysis plan, executable code, first-pass results, diagnostics, sensitivity checks, tables, figures, individualized treatment-rule or policy-value material, limitations, reproducibility notes, and presentation choices.
+
+The narrow exception is user-directed exploratory execution before foundation readiness. If the user explicitly wants bounded modeling despite non-ready foundation support, the main skill may use `analysis.production_loop`, `analysis.activated_method_job_subskills`, and compact `subskill_analyses` records as an execution/audit ledger. This does not mean the project has entered gate-ready production: keep `project.current_phase: foundation` until an artifact is delivered, keep the foundation and production gates non-ready, keep `analysis.route_commitment_status: user-directed`, and keep claim language exploratory, associational, descriptive, or diagnostic.
 
 Record this loop under `project.yaml > analysis.production_loop`. Before production starts, keep `analysis.production_loop.review_purpose` and `analysis.production_loop.recommended_next_action` as `null`. At each production-state update, the main skill selects zero, one, or multiple ordered production reviewers in `analysis.production_loop.selected_reviewers`, states a concrete `analysis.production_loop.review_purpose`, records a concrete `analysis.production_loop.recommended_next_action`, and asks only for the review that could change the next action.
 
@@ -136,6 +138,14 @@ Production can return to foundation. If a production reviewer finds a severe fla
 
 Open `production_gate` only when the production loop has reportable evidence, completed or explicitly deferred diagnostics, no unresolved required materials, and a clear handoff summary. Activate Report Writer for effect-estimation handoff only after `project.yaml > production_gate.status` is `ready`; discovery-only report mode is the separate exploratory exception described below.
 
+## Individualized Decision Targets
+
+When the user asks who should receive treatment, how to prioritize people or units, how to learn a single-stage individualized treatment rule, how to choose among treatment arms, how to recommend a bounded dose or intensity, how to evaluate a targeting rule, or how to use outcome weighted learning, residual weighted learning, policy learning, uplift, CATE, or GATE results for decisions, treat the request as an HTE/individualized-policy target. The main skill should usually activate or recommend `09-heterogeneous-effects-individualized-policy` after a base causal route has enough support.
+
+Do not treat individualized decision making as a standalone identification route. First establish or clearly label the parent design, treatment/action, comparator, outcome or reward, target population, decision-time variables, action set or dose grid/range, utility/cost/harm assumptions, constraints, and validation plan. If those pieces are missing, set `main_skill.selected_next_action: ask_user` or use bounded exploratory language rather than presenting an individualized recommendation as validated.
+
+If the user only has a risk model, prediction score, variable-importance result, or subgroup pattern, explain that this can support prioritization hypotheses but does not by itself identify who benefits from treatment. For gate-ready decision support, production materials must include the parent-route evidence, the learned or proposed rule, policy value or treatment-rule diagnostics, stability/validation checks, fairness or constraint checks when relevant, and claim-language limits.
+
 ## Project Phases
 
 Track phase as gate progression, not as a checklist of activities:
@@ -143,13 +153,13 @@ Track phase as gate progression, not as a checklist of activities:
 1. `foundation`: before `foundation_gate.status` is `ready`. Includes orientation, causal framing, domain/data/design/DAG evaluator work, route selection, and foundation-gate decisions.
 2. `production`: after `foundation_gate.status` is `ready` and before `production_gate.status` is `ready`. Includes analysis planning, execution, first-pass results, diagnostics, sensitivity checks, artifact creation, Data Technician review, method/job review, and Report Writer production-review comments.
 3. `reporting`: after `production_gate.status` is `ready`. Report Writer takes over final synthesis from collected foundation and production records, diagnostic packaging, presentation framing, and delivery preparation. For a discovery-only report, `reporting` may also be used when `foundation_gate.status` and `production_gate.status` are `not needed` and Report Writer is in discovery report mode.
-4. `post_delivery`: reached after Report Writer delivers a final report, discovery report, memo, slides, or presentation artifact. This is a continuation checkpoint, not project completion. Unless the user explicitly ends or pauses, set `main_skill.selected_next_action: ask_user` after delivery so the main skill can ask whether to revise, request another deliverable, explore a follow-up, learn more, resume a parked task, or pause.
+4. `post_delivery`: reached after Report Writer delivers a final report, discovery report, memo, slides, or presentation artifact, or after the main skill delivers a gate-not-ready exploratory/progress analysis artifact. This is a continuation checkpoint, not project completion. Unless the user explicitly ends or pauses, set `main_skill.selected_next_action: ask_user` after delivery so the main skill can ask whether to revise, request another deliverable, explore a follow-up, learn more, resume a parked task, or pause.
 
 Do not use `project.current_phase` for uncertainty. If the workflow location is unclear, keep or choose the closest real phase and set `main_skill.selected_next_action: ask_user` to resolve the ambiguity. After `post_delivery`, user-requested revisions, slides, another report, or a different same-evidence deliverable return to `reporting`; requests for more diagnostics or analysis return to `production`; a new causal question returns to `foundation`.
 
 If the next response would say "next steps," "we should run," "if diagnostics pass," or "please confirm," it is not a final report.
 
-Non-causal or weaker-scope deliverables may be produced in any phase, but they do not by themselves change causal foundation or production readiness. Preserve `main_skill.user_goal` unless the user changes the overall goal. Use `main_skill.selected_next_action`, `analysis.claim_strength`, and `artifacts` to track the immediate scoped output; update `main_skill.primary_intent` only when the user's current intent changes the active work mode rather than a one-off deliverable. Record the output in `artifacts` or, when it belongs to the active deliverable package, in `production_gate.required_outputs` / `production_gate.completed_outputs`. If no causal route is being validated, use `foundation_gate.status: not needed` and `production_gate.status: not needed`; if a causal route already exists, preserve its gate state and label the scoped output as descriptive, associational, exploratory, diagnostic, or draft as appropriate.
+Non-causal or weaker-scope deliverables may be produced in any phase, but they do not by themselves change causal foundation or production readiness. This includes gate-not-ready exploratory/progress reports with effect-estimation-style sections, provided the report explicitly says what the current gatekeeper fields allow and prohibit. Preserve `main_skill.user_goal` unless the user changes the overall goal. Use `main_skill.selected_next_action`, `analysis.claim_strength`, and `artifacts` to track the immediate scoped output; update `main_skill.primary_intent` only when the user's current intent changes the active work mode rather than a one-off deliverable. Record the output in `artifacts` or, when it belongs to the active deliverable package, in `production_gate.required_outputs` / `production_gate.completed_outputs`. If no causal route is being validated, use `foundation_gate.status: not needed` and `production_gate.status: not needed`; if a causal route already exists, preserve its gate state and label the scoped output as descriptive, associational, exploratory, diagnostic, or draft as appropriate.
 
 ## Discovery Sidecar
 
@@ -231,7 +241,42 @@ Apply `Conversation Style And User-Facing Boundary` when explaining this state t
 
 If `project.yaml > foundation_gate.status` is `exploratory` or `blocked` but the user wants progress, give a brief validity warning, record acknowledged limits in `project.yaml > main_skill.user_directed`, set `project.yaml > analysis.route_commitment_status: user-directed`, and keep `project.yaml > foundation_gate.can_support_causal_commitment: false`.
 
-User-directed mode may allow preprocessing, implementation, diagnostics, and sensitivity work, but it never upgrades claim strength to unqualified causal language. Do not open the production gate or activate Report Writer handoff in user-directed mode unless the foundation gate later becomes `ready` and production materials become report-ready.
+User-directed mode may allow preprocessing, implementation, diagnostics, sensitivity work, first-pass effect-estimation-style modeling, and exploratory reproducible analysis artifacts. It never upgrades claim strength to unqualified causal language. Do not open the production gate or activate Report Writer handoff in user-directed mode unless the foundation gate later becomes `ready` and production materials become report-ready.
+
+For user-directed exploratory analysis, keep the gatekeeper fields authoritative:
+
+```yaml
+analysis.route_commitment_status: user-directed
+analysis.claim_strength: exploratory
+foundation_gate.status: exploratory  # or blocked
+foundation_gate.can_support_causal_commitment: false
+production_gate.status: not ready
+production_gate.can_handoff_to_report_writer: false
+```
+
+When analyzable data exist and the user wants to explore anyway, the main skill may create or request a reproducible source report plus rendered HTML using `subskills/20-report-writer/assets/exploratory_analysis_report_template.md`. The artifact may include an effect-estimation-style results section, but every result must be labeled as exploratory, associational, descriptive, or diagnostic according to the recorded support. The artifact lives in `artifacts` or `analysis.analyses`; it is not a final effect-estimation handoff and must not set `analysis.report_writer_20.status: final report delivered`.
+
+If actual modeling or diagnostics run in user-directed mode, still record the method/job owner in `analysis.activated_method_job_subskills`, keep a compact method/job record in `subskill_analyses`, and fill the minimal `analysis.production_loop` fields needed to show what was run, what reviewers or records support it, readiness, and the next action. This ledger is for traceability only; it does not open the production gate.
+
+Before substantial exploratory modeling, Data Technician should inspect the actual data source or schema enough to confirm that the treatment/exposure, outcome, row unit, timing, and basic missingness or emptiness issues are real rather than assumed. If those elements are not inspectable, provide code or a planning memo instead of numeric results.
+
+## Report Lane Selection
+
+When the user asks for a data-backed report, choose the report lane from the gatekeeper fields before choosing wording or template.
+
+Use the gate-ready report lane only when all of these are true:
+
+```yaml
+foundation_gate.status: ready
+foundation_gate.can_support_causal_commitment: true
+production_gate.status: ready
+production_gate.can_handoff_to_report_writer: true
+analysis.route_commitment_status: ready  # or committed
+```
+
+In this lane, activate Report Writer handoff and use the gate-ready report template. The tone can be causal, cautious causal, associational, descriptive, or exploratory only as allowed by `analysis.claim_strength` and `production_gate.claim_strength_for_report`.
+
+Use the gate-not-ready exploratory/progress lane when data exist but any handoff gatekeeper is false and the user still wants to inspect results, diagnostics, or a model-based first pass. Use `subskills/20-report-writer/assets/exploratory_analysis_report_template.md`. Keep the structure close to the gate-ready report, but make the claim boundary more visible: the summary names the non-ready state, results are first-pass or diagnostic, and interpretation explains what cannot be claimed and what would be needed to upgrade the report. Do not activate Report Writer handoff, do not set `final report delivered`, and do not use final causal-report tone.
 
 ## Conversation Style And User-Facing Boundary
 
@@ -253,20 +298,21 @@ Run means run, but never bypass `Evidence Claim Preflight`. When the user asks t
 2. If data are available by authorized path or URL, load and run when access permits.
 3. If data are unavailable or access is blocked, provide executable code and name the missing input.
 4. Do not deliver numbers unless they were computed, user-provided, copied from an inspected artifact, or clearly labeled as placeholders.
-5. Do not substitute an analysis plan for an analysis unless execution is impossible, unsafe, or the gate blocks the requested causal claim.
+5. If a gate blocks the requested causal claim, do not report the result as causal. If the user wants exploration and limits are acknowledged, run the bounded exploratory analysis or produce executable artifacts with calibrated claim strength; substitute a plan only when execution is impossible, unsafe, unauthorized, or data are unavailable.
 
 Use these interaction checkpoints:
 
 1. **Plan confirmation:** before substantial modeling, confirm treatment/exposure, comparator, outcome, unit/time, method family, diagnostics, and intended claim strength.
 2. **First-pass results:** after the first run, summarize the method, estimate or pattern, and immediate interpretation as first-pass evidence. Recommend diagnostics rather than writing a final report.
-3. **Production review:** after first-pass results, diagnostics, artifact creation, or presentation decisions, record production-loop reviewer feedback, readiness, remaining checks, and the next action.
-4. **Production gate:** after production-loop review says diagnostics are complete, deferred, or unnecessary and reportable evidence exists, update `production_gate` internally and tell the user in plain language whether report drafting is supported.
-5. **Report Writer handoff:** after `production_gate.status` is `ready`, activate `20-report-writer` to synthesize the recorded foundation and production evidence into the final report or presentation artifact. During synthesis, do not start another interaction loop unless the handoff inputs are materially missing, and do not expose handoff mechanics in the user-facing reply. After delivery, return control to the main skill with `main_skill.selected_next_action: ask_user`.
-6. **Discovery-only report:** when the user requested graph discovery rather than effect estimation, keep effect-estimation gates `not needed`, synthesize from discovery artifacts using Report Writer discovery report mode, and keep all claim language exploratory.
+3. **Gate-not-ready exploratory/progress report:** when final handoff is not supported but the user wants to explore or review progress, use the exploratory/progress template and keep gatekeeper fields non-handoff. The report can include effect-estimation-style output, but it must name the unresolved blockers and what would be needed to upgrade the claim.
+4. **Production review:** after first-pass results, diagnostics, artifact creation, or presentation decisions, record production-loop reviewer feedback, readiness, remaining checks, and the next action.
+5. **Production gate:** after production-loop review says diagnostics are complete, deferred, or unnecessary and reportable evidence exists, update `production_gate` internally and tell the user in plain language whether report drafting is supported.
+6. **Report Writer handoff:** after `production_gate.status` is `ready`, activate `20-report-writer` to synthesize the recorded foundation and production evidence into the final report or presentation artifact. During synthesis, do not start another interaction loop unless the handoff inputs are materially missing, and do not expose handoff mechanics in the user-facing reply. After delivery, return control to the main skill with `main_skill.selected_next_action: ask_user`.
+7. **Discovery-only report:** when the user requested graph discovery rather than effect estimation, keep effect-estimation gates `not needed`, synthesize from discovery artifacts using Report Writer discovery report mode, and keep all claim language exploratory.
 
 ## Subskill Handoffs
 
-Use `references/production_routing.md` when composing method stacks or selecting production reviewers. Prefer the strongest supported design route over the most sophisticated estimator.
+Use `references/production_routing.md` when composing method stacks or selecting production reviewers after foundation readiness, or when an explicitly bounded user-directed exploratory run needs a method/job owner before foundation readiness. Prefer the strongest supported design route over the most sophisticated estimator.
 
 Before substantial method execution, Data Technician should record method-fit suggestions when the data structure or competing method families could change implementation.
 
@@ -274,7 +320,7 @@ When the foundation gate is ready, the main skill opens production work in bound
 
 If method fit fails, the activated subskill returns the failed condition, owner of the fix, and recommended next action. If the failure shows that a foundation assumption was wrong, stale, or unworkable, recommend `return_to_foundation` and set `blocking_signal.requires_previous_phase_recheck: true` rather than patching around it.
 
-Report Writer can participate during production as a reviewer, but it only takes over effect-estimation reporting after `production_gate.status` is `ready`. Discovery-only report mode is exploratory report synthesis from discovery artifacts, not effect-estimation handoff. Report Writer does not validate identification, open either gate, or strengthen claim language.
+Report Writer can participate during production as a reviewer, but it only takes over gate-ready effect-estimation reporting after `production_gate.status` is `ready`. Discovery-only report mode is exploratory report synthesis from discovery artifacts, not effect-estimation handoff. Gate-not-ready exploratory/progress reports use the separate exploratory template and remain main-skill/method-output artifacts until the gates later support handoff. Report Writer does not validate identification, open either gate, or strengthen claim language.
 
 ## Red Flags
 
@@ -284,6 +330,7 @@ Interrupt, warn, or slow down when:
 - covariates measured after treatment are used for total-effect adjustment;
 - treatment and outcome timing are ambiguous;
 - rows do not align with the causal unit;
+- individualized treatment-rule, targeting, dose/intensity, or policy recommendations are being made from risk prediction, variable importance, subgroup patterns, or CATE outputs without a supported parent design, decision-time variables, action or dose-support constraints, policy-value validation, and claim-language limits;
 - user-provided facts conflict with each other, such as dates, counts, windows, totals, design labels, estimates, uncertainty, diagnostics, or stated assumptions;
 - support, overlap, or variation is missing for the intended comparison;
 - missingness, censoring, selection, or sample construction depends on treatment/outcome-related variables;

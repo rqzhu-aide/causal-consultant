@@ -1,0 +1,49 @@
+# Literature And Software Map
+
+Use this file to choose credible mediation estimands, methods, and packages. Keep timing, confounding, and estimand meaning ahead of software.
+
+## Core Literature
+
+### Foundations
+
+- Robins and Greenland (1992), [Identifiability and Exchangeability for Direct and Indirect Effects](https://journals.lww.com/epidem/abstract/1992/03000/identifiability_and_exchangeability_for_direct_and.13.aspx): classic identifiability framing for direct and indirect effects.
+- Pearl (2001), [Direct and Indirect Effects](https://arxiv.org/abs/1301.2300): path-specific counterfactual definitions in graphical causal models.
+- Imai, Keele, and Tingley (2010), [A General Approach to Causal Mediation Analysis](https://dash.harvard.edu/entities/publication/b1683a2b-3e1c-444e-99c0-75f7e7022d6e): model-agnostic definitions, identification, estimation, and sensitivity analysis.
+- VanderWeele (2015), [Explanation in Causal Inference](https://global.oup.com/academic/product/explanation-in-causal-inference-9780199325870): broad reference for mediation, interaction, assumptions, and interpretation.
+
+### Estimand Extensions And Complex Pathways
+
+- Avin, Shpitser, and Pearl (2005), [Identifiability of Path-Specific Effects](https://www.ijcai.org/Proceedings/05/Papers/0886.pdf): identification of pathway-specific effects in DAGs.
+- VanderWeele, Vansteelandt, and Robins (2014), interventional direct and indirect effect ideas for settings where natural effects are too strong.
+- Vansteelandt and Daniel (2017), [Interventional effects for mediation analysis with multiple mediators](https://biblio.ugent.be/publication/8545462): multiple mediator interventional decomposition.
+- Stensrud et al. (2020), [Separable Effects for Causal Inference in the Presence of Competing Events](https://www.tandfonline.com/doi/full/10.1080/01621459.2020.1765783): separable effects when treatment components can be meaningfully decomposed.
+- Didelez, Dawid, and Geneletti (2012), [Direct and Indirect Effects of Sequential Treatments](https://arxiv.org/abs/1206.6840): links direct/indirect effects to sequential treatment interventions.
+
+### Software Papers And Applied Guides
+
+- Tingley et al. (2014), [mediation: R Package for Causal Mediation Analysis](https://imai.fas.harvard.edu/research/mediationjss/): R package for model-based and design-based mediation plus sensitivity analysis.
+- Steen et al. (2017), [medflex: Flexible Mediation Analysis using Natural Effect Models](https://www.jstatsoft.org/v76/i11/): natural effect model software and expanded-data workflow.
+- Valeri and VanderWeele (2013), regression-based closed-form mediation formulas implemented by `regmedint`.
+
+## Package Matrix
+
+| Package | Language | Best Use | Pros | Caveats |
+|---|---|---|---|---|
+| [`mediation`](https://imai.fas.harvard.edu/software/mediation.html) | R | Standard single mediator natural direct/indirect effects and sensitivity analysis | Widely used, accessible, supports model-based and design-based workflows | Natural effect assumptions are strong; limited for exposure-induced mediator-outcome confounding |
+| [`regmedint`](https://search.r-project.org/CRAN/refmans/regmedint/html/regmedint.html) | R | Regression-based closed-form mediation with interactions | Clear interface for common epidemiologic models | Less flexible for complex longitudinal or multiple mediator settings |
+| [`medflex`](https://www.jstatsoft.org/v76/i11/) | R | Natural effect models and expanded data | Flexible path-specific/natural effect parameterization | Requires careful expanded-data setup |
+| [`CMAverse`](https://bs1125.github.io/CMAverse/) | R | Broad causal mediation workflow, DAG plotting, estimation, and sensitivity | Useful hub for multiple approaches and reproducible reports | Many dependencies; estimand choice still requires expert review |
+| [`intmed`](https://cran-e.com/package/intmed) | R | Interventional effects for up to several mediators | Aligned with interventional mediation targets | Specialized and less general than custom g-computation |
+| [`statsmodels`](https://www.statsmodels.org/stable/generated/statsmodels.stats.mediation.Mediation.html) | Python | Simple model-based mediation templates | Convenient when the workflow must stay in Python | Narrower mediation ecosystem and fewer causal diagnostics |
+| [`DoWhy`](https://www.pywhy.org/dowhy/v0.12/dowhy.html) | Python | Graph-based identification/refutation support and explicit assumptions | Good for DAG-centered workflow and assumption tracking | Estimation coverage for mediation is less comprehensive than R mediation packages |
+| Custom g-computation/TMLE/DML | R/Python | Complex mediators, longitudinal data, flexible nuisance models | Can match the estimand when packages do not | Requires stronger coding, validation, and reviewer control |
+
+## Practical Selection Rules
+
+- Need simple single-mediator natural effects: start with `mediation`, `regmedint`, or `medflex`, plus sensitivity analysis.
+- Need exposure-mediator interaction in common outcome models: `regmedint` is often practical.
+- Need multiple mediators or interventional effects: consider `CMAverse`, `intmed`, or custom g-computation.
+- Need causal graph discipline and assumption refutation: use DoWhy as support, not as a substitute for estimand review.
+- Need survival/competing-risk mediation: activate `33-survival-competing-risks`; ordinary product-of-coefficients logic is usually unsafe.
+- Need post-exposure confounders affected by treatment: avoid default natural effects unless `method_lead` justifies them; consider interventional/separable/g-method routes.
+- Need only descriptive pathway evidence: use regression/SEM/path summaries with descriptive wording and no causal mediation claim.

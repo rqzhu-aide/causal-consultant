@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "interference_spillovers_recommendation_input",
+  "type": "object",
+  "properties": {
+    "interference_structure": {
+      "type": "string",
+      "enum": ["partial_interference", "network_interference", "spatial_interference", "bipartite_market", "saturation_design", "contamination_only", "unknown", "other"]
+    },
+    "data_design": {
+      "type": "string",
+      "enum": ["randomized_individual", "cluster_randomized", "two_stage_randomized", "graph_cluster_randomized", "observational", "did_panel", "rd_boundary", "iv_encouragement", "synthetic_time_series", "unknown", "other"]
+    },
+    "desired_estimand": {
+      "type": "string",
+      "enum": ["direct_effect", "spillover_effect", "direct_and_spillover", "total_effect", "overall_effect", "saturation_policy", "exposure_response", "network_late", "descriptive_mapping", "unknown", "other"]
+    },
+    "exposure_mapping_status": {
+      "type": "string",
+      "enum": ["specified", "needs_construction", "uncertain", "unsupported", "unknown"]
+    },
+    "network_or_cluster_observed": {
+      "type": "string",
+      "enum": ["complete", "partial", "missing", "not_applicable", "unknown"]
+    },
+    "treatment_assignment_known": {"type": ["boolean", "null"]},
+    "own_treatment_available": {"type": "boolean"},
+    "peer_treatment_available": {"type": "boolean"},
+    "support_across_exposures": {
+      "type": "string",
+      "enum": ["adequate", "thin", "none", "unknown"]
+    },
+    "spillover_direction": {"type": "string", "enum": ["known", "uncertain", "unknown"]},
+    "timing_known": {"type": "boolean"},
+    "contamination_risk": {"type": "string", "enum": ["low", "moderate", "high", "unknown"]},
+    "homophily_confounding_risk": {"type": "string", "enum": ["low", "moderate", "high", "unknown"]},
+    "network_missingness_risk": {"type": "string", "enum": ["low", "moderate", "high", "unknown"]},
+    "cluster_count": {"type": ["integer", "null"], "minimum": 0},
+    "noncompliance": {"type": "boolean"},
+    "geographic": {"type": "boolean"},
+    "longitudinal_panel": {"type": "boolean"},
+    "needs_experiment_design": {"type": "boolean"},
+    "outcome_type": {"type": "string"},
+    "language": {
+      "type": "string",
+      "enum": ["r", "python", "stata", "either", "unknown"]
+    }
+  },
+  "additionalProperties": true
+}

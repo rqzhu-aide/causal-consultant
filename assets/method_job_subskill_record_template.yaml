@@ -1,23 +1,36 @@
-# Append one copy of this chunk to project.yaml > subskill_analyses only
-# when the main skill activates a method/job subskill for production work
-# or when Causal Discovery needs an optional compact traceability record.
-# Fill the null fields with concrete enum values before appending the record.
-# Allowed enum values live in assets/workflow_enums.yaml.
+---
+# Compact record for an activated method/task subskill.
+# Append one filled copy to project YAML > subskill_records only when a
+# method/task subskill is activated or produces durable feedback.
+# Controlled values live in assets/workflow_enums.yaml.
+
 subskill_id: null
+module_type: null
 role: null
 status: null
 activation_reason: null
-selected_route_id: null
+selected_framework_or_route: null
+related_estimands: []
 inputs_reviewed: []
-outputs_created: []
+provenance_summary: null
+fit_summary:
+  fit: "unknown"
+  reason: null
+assumptions_or_requirements: []
+diagnostics_needed: []
 diagnostics_reviewed: []
+sensitivity_or_robustness: []
 limitations: []
-feedback_for_main_skill: []
-requests_for_main_skill: []
-readiness: null
+requests_for_domain_expert: []
+requests_for_data_analyst: []
+requests_for_method_lead: []
+requests_for_user: []
+requests_for_other_subskills: []
+report_support: []
+readiness: "unknown"
 blocking_signal:
   blocks_current_phase: false
-  requires_previous_phase_recheck: false
+  requires_causal_specification_recheck: false
   target_phase: null
   severity: "none"
   reason: null

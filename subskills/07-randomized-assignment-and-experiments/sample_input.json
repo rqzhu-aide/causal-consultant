@@ -1,0 +1,22 @@
+{
+  "assignment_mechanism": "blocked_randomized",
+  "unit_of_assignment": "individual",
+  "unit_of_analysis": "individual",
+  "has_assignment_log": true,
+  "has_known_probabilities": true,
+  "estimand": "itt",
+  "compliance_status": "partial",
+  "attrition_status": "limited",
+  "missing_outcome_status": "limited",
+  "clustered": false,
+  "blocked_or_stratified": true,
+  "sample_size": 2400,
+  "n_clusters": null,
+  "online_experiment": true,
+  "srm_status": "unknown",
+  "has_pre_treatment_covariates": true,
+  "has_pre_period_outcome": true,
+  "multiple_outcomes_or_arms": true,
+  "interference_risk": "low",
+  "language": "either"
+}

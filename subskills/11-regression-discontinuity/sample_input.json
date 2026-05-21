@@ -1,0 +1,23 @@
+{
+  "design_variant": "sharp_rd",
+  "running_variable_type": "continuous",
+  "cutoff_known": true,
+  "pre_specified_cutoff": true,
+  "treatment_jump_status": "sharp",
+  "target_population_scope": "local_cutoff",
+  "manipulation_risk": "moderate",
+  "density_check_status": "not_run",
+  "covariate_continuity_status": "not_run",
+  "bandwidth_support": "adequate",
+  "simultaneous_policy_risk": "low",
+  "heaping_risk": "low",
+  "fuzzy_compliance": false,
+  "geographic_or_time_cutoff": false,
+  "local_randomization_candidate": false,
+  "discrete_score": false,
+  "clustered": false,
+  "multiple_cutoffs": false,
+  "needs_power_planning": false,
+  "sample_size_near_cutoff": 1200,
+  "language": "r"
+}

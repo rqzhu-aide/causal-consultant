@@ -1,0 +1,144 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "DoublyRobustEstimationRecommendationInput",
+    "type": "object",
+    "properties": {
+        "design_route": {
+            "type": "string",
+            "enum": [
+                "randomized",
+                "single_time_observational",
+                "longitudinal",
+                "transportability",
+                "survival",
+                "unknown",
+                "other"
+            ]
+        },
+        "estimand": {
+            "type": "string",
+            "enum": [
+                "ate",
+                "att",
+                "risk_difference",
+                "risk_ratio",
+                "mean_difference",
+                "survival_risk",
+                "strategy_mean",
+                "transported_effect",
+                "unknown"
+            ]
+        },
+        "treatment_type": {
+            "type": "string",
+            "enum": [
+                "binary",
+                "multi_arm",
+                "continuous",
+                "time_varying",
+                "unknown"
+            ]
+        },
+        "outcome_type": {
+            "type": "string",
+            "enum": [
+                "continuous",
+                "binary",
+                "bounded",
+                "survival_time",
+                "competing_risk",
+                "count",
+                "unknown"
+            ]
+        },
+        "nuisance_complexity": {
+            "type": "string",
+            "enum": [
+                "simple",
+                "moderate",
+                "high",
+                "unknown"
+            ]
+        },
+        "positivity_status": {
+            "type": "string",
+            "enum": [
+                "good",
+                "limited",
+                "poor",
+                "unknown"
+            ]
+        },
+        "confounder_status": {
+            "type": "string",
+            "enum": [
+                "strong",
+                "partial",
+                "weak",
+                "unknown"
+            ]
+        },
+        "needs_cross_fitting": {
+            "type": [
+                "boolean",
+                "null"
+            ]
+        },
+        "needs_inference": {
+            "type": [
+                "boolean",
+                "null"
+            ]
+        },
+        "sample_size": {
+            "type": [
+                "integer",
+                "null"
+            ],
+            "minimum": 0
+        },
+        "n_covariates": {
+            "type": [
+                "integer",
+                "null"
+            ],
+            "minimum": 0
+        },
+        "clustered": {
+            "type": [
+                "boolean",
+                "null"
+            ]
+        },
+        "censoring_or_missingness": {
+            "type": "string",
+            "enum": [
+                "none",
+                "limited",
+                "informative",
+                "severe",
+                "unknown"
+            ]
+        },
+        "language": {
+            "type": "string",
+            "enum": [
+                "r",
+                "python",
+                "either",
+                "unknown"
+            ]
+        }
+    },
+    "required": [
+        "design_route",
+        "estimand",
+        "treatment_type",
+        "outcome_type",
+        "nuisance_complexity",
+        "positivity_status",
+        "confounder_status",
+        "censoring_or_missingness",
+        "language"
+    ]
+}

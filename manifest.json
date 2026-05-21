@@ -1,205 +1,34 @@
 {
   "package": "causal-consultant",
-  "version": "0.2.2",
-  "created_for": "modular causal inference consultant skill",
+  "version": "0.5.0",
+  "created_for": "lean modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Refined report generation into gate-ready and gate-not-ready data-backed lanes, while preserving causal-discovery-only reports and gatekeeper claim-strength boundaries.",
+  "last_updated_focus": "Split the top-level lead consultant skill into a lean user-facing SKILL.md plus backend reference files for workflow, YAML management, team coordination, subskill coordination, and conversation boundaries.",
   "subskills": [
-    "01-domain-helper",
-    "02-data-technician",
-    "03-design-planner",
-    "04-dag-builder",
-    "05-randomized-experiments",
-    "06-point-treatment-observational",
-    "07-matching-weighting-balance",
-    "08-doubly-robust-ml",
-    "09-heterogeneous-effects-individualized-policy",
-    "10-longitudinal-gmethods",
-    "11-did-event-study",
-    "12-regression-discontinuity",
-    "13-instrumental-variables",
-    "14-synthetic-control-time-series",
-    "15-survival-competing-risks",
-    "16-mediation",
-    "17-interference-spillovers",
-    "18-causal-discovery",
-    "19-causal-genomics",
-    "20-report-writer",
-    "21-negative-controls-proximal"
+    "01-domain-expert",
+    "02-data-analyst",
+    "03-method-lead",
+    "05-report-writer",
+    "06-causal-discovery",
+    "07-randomized-assignment-and-experiments",
+    "08-single-time-observational-exposure",
+    "09-longitudinal-gmethods",
+    "10-did-event-study",
+    "11-regression-discontinuity",
+    "12-instrumental-variables",
+    "13-synthetic-control-time-series",
+    "14-interference-spillovers",
+    "15-negative-controls-proximal",
+    "20-heterogeneous-effects",
+    "21-point-treatment-rules",
+    "22-mediation",
+    "23-dose-response-effects",
+    "24-transportability-generalizability",
+    "25-dynamic-treatment-policies",
+    "30-matching-weighting-balance",
+    "31-doubly-robust-estimation",
+    "32-double-machine-learning",
+    "33-survival-competing-risks"
   ],
-  "subskill_metadata_schema": "1.0",
-  "subskill_metadata": [
-    {
-      "id": "01-domain-helper",
-      "display_name": "Domain Helper",
-      "role": "foundation_evaluator",
-      "phase": "foundation",
-      "entrypoint": "subskills/01-domain-helper/SKILL.md",
-      "state_owner": "evaluators.domain_helper_01"
-    },
-    {
-      "id": "02-data-technician",
-      "display_name": "Data Technician",
-      "role": "foundation_evaluator_and_production_data_reviewer",
-      "phase": "foundation_and_production",
-      "entrypoint": "subskills/02-data-technician/SKILL.md",
-      "state_owner": "evaluators.data_technician_02_and_analysis.production_loop.reviewer_summaries"
-    },
-    {
-      "id": "03-design-planner",
-      "display_name": "Design Planner",
-      "role": "foundation_evaluator",
-      "phase": "foundation",
-      "entrypoint": "subskills/03-design-planner/SKILL.md",
-      "state_owner": "evaluators.design_planner_03"
-    },
-    {
-      "id": "04-dag-builder",
-      "display_name": "DAG Builder",
-      "role": "foundation_evaluator",
-      "phase": "foundation",
-      "entrypoint": "subskills/04-dag-builder/SKILL.md",
-      "state_owner": "evaluators.dag_builder_04"
-    },
-    {
-      "id": "05-randomized-experiments",
-      "display_name": "Randomized Experiments",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/05-randomized-experiments/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "06-point-treatment-observational",
-      "display_name": "Point-Treatment Observational",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/06-point-treatment-observational/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "07-matching-weighting-balance",
-      "display_name": "Matching, Weighting, And Balance",
-      "role": "support_module",
-      "phase": "production",
-      "entrypoint": "subskills/07-matching-weighting-balance/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "08-doubly-robust-ml",
-      "display_name": "Doubly Robust And Machine Learning",
-      "role": "support_module",
-      "phase": "production",
-      "entrypoint": "subskills/08-doubly-robust-ml/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "09-heterogeneous-effects-individualized-policy",
-      "display_name": "Heterogeneous Effects, Individualized Decisions, And Policy",
-      "role": "target_or_outcome_module",
-      "phase": "production",
-      "entrypoint": "subskills/09-heterogeneous-effects-individualized-policy/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "10-longitudinal-gmethods",
-      "display_name": "Longitudinal G-Methods",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/10-longitudinal-gmethods/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "11-did-event-study",
-      "display_name": "Difference-in-Differences And Event Studies",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/11-did-event-study/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "12-regression-discontinuity",
-      "display_name": "Regression Discontinuity",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/12-regression-discontinuity/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "13-instrumental-variables",
-      "display_name": "Instrumental Variables",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/13-instrumental-variables/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "14-synthetic-control-time-series",
-      "display_name": "Synthetic Control And Time Series",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/14-synthetic-control-time-series/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "15-survival-competing-risks",
-      "display_name": "Survival And Competing Risks",
-      "role": "target_or_outcome_module",
-      "phase": "production",
-      "entrypoint": "subskills/15-survival-competing-risks/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "16-mediation",
-      "display_name": "Mediation",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/16-mediation/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "17-interference-spillovers",
-      "display_name": "Interference And Spillovers",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/17-interference-spillovers/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "18-causal-discovery",
-      "display_name": "Causal Discovery",
-      "role": "discovery_module",
-      "phase": "any_phase_sidecar_or_discovery_deliverable",
-      "entrypoint": "subskills/18-causal-discovery/SKILL.md",
-      "state_owner": "analysis.discovery_sidecar_and_optional_subskill_analyses"
-    },
-    {
-      "id": "19-causal-genomics",
-      "display_name": "Causal Genomics",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/19-causal-genomics/SKILL.md",
-      "state_owner": "subskill_analyses"
-    },
-    {
-      "id": "20-report-writer",
-      "display_name": "Report Writer",
-      "role": "production_reviewer_handoff_writer_discovery_report_writer_and_report_template_owner",
-      "phase": "production_reporting_and_discovery_deliverable",
-      "entrypoint": "subskills/20-report-writer/SKILL.md",
-      "state_owner": "analysis.report_writer_20_and_analysis.production_loop.reviewer_summaries"
-    },
-    {
-      "id": "21-negative-controls-proximal",
-      "display_name": "Negative Controls And Proximal Causal Inference",
-      "role": "primary_route",
-      "phase": "production",
-      "entrypoint": "subskills/21-negative-controls-proximal/SKILL.md",
-      "state_owner": "subskill_analyses"
-    }
-  ],
-  "evaluation_fixtures": [
-    "fixtures/conversation_transition_cases.yaml"
-  ],
-  "notes": "The top-level main skill is the user-facing actor: it selects ordered reviewers, owns foundation_gate and production_gate, and speaks in plain language. Domain Helper, Data Technician, Design Planner, and DAG Builder maintain foundation evaluator YAML records before foundation_gate. After foundation_gate opens, method/job subskills, Data Technician, and Report Writer participate as production transition kernels through analysis.production_loop. A bounded user-directed exploratory run before foundation readiness may also use method/job records and analysis.production_loop as an audit ledger, without opening gates or upgrading claim strength. Causal Discovery is an any-phase sidecar recorded under analysis.discovery_sidecar, with optional compact subskill_analyses records when traceability is useful; discovery artifacts do not change gates, routes, adjustment, or claim strength unless routed back through an existing owner. Severe production findings can trigger return_to_foundation. Report Writer owns analysis.report_writer_20 and takes over effect-report synthesis only after production_gate is ready, using recorded foundation and production evidence rather than starting a new interaction loop; it can also synthesize exploratory discovery-only reports when effect-estimation gates are not needed. Data-backed reports use two related template lanes: gate-ready reproducible reports when handoff is supported, and gate-not-ready exploratory/progress reports when the user wants first-pass results, diagnostics, or model behavior without upgrading claim strength. Canonical workflow enum values live in assets/workflow_enums.yaml. Canonical subskill metadata lives in this manifest; legacy per-subskill skill.json files are intentionally not used."
+  "notes": "Lead consultant identity and user-facing behavior live in SKILL.md. Backend workflow details live in references/backend_workflow.md, references/yaml_management.md, references/team_coordination.md, references/subskill_coordination.md, and references/conversation_boundary.md. YAML state lives in assets/causal_project_spec_template.yaml; controlled values live in assets/workflow_enums.yaml. Enriched method/task subskills use progressive disclosure through references, examples, schemas, and scripts."
 }

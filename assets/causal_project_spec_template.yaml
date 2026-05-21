@@ -1,174 +1,278 @@
 ---
 # Lean causal project state template.
-# Allowed enum values live in assets/workflow_enums.yaml.
+# Controlled values live in assets/workflow_enums.yaml.
 
-project:
+project_summary:
   project_name: null
-  short_label: null
   date_started: null
   last_updated: null
-  state_folder: null
-  project_yaml: "project.yaml"
-  analyses_dir: "analyses/"
-  artifacts_dir: "artifacts/"
-  current_phase: "foundation"
-
-main_skill:
   user_goal: null
-  primary_intent: "unknown"
-  rigor_mode: "unknown"
-  conversation_style: "unknown"
-  selected_next_action: "ask_user"
-  open_questions: []
-  task_parking_lot:
-    current_task: null
-    parked_tasks: []
-  user_directed:
-    requested: false
-    intent_basis: "none"
-    acknowledged_limits: false
-    requested_scope: []
-    allowed_scope: []
-    prohibited_claims: []
-    warning: null
+  deliverable: null
+  audience: null
+  current_phase: "project_exploration"
+  project_status: []
+  dataset_location: null
+  analyses_report_folder: null
 
-# User-directed/user-forced continuation is intentionally not a foundation_gate.status.
-# Track it in main_skill.user_directed and analysis.route_commitment_status.
-foundation_gate:
+team_synthesis:
+  user_turn_summary: null
+  turn_goal: null
+  facts_or_working_facts: []
+  what_is_missing: []
+  key_tensions: []
+  material_updates_this_turn: []
+  ready_to_reply: false
+  reply_reason: null
+
+causal_gate:
   status: "exploratory"
-  can_support_causal_commitment: false
   blockers: []
   unresolved_required_information: []
-  assumptions_to_surface: []
-  surfaced_or_acknowledged_assumptions: []
-  deferred_assumptions: []
   claim_strength_allowed: "exploratory"
 
 production_gate:
-  status: "not ready"
-  can_handoff_to_report_writer: false
+  status: "not_ready"
   blockers: []
   unresolved_required_materials: []
-  required_outputs: []
-  completed_outputs: []
-  diagnostics_status: "not started"
+  diagnostics_status: "not_started"
   reportable_evidence: false
   claim_strength_for_report: "unknown"
-  handoff_summary: null
+  report_completion_summary: null
 
-evaluator_loop:
-  trigger: "unknown"
-  selected_next_action: "ask_user"
-  selected_reviewers: []
-  review_purpose: null
-  action_queue: []
-  loop_control:
-    status: "not assessed"
-    repeated_cycle_count: 0
-    issue_signature: null
-    break_action: "unknown"
-    rationale: null
-    decisive_question_or_assumption: null
+working_agenda:
+  intent: null
+  information_to_get: []
+  priority: "unknown"
 
-evaluators:
-  domain_helper_01:
-    readiness: "unknown"
-    summary: null
-    key_findings: []
-    candidate_formulations: []
-    handoff_notes: []
-    requests_for_main_skill: []
-    load_bearing_assumptions: []
-  data_technician_02:
-    readiness: "unknown"
-    readiness_scope: "unknown"
-    data_status: "unknown"
-    summary: null
-    key_findings: []
-    data_enabled_opportunities: []
-    method_fit_suggestions: []
-    handoff_notes: []
-    requests_for_main_skill: []
-    load_bearing_assumptions: []
-  design_planner_03:
-    readiness: "unknown"
-    design_status: "unknown"
-    preferred_route_id: null
-    summary: null
-    key_findings: []
-    route_hypotheses: []
-    handoff_notes: []
-    requests_for_main_skill: []
-    load_bearing_assumptions: []
-  dag_builder_04:
-    readiness: "unknown"
-    supported_status: "unknown"
-    supported_scope: "unknown"
-    identification_status: "unknown"
-    summary: null
-    key_findings: []
-    causal_logic_hypotheses: []
-    handoff_notes: []
-    requests_for_main_skill: []
-    load_bearing_assumptions: []
+bounded_continuation:
+  requested: false
+  acknowledged_limits: false
+  requested_scope: []
+  allowed_scope: []
+  prohibited_claims: []
+  warning: null
 
-routes:
-  current_route_id: null
-  hypotheses: []
-  rejected_or_deferred: []
+next_action:
+  type: "question"
+  content: null
+  needs_user_response: true
 
-analysis:
-  route_commitment_status: "unknown"
-  execution_stage: "not started"
-  execution_confirmation:
-    plan_summary: null
-    user_confirmed_plan: false
-    confirmation_basis: "unknown"
+domain_expert:
+  status: "not_reviewed"
+  domain_context: null
+  construct_guidance: []
+  causal_structure_guidance: []
+  domain_data_guidance: []
+  meaningful_effect_scale: null
+  common_practice_guidance: []
+  constraints_and_external_validity: []
+  interpretation_guidance: []
+  wording_cautions: []
+  blockers: []
+  requests_for_progression: []
+
+method_lead:
+  status: "not_reviewed"
+  causal_question:
+    plain_language_question: null
+    exposure_or_intervention: null
+    comparator: null
+    outcome: null
+    population: null
+    time_zero: null
+    follow_up: null
+    causal_unit: null
+  causal_question_variants: []
+  analysis_framework_candidates: []
+  selected_framework:
+    framework_id: null
+    user_intent: null
+    fit: "unknown"
+    why_selected: null
+  causal_claims: []
+  estimand_set:
+    primary: []
+    secondary: []
+    exploratory_or_descriptive: []
+    notes: null
+  validity_requirements: []
+  dag_or_theory:
+    summary: null
+    artifact_paths: []
+    assumptions: []
+  method_literature_guidance: []
+  tools_and_methods:
+    candidate_tools: []
+    candidate_method_subskills: []
+    selected_tools: []
+    selected_method_subskills: []
+    blocked_or_not_used_options: []
+  diagnostics_plan: []
+  sensitivity_plan: []
+  report_wording_boundary: []
+  blockers: []
+  requests_for_progression: []
+
+data_analyst:
+  status: "not_reviewed"
+  phase_role: "project_exploration"
+  data_sources: []
+  data_status: "unknown"
+  unit_of_observation: null
+  unit_of_analysis: null
+  data_properties: []
+  domain_processing_guidance: []
+  variable_map:
+    exposure: []
+    comparator: []
+    outcome: []
+    covariates: []
+    ids: []
+    time_fields: []
+  timing_windows: []
+  missingness_selection: []
+  data_quality_issues: []
+  exploratory_outputs: []
+  method_support:
+    data_compatible_frameworks: []
+    processing_pipeline_suggestions: []
+    learner_plugin_handoffs: []
+    diagnostic_artifact_suggestions: []
+    feasibility_notes: []
+  analysis_dataset:
+    path: null
+    construction_status: "not_started"
+    reproducibility_notes: []
+  report_production_outputs:
+    code_paths: []
+    table_paths: []
+    figure_paths: []
+  report_assets:
+    final_tables: []
+    final_figures: []
+    appendix_materials: []
+  blockers: []
+  requests_for_progression: []
+
+analysis_state:
+  project_exploration_outputs: []
+  causal_specification_artifacts: []
+  report_production_artifacts: []
+  report_working_draft_path: null
   recommended_method_job_subskills: []
   activated_method_job_subskills: []
   discovery_sidecar:
     active: false
     purpose: null
     return_to_phase: null
-    affects_main_route: false
+    affects_main_framework: false
     artifact_paths: []
-  analyses: []
-  first_pass_summary: null
-  recommended_diagnostics: []
-  production_loop:
-    selected_reviewers: []
-    review_purpose: null
-    action_queue: []
-    # Reviewer summaries are for production reviewers without activated
-    # subskill_analyses chunks, usually Data Technician or Report Writer
-    # production-reviewer mode. Method/job feedback lives in subskill_analyses.
-    reviewer_summaries: []
-    readiness: "not started"
-    recommended_next_action: null
-    foundation_recheck:
-      triggered: false
-      reason: null
-      severity: "none"
-      affected_foundation_sections: []
-      recommended_reviewers: []
-      main_skill_decision: "none"
-    loop_control:
-      status: "not assessed"
-      repeated_cycle_count: 0
-      issue_signature: null
-      break_action: "unknown"
-      rationale: null
-  report_writer_20:
-    mode: "not selected"
-    status: "not ready"
-    production_feedback: []
-    summary: null
-    artifacts: []
-  claim_strength: "unknown"
   limitations: []
 
-# Append one method/job record only when that subskill is activated.
-# Optional causal-discovery trace records may also use the same chunk shape.
-# Use assets/method_job_subskill_record_template.yaml as the chunk shape.
-subskill_analyses: []
-artifacts: []
+# Append one filled method/task record only when that subskill is activated
+# or produces durable feedback. Use assets/method_job_subskill_record_template.yaml.
+# Optional causal-discovery trace records may also use the same compact-record idea.
+subskill_records: []
+
+retired_tasks:
+  task_parking_lot:
+    current_task: null
+    parked_tasks: []
+
+artifact_index:
+  - artifact_id: "01-domain-expert"
+    artifact_type: "subskill"
+    path: "subskills/01-domain-expert/SKILL.md"
+    purpose: "domain meaning, construct guidance, causal-structure guidance, data-processing standards, interpretation, external validity, and wording cautions"
+  - artifact_id: "02-data-analyst"
+    artifact_type: "subskill"
+    path: "subskills/02-data-analyst/SKILL.md"
+    purpose: "data sources, structure, variables, timing, missingness, exploratory outputs, method-support handoffs, reproducibility, and report assets"
+  - artifact_id: "03-method-lead"
+    artifact_type: "subskill"
+    path: "subskills/03-method-lead/SKILL.md"
+    purpose: "causal question variants, frameworks, estimand set, validity requirements, DAG/theory, assumptions, method literature, diagnostics, sensitivity, and wording boundary"
+  - artifact_id: "05-report-writer"
+    artifact_type: "subskill"
+    path: "subskills/05-report-writer/SKILL.md"
+    purpose: "polished project notebook, Markdown working report, and controlled report compilation"
+  - artifact_id: "06-causal-discovery"
+    artifact_type: "subskill"
+    path: "subskills/06-causal-discovery/SKILL.md"
+    purpose: "any-phase causal discovery sidecar"
+  - artifact_id: "07-randomized-assignment-and-experiments"
+    artifact_type: "subskill"
+    path: "subskills/07-randomized-assignment-and-experiments/SKILL.md"
+    purpose: "design route for randomized assignment, experiments, trials, encouragement, noncompliance, and experiment diagnostics"
+  - artifact_id: "08-single-time-observational-exposure"
+    artifact_type: "subskill"
+    path: "subskills/08-single-time-observational-exposure/SKILL.md"
+    purpose: "design route for single-time observational exposure, target-trial-style framing, adjustment, support, and confounding checks"
+  - artifact_id: "09-longitudinal-gmethods"
+    artifact_type: "subskill"
+    path: "subskills/09-longitudinal-gmethods/SKILL.md"
+    purpose: "design route for longitudinal treatment, time-varying confounding, g-methods, and sequential causal validity"
+  - artifact_id: "10-did-event-study"
+    artifact_type: "subskill"
+    path: "subskills/10-did-event-study/SKILL.md"
+    purpose: "design route for difference-in-differences, event studies, staggered adoption, group-time ATT, synthetic DiD, DR-DiD, TWFE cautions, and parallel-trend diagnostics"
+  - artifact_id: "11-regression-discontinuity"
+    artifact_type: "subskill"
+    path: "subskills/11-regression-discontinuity/SKILL.md"
+    purpose: "design route for cutoff-based local causal effects, sharp/fuzzy RD, regression kink, local randomization, geographic/time cutoffs, bandwidths, density/manipulation checks, and RD report support"
+  - artifact_id: "12-instrumental-variables"
+    artifact_type: "subskill"
+    path: "subskills/12-instrumental-variables/SKILL.md"
+    purpose: "design route for instruments, encouragement, noncompliance, LATE/CACE, weak instruments, IV-DML, and Mendelian randomization checks"
+  - artifact_id: "13-synthetic-control-time-series"
+    artifact_type: "subskill"
+    path: "subskills/13-synthetic-control-time-series/SKILL.md"
+    purpose: "design route for synthetic control, augmented/generalized SCM, synthetic DiD, interrupted time series, Bayesian structural time series, aggregate interventions, and donor-pool diagnostics"
+  - artifact_id: "14-interference-spillovers"
+    artifact_type: "subskill"
+    path: "subskills/14-interference-spillovers/SKILL.md"
+    purpose: "design route for interference, spillovers, peer effects, contagion, contamination, network/geographic exposure, partial interference, treatment saturation, exposure mapping, and direct/indirect/total effect support"
+  - artifact_id: "15-negative-controls-proximal"
+    artifact_type: "subskill"
+    path: "subskills/15-negative-controls-proximal/SKILL.md"
+    purpose: "design route or diagnostic sidecar for negative controls, placebo/falsification tests, empirical calibration, proximal causal inference, proxy variables, bridge functions, and unmeasured-confounding probes"
+  - artifact_id: "20-heterogeneous-effects"
+    artifact_type: "subskill"
+    path: "subskills/20-heterogeneous-effects/SKILL.md"
+    purpose: "target goal for heterogeneous effects, subgroup or strata effects, CATE/GATE/ITE, and effect modification"
+  - artifact_id: "21-point-treatment-rules"
+    artifact_type: "subskill"
+    path: "subskills/21-point-treatment-rules/SKILL.md"
+    purpose: "target goal for single-point individualized treatment rules, targeting, policy value, uplift, and prioritization"
+  - artifact_id: "22-mediation"
+    artifact_type: "subskill"
+    path: "subskills/22-mediation/SKILL.md"
+    purpose: "target goal for mediation, mechanisms, pathways, direct/indirect effects, and mediator timing"
+  - artifact_id: "23-dose-response-effects"
+    artifact_type: "subskill"
+    path: "subskills/23-dose-response-effects/SKILL.md"
+    purpose: "target goal for dose-response, exposure-response, continuous or multi-level treatments, thresholds, and modified treatment policies"
+  - artifact_id: "24-transportability-generalizability"
+    artifact_type: "subskill"
+    path: "subskills/24-transportability-generalizability/SKILL.md"
+    purpose: "target goal for transportability, generalizability, target-population effects, and trial-to-target translation"
+  - artifact_id: "25-dynamic-treatment-policies"
+    artifact_type: "subskill"
+    path: "subskills/25-dynamic-treatment-policies/SKILL.md"
+    purpose: "target goal for dynamic treatment policies, adaptive strategies, sequential decision rules, and policy-value targets"
+  - artifact_id: "30-matching-weighting-balance"
+    artifact_type: "subskill"
+    path: "subskills/30-matching-weighting-balance/SKILL.md"
+    purpose: "implementation support for matching, weighting, propensity scores, overlap, positivity, and balance diagnostics"
+  - artifact_id: "31-doubly-robust-estimation"
+    artifact_type: "subskill"
+    path: "subskills/31-doubly-robust-estimation/SKILL.md"
+    purpose: "implementation support for AIPW, TMLE, one-step estimators, nuisance models, and doubly robust estimation"
+  - artifact_id: "32-double-machine-learning"
+    artifact_type: "subskill"
+    path: "subskills/32-double-machine-learning/SKILL.md"
+    purpose: "implementation support for orthogonal/DML estimation, cross-fitting, residualization, and ML nuisance learners"
+  - artifact_id: "33-survival-competing-risks"
+    artifact_type: "subskill"
+    path: "subskills/33-survival-competing-risks/SKILL.md"
+    purpose: "implementation support for time-to-event outcomes, censoring, competing risks, fixed-time risk, RMST, survival CATE, survival nuisance models, and survival reporting"

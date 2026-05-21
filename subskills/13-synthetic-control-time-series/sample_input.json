@@ -1,0 +1,19 @@
+{
+  "data_structure": "balanced_panel",
+  "treated_units": 1,
+  "donor_pool_status": "credible",
+  "pre_periods": 24,
+  "post_periods": 12,
+  "pre_fit_status": "good",
+  "intervention_timing": "sharp",
+  "anticipation_risk": "low",
+  "spillover_risk": "moderate",
+  "concurrent_shock_risk": "moderate",
+  "seasonality_risk": "moderate",
+  "needs_synthetic_did": false,
+  "needs_bsts": false,
+  "no_donor_pool": false,
+  "multiple_treated_periods": false,
+  "outcome_frequency": "monthly",
+  "language": "r"
+}

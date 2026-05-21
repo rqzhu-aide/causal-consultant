@@ -1,0 +1,17 @@
+{
+  "target": "natural_direct_indirect",
+  "design_route": "observational_unconfounded",
+  "data_source": "observational",
+  "exposure_type": "binary",
+  "mediator_type": "continuous",
+  "outcome_type": "continuous",
+  "mediator_count": "single",
+  "exposure_precedes_mediator": true,
+  "mediator_precedes_outcome": true,
+  "mediator_intervention_meaningful": "yes",
+  "mediator_outcome_confounding_status": "measured",
+  "has_exposure_induced_mediator_outcome_confounder": "no",
+  "need_sensitivity_analysis": true,
+  "language": "r",
+  "high_stakes": false
+}

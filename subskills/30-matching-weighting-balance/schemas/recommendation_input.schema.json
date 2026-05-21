@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MatchingWeightingBalanceRecommendationInput",
+  "type": "object",
+  "properties": {
+    "design_route": {
+      "type": "string",
+      "enum": ["single_time_observational", "longitudinal", "transportability", "trial_reweighting", "randomized_support", "unknown", "other"]
+    },
+    "estimand": {
+      "type": "string",
+      "enum": ["ate", "att", "atc", "ato_overlap", "target_population", "longitudinal_strategy", "unknown"]
+    },
+    "treatment_type": {
+      "type": "string",
+      "enum": ["binary", "multi_arm", "continuous", "time_varying", "selection_or_censoring", "unknown"]
+    },
+    "covariate_timing": {
+      "type": "string",
+      "enum": ["pre_treatment", "mixed_or_unclear", "post_treatment", "unknown"]
+    },
+    "confounder_status": {
+      "type": "string",
+      "enum": ["strong", "partial", "weak", "unknown"]
+    },
+    "overlap_status": {
+      "type": "string",
+      "enum": ["good", "limited", "poor", "unknown"]
+    },
+    "balance_status": {
+      "type": "string",
+      "enum": ["not_checked", "acceptable", "imbalanced", "unknown"]
+    },
+    "missingness_status": {
+      "type": "string",
+      "enum": ["none", "limited", "moderate", "severe", "unknown"]
+    },
+    "sample_size": {"type": ["integer", "null"], "minimum": 0},
+    "n_covariates": {"type": ["integer", "null"], "minimum": 0},
+    "survey_weights": {"type": ["boolean", "null"]},
+    "clustered": {"type": ["boolean", "null"]},
+    "needs_exact_match": {"type": ["boolean", "null"]},
+    "needs_interpretability": {"type": ["boolean", "null"]},
+    "language": {
+      "type": "string",
+      "enum": ["r", "python", "either", "unknown"]
+    }
+  },
+  "required": [
+    "design_route",
+    "estimand",
+    "treatment_type",
+    "covariate_timing",
+    "confounder_status",
+    "overlap_status",
+    "balance_status",
+    "missingness_status",
+    "language"
+  ]
+}

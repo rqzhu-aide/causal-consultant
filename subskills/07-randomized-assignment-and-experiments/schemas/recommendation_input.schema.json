@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RandomizedAssignmentRecommendationInput",
+  "type": "object",
+  "properties": {
+    "assignment_mechanism": {
+      "type": "string",
+      "enum": ["simple_randomized", "bernoulli", "blocked_randomized", "cluster_randomized", "paired_or_matched", "factorial", "encouragement", "rollout", "unknown", "not_randomized"]
+    },
+    "unit_of_assignment": {"type": "string"},
+    "unit_of_analysis": {"type": "string"},
+    "has_assignment_log": {"type": ["boolean", "null"]},
+    "has_known_probabilities": {"type": ["boolean", "null"]},
+    "estimand": {
+      "type": "string",
+      "enum": ["itt", "cace_late", "treatment_on_treated", "per_protocol", "as_treated", "subgroup_effect", "policy_value", "transported_effect", "unknown"]
+    },
+    "compliance_status": {
+      "type": "string",
+      "enum": ["full", "partial", "poor", "unknown", "not_applicable"]
+    },
+    "attrition_status": {
+      "type": "string",
+      "enum": ["none", "limited", "differential", "severe", "unknown"]
+    },
+    "missing_outcome_status": {
+      "type": "string",
+      "enum": ["none", "limited", "differential", "severe", "unknown"]
+    },
+    "clustered": {"type": ["boolean", "null"]},
+    "blocked_or_stratified": {"type": ["boolean", "null"]},
+    "sample_size": {"type": ["integer", "null"], "minimum": 0},
+    "n_clusters": {"type": ["integer", "null"], "minimum": 0},
+    "online_experiment": {"type": ["boolean", "null"]},
+    "srm_status": {
+      "type": "string",
+      "enum": ["passed", "failed", "unknown", "not_applicable"]
+    },
+    "has_pre_treatment_covariates": {"type": ["boolean", "null"]},
+    "has_pre_period_outcome": {"type": ["boolean", "null"]},
+    "multiple_outcomes_or_arms": {"type": ["boolean", "null"]},
+    "interference_risk": {
+      "type": "string",
+      "enum": ["low", "moderate", "high", "unknown"]
+    },
+    "language": {
+      "type": "string",
+      "enum": ["r", "python", "either", "unknown"]
+    }
+  },
+  "required": [
+    "assignment_mechanism",
+    "estimand",
+    "compliance_status",
+    "attrition_status",
+    "missing_outcome_status",
+    "srm_status",
+    "interference_risk",
+    "language"
+  ]
+}

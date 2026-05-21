@@ -1,0 +1,67 @@
+# Exploratory / Progress Analysis Report Template
+
+Use this flexible template when analyzable data, exploratory summaries, or prototype model outputs exist but the causal specification or report_production evidence is not ready for a final causal report. This report is for learning, debugging, model exploration, diagnostics, and progress review.
+
+The default deliverable is a reproducible source report plus rendered HTML when feasible:
+
+```text
+artifacts/
+  [descriptive-name]-exploratory.ipynb   # or .qmd / .Rmd
+  [descriptive-name]-exploratory.html
+  figures/
+  tables/
+```
+
+## Required Claim Boundary
+
+State the current workflow status near the beginning:
+
+```yaml
+project_summary.current_phase: project_exploration | causal_specification | report_production
+causal_gate.status: exploratory | not_ready | ready | blocked | complete
+production_gate.status: not_ready | ready | blocked | complete
+production_gate.claim_strength_for_report: exploratory | associational | descriptive | cautious_causal | supported_causal | unknown
+```
+
+Do not present an estimate as a final validated causal effect. Use language such as "exploratory estimate", "model-based first pass", "association under this specification", "diagnostic result", or "not yet report-ready" when the gates or diagnostics are incomplete.
+
+## Flexible Report Spine
+
+```markdown
+# [Project-Specific Exploratory / Progress Report Title]
+
+## 1. Summary And Claim Boundary
+
+[Summarize the user's request, the data inspected, the model or diagnostic attempted, the main pattern if available, and why this is not final causal evidence.]
+
+## 2. Question, Data, And Candidate Framework
+
+[Name the treatment/exposure, comparator, outcome, population, timing, target estimand, and candidate framework if known. State which pieces remain uncertain or provisional.]
+
+## 3. Data Readiness And Analysis Specification
+
+[Describe row unit, missingness, timing/leakage risks, support/overlap, variable constructability, preprocessing, attempted model, packages, and missing diagnostics.]
+
+## 4. Results And Diagnostics
+
+[Present only executed or verified summaries, plots, estimates, intervals, diagnostics, and model outputs. Clearly label exploratory or first-pass outputs.]
+
+## 5. Interpretation And Next Step
+
+[State what can be learned, what cannot be claimed, and the smallest next check or user decision that could move the project toward causal specification or report_production readiness.]
+
+## 6. Reproducibility Appendix
+
+[Record source report path, rendered HTML path, code paths, saved figures/tables, package versions, seeds, and rerun notes.]
+```
+
+## Required Coverage
+
+Every exploratory/progress report must cover report scope, data provenance, candidate question/design, data checks, analysis specification, results provenance, claim boundary, upgrade path, and reproducibility.
+
+## Code And Output Rules
+
+- Results, diagnostics, plots, and tables must come from executed code, verified artifacts, or explicitly labeled user-provided outputs.
+- If illustrative or simulated data are used, label them clearly.
+- If data are unavailable, empty, inaccessible, or not constructible, switch to a planning/communication memo or code scaffold.
+- Keep sensitive raw rows, direct identifiers, secrets, and small-cell details out of the rendered report unless explicitly approved and necessary.

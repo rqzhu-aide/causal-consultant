@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LongitudinalGMethodsRecommendationInput",
+  "type": "object",
+  "properties": {
+    "treatment_timing": {
+      "type": "string",
+      "enum": ["single_time", "time_varying", "cumulative", "repeated_measure", "unknown"]
+    },
+    "data_format": {
+      "type": "string",
+      "enum": ["long", "wide", "event_log", "summary_only", "unknown"]
+    },
+    "time_grid_defined": {"type": ["boolean", "null"]},
+    "n_time_points": {"type": ["integer", "null"], "minimum": 0},
+    "strategy_type": {
+      "type": "string",
+      "enum": ["static_sustained", "dynamic_regime", "stochastic", "modified_treatment_policy", "cumulative_dose", "threshold_rule", "learned_policy", "unknown"]
+    },
+    "target": {
+      "type": "string",
+      "enum": ["strategy_contrast", "strategy_mean", "dynamic_regime_value", "learned_policy", "survival_risk", "cumulative_effect", "descriptive_trajectory", "unknown"]
+    },
+    "treatment_type": {
+      "type": "string",
+      "enum": ["binary", "categorical", "continuous", "mixed", "unknown"]
+    },
+    "time_varying_confounding": {
+      "type": "string",
+      "enum": ["none", "present", "suspected", "unknown"]
+    },
+    "confounders_affected_by_prior_treatment": {"type": ["boolean", "null"]},
+    "censoring_status": {
+      "type": "string",
+      "enum": ["none", "limited", "informative", "severe", "unknown"]
+    },
+    "positivity_status": {
+      "type": "string",
+      "enum": ["good", "limited", "poor", "unknown"]
+    },
+    "outcome_type": {
+      "type": "string",
+      "enum": ["continuous", "binary", "survival_time", "competing_risk", "repeated", "recurrent_event", "unknown"]
+    },
+    "sample_size": {"type": ["integer", "null"], "minimum": 0},
+    "n_ids": {"type": ["integer", "null"], "minimum": 0},
+    "high_dimensional": {"type": ["boolean", "null"]},
+    "needs_absolute_risk": {"type": ["boolean", "null"]},
+    "needs_interpretability": {"type": ["boolean", "null"]},
+    "language": {
+      "type": "string",
+      "enum": ["r", "python", "either", "unknown"]
+    }
+  },
+  "required": [
+    "treatment_timing",
+    "data_format",
+    "strategy_type",
+    "target",
+    "treatment_type",
+    "time_varying_confounding",
+    "censoring_status",
+    "positivity_status",
+    "outcome_type",
+    "language"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "target": "modified_treatment_policy",
+  "dose_type": "continuous",
+  "design_route": "observational_unconfounded",
+  "data_source": "observational",
+  "outcome_type": "continuous",
+  "dose_timing": "baseline",
+  "support_status": "limited",
+  "intervention_feasibility": "feasible_shift",
+  "measurement_error": "moderate",
+  "need_curve": false,
+  "need_threshold": false,
+  "language": "r",
+  "n_samples": 3000,
+  "n_dose_levels": null,
+  "has_longitudinal_dose": false
+}

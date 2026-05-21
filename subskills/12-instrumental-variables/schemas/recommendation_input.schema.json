@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "instrumental_variables_recommendation_input",
+  "type": "object",
+  "properties": {
+    "iv_context": {
+      "type": "string",
+      "enum": ["encouragement", "natural_experiment", "fuzzy_rd", "judge_provider", "distance_preference", "policy_eligibility", "mendelian_randomization", "high_dimensional_iv", "unknown", "other"]
+    },
+    "instrument_type": {
+      "type": "string",
+      "enum": ["randomized_encouragement", "lottery", "eligibility_rule", "distance", "preference", "judge_provider", "policy_timing", "genetic_variant", "polygenic_score", "multiple_snps", "unknown", "other"]
+    },
+    "treatment_type": {
+      "type": "string",
+      "enum": ["binary", "continuous", "multi_level", "time_varying", "unknown", "other"]
+    },
+    "outcome_type": {
+      "type": "string",
+      "enum": ["continuous", "binary", "count", "survival_time", "competing_risk", "unknown", "other"]
+    },
+    "target_estimand": {
+      "type": "string",
+      "enum": ["cace_late", "wald_ratio", "linear_iv_coefficient", "structural_parameter", "mr_causal_effect", "iv_cate", "unknown", "other"]
+    },
+    "instrument_strength": {
+      "type": "string",
+      "enum": ["strong", "moderate", "weak", "unknown"]
+    },
+    "first_stage_f": {"type": ["number", "null"]},
+    "n_instruments": {"type": ["integer", "null"], "minimum": 0},
+    "n_endogenous": {"type": ["integer", "null"], "minimum": 0},
+    "exclusion_risk": {"type": "string", "enum": ["low", "moderate", "high", "unknown"]},
+    "independence_risk": {"type": "string", "enum": ["low", "moderate", "high", "unknown"]},
+    "monotonicity_risk": {"type": "string", "enum": ["low", "moderate", "high", "unknown", "not_applicable"]},
+    "many_instruments": {"type": "boolean"},
+    "clustered": {"type": "boolean"},
+    "needs_fixed_effects": {"type": "boolean"},
+    "high_dimensional_controls": {"type": "boolean"},
+    "nonlinear_target": {"type": "boolean"},
+    "mendelian_randomization": {"type": "boolean"},
+    "mr_pleiotropy_risk": {"type": "string", "enum": ["low", "moderate", "high", "unknown", "not_applicable"]},
+    "sample_size": {"type": ["integer", "null"], "minimum": 0},
+    "language": {
+      "type": "string",
+      "enum": ["r", "python", "stata", "either", "unknown"]
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DoseResponseRecommendationInput",
+  "type": "object",
+  "properties": {
+    "target": {
+      "type": "string",
+      "enum": ["fixed_contrast", "dose_response_curve", "threshold", "stochastic_shift", "modified_treatment_policy", "exploratory_exposure_response", "unknown"]
+    },
+    "dose_type": {
+      "type": "string",
+      "enum": ["continuous", "ordinal", "multi_level", "binary", "time_varying", "unknown"]
+    },
+    "design_route": {
+      "type": "string",
+      "enum": ["randomized", "observational_unconfounded", "longitudinal", "interference", "unknown", "other"]
+    },
+    "data_source": {
+      "type": "string",
+      "enum": ["randomized_trial", "observational", "panel", "registry", "unknown"]
+    },
+    "outcome_type": {
+      "type": "string",
+      "enum": ["continuous", "binary", "survival_time", "count", "ordinal", "unknown"]
+    },
+    "dose_timing": {
+      "type": "string",
+      "enum": ["baseline", "pre_outcome", "time_varying", "post_outcome", "unknown"]
+    },
+    "support_status": {
+      "type": "string",
+      "enum": ["good", "limited", "poor", "unknown"]
+    },
+    "intervention_feasibility": {
+      "type": "string",
+      "enum": ["fixed_dose_feasible", "feasible_shift", "not_intervenable", "unclear", "unknown"]
+    },
+    "measurement_error": {
+      "type": "string",
+      "enum": ["low", "moderate", "severe", "unknown"]
+    },
+    "need_curve": {"type": ["boolean", "null"]},
+    "need_threshold": {"type": ["boolean", "null"]},
+    "language": {
+      "type": "string",
+      "enum": ["r", "python", "either", "unknown"]
+    },
+    "n_samples": {"type": ["integer", "null"], "minimum": 0},
+    "n_dose_levels": {"type": ["integer", "null"], "minimum": 0},
+    "has_longitudinal_dose": {"type": ["boolean", "null"]}
+  },
+  "required": ["target", "dose_type", "design_route", "outcome_type", "dose_timing", "support_status", "intervention_feasibility", "language"]
+}

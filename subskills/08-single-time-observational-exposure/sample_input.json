@@ -1,0 +1,19 @@
+{
+  "exposure_timing": "baseline",
+  "exposure_type": "binary",
+  "target_trial_defined": false,
+  "estimand": "att",
+  "data_source": "ehr",
+  "confounder_status": "partial",
+  "overlap_status": "limited",
+  "missingness_status": "moderate",
+  "selection_risk": "moderate",
+  "outcome_type": "binary",
+  "sample_size": 1800,
+  "n_covariates": 35,
+  "high_dimensional": false,
+  "needs_interpretability": true,
+  "unmeasured_confounding_concern": true,
+  "has_negative_controls": false,
+  "language": "either"
+}

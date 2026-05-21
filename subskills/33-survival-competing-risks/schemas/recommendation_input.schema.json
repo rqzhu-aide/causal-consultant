@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "survival_competing_risks_recommendation_input",
+  "type": "object",
+  "properties": {
+    "design_route": {
+      "type": "string",
+      "enum": [
+        "randomized",
+        "single_time_observational",
+        "longitudinal",
+        "transportability",
+        "heterogeneity",
+        "policy",
+        "survival",
+        "unknown",
+        "other"
+      ]
+    },
+    "target_goal": {
+      "type": "string",
+      "enum": [
+        "ate",
+        "att",
+        "fixed_time_risk",
+        "survival_probability",
+        "rmst",
+        "competing_risk",
+        "hazard",
+        "cate",
+        "policy_value",
+        "prediction_nuisance",
+        "unknown",
+        "other"
+      ]
+    },
+    "outcome_structure": {
+      "type": "string",
+      "enum": [
+        "time_to_event",
+        "competing_risk",
+        "recurrent_event",
+        "multi_state",
+        "duration",
+        "binary_at_fixed_time",
+        "prediction_nuisance",
+        "unknown",
+        "other"
+      ]
+    },
+    "target_scale": {
+      "type": "string",
+      "enum": [
+        "risk_at_horizon",
+        "survival_probability",
+        "rmst",
+        "hazard_ratio",
+        "cause_specific_hazard",
+        "subdistribution_hazard",
+        "cif",
+        "survival_cate",
+        "survival_policy_value",
+        "prediction_nuisance",
+        "unknown",
+        "other"
+      ]
+    },
+    "treatment_timing": {
+      "type": "string",
+      "enum": ["baseline", "time_varying", "post_baseline", "unclear", "unknown"]
+    },
+    "censoring_status": {
+      "type": "string",
+      "enum": ["minimal", "moderate", "informative", "heavy", "unclear", "unknown"]
+    },
+    "competing_risks": {"type": ["boolean", "null"]},
+    "left_truncation": {"type": ["boolean", "null"]},
+    "recurrent_events": {"type": ["boolean", "null"]},
+    "proportional_hazards_plausible": {"type": ["boolean", "null"]},
+    "fixed_horizon_defined": {"type": ["boolean", "null"]},
+    "needs_cate": {"type": "boolean"},
+    "needs_inference": {"type": "boolean"},
+    "needs_prediction": {"type": "boolean"},
+    "high_dimensional": {"type": "boolean"},
+    "sample_size": {"type": ["integer", "null"], "minimum": 0},
+    "n_events": {"type": ["integer", "null"], "minimum": 0},
+    "language": {
+      "type": "string",
+      "enum": ["r", "python", "either", "unknown"]
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,16 @@
+{
+  "target": "learned_dynamic_regime",
+  "design_route": "observational_longitudinal",
+  "data_source": "observational",
+  "decision_points": 3,
+  "history_status": "reconstructible",
+  "action_support_status": "limited",
+  "time_varying_confounding": "present",
+  "censoring_status": "moderate",
+  "value_target": "continuous_outcome",
+  "need_interpretability": "high",
+  "language": "r",
+  "has_known_randomization_or_logging_probabilities": false,
+  "has_holdout_or_crossfit_plan": true,
+  "high_stakes": false
+}

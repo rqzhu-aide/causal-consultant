@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HeterogeneousEffectsRecommendationInput",
+  "type": "object",
+  "properties": {
+    "target": {
+      "type": "string",
+      "enum": ["prespecified_subgroup", "gate", "cate", "ite_style_prediction", "effect_modifier_screening", "policy_implication", "unknown"]
+    },
+    "design_route": {
+      "type": "string",
+      "enum": ["randomized", "observational_unconfounded", "instrumental_variable", "regression_discontinuity", "difference_in_differences", "longitudinal", "synthetic_control", "unknown", "other"]
+    },
+    "data_source": {
+      "type": "string",
+      "enum": ["randomized_trial", "observational", "panel", "registry", "unknown"]
+    },
+    "treatment_type": {
+      "type": "string",
+      "enum": ["binary", "multi_action", "continuous_or_dose", "time_varying", "unknown"]
+    },
+    "outcome_type": {
+      "type": "string",
+      "enum": ["continuous", "binary", "survival_time", "count", "ordinal", "unknown"]
+    },
+    "modifier_timing": {
+      "type": "string",
+      "enum": ["baseline", "pre_treatment", "post_treatment", "mixed", "unknown"]
+    },
+    "prespecification": {
+      "type": "string",
+      "enum": ["prespecified", "exploratory", "mixed", "unknown"]
+    },
+    "overlap_status": {
+      "type": "string",
+      "enum": ["good", "limited", "poor", "unknown"]
+    },
+    "n_samples": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "n_features": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "n_subgroups": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "need_interpretability": {
+      "type": "string",
+      "enum": ["high", "moderate", "low", "unknown"]
+    },
+    "language": {
+      "type": "string",
+      "enum": ["r", "python", "either", "unknown"]
+    },
+    "high_stakes": {
+      "type": ["boolean", "null"]
+    },
+    "has_holdout_or_crossfit_plan": {
+      "type": ["boolean", "null"]
+    }
+  },
+  "required": ["target", "design_route", "data_source", "treatment_type", "outcome_type", "modifier_timing", "prespecification", "language"]
+}

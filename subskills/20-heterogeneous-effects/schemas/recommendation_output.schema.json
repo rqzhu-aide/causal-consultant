@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HeterogeneousEffectsRecommendationOutput",
+  "type": "object",
+  "properties": {
+    "readiness": {"type": "string"},
+    "top_choice": {"type": "string"},
+    "analysis_lane": {"type": "string"},
+    "software_options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "package": {"type": "string"},
+          "language": {"type": "string"},
+          "when_to_use": {"type": "string"}
+        },
+        "required": ["package", "language", "when_to_use"]
+      }
+    },
+    "required_clarifications": {"type": "array", "items": {"type": "string"}},
+    "diagnostics": {"type": "array", "items": {"type": "string"}},
+    "caveats": {"type": "array", "items": {"type": "string"}},
+    "activate_other_subskills": {"type": "array", "items": {"type": "string"}},
+    "report_support": {"type": "array", "items": {"type": "string"}},
+    "recommended_next_action": {"type": "string"}
+  },
+  "required": [
+    "readiness",
+    "top_choice",
+    "analysis_lane",
+    "software_options",
+    "required_clarifications",
+    "diagnostics",
+    "caveats",
+    "activate_other_subskills",
+    "report_support",
+    "recommended_next_action"
+  ]
+}

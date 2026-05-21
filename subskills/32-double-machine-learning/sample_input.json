@@ -1,0 +1,17 @@
+{
+  "design_route": "single_time_observational",
+  "target_model": "irm",
+  "estimand": "ate",
+  "treatment_type": "binary",
+  "outcome_type": "continuous",
+  "feature_status": "valid_pre_treatment",
+  "high_dimensional": true,
+  "sample_size": 3200,
+  "n_features": 180,
+  "positivity_status": "limited",
+  "needs_inference": true,
+  "clustered_or_grouped": false,
+  "heterogeneity_target": false,
+  "policy_target": false,
+  "language": "either"
+}

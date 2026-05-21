@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "negative_controls_proximal_recommendation_input",
+  "type": "object",
+  "properties": {
+    "lane": {
+      "type": "string",
+      "enum": ["negative_control_outcome", "negative_control_exposure", "paired_negative_controls", "empirical_calibration", "control_outcome_adjustment", "proximal_identification", "proximal_survival", "proximal_longitudinal", "falsification_placebo", "unknown", "other"]
+    },
+    "primary_design": {
+      "type": "string",
+      "enum": ["single_time_observational", "longitudinal", "did_event_study", "rd", "iv", "synthetic_time_series", "survival", "mediation", "experiment", "unknown", "other"]
+    },
+    "goal": {
+      "type": "string",
+      "enum": ["bias_diagnostic", "empirical_calibration", "bias_adjustment", "proximal_identification", "sensitivity_only", "report_wording", "unknown", "other"]
+    },
+    "candidate_nco_count": {"type": ["integer", "null"], "minimum": 0},
+    "candidate_nce_count": {"type": ["integer", "null"], "minimum": 0},
+    "treatment_proxy_count": {"type": ["integer", "null"], "minimum": 0},
+    "outcome_proxy_count": {"type": ["integer", "null"], "minimum": 0},
+    "controls_pre_specified": {"type": ["boolean", "null"]},
+    "timing_status": {"type": "string", "enum": ["valid", "questionable", "invalid", "unknown"]},
+    "null_relation_plausibility": {"type": "string", "enum": ["strong", "moderate", "weak", "invalid", "unknown"]},
+    "shared_bias_plausibility": {"type": "string", "enum": ["strong", "moderate", "weak", "unknown"]},
+    "measurement_quality": {"type": "string", "enum": ["adequate", "limited", "poor", "unknown"]},
+    "support_status": {"type": "string", "enum": ["adequate", "thin", "none", "unknown"]},
+    "bridge_model_status": {"type": "string", "enum": ["not_applicable", "not_started", "stable", "unstable", "failed", "unknown"]},
+    "many_controls_available": {"type": "boolean"},
+    "survival_or_longitudinal": {"type": "boolean"},
+    "hidden_confounding_risk": {"type": "string", "enum": ["low", "moderate", "high", "unknown"]},
+    "language": {
+      "type": "string",
+      "enum": ["r", "python", "stata", "either", "unknown"]
+    }
+  },
+  "additionalProperties": true
+}

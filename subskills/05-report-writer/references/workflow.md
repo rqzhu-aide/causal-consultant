@@ -1,138 +1,168 @@
 # Report Writer Workflow
 
-Use this reference when working-report or report-compilation support needs more detail than `SKILL.md`.
+Use this backstage reference when report-writer behavior needs more detail than `SKILL.md`. Keep the report writer silent, evidence-bound, and useful to the lead consultant.
 
 ## Operating Frame
 
-Report Writer starts silently during `project_exploration` once there is durable project content to preserve. It maintains a polished Markdown project notebook and working report from early user interests, discussions, reviewer updates, and artifacts through ongoing `report_production`, including same-evidence revisions. It compiles artifacts only when the report lane and claim limits are clear. It does not own a YAML section or a separate transition gate.
+Report Writer maintains three different surfaces:
 
-Treat the main report as the integrating document. It keeps project bookkeeping, the user's interests and priorities, discussion history, issues, decisions, references, artifacts, reviewer cautions, and an index of active modules. Activated method/job subskills and sidecars contribute modular report components. Report Writer preserves each module's local logic and evidence, then integrates it into one polished narrative with consistent claim language.
+1. `report_structure_notes`: private report architecture and future-use material.
+2. `working_report`: private polished project notebook and draft memory.
+3. released artifacts: user-facing reports, memos, revisions, appendices, slides, or requested add-ons.
 
-The main skill owns `causal_gate` and `production_gate`. Report Writer reads those fields and returns concise feedback about what can be reported safely.
+Do not collapse these surfaces. Structure notes are not prose. The working report is not automatically released. A released artifact is compiled only when the lane, evidence, and claim limits are clear.
 
-Default deliverables are Markdown-first. A `.md` report is a first-round structured draft, but it should still be readable, organized, and lightly polished. It is auditable, easy to revise, and suitable for later polishing. If the user wants a fuller prose report, use the Markdown draft plus referenced data, code, figures, and artifacts as source material. The report writer may polish it directly in the current workflow or use available authorized tooling/APIs when that is appropriate. Avoid turning every Markdown draft into an exhaustive publication-style report unless the user asks.
+The main skill owns `causal_gate`, `production_gate`, `bounded_continuation`, and project YAML updates. Report Writer returns concise feedback and requested path updates; it does not open gates, validate identification, or talk to the user directly.
+
+## Activation Procedure
+
+On each activation:
+
+1. Read compact state first: `project_summary`, `team_synthesis`, gates, `bounded_continuation`, reviewer sections, `analysis_state`, and `subskill_records`.
+2. Classify the required action:
+   - `no_action`: nothing report-worthy changed.
+   - `structure_notes_update`: preserve report-building material that is not ready for prose.
+   - `working_draft_update`: preserve durable project memory or draftable content.
+   - `artifact_compile`: create a report/memo/progress artifact.
+   - `artifact_revision`: revise an existing artifact from the same evidence.
+3. Check claim boundaries before writing:
+   - `causal_gate.claim_strength_allowed`;
+   - `production_gate.claim_strength_for_report`;
+   - `causal_gate.blockers` and `production_gate.blockers`;
+   - `bounded_continuation.allowed_scope` and `bounded_continuation.prohibited_claims`;
+   - missing evidence, diagnostics, code provenance, or artifact paths.
+4. Update the appropriate surface:
+   - structure notes for candidate claims, evidence boundaries, section jobs, module placement, figure/table ideas, code appendix seeds, limitations, and anti-claims;
+   - working report for user interests, decisions, domain interpretation, causal specification reasoning, data evidence, method logic, diagnostics, module ledger, limitations, and next steps;
+   - released artifact only when a deliverable is needed.
+5. Return compact feedback to the lead consultant: action performed, lane, evidence basis, claim boundary, missing inputs, path updates, artifact paths, and smallest next step.
+
+## Phase Behavior
+
+### `project_exploration`
+
+Start report memory only after durable content appears. Useful content includes user interests, domain background, early data reality, possible directions, confusions, and open questions.
+
+Prefer:
+
+- structure notes for possible report spine, user need, background references, candidate claims, and early anti-claims;
+- working report for stable background, user priorities, decisions, and open questions.
+
+Do not make the notes look like final evidence.
+
+### `causal_specification`
+
+Actively update when information changes. Information includes data-analysis results, diagnostics, artifact provenance, method selection or rejection, causal reasoning, interpretation, assumptions, limitations, wording boundary, and how the framework corresponds to the user's request.
+
+Preserve:
+
+- why a framework or estimand is being selected, revised, blocked, or kept exploratory;
+- what data facts or diagnostics changed method fit;
+- what assumptions, causal blockers, and wording boundaries must appear in a later report;
+- which method/job subskill modules may become main text, appendix, or parked notes.
+
+Do not wait for `report_production` to reconstruct this reasoning later.
+
+### `report_production`
+
+Use the working report and structure notes as source material. Compile or revise only within recorded claim limits. For final-report prose, use `scientific_report_workflow.md` and the selected lane template.
+
+After each released artifact, remain in `report_production` for same-evidence revisions, format changes, added limitations, or follow-up questions. Return to `causal_specification` only when the requested revision changes the causal claim, estimand, assumptions, framework, or core design logic.
 
 ## Lane Selection
 
-Use `../assets/planning_communication_memo_template.md` when:
+Use the smallest lane that satisfies the user:
 
-- no analyzable data are available;
-- the user needs wording, slides, an email, a caveat, a short planning memo, or a design explanation;
-- the project is still in `project_exploration` or `causal_specification` and the deliverable is advisory rather than evidence-reporting.
-
-Use `../assets/exploratory_analysis_report_template.md` when:
-
-- analyzable data or prototype model outputs exist;
-- `causal_gate.status` is `not_ready`, or `production_gate.status` is `not_ready`;
-- the user still wants a progress artifact, first-pass model report, diagnostic report, or exploratory summary.
-
-Use `../assets/reproducible_analysis_report_template.md` when:
-
-- `causal_gate` is ready or complete;
-- `report_production` evidence is ready enough to report;
-- numbers, plots, diagnostics, and tables come from executed code, inspected artifacts, or user-provided outputs with provenance.
-
-Use `../assets/final_report_template.md` when:
-
-- the user wants a finished narrative report, memo, or methods/results section from the same `report_production` evidence;
-- the report can rely on recorded `domain_expert`, `data_analyst`, `method_lead`, method/job, and artifact records.
-
-Use `../assets/discovery_report_template.md` when:
-
-- the requested deliverable is a standalone graph exploration, variable screening, or causal discovery report rather than treatment-effect reporting;
-- discovery outputs and limitations are recorded under `analysis_state.discovery_sidecar` or `subskill_records`.
-
-When discovery is part of a broader analysis workflow, use `../assets/discovery_report_template.md` as a source for a modular section rather than creating a separate report.
-
-Use a visible discovery section inside another report when:
-
-- `06-causal-discovery` was activated early as a meaningful sidecar;
-- the user requested discovery features as part of the project;
-- discovery outputs shaped the candidate framework, DAG/theory, variable screening, or diagnostics;
-- graph artifacts, edge lists, stability tables, or discovery limitations were created.
-
-Use only an appendix when discovery was a small sensitivity check, produced no substantive findings, or is peripheral to the user goal.
+- `../assets/planning_communication_memo_template.md`: advisory memo, wording, slides, email, caveat, design explanation, or no analyzable data.
+- `../assets/exploratory_analysis_report_template.md`: progress artifact, first-pass output, diagnostic report, or exploratory summary when gates are incomplete.
+- `../assets/reproducible_analysis_report_template.md`: evidence-backed report with code, inspected artifacts, tables, figures, and diagnostics.
+- `../assets/final_report_template.md`: finished narrative report or same-evidence revision. Default to the simple results-plus-diagnostics report spine unless the project needs more.
+- `../assets/discovery_report_template.md`: standalone discovery report. If discovery supports a broader report, use it as a module source instead.
 
 ## Modular Integration
 
-For each activated method/job subskill or sidecar, look for a report support packet or equivalent material in `subskill_records`, `analysis_state`, artifacts, or reviewer notes. Decide its placement:
+For each activated method/job subskill or sidecar, place its report support packet deliberately:
 
-- central section if it shaped the user-facing analysis or produced key evidence;
-- subsection if it supports a broader method/results/diagnostics story;
-- appendix if it is supplemental or sensitivity-only;
+- main text if it is central to the user's question or main evidence;
+- subsection if it supports the selected framework;
+- appendix if it is supplemental, diagnostic, sensitivity-only, or technical;
 - parked note if it was considered but not used.
 
-Each module should contribute these pieces when available: purpose, inputs, method/design logic, outputs/findings, diagnostics, limitations, reviewer interpretation, references, and artifact paths. Integrate modules with transitions and consistent terminology; do not concatenate raw subskill outputs.
+Each module should contribute purpose, inputs, method/design logic, outputs/findings, diagnostics, limitations, reviewer interpretation, references, and artifact paths when available. Integrate modules with transitions and consistent terminology. Do not concatenate raw subskill outputs.
 
-## Evidence Sources
+If `06-causal-discovery` was a meaningful early sidecar, keep a visible discovery section or appendix entry with purpose, graph target, methods/settings, main findings, diagnostics, reviewer-routing implications, wording boundary, and artifact paths.
 
-Populate reports from:
+## Evidence And Reference Rules
 
-- `project_summary`: project label, user goal, audience, deliverable, and current phase;
-- `team_synthesis`: known facts, missing information, and key tensions;
-- `domain_expert`: domain context, construct guidance, causal-structure guidance, interpretation, common-practice context, and external validity;
-- `method_lead`: causal question variants, selected framework, estimand set, validity requirements, DAG/theory, assumptions, method-literature guidance, tools/subskills, diagnostics, sensitivity, and wording boundary;
-- `data_analyst`: data provenance, data properties, exploratory outputs, diagnostics assets, `report_production` assets, and reproducibility notes;
-- `subskill_records`: method/job fit, outputs, diagnostics, limitations, requests, and artifact paths;
-- `analysis_state` and `artifact_index`: working draft path, created reports, tables, figures, notebooks, rendered HTML, limitations, and discovery sidecar paths.
-- discovery `report_support` packets: section title, purpose, graph target, methods/settings, main findings, diagnostics, reviewer-routing implications, wording boundary, and artifact paths.
-- other subskill report support packets: module title, purpose, inputs, methods, outputs, diagnostics, limitations, reviewer interpretation, references, and artifact paths.
+Populate report material from recorded state and inspected artifacts:
 
-If the needed evidence is missing, write the missing item plainly and recommend the next `report_production` step.
+- `project_summary`, `team_synthesis`, gates, and `bounded_continuation`;
+- `domain_expert`, `data_analyst`, and `method_lead`;
+- `subskill_records` and report support packets;
+- `analysis_state` paths, tables, figures, notebooks, rendered reports, discovery sidecar artifacts, and limitations;
+- user-provided or inspected references, source materials, data documentation, package documentation, and method references.
 
-Do not present a report as complete or strongly causal unless `production_gate.status` is ready/complete and the evidence supports that wording. If readiness is incomplete, the report may still be produced as a qualified, progress, diagnostic, or limitation-forward artifact that visibly names blockers, missing materials, deferred diagnostics, and claim-strength limits. Under `bounded_continuation`, keep the artifact inside `bounded_continuation.allowed_scope` and avoid `bounded_continuation.prohibited_claims`.
+Do not cite or summarize sources that were not inspected or supplied. Use one consistent citation style. If no external references were used, say so in the appendix or omit the reference appendix for a short memo.
 
-## Working Draft Pattern
+Include numeric results, diagnostics, p-values, intervals, table values, figure interpretations, or code-derived claims only when they are user-provided, computed by authorized code, copied from inspected artifacts, or clearly labeled as placeholders.
 
-Use `../assets/working_report_template.md` when starting the Markdown project notebook/working report. Keep the path in `analysis_state.report_working_draft_path`. Update the draft after meaningful user-priority updates, reviewer changes, sidecar outputs, or artifact creation. The working draft is not a released report; it is the structured, paper-like memory the report writer uses for later production.
+## Pre-Release Check
 
-## Final Report Production Review
+Before delivering a report artifact, check:
 
-Before finishing a causal report, check:
+- the report answers the user's need before technical detail;
+- each major claim has evidence and a boundary;
+- causal language does not exceed gate claim strength;
+- unresolved blockers and bounded-continuation limits are visible;
+- figures/tables are explained and have provenance;
+- diagnostics and sensitivity checks are completed, deferred, or visibly missing;
+- model diagnostics have their own visible space, either as a short standalone section or an explicit paragraph inside Results for very short reports;
+- code-derived content has a reproducibility appendix or path index;
+- limitations are clear without overwhelming the main conclusion;
+- appendices carry secondary detail, alternative methods, references, code notes, and user-requested extras.
 
-- the claim(s) and estimand set are the same as the causal specification;
-- data-derived numbers have provenance;
-- diagnostics and sensitivity checks are completed, explicitly deferred, or visibly missing;
-- limitations from all reviewers are represented;
-- action recommendations are weaker than or equal to the evidence;
-- privacy and disclosure constraints are respected;
-- the artifact path and reproducibility notes are recorded.
-- any code used for reported numbers, diagnostics, tables, figures, graph artifacts, or analysis datasets is indexed in a code/reproducibility appendix.
+## Feedback Patterns
 
-## Code Appendix Pattern
-
-Use a code or reproducibility appendix whenever code supports reported content. Prefer a path-and-purpose index over long pasted code blocks:
-
-| Code or notebook | Purpose | Inputs | Outputs | Reproducibility notes |
-|---|---|---|---|---|
-| [path] | [model, diagnostic, table, figure, graph, data construction] | [data/artifacts] | [reported outputs] | [seed, package/version notes, rerun notes] |
-
-Add short code excerpts only for key transformations or models that readers need to inspect in the report. Keep full scripts and notebooks as linked artifacts.
-
-## Blocked Feedback Pattern
+Blocked:
 
 ```yaml
 report_writer_feedback:
   status: "blocked"
-  missing_inputs:
-    - null
+  action: "no_action | structure_notes_update | working_draft_update | artifact_compile | artifact_revision"
+  missing_inputs: []
   claim_language_risk: null
   working_draft_path: null
+  structure_notes_path: null
   recommended_next_step: null
   artifact_paths: []
 ```
 
-## Completion Pattern
+Updated notes or draft:
 
 ```yaml
 report_writer_feedback:
-  status: "artifact_created"
+  status: "draft_updated"
+  action: "structure_notes_update | working_draft_update"
+  report_lane: null
+  evidence_basis: []
+  claim_language_boundary: null
+  working_draft_path: null
+  structure_notes_path: null
+  artifact_paths: []
+  recommended_next_step: null
+```
+
+Artifact created or revised:
+
+```yaml
+report_writer_feedback:
+  status: "artifact_created | artifact_revised"
+  action: "artifact_compile | artifact_revision"
   report_lane: "planning memo | exploratory report | reproducible analysis report | final report | discovery report"
   evidence_basis: []
   claim_language_boundary: null
   working_draft_path: null
+  structure_notes_path: null
   artifact_paths: []
   recommended_next_step: null
 ```
-
-After an artifact is delivered, stay in `report_production` for revision and follow-up work: revising the same deliverable, creating another format from the same evidence, answering follow-up questions, improving wording, adding limitations, or pausing. Each released version should invite the user to review it and identify what still needs improvement. Return to `causal_specification` only when a requested revision changes the causal claim, estimand, assumptions, framework, or core design logic.

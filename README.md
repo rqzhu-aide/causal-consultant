@@ -14,7 +14,7 @@ The new version uses a Modular Consultant Team (MCT) architecture: a user-facing
 
 The skill keeps a compact project state with the user's goal, project phase, working facts, domain guidance, data properties, candidate frameworks, estimands, assumptions, diagnostics, limitations, recommended or activated subskills, and report materials. As new information appears, the workflow can recheck earlier decisions, revise the analysis framework, narrow the estimand, request a bounded data diagnostic, produce a qualified progress artifact, or explain why a causal claim is not yet supported.
 
-It is for data scientists, analysts, researchers, domain experts, and applied teams who want a careful causal partner rather than a black-box method picker. It can support exploratory planning, data audit, design critique, DAG/theory reasoning, method selection, causal discovery sidecar work, R/Python code examples, diagnostic review, result interpretation, and reproducible reporting.
+It is for data scientists, analysts, researchers, domain experts, and applied teams who want a careful causal partner rather than a black-box method picker. It can support exploratory planning, data audit, design critique, causal-structure reasoning, method selection, causal discovery sidecar work, R/Python code examples, diagnostic review, result interpretation, and reproducible reporting.
 
 The core safety rule is simple: causal language should never be stronger than the design, assumptions, data support, diagnostics, and sensitivity checks justify.
 
@@ -69,7 +69,7 @@ For a standalone copy of this diagram, see [`assets/workflow-mermaid.md`](assets
 flowchart TD
     user["User<br/>goal, data, preferences"]
     lead["Lead Consultant<br/>user-facing conversation<br/>synthesis and progression"]
-    state["Project State YAML<br/>shared memory<br/>facts, artifacts, limitations"]
+    state["Project State YAML<br/>shared memory<br/>variable_roster, causal_structure<br/>subskill_records, artifacts, limits"]
     domain["domain_expert<br/>constructs and mechanisms<br/>common practice<br/>external validity"]
     data["data_analyst<br/>data reality<br/>constructability and timing<br/>diagnostics and artifacts"]
     method["method_lead<br/>causal question and estimands<br/>framework and assumptions<br/>method/subskill triage"]
@@ -79,6 +79,32 @@ flowchart TD
     target["Target Goal Subskills<br/>20-25<br/>estimand/decision goals"]
     support["Implementation Support Subskills<br/>30-33<br/>estimation and diagnostics"]
     gates["Gates<br/>causal_gate<br/>production_gate"]
+
+    classDef userNode fill:#f8fafc,stroke:#64748b,color:#0f172a
+    classDef leadNode fill:#eef2ff,stroke:#4f46e5,color:#111827
+    classDef stateNode fill:#f1f5f9,stroke:#475569,color:#0f172a
+    classDef domainNode fill:#ecfdf5,stroke:#047857,color:#064e3b
+    classDef dataNode fill:#eff6ff,stroke:#2563eb,color:#1e3a8a
+    classDef methodNode fill:#fff7ed,stroke:#ea580c,color:#7c2d12
+    classDef reportNode fill:#fff1f2,stroke:#e11d48,color:#881337
+    classDef discoveryNode fill:#faf5ff,stroke:#7e22ce,color:#581c87
+    classDef designNode fill:#ecfeff,stroke:#0891b2,color:#164e63
+    classDef targetNode fill:#fefce8,stroke:#ca8a04,color:#713f12
+    classDef supportNode fill:#f7fee7,stroke:#65a30d,color:#365314
+    classDef gateNode fill:#fef2f2,stroke:#dc2626,color:#7f1d1d
+
+    class user userNode
+    class lead leadNode
+    class state stateNode
+    class domain domainNode
+    class data dataNode
+    class method methodNode
+    class writer reportNode
+    class discovery discoveryNode
+    class design designNode
+    class target targetNode
+    class support supportNode
+    class gates gateNode
 
     user --> lead
     lead --> state
@@ -98,14 +124,20 @@ flowchart TD
     data --> method
     method --> data
 
-    method --> design
-    design --> method
-    method --> target
-    target --> method
-    method --> support
-    data --> support
-    support --> method
-    support --> data
+    method -. selects .-> design
+    method -. selects .-> target
+    method -. selects .-> support
+    lead -. invokes selected .-> design
+    lead -. invokes selected .-> target
+    lead -. invokes selected .-> support
+    design -. record and recheck signal .-> state
+    target -. record and recheck signal .-> state
+    support -. record and recheck signal .-> state
+    data -. data evidence .-> support
+    support -. data or diagnostic request .-> data
+    design -. report support .-> writer
+    target -. report support .-> writer
+    support -. report support .-> writer
 
     lead -. any phase .-> discovery
     discovery -. advisory output .-> domain
@@ -119,7 +151,7 @@ flowchart TD
     lead --> user
 ```
 
-This Modular Consultant Team (MCT) workflow is interactive because it treats causal work as an adaptive conversation rather than a one-shot method checklist. The user, available data, durable artifacts, and current project YAML provide observations. The lead consultant reads those observations, coordinates the core team, chooses the next useful internal step, and speaks back to the user in plain language without exposing backend YAML mechanics.
+Colors distinguish the lead/state layer, each core member, causal discovery, method/task specialist pools, and gates. This Modular Consultant Team (MCT) workflow is interactive because it treats causal work as an adaptive conversation rather than a one-shot method checklist. The user, available data, durable artifacts, and current project YAML provide observations. The lead consultant reads those observations, coordinates the core team, chooses the next useful internal step, and speaks back to the user in plain language without exposing backend YAML mechanics.
 
 The top-level `SKILL.md` is intentionally frontstage and short. It defines the lead consultant's user-facing behavior, team boundaries, working phases, and backend reference map. Detailed operating logic lives in:
 
@@ -133,14 +165,14 @@ The MCT structure has four core members and one sidecar:
 
 - **`domain_expert` (`01-domain-expert`)** preserves domain meaning: constructs, mechanisms, temporal order, measurement standards, common practice, external validity, and wording cautions.
 - **`data_analyst` (`02-data-analyst`)** evaluates data reality: available sources, row and analysis units, timing, variable construction, missingness/selection, support, exploratory outputs, reproducible artifacts, and data-evidence handoffs.
-- **`method_lead` (`03-method-lead`)** owns causal-method judgment: causal questions, framework candidates, selected framework, estimand set, assumptions, DAG/theory, diagnostics, sensitivity, method literature, and method/task subskill triage.
+- **`method_lead` (`03-method-lead`)** owns causal-method judgment: causal questions, framework candidates, selected framework, estimand set, assumptions, causal structure, diagnostics, sensitivity, method literature, and method/task subskill triage.
 - **`report_writer` (`05-report-writer`)** is silent. It keeps a polished project notebook and working report from early durable content through production reporting and same-evidence revisions.
 - **`06-causal-discovery`** is an any-phase sidecar for exploratory graph learning, graph comparison, variable screening, constructed-feature ideas, and discovery-only deliverables. Its outputs remain advisory until reviewed through the relevant core team logic.
 
 Three working phases organize the interaction:
 
 1. **`project_exploration`**: learn the user's goal, domain setting, data reality, feasibility, and possible candidate frameworks. Exploratory, descriptive, diagnostic, and design-learning work can happen here when data are provided.
-2. **`causal_specification`**: settle and stress-test the causal claim, estimand set, framework, DAG/theory, assumptions, diagnostics, sensitivity plan, data feasibility, and wording boundary.
+2. **`causal_specification`**: settle and stress-test the causal claim, estimand set, framework, causal structure, assumptions, diagnostics, sensitivity plan, data feasibility, and wording boundary.
 3. **`report_production`**: draft, diagnose, revise, improve, and deliver the report or other user-facing artifact. The project stays in this phase for report revisions unless new evidence changes the causal claim, estimand set, assumptions, framework, or core design logic.
 
 Two gates control claim readiness:
@@ -155,9 +187,10 @@ With this structure in place, the practical loop is:
 1. Update the compact project state from the user's latest turn.
 2. Let `domain_expert`, `data_analyst`, and `method_lead` review in the default order.
 3. Allow one bounded adaptive follow-up pass only when a reviewer update would clearly improve the next user-facing move.
-4. Let `report_writer` update the working notebook/report when there is substantive content to preserve.
-5. Update gates, limitations, agenda, and next action.
-6. Return to the user with one clear practical move: a question, explanation, proposed analysis, method choice, artifact, or revision.
+4. If `method_lead` selects a bounded method/task specialist, let the lead consultant invoke it and record its returned packet in `subskill_records`.
+5. Let `report_writer` update the working notebook/report when there is substantive content to preserve or a specialist returns report support.
+6. Update gates, limitations, agenda, and next action.
+7. Return to the user with one clear practical move: a question, explanation, proposed analysis, method choice, artifact, or revision.
 
 This keeps the interaction collaborative instead of over-automated. The team does enough internal work to be useful, then returns to the user when a clarification, permission, preference, or review would improve the next step.
 
@@ -167,7 +200,7 @@ Method/task subskills are organized into three specialist pools:
 - **Target goals (`20`-`25`)**: heterogeneous effects, point treatment rules, mediation, dose-response effects, transportability/generalizability, and dynamic treatment policies.
 - **Implementation support (`30`-`33`)**: matching/weighting/balance, doubly robust estimation, Double Machine Learning, and survival/competing risks.
 
-The helper `scripts/recommend_subskills.py` provides advisory recall for specialist modules, but it is not a router or judge. `method_lead` makes the causal-method decision after reading `domain_expert`, `data_analyst.method_support`, project state, and any relevant `subskill_records`.
+The helper `scripts/recommend_subskills.py` provides advisory recall for specialist modules, but it is not a router or judge. `method_lead` makes the causal-method decision after reading `domain_expert`, `data_analyst.method_support`, project state, and any relevant `subskill_records`; the lead consultant invokes selected specialists and records their returned packets.
 
 The durable state model lives in `assets/causal_project_spec_template.yaml`; controlled values live in `assets/workflow_enums.yaml`; activated method/task subskills use `assets/method_job_subskill_record_template.yaml`. Validation scripts are provided in `scripts/`.
 

@@ -25,10 +25,13 @@ Read only the compact state needed for the longitudinal design:
 
 - `project_summary`: goal, phase, deliverable, audience, data paths.
 - `team_synthesis`: current user turn, facts, tensions, missing information.
+- `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: treatment strategy meaning, visit schedule, biologic/operational timing, feasible interventions, adherence, and interpretation.
 - `data_analyst`: long-format data status, id/time rows, treatment/covariate/outcome timing, censoring, missingness, support, weights, and artifacts.
-- `method_lead`: causal claim, estimand set, DAG/theory, sequential exchangeability, positivity, censoring assumptions, diagnostics, and wording boundary.
+- `method_lead`: causal claim, estimand set, causal structure, sequential exchangeability, positivity, censoring assumptions, diagnostics, and wording boundary.
 - related `subskill_records`: especially dynamic policies, dose-response, survival, matching/weighting, doubly robust estimation, DML, transportability, negative controls, or report records.
+
+Start from `variable_roster` and `method_lead.causal_structure` as the compact shared state; use reviewer sections only for bounded design details needed by this module.
 
 ## Fit / Failure Logic
 
@@ -97,14 +100,16 @@ Return:
 - feasible method/package lane and why it fits;
 - assumptions, diagnostics, limitations, and robustness needs;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
+- `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
 
-For durable records, use:
+For durable records, use the common envelope plus `type_specific.design_route`:
 
-- `subskill_id`: `09-longitudinal-gmethods`
-- `module_type`: `design_route`
-- `role`: `primary_route`
-- `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- set `subskill_id`: `09-longitudinal-gmethods`
+- set `module_type`: `design_route`
+- set `role`: `primary_route`, `support_module`, or `diagnostic_module` as fits the activation
+- set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `type_specific.design_route`: `causal_comparison`, `design_route`, `identification_status`, `required_timing`, `comparison_group_logic`, `key_identification_assumptions`, `invalidating_conditions`, and `estimands_supported`
 
 ## Report Support
 

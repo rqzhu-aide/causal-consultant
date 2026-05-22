@@ -28,10 +28,13 @@ Read only the compact state needed for negative-control/proximal support:
 
 - `project_summary`: user goal, phase, data paths, deliverable, audience.
 - `team_synthesis`: current user turn, facts, tensions, missing information.
+- `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: scientific plausibility of candidate negative controls/proxies, timing, exclusion from causal effect, shared bias structure, and interpretation cautions.
 - `data_analyst`: candidate variables, timing, missingness, measurement quality, sample support, association summaries, model outputs, and reproducibility assets.
-- `method_lead`: causal claim, DAG/theory, adjustment strategy, unmeasured-confounding concern, estimand, diagnostics plan, and wording boundary.
+- `method_lead`: causal claim, causal structure, adjustment strategy, unmeasured-confounding concern, estimand, diagnostics plan, and wording boundary.
 - related `subskill_records`: especially single-time observational exposure, longitudinal g-methods, DiD/event study, RD, IV, synthetic/time-series, survival, DML, doubly robust estimation, mediation, or transportability records.
+
+Start from `variable_roster` and `method_lead.causal_structure` as the compact shared state; use reviewer sections only for bounded design details needed by this module.
 
 ## Fit / Failure Logic
 
@@ -99,14 +102,16 @@ Return:
 - whether output is diagnostic, calibration support, adapted bias correction, proximal identification, exploratory, blocked, or not applicable;
 - candidate packages/models, sensitivity checks, and limitations;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
+- `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
 
-For durable records, use:
+For durable records, use the common envelope plus `type_specific.design_route`:
 
-- `subskill_id`: `15-negative-controls-proximal`
-- `module_type`: `design_route`
-- `role`: `negative_controls_proximal_design`
-- `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- set `subskill_id`: `15-negative-controls-proximal`
+- set `module_type`: `design_route`
+- set `role`: `primary_route`, `support_module`, or `diagnostic_module` as fits the activation
+- set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `type_specific.design_route`: `causal_comparison`, `design_route`, `identification_status`, `required_timing`, `comparison_group_logic`, `key_identification_assumptions`, `invalidating_conditions`, and `estimands_supported`
 
 ## Report Support
 

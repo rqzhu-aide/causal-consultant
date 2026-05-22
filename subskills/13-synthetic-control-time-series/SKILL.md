@@ -25,10 +25,13 @@ Read only the compact state needed for synthetic/time-series support:
 
 - `project_summary`: user goal, phase, data paths, deliverable, audience.
 - `team_synthesis`: current user turn, facts, tensions, missing information.
+- `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: intervention meaning, timing, concurrent shocks, donor comparability, spillover risk, seasonal/institutional timing, and interpretable outcome scale.
 - `data_analyst`: panel/time-series schema, treated/donor units, pre/post windows, missingness, pre-fit diagnostics, placebo datasets, plots, and reproducibility assets.
 - `method_lead`: causal claim, target estimand, donor/control assumptions, intervention timing, diagnostics, and wording boundary.
 - related `subskill_records`: especially DiD/event study, interference/spillovers, transportability, survival, dose-response, or matching/weighting records.
+
+Start from `variable_roster` and `method_lead.causal_structure` as the compact shared state; use reviewer sections only for bounded design details needed by this module.
 
 ## Fit / Failure Logic
 
@@ -93,14 +96,16 @@ Return:
 - whether implementation is direct, adapted, exploratory, blocked, or not applicable;
 - candidate packages/models, diagnostics, assumptions, sensitivity checks, and limitations;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
+- `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
 
-For durable records, use:
+For durable records, use the common envelope plus `type_specific.design_route`:
 
-- `subskill_id`: `13-synthetic-control-time-series`
-- `module_type`: `design_route`
-- `role`: `synthetic_time_series_design`
-- `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- set `subskill_id`: `13-synthetic-control-time-series`
+- set `module_type`: `design_route`
+- set `role`: `primary_route`, `support_module`, or `diagnostic_module` as fits the activation
+- set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `type_specific.design_route`: `causal_comparison`, `design_route`, `identification_status`, `required_timing`, `comparison_group_logic`, `key_identification_assumptions`, `invalidating_conditions`, and `estimands_supported`
 
 ## Report Support
 

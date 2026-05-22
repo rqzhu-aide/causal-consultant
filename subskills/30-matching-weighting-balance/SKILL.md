@@ -11,7 +11,7 @@ Act as a bounded `implementation_support` specialist for constructing and diagno
 
 Do not speak to the user, own gates, or maintain a permanent YAML section. Return compact feedback using `assets/method_job_subskill_record_template.yaml` when durable.
 
-This module supports designs such as observational point exposure, longitudinal IPW/MSM, transportability, and some trial-to-target settings. It must not override `method_lead` on the causal claim, estimand, DAG/theory, or gate status.
+This module supports designs such as observational point exposure, longitudinal IPW/MSM, transportability, and some trial-to-target settings. It must not override `method_lead` on the causal claim, estimand, causal structure, or gate status.
 
 ## When To Activate
 
@@ -25,17 +25,20 @@ Read only the compact state needed for balance/support implementation:
 
 - `project_summary`: goal, phase, deliverable, audience, data paths.
 - `team_synthesis`: current user turn, facts, tensions, missing information.
+- `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: confounder meaning, exact-match variables, target population, and acceptable support restrictions.
 - `data_analyst`: covariate timing, missingness, treatment prevalence, support, survey weights, clusters, and artifacts.
 - `method_lead`: design route, estimand, adjustment set, positivity concerns, sensitivity plan, and wording boundary.
 - related `subskill_records`: especially observational exposure, longitudinal g-methods, transportability, dose-response, doubly robust estimation, DML, or survival records.
+
+Start from `variable_roster` and `method_lead.causal_structure` as the compact shared state; use reviewer sections only for bounded implementation details needed by this module.
 
 ## Fit / Failure Logic
 
 Check these before recommending a matching/weighting plan:
 
 - Estimand: ATE, ATT, ATC, ATO/overlap, target-population, longitudinal strategy, or survey-weighted target is explicit.
-- Covariates: adjustment variables are pre-treatment and match the DAG/theory; mediators/colliders are not included as ordinary confounders.
+- Covariates: adjustment variables are pre-treatment and match the causal structure; mediators/colliders are not included as ordinary confounders.
 - Support: comparison groups overlap enough for the chosen estimand.
 - Missingness: covariate and outcome missingness handling is specified before matching/weighting.
 - Treatment model: propensity or balancing model can be estimated without separation, leakage, or unstable high-dimensional overfit.
@@ -98,14 +101,16 @@ Return:
 - balance, overlap, weight, and matched-sample diagnostics needed or reviewed;
 - limitations, robustness checks, and report-ready artifacts;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
+- `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
 
-For durable records, use:
+For durable records, use the common envelope plus `type_specific.implementation_support`:
 
-- `subskill_id`: `30-matching-weighting-balance`
-- `module_type`: `implementation_support`
-- `role`: `implementation_support`
-- `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- set `subskill_id`: `30-matching-weighting-balance`
+- set `module_type`: `implementation_support`
+- set `role`: `implementation_support` or `support_module` as fits the activation
+- set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `type_specific.implementation_support`: `implementation_role`, `estimator_or_model_family`, `required_data_shape`, `nuisance_or_prediction_components`, `diagnostic_outputs`, `reproducibility_outputs`, and `package_or_code_options`
 
 ## Report Support
 

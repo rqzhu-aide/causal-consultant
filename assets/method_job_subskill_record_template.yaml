@@ -9,28 +9,61 @@ module_type: null
 role: null
 status: null
 activation_reason: null
-selected_framework_or_route: null
-related_estimands: []
 inputs_reviewed: []
 provenance_summary: null
 fit_summary:
   fit: "unknown"
   reason: null
+
+# In a filled record, keep and complete only the packet that matches
+# module_type: design_route, target_goal, or implementation_support.
+# Sidecar/report-support records may use the common fields plus their own
+# local packet shape when needed.
+type_specific:
+  design_route:
+    causal_comparison: null
+    design_route: null
+    identification_status: null
+    required_timing: []
+    comparison_group_logic: null
+    key_identification_assumptions: []
+    invalidating_conditions: []
+    estimands_supported: []
+  target_goal:
+    target_goal: null
+    estimand_targets: []
+    target_population: null
+    effect_scale: null
+    decision_or_interpretation_goal: null
+    design_route_needed: null
+    reporting_boundary: null
+  implementation_support:
+    implementation_role: null
+    estimator_or_model_family: []
+    required_data_shape: null
+    nuisance_or_prediction_components: []
+    diagnostic_outputs: []
+    reproducibility_outputs: []
+    package_or_code_options: []
+
 assumptions_or_requirements: []
 diagnostics_needed: []
 diagnostics_reviewed: []
 sensitivity_or_robustness: []
 limitations: []
-requests_for_domain_expert: []
-requests_for_data_analyst: []
-requests_for_method_lead: []
-requests_for_user: []
-requests_for_other_subskills: []
+requests:
+  domain_expert: []
+  data_analyst: []
+  method_lead: []
+  user: []
+  other_subskills: []
 report_support: []
 readiness: "unknown"
+method_lead_recheck:
+  required: false
+  reason: null
 blocking_signal:
   blocks_current_phase: false
-  requires_causal_specification_recheck: false
   target_phase: null
   severity: "none"
   reason: null

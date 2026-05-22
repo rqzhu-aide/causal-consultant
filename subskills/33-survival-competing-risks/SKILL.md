@@ -25,10 +25,13 @@ Read only the compact state needed for survival support:
 
 - `project_summary`: goal, phase, deliverable, data paths, audience.
 - `team_synthesis`: current user turn, facts, tensions, missing information.
+- `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: clinically or scientifically meaningful time zero, event definitions, competing events, censoring meaning, follow-up windows, and interpretable effect scales.
 - `data_analyst`: survival schema, event counts, censoring, follow-up distributions, support, missingness, derived variables, plots, and reproducibility assets.
 - `method_lead`: design route, target estimand, causal assumptions, adjustment set, target population, diagnostics, and wording boundary.
 - related `subskill_records`: especially longitudinal g-methods, heterogeneous effects, point or dynamic policy rules, doubly robust estimation, DML, matching/weighting, transportability, or randomized experiments.
+
+Start from `variable_roster` and `method_lead.causal_structure` as the compact shared state; use reviewer sections only for bounded implementation details needed by this module.
 
 ## Fit / Failure Logic
 
@@ -96,14 +99,16 @@ Return:
 - whether implementation is direct, adapted, exploratory, blocked, or not applicable;
 - candidate packages/models, diagnostics, assumptions, sensitivity checks, and limitations;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
+- `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
 
-For durable records, use:
+For durable records, use the common envelope plus `type_specific.implementation_support`:
 
-- `subskill_id`: `33-survival-competing-risks`
-- `module_type`: `implementation_support`
-- `role`: `survival_outcome_support`
-- `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- set `subskill_id`: `33-survival-competing-risks`
+- set `module_type`: `implementation_support`
+- set `role`: `implementation_support` or `support_module` as fits the activation
+- set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `type_specific.implementation_support`: `implementation_role`, `estimator_or_model_family`, `required_data_shape`, `nuisance_or_prediction_components`, `diagnostic_outputs`, `reproducibility_outputs`, and `package_or_code_options`
 
 ## Report Support
 

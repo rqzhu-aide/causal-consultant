@@ -25,10 +25,13 @@ Read only the compact state needed for doubly robust implementation:
 
 - `project_summary`: goal, phase, deliverable, audience, data paths.
 - `team_synthesis`: current user turn, facts, tensions, missing information.
+- `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: outcome scale, effect scale, meaningful covariates, subgroup concerns, and interpretability.
 - `data_analyst`: analysis-ready matrix, missingness/censoring, support, splits, nuisance diagnostics, clusters, and artifacts.
 - `method_lead`: design route, estimand, adjustment set, assumptions, positivity, sensitivity plan, and wording boundary.
 - related `subskill_records`: especially observational exposure, longitudinal g-methods, matching/weighting, DML, survival, dose-response, heterogeneity, or policy records.
+
+Start from `variable_roster` and `method_lead.causal_structure` as the compact shared state; use reviewer sections only for bounded implementation details needed by this module.
 
 ## Fit / Failure Logic
 
@@ -94,14 +97,16 @@ Return:
 - nuisance requirements and package/model recommendations;
 - diagnostics, variance plan, limitations, and robustness checks;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
+- `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
 
-For durable records, use:
+For durable records, use the common envelope plus `type_specific.implementation_support`:
 
-- `subskill_id`: `31-doubly-robust-estimation`
-- `module_type`: `implementation_support`
-- `role`: `implementation_support`
-- `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- set `subskill_id`: `31-doubly-robust-estimation`
+- set `module_type`: `implementation_support`
+- set `role`: `implementation_support` or `support_module` as fits the activation
+- set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `type_specific.implementation_support`: `implementation_role`, `estimator_or_model_family`, `required_data_shape`, `nuisance_or_prediction_components`, `diagnostic_outputs`, `reproducibility_outputs`, and `package_or_code_options`
 
 ## Report Support
 

@@ -25,10 +25,13 @@ Read only the compact state needed for the target question:
 
 - `project_summary`: goal, phase, deliverable, audience, data paths.
 - `team_synthesis`: current user turn, facts, tensions, missing information.
+- `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: mechanism plausibility, mediator construct meaning, intervention meaning, temporal ordering, and wording cautions.
 - `data_analyst`: exposure/mediator/outcome timing, mediator missingness, mediator measurement, covariate timing, path variables, and artifacts.
-- `method_lead`: design route, DAG/theory, estimand set, assumptions, confounding plan, sensitivity plan, and wording boundary.
+- `method_lead`: design route, causal structure, estimand set, assumptions, confounding plan, sensitivity plan, and wording boundary.
 - related `subskill_records`: especially design route, longitudinal g-methods, survival, negative control/proximal, doubly robust estimation, and double machine learning records.
+
+Start from `variable_roster` and `method_lead.causal_structure` as the compact shared state; use reviewer sections only for bounded target-goal details needed by this module.
 
 ## Fit / Failure Logic
 
@@ -105,14 +108,16 @@ Return:
 - feasible method/package lane and why it fits;
 - assumptions, diagnostics, limitations, and sensitivity needs;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
+- `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
 
-For durable records, use:
+For durable records, use the common envelope plus `type_specific.target_goal`:
 
-- `subskill_id`: `22-mediation`
-- `module_type`: `target_goal`
-- `role`: `target_module`
-- `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- set `subskill_id`: `22-mediation`
+- set `module_type`: `target_goal`
+- set `role`: `target_module`
+- set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `type_specific.target_goal`: `target_goal`, `estimand_targets`, `target_population`, `effect_scale`, `decision_or_interpretation_goal`, `design_route_needed`, and `reporting_boundary`
 
 ## Report Support
 

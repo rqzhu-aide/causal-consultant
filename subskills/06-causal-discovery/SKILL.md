@@ -29,7 +29,7 @@ Enter with a bounded purpose, a concrete `return_to_phase`, and `affects_main_fr
 
 Work inside the sidecar by producing graph hypotheses, comparison notes, screening output, diagnostics, and report-support material. Keep provenance explicit: distinguish user-stated facts, inspected data, executed code, copied artifacts, and hypothetical examples. Do not write conclusions into reviewer-owned YAML fields.
 
-Exit by returning a compact packet: purpose, graph target, method family, artifacts, diagnostics, limitations, reviewer requests, report-support bullets, recommended next action, and whether a `causal_specification` recheck is needed. Ask the main skill to close or pause the breadcrumb, route implications through the right reviewer, let `report_writer` update the working report when material is substantive, and return to the recorded phase.
+Exit by returning a compact packet: purpose, graph target, method family, artifacts, diagnostics, limitations, reviewer requests, report-support bullets, recommended next action, and whether `method_lead_recheck.required` is true. Ask the main skill to close or pause the breadcrumb, route implications through the right reviewer, let `report_writer` update the working report when material is substantive, and return to the recorded phase.
 
 ## Discovery YAML Contract
 
@@ -58,7 +58,7 @@ Write this subskill's record with:
 - `role`: `discovery_module`
 - `status`: `activated`, `reviewing`, `plan_proposed`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
 - `activation_reason`: graph exploration, graph comparison, variable screening, discovery diagnostic review, or discovery deliverable
-- `selected_framework_or_route`: the related framework or route if one exists; otherwise null
+- `type_specific.discovery_sidecar`: local sidecar packet when needed, such as graph target, related framework or route, method family, graph object, background knowledge, and sidecar purpose
 - `inputs_reviewed`: data type, sample size, variable count, temporal order, missingness, background knowledge, forbidden/required edges, known interventions, and current DAG/design state
 - `provenance_summary`: what was user-stated, inspected, computed, copied from an artifact, or hypothetical
 - `fit_summary`: whether discovery is direct, adapted, exploratory, blocked, or not applicable for the requested sidecar purpose
@@ -67,14 +67,15 @@ Write this subskill's record with:
 - `diagnostics_needed`: remaining stability, background-knowledge, hidden-confounding, preprocessing, or reviewer-routing checks
 - `sensitivity_or_robustness`: bootstrap, subsampling, tuning/test/score changes, alternative preprocessing, edge constraints, lag choices, or graph-family comparisons
 - `limitations`: graph non-uniqueness, possible latent variables, sample-size limits, time-order uncertainty, preprocessing risk, non-IID concerns, weak orientation evidence, and exploratory status
-- `requests_for_user`: temporal order, background knowledge, hidden-confounding tolerance, variable exclusions, or discovery deliverable preferences
-- `requests_for_domain_expert`: construct, mechanism, temporal-order, edge-plausibility, or external-validity review
-- `requests_for_data_analyst`: feature construction, preprocessing, leakage, missingness, scale, non-IID, or artifact review
-- `requests_for_method_lead`: graph, adjustment, identification, estimand, framework, or diagnostic review
-- `requests_for_other_subskills`: report-writer integration or another specialist module if needed
+- `requests.user`: temporal order, background knowledge, hidden-confounding tolerance, variable exclusions, or discovery deliverable preferences
+- `requests.domain_expert`: construct, mechanism, temporal-order, edge-plausibility, or external-validity review
+- `requests.data_analyst`: feature construction, preprocessing, leakage, missingness, scale, non-IID, or artifact review
+- `requests.method_lead`: graph, adjustment, identification, estimand, framework, or diagnostic review
+- `requests.other_subskills`: report-writer integration or another specialist module if needed
 - `report_support`: report-ready bullets for the working report: why discovery was activated, graph target, methods used or proposed, main graph findings, diagnostic/stability summary, reviewer-routing implications, limitations, artifact paths, and exploratory wording
 - `readiness`: use `materials_ready` only when graph artifacts and diagnostics are ready for the requested sidecar deliverable or reviewer review; use `diagnostics_needed`, `diagnostics_deferred`, `blocked`, or `candidate_only` otherwise
-- `blocking_signal`: leave inactive by default; set `requires_causal_specification_recheck: true` only when discovery output may materially affect the causal structure, estimand set, assumptions, or framework
+- `method_lead_recheck`: set `required: true` only when discovery output may materially affect the causal structure, estimand set, assumptions, framework, gates, claim strength, or wording boundary; otherwise keep it false and route routine artifacts to `data_analyst` or `report_writer`
+- `blocking_signal`: leave inactive by default; use it only when the discovery sidecar blocks the current phase, needs a target phase, or creates a severity-rated blocker
 - `recommended_next_action`: one controlled value such as `refresh_domain_expert`, `refresh_data_analyst`, `refresh_method_lead`, `refresh_report_writer`, `ask_user`, `run_diagnostics`, `return_to_causal_specification`, or `proceed_with_caveat`
 - `artifact_paths`: paths to graph outputs, code, diagnostics, plots, or report support memos
 
@@ -85,6 +86,7 @@ Keep discovery feedback in the sidecar breadcrumb, optional `subskill_records` c
 Check whether discovery is even appropriate:
 
 - Goal: graph exploration, graph comparison, variable screening, adjustment support, or discovery deliverable.
+- Shared state: current `variable_roster` entries and any existing `method_lead.causal_structure` narrative, graph artifact, edge summary, role summary, timing constraints, forbidden adjustments, identification gaps, and assumptions.
 - Data: cross-sectional, longitudinal, time series, mixed, interventional, experimental, multi-domain, or text-derived.
 - Scale: sample size, number of variables, missingness, measurement quality, discreteness, mixed types, and high-dimensional conditioning risk.
 - Background knowledge: temporal tiers, required edges, forbidden edges, known interventions, impossible directions, and domain constraints.

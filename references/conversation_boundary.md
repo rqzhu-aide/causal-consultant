@@ -52,6 +52,8 @@ User-facing wording should be short:
 
 Bounded work can include exploratory data analysis, prototype code, diagnostics, and progress artifacts. It never upgrades unsupported results into final causal claims.
 
+Do not describe bounded continuation as passing a gate. In replies and reports, keep unresolved causal or production blockers visible in plain language, and keep wording no stronger than the recorded claim limits.
+
 ## Red Flags
 
 Slow down or warn when the interaction or deliverable behavior risks becoming misleading:

@@ -149,28 +149,38 @@ module_type: "discovery_sidecar"
 role: "discovery_module"
 status: "activated | reviewing | plan_proposed | diagnostics_reviewed | materials_ready | blocked | deferred"
 activation_reason: null
-selected_framework_or_route: null
-related_estimands: []
 inputs_reviewed: []
 provenance_summary: null
 fit_summary:
   fit: "exploratory"
   reason: null
+type_specific:
+  discovery_sidecar:
+    sidecar_purpose: null
+    graph_target: null
+    related_framework_or_route: null
+    method_family: []
+    graph_object: null
+    background_knowledge_used: []
+    main_framework_implication: null
 assumptions_or_requirements: []
 diagnostics_needed: []
 diagnostics_reviewed: []
 sensitivity_or_robustness: []
 limitations: []
-requests_for_domain_expert: []
-requests_for_data_analyst: []
-requests_for_method_lead: []
-requests_for_user: []
-requests_for_other_subskills: []
+requests:
+  domain_expert: []
+  data_analyst: []
+  method_lead: []
+  user: []
+  other_subskills: []
 report_support: []
 readiness: "materials_ready | diagnostics_needed | diagnostics_deferred | blocked | candidate_only"
+method_lead_recheck:
+  required: false
+  reason: null
 blocking_signal:
   blocks_current_phase: false
-  requires_causal_specification_recheck: false
   target_phase: null
   severity: "none"
   reason: null

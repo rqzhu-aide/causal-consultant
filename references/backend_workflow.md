@@ -6,18 +6,20 @@ Use this backstage reference for internal turn handling. Do not expose this work
 
 On each meaningful user conversation turn, optimize for a useful next interaction with the user, not for exhausting every possible internal review.
 
-1. Update obvious lead-consultant state from the user turn, including `team_synthesis.user_turn_summary` and a small `team_synthesis.turn_goal`.
+1. Update obvious lead-consultant state from the user turn, including `team_synthesis.user_turn_summary` and a small `team_synthesis.turn_goal`. Add lean `variable_roster` entries only for decision-relevant variables or variable families named by the user, with provisional labels and user-stated roles.
 2. Identify candidate or potentially useful subskill hints from the user turn plus existing YAML. In `project_exploration`, the lead consultant may notice candidates directly from meaning. In `causal_specification`, optionally use `scripts/recommend_subskills.py` as advisory recall for `method_lead`; the lead consultant does not adjudicate method fit from raw lookup output.
 3. Give candidate hints to `domain_expert`, `data_analyst`, and especially `method_lead` as optional review context. Candidates are not activated yet, and raw script output should not be copied into selected methods.
-4. Run the default first pass in this order: `01-domain-expert`, `02-data-analyst`, `03-method-lead`. Let each reviewer update only its own section.
+4. Run the default first pass in this order: `01-domain-expert`, `02-data-analyst`, `03-method-lead`. Let each reviewer update only its own section and assigned `variable_roster` fields.
 5. Record material changes in `team_synthesis.material_updates_this_turn`.
 6. Allow at most one adaptive follow-up pass by default, and only when a reviewer produced a concrete update that would clearly improve the next user-facing move. Examples: `method_lead` requests a bounded data diagnostic; `data_analyst` produces data evidence triage that changes framework feasibility; `domain_expert` identifies a construct rule that changes data construction.
 7. Do not rerun a reviewer just because more review might help. Extra internal passes beyond one require the user to have explicitly asked for deeper analysis, already-authorized data work to be actively running, or a clear risk that replying now would mislead the user.
 8. During `causal_specification`, let `method_lead` revise the triaged candidate set after reviewer updates if `domain_expert` or `data_analyst` changes what support may be useful.
-9. After reviewer updates and any bounded follow-up, let `report_writer` update the polished project notebook or working report in every phase when there is substantive new user interest, discussion, evidence, decisions, artifacts, or reviewer guidance to preserve.
-10. Record only `method_lead`-triaged plausible recommendations in `analysis_state.recommended_method_job_subskills`; record actual activations only in `analysis_state.activated_method_job_subskills` and `subskill_records`. Let `method_lead.tools_and_methods` hold the causal triage: plausible candidates, selected subskills, and blocked or not-used options.
-11. Update gates, `working_agenda`, `bounded_continuation` if relevant, `analysis_state.limitations`, `team_synthesis.ready_to_reply`, `team_synthesis.reply_reason`, and `next_action`.
-12. Reply to the user in plain language when the next useful interaction is clear.
+9. If `method_lead` selects a method/job subskill for bounded activation this turn, follow `subskill_coordination.md`: the lead consultant invokes the subskill, records its returned packet in `subskill_records`, then routes the record by what it affects. Routine data or implementation requests go to `data_analyst`; report-support material goes to `report_writer`; `method_lead` gets a bounded recheck only when `method_lead_recheck.required` is true, `blocking_signal` threatens gate status or causal claims, or the record may change causal strategy, selected framework, estimand set, `causal_structure`, claim strength, or wording boundary. If no subskill is selected for activation, keep selected candidates as triage notes rather than pretending activation happened.
+10. Decide whether to invoke `05-report-writer` as the fourth core step. Invoke it when any of these are true: substantive new user interest, discussion, evidence, decision, artifact, reviewer guidance, or limitation should be preserved; a method/job subskill returned report-support material; `causal_specification` changed data evidence, method choice, reasoning, interpretation, assumptions, limitations, wording boundary, or user-goal alignment; a report/memo/revision is requested; or `report_production` is active. If invoked, give it compact state plus relevant reviewer/subskill output and let it update `report_structure_notes`, the working report, or a report artifact according to `subskills/05-report-writer/references/workflow.md`. If nothing report-worthy changed, do not force a report-writer pass.
+11. Record only `method_lead`-triaged plausible recommendations in `analysis_state.recommended_method_job_subskills`. Use `subskill_records` as the durable source of truth for subskills that actually ran or produced durable feedback. Let `method_lead.tools_and_methods` hold the causal triage: plausible candidates, selected subskills, and blocked or not-used options.
+12. After `report_writer` feedback, record returned path updates in `analysis_state.report_structure_notes_path`, `analysis_state.report_working_draft_path`, or `analysis_state.report_production_artifacts`; record durable report limitations in `analysis_state.limitations`; and use report-writer readiness or claim-language risk when updating `production_gate`. Do not write report-writer feedback into reviewer-owned sections.
+13. Update gates, `working_agenda`, `bounded_continuation` if relevant, `analysis_state.limitations`, `team_synthesis.ready_to_reply`, `team_synthesis.reply_reason`, and `next_action` only after required rechecks have either been completed or explicitly deferred with limitations.
+14. Reply to the user in plain language when the next useful interaction is clear.
 
 ## Phase Guidance
 
@@ -29,8 +31,9 @@ Use `project_exploration` to learn and orient:
 
 - clarify the user goal, domain setting, data reality, feasibility, and possible candidate frameworks;
 - if data is provided, inspect schema, variables, missingness, timing, summaries, and quick plots;
+- begin a lean `variable_roster` only for variables or variable families that affect the causal question, data construction, design, diagnostics, or report;
 - let the lead consultant notice potentially relevant subskills or frameworks without requiring a formal catalog pass, while leaving causal-method triage to `method_lead`;
-- let `report_writer` begin polished project notes once the conversation has durable content, especially user interests, domain context, early design ideas, open questions, and why they matter;
+- invoke `report_writer` once durable content exists so it can begin polished project notes and report-structure notes, especially user interests, domain context, early design ideas, open questions, and why they matter;
 - keep outputs exploratory, descriptive, diagnostic, or design-learning rather than final causal evidence.
 
 Set `project_summary.current_phase` to `causal_specification` when the user goal, domain setting, data structure, and at least one plausible candidate analysis framework are clear enough to begin specifying the causal claim(s), estimand set, assumptions, and diagnostics. This is not a claim-readiness gate.
@@ -39,17 +42,22 @@ Set `project_summary.current_phase` to `causal_specification` when the user goal
 
 Use `causal_specification` to settle and stress-test:
 
-- the causal claim(s), estimand set, framework, DAG/theory, assumptions, and wording boundary;
+- the causal claim(s), estimand set, framework, causal structure, assumptions, and wording boundary;
 - treatment/exposure, comparator, outcome, population, time zero, follow-up, and causal unit;
 - data feasibility, variable construction, timing, support, diagnostics, tool fit, and sensitivity plan;
-- candidate method/task subskills through `method_lead` triage, not raw lookup output.
+- candidate method/task subskills through `method_lead` triage, not raw lookup output;
+- `method_lead.causal_structure`, using `variable_roster`, `domain_expert`, and `data_analyst` evidence rather than a standalone DAG table;
+- active `report_writer` updates whenever the team learns something that changes the data evidence, method choice, reasoning, interpretation, limitations, or connection between the analysis framework and the user's goal.
 
-Set `project_summary.current_phase` to `report_production` when `causal_gate.status` is `ready` or `complete`, `causal_gate.blockers` is empty, and the selected framework, estimand set, key assumptions, data feasibility, diagnostics/sensitivity plan, and report wording boundary are recorded well enough to execute or finish the deliverable. This does not require every diagnostic or report artifact to be complete; those are handled by `production_gate`.
+Do not wait until `report_production` to preserve causal-specification reasoning. `report_writer` should keep the working report and report-structure notes current enough that later production can reuse the recorded story instead of reconstructing why the framework, estimand, assumptions, diagnostics, or wording boundary were chosen.
+
+Set `project_summary.current_phase` to `report_production` when `causal_gate.status` is `ready` or `complete`, `causal_gate.blockers` is empty, and the selected framework, estimand set, key assumptions, decision-relevant variable roles, data feasibility, diagnostics/sensitivity plan, and report wording boundary are recorded well enough to support a reportable deliverable. This does not require every diagnostic or report artifact to be complete; those are handled by `production_gate`.
 
 ### `report_production`
 
 Use `report_production` to draft, diagnose, revise, improve, and deliver:
 
+- invoke `report_writer` on every deliverable-focused turn to choose or update the lane, preserve paths, check claim limits, and compile or revise artifacts when requested;
 - verify that analysis datasets, code, results, diagnostics, and sensitivity checks have provenance;
 - organize completed analyses into coherent tables, figures, appendices, and report text;
 - draft, revise, and improve the report with the user across as many turns as needed;
@@ -69,6 +77,87 @@ Gate status and blockers control normal phase movement.
 If significant evidence or materials make the originally planned causal claim impossible or materially different, return to `causal_specification` for a recheck.
 
 `bounded_continuation` is separate. It records when the user knowingly asks to continue despite unresolved blockers. It permits only bounded work inside `bounded_continuation.allowed_scope` and does not clear blockers, mark gates ready, or allow prohibited claims.
+
+A user-forced production request is handled as `bounded_continuation`, not as gate passage. The lead consultant may continue with a qualified report, progress artifact, diagnostic artifact, or report revision, and may use `report_production` as the active work phase when the task is deliverable-focused. The causal and production gate blockers stay recorded until actually resolved, and every released statement must remain consistent with those blockers.
+
+## Gate Procedure
+
+The lead consultant is the only gate writer. Reviewers, sidecars, and method/task subskills provide evidence, blockers, requests, artifacts, and wording limits; they do not open gates themselves.
+
+Update gates after the relevant reviewer/subskill information has been recorded and any required `method_lead` recheck has either been completed or explicitly deferred with visible limitations. Do not mark a gate `ready` or `complete` just because an estimator can run, a report can be drafted, or the user wants to proceed.
+
+### `causal_gate`
+
+Use `causal_gate` for causal-specification readiness: whether the causal claim, estimand set, framework, assumptions, data feasibility, diagnostics plan, and wording boundary are coherent enough to be used in reportable work.
+
+Inputs:
+
+- `domain_expert`: construct validity, plausible mechanisms, meaningful effect scale, interpretation cautions, external-validity limits, and domain blockers.
+- `data_analyst`: data availability, unit structure, timing, variable construction, support, missingness/selection, provenance, data-quality blockers, and method-support feasibility notes.
+- `method_lead`: causal question, selected framework, estimand set, validity requirements, `causal_structure`, diagnostics/sensitivity plan, report wording boundary, and causal blockers.
+- `subskill_records`: only when a method/task subskill produced durable feedback. If `method_lead_recheck.required` is true, do not treat the gate as ready until `method_lead` rechecks or the unresolved issue is visibly deferred.
+- `analysis_state.limitations`: cross-cutting limitations that affect claim strength.
+
+Set `causal_gate.status` to `ready` or `complete` only when the recorded state is sufficient for the next reportable step:
+
+- causal question, exposure/intervention, comparator, outcome, population, time zero, follow-up, and causal unit are clear enough for the intended claim;
+- selected framework and primary estimand set are recorded;
+- decision-relevant variable roles are reflected in `variable_roster` and `method_lead.causal_structure`;
+- data feasibility is supported, constructible, or explicitly bounded;
+- key assumptions, diagnostics, sensitivity needs, and wording limits are recorded;
+- blockers and unresolved required information are empty or explicitly deferred in a way that limits the claim.
+
+Before `causal_gate` is ready, the team may explore, inspect data, run descriptive or diagnostic analysis, activate specialist modules, draft planning/progress artifacts, and ask clarifying questions. It should not present a finalized causal specification, move normally to `report_production`, or strengthen causal wording beyond `causal_gate.claim_strength_allowed`.
+
+After `causal_gate` is ready, the team may move to `report_production` and use the specified framework for reportable analysis or deliverable work. The team still must run or document diagnostics, provenance, evidence, and materials under `production_gate`; causal readiness is not the same as finished evidence.
+
+### `production_gate`
+
+Use `production_gate` for deliverable readiness: whether evidence, diagnostics, provenance, code/tables/figures, limitations, and report materials are ready enough for the requested artifact.
+
+Inputs:
+
+- `data_analyst`: analysis dataset status, code paths, table paths, figure paths, diagnostics assets, reproducibility notes, data-quality blockers, and final report assets.
+- `method_lead`: whether executed work still matches the selected framework, estimand set, diagnostics/sensitivity plan, and claim wording boundary.
+- `domain_expert`: whether results and wording remain meaningful, interpretable, and not overgeneralized.
+- `report_writer`: report lane, working draft path, structure notes path, missing evidence, claim-language risk, artifact paths, and whether the deliverable can be safely framed.
+- `subskill_records`: report-support packets, diagnostic outputs, limitations, artifact paths, and any `blocking_signal`.
+- `analysis_state`: report production artifacts, discovery sidecar material, durable limitations, and report draft path.
+
+Set `production_gate.status` to `ready` or `complete` only when the deliverable can be framed without hiding unfinished work:
+
+- reported numbers, tables, figures, diagnostics, and sensitivity checks have provenance or are clearly marked as missing/deferred;
+- code, notebooks, datasets, or artifact paths needed for reproducibility are recorded when they exist;
+- diagnostics are `complete`, `not_applicable`, or explicitly `deferred` with visible limitations;
+- `production_gate.claim_strength_for_report` is no stronger than `causal_gate.claim_strength_allowed` and no stronger than the executed evidence supports;
+- blockers and unresolved required materials are empty or explicitly deferred in a way the report will show.
+
+Before `production_gate` is ready, the team may draft, revise, run missing diagnostics, produce qualified progress reports, or create exploratory/diagnostic artifacts. It must visibly name blockers and avoid presenting unresolved work as complete.
+
+After `production_gate` is ready or complete, the team may deliver or revise polished artifacts within the recorded claim strength. Stay in `report_production` for same-evidence revisions. Return to `causal_specification` if new evidence or a requested revision changes the causal claim, estimand set, assumptions, selected framework, or core design logic.
+
+### `bounded_continuation` And User-Forced Production
+
+Use `bounded_continuation` when the user explicitly wants progress, analysis, or a report despite incomplete causal specification, unresolved gate blockers, missing diagnostics, or unfinished materials. This is a bounded work authorization, not a readiness decision.
+
+Inputs:
+
+- the user's requested continuation and whether they acknowledged the limits;
+- current `causal_gate.status`, `causal_gate.blockers`, and `causal_gate.claim_strength_allowed`;
+- current `production_gate.status`, `production_gate.blockers`, diagnostics status, and `production_gate.claim_strength_for_report`;
+- reviewer blockers, `analysis_state.limitations`, `subskill_records`, and report-writer lane feedback.
+
+When using `bounded_continuation`:
+
+- keep `causal_gate` and `production_gate` statuses, blockers, and unresolved-information lists unchanged unless the issue is actually resolved;
+- record the requested scope, allowed scope, prohibited claims, and brief warning in `bounded_continuation`;
+- allow only work that fits the allowed scope, such as exploratory analysis, diagnostic checks, progress reporting, limitation-forward drafting, or same-evidence report revision;
+- do not mark `causal_gate` or `production_gate` ready/complete because the user wants to proceed;
+- do not delete, hide, or soften gate blockers in the report;
+- cap report wording at the weakest relevant boundary from `causal_gate.claim_strength_allowed`, `production_gate.claim_strength_for_report`, `method_lead.report_wording_boundary`, `analysis_state.limitations`, and `bounded_continuation.prohibited_claims`;
+- if the requested artifact uses a final-report structure, label unresolved causal logic and production blockers in the report body or limitations section rather than implying completion.
+
+If user-forced production reveals evidence or materials that would change the causal claim, estimand set, assumptions, selected framework, causal structure, or wording boundary, stop treating it as same-scope production and return to `causal_specification` for recheck.
 
 ## When To Return To The User
 

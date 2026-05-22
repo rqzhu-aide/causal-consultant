@@ -25,10 +25,13 @@ Read only the compact state needed for the target question:
 
 - `project_summary`: goal, phase, deliverable, audience, data paths.
 - `team_synthesis`: current user turn, facts, tensions, missing information.
+- `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: meaningful effect modifiers, subgroup definitions, mechanisms, external validity, fairness/safety context, and wording cautions.
 - `data_analyst`: sample size, subgroup support, variable timing, missingness, overlap, split/cross-fit plan, plots, and artifacts.
-- `method_lead`: design route, selected framework, estimand set, assumptions, DAG/theory, sensitivity plan, and wording boundary.
+- `method_lead`: design route, selected framework, estimand set, assumptions, causal structure, sensitivity plan, and wording boundary.
 - related `subskill_records`: especially design route, matching/weighting, doubly robust estimation, double machine learning, point treatment rules, transportability, and survival records.
+
+Start from `variable_roster` and `method_lead.causal_structure` as the compact shared state; use reviewer sections only for bounded target-goal details needed by this module.
 
 ## Fit / Failure Logic
 
@@ -102,14 +105,16 @@ Return:
 - feasible method/package lane and why it fits;
 - assumptions, diagnostics, limitations, and robustness needs;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
+- `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
 
-For durable records, use:
+For durable records, use the common envelope plus `type_specific.target_goal`:
 
-- `subskill_id`: `20-heterogeneous-effects`
-- `module_type`: `target_goal`
-- `role`: `target_module`
-- `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- set `subskill_id`: `20-heterogeneous-effects`
+- set `module_type`: `target_goal`
+- set `role`: `target_module`
+- set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `type_specific.target_goal`: `target_goal`, `estimand_targets`, `target_population`, `effect_scale`, `decision_or_interpretation_goal`, `design_route_needed`, and `reporting_boundary`
 
 ## Report Support
 

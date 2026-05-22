@@ -80,7 +80,7 @@ CATALOG: tuple[CatalogItem, ...] = (
         "03-method-lead",
         "core_reviewer_emphasis",
         "subskills/03-method-lead/SKILL.md",
-        "causal claim, estimand, DAG/theory, assumptions, framework choice, diagnostics, and wording boundary",
+        "causal claim, estimand, causal structure, assumptions, framework choice, diagnostics, and wording boundary",
         (
             "causal question",
             "estimand",

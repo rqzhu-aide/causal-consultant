@@ -25,10 +25,13 @@ Read only the compact state needed for interference support:
 
 - `project_summary`: user goal, phase, data paths, deliverable, audience.
 - `team_synthesis`: current user turn, facts, tensions, missing information.
+- `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: mechanism of spillover, plausible contact/market/geographic structure, timing, direction, saturation meaning, and interpretation boundaries.
 - `data_analyst`: unit ids, cluster ids, network/edge list, distance matrix, geography, treatment timing, exposure-map construction, missing ties, support, and reproducibility assets.
 - `method_lead`: causal claim, estimand set, assumptions, selected design route, diagnostics, sensitivity checks, and wording boundary.
 - related `subskill_records`: especially randomized experiments, observational exposure, longitudinal g-methods, DiD/event study, RD, IV, synthetic/time-series, dose-response, DML, doubly robust estimation, survival, or transportability records.
+
+Start from `variable_roster` and `method_lead.causal_structure` as the compact shared state; use reviewer sections only for bounded design details needed by this module.
 
 ## Fit / Failure Logic
 
@@ -97,14 +100,16 @@ Return:
 - whether implementation is direct, adapted, exploratory, blocked, or not applicable;
 - candidate packages/models, diagnostics, sensitivity checks, and limitations;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
+- `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
 
-For durable records, use:
+For durable records, use the common envelope plus `type_specific.design_route`:
 
-- `subskill_id`: `14-interference-spillovers`
-- `module_type`: `design_route`
-- `role`: `interference_spillover_design`
-- `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- set `subskill_id`: `14-interference-spillovers`
+- set `module_type`: `design_route`
+- set `role`: `primary_route`, `support_module`, or `diagnostic_module` as fits the activation
+- set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `type_specific.design_route`: `causal_comparison`, `design_route`, `identification_status`, `required_timing`, `comparison_group_logic`, `key_identification_assumptions`, `invalidating_conditions`, and `estimands_supported`
 
 ## Report Support
 

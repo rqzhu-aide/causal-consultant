@@ -13,6 +13,7 @@ Use this Markdown file as the report writer's private polished project notebook 
 ## Report Bookkeeping
 
 - Paper-like discussion record:
+- Report structure notes path:
 - Decisions made:
 - Current issues or tensions:
 - Key references or source materials:
@@ -39,7 +40,7 @@ Use this Markdown file as the report writer's private polished project notebook 
 - Time zero and follow-up:
 - Candidate or selected framework:
 - Estimand:
-- DAG/theory and assumptions:
+- Causal structure and assumptions:
 - Wording boundary:
 
 ## Data And Variables

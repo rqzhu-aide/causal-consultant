@@ -19,11 +19,12 @@ REQUIRED_TOP_LEVEL = (
     "causal_gate",
     "production_gate",
     "working_agenda",
+    "variable_roster",
     "bounded_continuation",
     "next_action",
     "domain_expert",
-    "method_lead",
     "data_analyst",
+    "method_lead",
     "analysis_state",
     "subskill_records",
     "retired_tasks",
@@ -42,8 +43,6 @@ REQUIRED_PATHS = (
     "bounded_continuation.requested",
     "next_action.type",
     "domain_expert.status",
-    "method_lead.status",
-    "method_lead.selected_framework.fit",
     "data_analyst.status",
     "data_analyst.phase_role",
     "data_analyst.data_status",
@@ -54,9 +53,13 @@ REQUIRED_PATHS = (
     "data_analyst.method_support.diagnostic_artifact_suggestions",
     "data_analyst.method_support.feasibility_notes",
     "data_analyst.analysis_dataset.construction_status",
+    "method_lead.status",
+    "method_lead.selected_framework.fit",
+    "method_lead.causal_structure",
+    "method_lead.causal_structure.identification_status",
     "analysis_state.report_working_draft_path",
+    "analysis_state.report_structure_notes_path",
     "analysis_state.recommended_method_job_subskills",
-    "analysis_state.activated_method_job_subskills",
     "analysis_state.discovery_sidecar.active",
     "analysis_state.discovery_sidecar.return_to_phase",
     "analysis_state.limitations",
@@ -76,6 +79,15 @@ CLAIM_STRENGTH = {
     "supported_causal",
     "no_causal_claim",
 }
+CLAIM_STRENGTH_ORDER = {
+    "unknown": 0,
+    "no_causal_claim": 0,
+    "exploratory": 1,
+    "descriptive": 2,
+    "associational": 3,
+    "cautious_causal": 4,
+    "supported_causal": 5,
+}
 REVIEWER_STATUS = {"not_reviewed", "needs_information", "reviewed", "blocked", "deferred", "unknown"}
 AGENDA_PRIORITY = {"low", "medium", "high", "urgent", "unknown"}
 NEXT_ACTION_TYPE = {
@@ -93,8 +105,52 @@ NEXT_ACTION_TYPE = {
     "wait",
 }
 FRAMEWORK_FIT = {"unknown", "direct", "adapted", "exploratory", "blocked", "not_applicable"}
+IDENTIFICATION_STATUS = {"unknown", "not_assessed", "not_identified", "partially_identified", "identified", "blocked"}
+VARIABLE_DATA_STATUS = {"available", "constructible", "proxy_only", "needs_inspection", "unavailable", "ambiguous"}
+VARIABLE_METHOD_ROLE = {
+    "exposure",
+    "intervention",
+    "comparator",
+    "outcome",
+    "confounder",
+    "mediator",
+    "collider",
+    "instrument",
+    "effect_modifier",
+    "selection",
+    "censoring",
+    "id",
+    "time",
+    "cluster",
+    "variable_family",
+    "diagnostic_only",
+    "unknown",
+    "other",
+}
 DATA_STATUS = {"none", "user_described", "available_not_inspected", "inspected", "analysis_ready", "unavailable", "unknown"}
 CONSTRUCTION_STATUS = {"not_started", "in_progress", "complete", "blocked", "deferred", "not_applicable"}
+ARTIFACT_INDEX_TYPE = {"subskill", "template", "reference", "script", "asset", "other"}
+PACKAGE_PATH_PREFIXES = ("subskills/", "assets/", "references/", "scripts/")
+PROJECT_OUTPUT_PATH_PREFIXES = (
+    "artifact/",
+    "artifacts/",
+    "analysis/",
+    "analyses/",
+    "dataset/",
+    "datasets/",
+    "figure/",
+    "figures/",
+    "notebook/",
+    "notebooks/",
+    "output/",
+    "outputs/",
+    "report/",
+    "reports/",
+    "result/",
+    "results/",
+    "table/",
+    "tables/",
+)
 
 ALLOWED_VALUES = {
     "project_summary.current_phase": PHASES,
@@ -110,6 +166,7 @@ ALLOWED_VALUES = {
     "working_agenda.priority": AGENDA_PRIORITY,
     "next_action.type": NEXT_ACTION_TYPE,
     "method_lead.selected_framework.fit": FRAMEWORK_FIT,
+    "method_lead.causal_structure.identification_status": IDENTIFICATION_STATUS,
     "data_analyst.phase_role": PHASES | {"unknown"},
     "data_analyst.data_status": DATA_STATUS,
     "data_analyst.analysis_dataset.construction_status": CONSTRUCTION_STATUS,
@@ -222,6 +279,216 @@ def format_path(path: str, lines: dict[str, int]) -> str:
     return f"{path} (line {line})" if line else path
 
 
+def validate_variable_roster(path: Path, errors: list[str]) -> None:
+    roster_indent: int | None = None
+    in_roster = False
+
+    for line_no, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        line = strip_comment(raw_line).rstrip()
+        if not line.strip() or line.strip() == "---":
+            continue
+
+        indent = len(line) - len(line.lstrip(" "))
+        text = line.strip()
+
+        if text.startswith("variable_roster:"):
+            roster_indent = indent
+            in_roster = text not in {"variable_roster: []", "variable_roster: [ ]"}
+            continue
+
+        if not in_roster or roster_indent is None:
+            continue
+
+        if indent <= roster_indent and not text.startswith("- "):
+            in_roster = False
+            roster_indent = None
+            continue
+
+        item_text = text[2:].strip() if text.startswith("- ") else text
+        if ":" not in item_text:
+            continue
+
+        key, raw_value = item_text.split(":", 1)
+        key = key.strip()
+        value = parse_scalar(raw_value)
+        if value in (None, []):
+            continue
+
+        if key == "data_status" and value not in VARIABLE_DATA_STATUS:
+            errors.append(
+                f"Invalid value at variable_roster[].data_status (line {line_no}): {value!r}. "
+                f"Allowed: {', '.join(sorted(VARIABLE_DATA_STATUS))}"
+            )
+        if key == "method_role" and value not in VARIABLE_METHOD_ROLE:
+            errors.append(
+                f"Invalid value at variable_roster[].method_role (line {line_no}): {value!r}. "
+                f"Allowed: {', '.join(sorted(VARIABLE_METHOD_ROLE))}"
+            )
+
+
+def validate_artifact_index(path: Path, errors: list[str], warnings: list[str]) -> None:
+    artifact_index_indent: int | None = None
+    in_artifact_index = False
+    entries: list[dict[str, tuple[Any, int]]] = []
+    current: dict[str, tuple[Any, int]] | None = None
+
+    for line_no, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        line = strip_comment(raw_line).rstrip()
+        if not line.strip() or line.strip() == "---":
+            continue
+
+        indent = len(line) - len(line.lstrip(" "))
+        text = line.strip()
+
+        if text.startswith("artifact_index:"):
+            artifact_index_indent = indent
+            in_artifact_index = text not in {"artifact_index: []", "artifact_index: [ ]"}
+            current = None
+            continue
+
+        if not in_artifact_index or artifact_index_indent is None:
+            continue
+
+        if indent <= artifact_index_indent and not text.startswith("- "):
+            in_artifact_index = False
+            artifact_index_indent = None
+            current = None
+            continue
+
+        if text.startswith("- "):
+            current = {}
+            entries.append(current)
+            item_text = text[2:].strip()
+        else:
+            item_text = text
+
+        if current is None or ":" not in item_text:
+            continue
+
+        key, raw_value = item_text.split(":", 1)
+        current[key.strip()] = (parse_scalar(raw_value), line_no)
+
+    for index, entry in enumerate(entries, start=1):
+        entry_label = entry.get("artifact_id", (f"entry {index}", 0))[0] or f"entry {index}"
+        artifact_type, type_line = entry.get("artifact_type", (None, 0))
+        artifact_path, path_line = entry.get("path", (None, 0))
+
+        if not artifact_type:
+            errors.append(f"Missing artifact_index[].artifact_type for {entry_label!r}.")
+        elif artifact_type not in ARTIFACT_INDEX_TYPE:
+            errors.append(
+                f"Invalid artifact_index[].artifact_type for {entry_label!r} "
+                f"(line {type_line}): {artifact_type!r}. Allowed: {', '.join(sorted(ARTIFACT_INDEX_TYPE))}"
+            )
+
+        if not artifact_path:
+            errors.append(f"Missing artifact_index[].path for {entry_label!r}.")
+            continue
+        if not isinstance(artifact_path, str):
+            errors.append(
+                f"Expected artifact_index[].path for {entry_label!r} to be a string "
+                f"(line {path_line}), found {artifact_path!r}"
+            )
+            continue
+
+        normalized = artifact_path.replace("\\", "/").lstrip("./").lower()
+        if normalized.startswith(PROJECT_OUTPUT_PATH_PREFIXES):
+            errors.append(
+                f"Project-output path used in artifact_index for {entry_label!r} "
+                f"(line {path_line}): {artifact_path!r}. Record project outputs in analysis_state, "
+                "subskill_records, reviewer output fields, or the working report instead."
+            )
+        elif not normalized.startswith(PACKAGE_PATH_PREFIXES):
+            warnings.append(
+                f"artifact_index path for {entry_label!r} is outside the usual package folders "
+                f"(line {path_line}): {artifact_path!r}. Expected one of: "
+                f"{', '.join(PACKAGE_PATH_PREFIXES)}"
+            )
+
+
+def has_content(value: Any) -> bool:
+    return value not in (None, [], "")
+
+
+def validate_gate_consistency(values: dict[str, Any], errors: list[str], warnings: list[str]) -> None:
+    current_phase = values.get("project_summary.current_phase")
+    causal_status = values.get("causal_gate.status")
+    causal_blockers = values.get("causal_gate.blockers")
+    causal_unresolved = values.get("causal_gate.unresolved_required_information")
+    causal_claim = values.get("causal_gate.claim_strength_allowed")
+    production_status = values.get("production_gate.status")
+    production_blockers = values.get("production_gate.blockers")
+    production_unresolved = values.get("production_gate.unresolved_required_materials")
+    production_claim = values.get("production_gate.claim_strength_for_report")
+    bounded_requested = values.get("bounded_continuation.requested") is True
+    bounded_acknowledged = values.get("bounded_continuation.acknowledged_limits") is True
+
+    if causal_claim in CLAIM_STRENGTH_ORDER and production_claim in CLAIM_STRENGTH_ORDER:
+        if CLAIM_STRENGTH_ORDER[production_claim] > CLAIM_STRENGTH_ORDER[causal_claim]:
+            errors.append(
+                "production_gate.claim_strength_for_report is stronger than "
+                "causal_gate.claim_strength_allowed."
+            )
+
+    if causal_status in {"ready", "complete"}:
+        if has_content(causal_blockers):
+            warnings.append(
+                "causal_gate.status is ready/complete while causal_gate.blockers is non-empty. "
+                "Keep blockers unresolved unless they are actually resolved or visibly deferred with claim limits."
+            )
+        if has_content(causal_unresolved):
+            warnings.append(
+                "causal_gate.status is ready/complete while causal_gate.unresolved_required_information is non-empty."
+            )
+
+    if production_status in {"ready", "complete"}:
+        if has_content(production_blockers):
+            warnings.append(
+                "production_gate.status is ready/complete while production_gate.blockers is non-empty. "
+                "Keep report limitations visible or lower the gate status."
+            )
+        if has_content(production_unresolved):
+            warnings.append(
+                "production_gate.status is ready/complete while production_gate.unresolved_required_materials is non-empty."
+            )
+
+    if causal_status in {"blocked", "not_ready", "needs_information"} and causal_claim in {
+        "cautious_causal",
+        "supported_causal",
+    }:
+        warnings.append(
+            "causal_gate has unresolved/not-ready status but allows causal claim language. "
+            "Check whether claim_strength_allowed should be weaker."
+        )
+
+    if current_phase == "report_production":
+        causal_ready = causal_status in {"ready", "complete"} and not has_content(causal_blockers)
+        if not causal_ready:
+            if bounded_requested and bounded_acknowledged:
+                warnings.append(
+                    "current_phase is report_production under bounded_continuation. "
+                    "This is allowed only for qualified production work; keep causal_gate blockers visible."
+                )
+            else:
+                warnings.append(
+                    "current_phase is report_production but causal_gate is not ready/complete or has blockers, "
+                    "and bounded_continuation is not acknowledged."
+                )
+
+    if bounded_requested:
+        if not bounded_acknowledged:
+            warnings.append(
+                "bounded_continuation.requested is true but acknowledged_limits is false. "
+                "Do not continue beyond warning or clarification until limits are acknowledged."
+            )
+        if not has_content(values.get("bounded_continuation.allowed_scope")):
+            warnings.append("bounded_continuation.requested is true but allowed_scope is empty.")
+        if not has_content(values.get("bounded_continuation.prohibited_claims")):
+            warnings.append("bounded_continuation.requested is true but prohibited_claims is empty.")
+        if not has_content(values.get("bounded_continuation.warning")):
+            warnings.append("bounded_continuation.requested is true but warning is empty.")
+
+
 def validate(project_path: Path) -> tuple[list[str], list[str]]:
     values, lines, present = scan_yaml(project_path)
     errors: list[str] = []
@@ -255,13 +522,9 @@ def validate(project_path: Path) -> tuple[list[str], list[str]]:
             if value is not None and not isinstance(value, bool):
                 errors.append(f"Expected boolean at {format_path(path, lines)}, found {value!r}")
 
-    if values.get("project_summary.current_phase") == "report_production":
-        causal_status = values.get("causal_gate.status")
-        causal_blockers = values.get("causal_gate.blockers")
-        if causal_status not in {"ready", "complete"}:
-            warnings.append("current_phase is report_production but causal_gate.status is not ready/complete.")
-        if causal_blockers not in (None, []):
-            warnings.append("current_phase is report_production but causal_gate.blockers is non-empty.")
+    validate_variable_roster(project_path, errors)
+    validate_artifact_index(project_path, errors, warnings)
+    validate_gate_consistency(values, errors, warnings)
 
     if values.get("analysis_state.discovery_sidecar.active") is True and not values.get(
         "analysis_state.discovery_sidecar.return_to_phase"

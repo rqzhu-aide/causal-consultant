@@ -16,6 +16,22 @@ Keep heterogeneity, point rules, and dynamic policies distinct:
 - point rules ask "who should receive treatment now?";
 - dynamic policies ask "what strategy should adapt over time?"
 
+## Subskill Activation Ownership
+
+Use this ownership chain for method/job specialist modules:
+
+`method_lead` selects -> lead consultant invokes -> subskill returns -> lead consultant records -> the lead routes the record by what it affects.
+
+- `method_lead` writes `method_lead.tools_and_methods.selected_method_subskills` only when a subskill is ready for a bounded activation purpose.
+- The lead consultant invokes the selected subskill and supplies compact project state, including `variable_roster`, `method_lead.causal_structure`, selected framework or estimand information, relevant data evidence, relevant artifacts, and prior `subskill_records`.
+- The subskill does not mutate permanent project YAML. It returns a record-shaped feedback packet with common envelope fields, one relevant `type_specific` packet, fit, assumptions, diagnostics, sensitivity needs, blockers, reviewer requests, report support, artifact paths, and `method_lead_recheck`.
+- The lead consultant appends durable specialist output to `subskill_records`.
+- Routine implementation, data-preparation, diagnostic, or reporting outputs may be routed to `data_analyst` or `report_writer` without forcing `method_lead` to rewrite its YAML fields.
+- `method_lead` rechecks only when `method_lead_recheck.required` is true, when `blocking_signal` threatens gate status or causal claims, or when the lead consultant judges the record could change the selected framework, estimand set, causal structure, claim strength, or wording boundary.
+- Gates and user-facing causal claims happen only after any required `method_lead` recheck has been completed or explicitly deferred with visible limitations.
+
+Subskill activation is not automatic. A candidate from lookup, user wording, or exploratory discussion remains advisory until `method_lead` selects it for a bounded activation purpose.
+
 ## Advisory Lookup
 
 When specialist method support is useful, use candidate subskills as recall hints, not as a routing command. In `project_exploration`, the lead consultant may notice candidates directly from the conversation and YAML, but should not make durable method choices without `method_lead` triage.
@@ -40,7 +56,7 @@ Record only triaged results:
 - actual selections in `method_lead.tools_and_methods.selected_method_subskills`;
 - tempting but invalid, unavailable, or not-yet-supported options in `method_lead.tools_and_methods.blocked_or_not_used_options`;
 - user-facing plausible recommendations in `analysis_state.recommended_method_job_subskills`;
-- actual activations in `analysis_state.activated_method_job_subskills` and `subskill_records`.
+- actual activations and durable specialist feedback in `subskill_records`.
 
 Expose only the decision-relevant user-facing result, usually one to three meaningful options plus the next information need.
 
@@ -63,7 +79,11 @@ If data evidence changes constructability, timing, support, or feasibility, rout
 
 Create a durable `subskill_records` entry only when a specialist subskill is activated or produces durable feedback. Use `assets/method_job_subskill_record_template.yaml` for method/task subskills, and validate standalone records with `scripts/validate_subskill_record.py` when useful.
 
-Do not create permanent YAML sections for method/task subskills. Their durable outputs should live in compact records, artifacts, code, tables, figures, or report modules.
+Do not create permanent YAML sections for method/task subskills. Their durable outputs should live in compact records, artifacts, code, tables, figures, or report modules. Filled method/task records should keep the common envelope plus only the `type_specific` packet that matches `module_type`: `design_route`, `target_goal`, or `implementation_support`.
+
+Use `method_lead_recheck.required: true` only when the specialist output may change causal strategy, the selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary. Keep it false for routine implementation guidance, diagnostic requests, report-support material, or data-preparation notes that can be handled by `data_analyst` or `report_writer`.
+
+Do not use `recommended_next_action` to mark gates ready or complete. If the specialist thinks gate status might change, set `method_lead_recheck.required: true`, explain why, and let the lead consultant update gates only after the method-lead recheck is consumed or explicitly deferred with limitations.
 
 ## Subskill Pool
 

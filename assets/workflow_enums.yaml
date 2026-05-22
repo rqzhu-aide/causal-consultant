@@ -90,6 +90,41 @@ method_lead:
     - exploratory
     - blocked
     - not_applicable
+  causal_structure.identification_status:
+    - unknown
+    - not_assessed
+    - not_identified
+    - partially_identified
+    - identified
+    - blocked
+
+variable_roster:
+  data_status:
+    - available
+    - constructible
+    - proxy_only
+    - needs_inspection
+    - unavailable
+    - ambiguous
+  method_role:
+    - exposure
+    - intervention
+    - comparator
+    - outcome
+    - confounder
+    - mediator
+    - collider
+    - instrument
+    - effect_modifier
+    - selection
+    - censoring
+    - id
+    - time
+    - cluster
+    - variable_family
+    - diagnostic_only
+    - unknown
+    - other
 
 data_analyst:
   phase_role:
@@ -189,8 +224,6 @@ method_task_subskill:
     - refresh_method_lead
     - refresh_report_writer
     - proceed_with_caveat
-    - mark_causal_gate_ready
-    - mark_production_gate_ready
     - return_to_causal_specification
     - draft_report
     - revise_report
@@ -201,12 +234,8 @@ artifact_index:
     - subskill
     - template
     - reference
-    - report
-    - notebook
-    - dataset
-    - figure
-    - table
-    - code
+    - script
+    - asset
     - other
 
 report_writer_feedback:
@@ -216,3 +245,9 @@ report_writer_feedback:
     - artifact_created
     - artifact_revised
     - no_action
+  action:
+    - no_action
+    - structure_notes_update
+    - working_draft_update
+    - artifact_compile
+    - artifact_revision

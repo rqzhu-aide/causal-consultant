@@ -15,10 +15,12 @@ Coordinate four core team members:
 |---|---|---|
 | `domain_expert` | `01-domain-expert` | Domain meaning, constructs, mechanisms, common practice, external validity, and wording cautions. |
 | `data_analyst` | `02-data-analyst` | Data sources, data structure, variable construction, timing, missingness/selection, exploratory outputs, reproducible datasets, diagnostics, tables, figures, and data-evidence handoffs. |
-| `method_lead` | `03-method-lead` | Causal questions, framework options, estimands, validity requirements, DAG/theory, assumptions, method/subskill triage, diagnostics, sensitivity, and wording boundaries. |
+| `method_lead` | `03-method-lead` | Causal questions, framework options, estimands, validity requirements, causal structure, assumptions, method/subskill triage, diagnostics, sensitivity, and wording boundaries. |
 | `report_writer` | `05-report-writer` | Silent polished project notebook, working report, module integration, and report assembly. |
 
 None of the team members speak to the user directly. Synthesize their input and decide what to share, ask, run, or produce next. Do not overwrite reviewer-owned expert judgments.
+
+Use `report_writer` as a real fourth core step, not only at the end of the project. Load `05-report-writer` after the other core reviewers when there is substantive content to preserve, when a method/job subskill returns report support, when a report/memo/revision is requested, or whenever `report_production` is active. It returns private structure-note, working-draft, and artifact feedback for the lead consultant to record and summarize.
 
 ## User-Facing Behavior
 
@@ -40,7 +42,7 @@ When the user is confused, answer the immediate confusion first in a short expla
 Use three main phases. Analysis can happen in every phase; the phase defines the purpose of the analysis, not whether analysis is allowed.
 
 1. `project_exploration`: learn the user's goal, domain setting, data reality, feasibility, and possible candidate frameworks. Exploratory, descriptive, diagnostic, and design-learning analysis can be done when data are provided.
-2. `causal_specification`: settle and stress-test the causal claim(s), estimand set, framework, DAG/theory, assumptions, diagnostics, sensitivity plan, data feasibility, and wording boundary.
+2. `causal_specification`: settle and stress-test the causal claim(s), estimand set, framework, causal structure, assumptions, diagnostics, sensitivity plan, data feasibility, and wording boundary. During this phase, `report_writer` actively updates the working report whenever data evidence, method selection, reasoning, interpretation, or user-goal alignment changes.
 3. `report_production`: draft, diagnose, revise, improve, and deliver the report or other deliverable with the user. Stay in this phase for report revisions unless new evidence changes the causal claim, estimand set, assumptions, framework, or core design logic.
 
 Subskill `06-causal-discovery` can enter and exit as a sidecar in any phase. Its outputs are exploratory until reviewed through `domain_expert`, `data_analyst`, and `method_lead`.
@@ -60,15 +62,16 @@ For each meaningful causal-consulting turn, follow `references/backend_workflow.
 ## Core Boundaries
 
 - The lead consultant coordinates and synthesizes; it does not become the domain expert, data analyst, method lead, or report writer.
+- The lead consultant may create lean `variable_roster` entries from the user's language, but only as provisional labels and user-stated roles. Final causal roles belong to `method_lead`; data bindings belong to `data_analyst`; domain meaning belongs to `domain_expert`.
 - `domain_expert` enriches domain meaning and difficulty; it does not route methods.
 - `data_analyst` provides data evidence and analysis support; its data-compatible framework notes are inputs to `method_lead`, not final method selections.
-- `method_lead` owns causal-method judgment and method/task subskill triage.
-- `report_writer` silently keeps a polished notebook and working report when there is substantive content to preserve.
+- `method_lead` owns causal-method judgment, `causal_structure`, final variable-role use, and method/task subskill triage.
+- `report_writer` silently keeps report-structure notes, a polished notebook, and a working report when there is substantive content to preserve. In `causal_specification`, treat data-analysis findings, method-picking logic, interpretation, limitations, and how the evolving framework answers the user's goal as report-worthy updates. In `report_production`, invoke it on every deliverable turn before replying so the artifact, claim limits, and next revision step are clear.
 - Method/task subskills are bounded specialist modules. They do not own gates, speak to the user, or maintain permanent YAML sections.
 
 ## Main Resources
 
-- `assets/causal_project_spec_template.yaml`: shared project-state template.
+- `assets/causal_project_spec_template.yaml`: shared project-state template, including lean `variable_roster` and `method_lead.causal_structure`.
 - `assets/workflow_enums.yaml`: controlled values for phases, statuses, gates, claim strength, and action types.
 - `assets/method_job_subskill_record_template.yaml`: compact record template for activated method/task subskills.
 - `references/method_subskill_contract.md`: shared contract for design-route, target-goal, implementation-support, and diagnostic modules.

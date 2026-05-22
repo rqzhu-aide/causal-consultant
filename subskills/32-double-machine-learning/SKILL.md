@@ -25,10 +25,13 @@ Read only the compact state needed for DML support:
 
 - `project_summary`: goal, phase, deliverable, audience, data paths.
 - `team_synthesis`: current user turn, facts, tensions, missing information.
+- `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: valid features, leakage risks, interpretable covariates, deployment constraints, and effect-scale meaning.
 - `data_analyst`: feature matrices, sample size, high-dimensional structure, splits, missingness, support, clustering, and artifacts.
 - `method_lead`: design route, estimand, target model, nuisance functions, assumptions, inference need, and wording boundary.
 - related `subskill_records`: especially doubly robust estimation, matching/weighting, heterogeneous effects, policy rules, longitudinal g-methods, survival, or transport records.
+
+Start from `variable_roster` and `method_lead.causal_structure` as the compact shared state; use reviewer sections only for bounded implementation details needed by this module.
 
 ## Fit / Failure Logic
 
@@ -94,14 +97,16 @@ Return:
 - whether the implementation is direct, adapted, exploratory, blocked, or not applicable;
 - diagnostics, inference cautions, sensitivity checks, and limitations;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
+- `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
 
-For durable records, use:
+For durable records, use the common envelope plus `type_specific.implementation_support`:
 
-- `subskill_id`: `32-double-machine-learning`
-- `module_type`: `implementation_support`
-- `role`: `implementation_support`
-- `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- set `subskill_id`: `32-double-machine-learning`
+- set `module_type`: `implementation_support`
+- set `role`: `implementation_support` or `support_module` as fits the activation
+- set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `type_specific.implementation_support`: `implementation_role`, `estimator_or_model_family`, `required_data_shape`, `nuisance_or_prediction_components`, `diagnostic_outputs`, `reproducibility_outputs`, and `package_or_code_options`
 
 ## Report Support
 

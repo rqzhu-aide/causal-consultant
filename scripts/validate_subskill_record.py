@@ -12,34 +12,36 @@ from pathlib import Path
 from typing import Any
 
 
-REQUIRED_PATHS = (
+COMMON_REQUIRED_PATHS = (
     "subskill_id",
     "module_type",
     "role",
     "status",
     "activation_reason",
-    "selected_framework_or_route",
-    "related_estimands",
     "inputs_reviewed",
     "provenance_summary",
     "fit_summary",
     "fit_summary.fit",
     "fit_summary.reason",
+    "type_specific",
     "assumptions_or_requirements",
     "diagnostics_needed",
     "diagnostics_reviewed",
     "sensitivity_or_robustness",
     "limitations",
-    "requests_for_domain_expert",
-    "requests_for_data_analyst",
-    "requests_for_method_lead",
-    "requests_for_user",
-    "requests_for_other_subskills",
+    "requests",
+    "requests.domain_expert",
+    "requests.data_analyst",
+    "requests.method_lead",
+    "requests.user",
+    "requests.other_subskills",
     "report_support",
     "readiness",
+    "method_lead_recheck",
+    "method_lead_recheck.required",
+    "method_lead_recheck.reason",
     "blocking_signal",
     "blocking_signal.blocks_current_phase",
-    "blocking_signal.requires_causal_specification_recheck",
     "blocking_signal.target_phase",
     "blocking_signal.severity",
     "blocking_signal.reason",
@@ -47,6 +49,40 @@ REQUIRED_PATHS = (
     "recommended_next_action",
     "artifact_paths",
 )
+
+TYPE_SPECIFIC_REQUIRED_PATHS = {
+    "design_route": (
+        "type_specific.design_route",
+        "type_specific.design_route.causal_comparison",
+        "type_specific.design_route.design_route",
+        "type_specific.design_route.identification_status",
+        "type_specific.design_route.required_timing",
+        "type_specific.design_route.comparison_group_logic",
+        "type_specific.design_route.key_identification_assumptions",
+        "type_specific.design_route.invalidating_conditions",
+        "type_specific.design_route.estimands_supported",
+    ),
+    "target_goal": (
+        "type_specific.target_goal",
+        "type_specific.target_goal.target_goal",
+        "type_specific.target_goal.estimand_targets",
+        "type_specific.target_goal.target_population",
+        "type_specific.target_goal.effect_scale",
+        "type_specific.target_goal.decision_or_interpretation_goal",
+        "type_specific.target_goal.design_route_needed",
+        "type_specific.target_goal.reporting_boundary",
+    ),
+    "implementation_support": (
+        "type_specific.implementation_support",
+        "type_specific.implementation_support.implementation_role",
+        "type_specific.implementation_support.estimator_or_model_family",
+        "type_specific.implementation_support.required_data_shape",
+        "type_specific.implementation_support.nuisance_or_prediction_components",
+        "type_specific.implementation_support.diagnostic_outputs",
+        "type_specific.implementation_support.reproducibility_outputs",
+        "type_specific.implementation_support.package_or_code_options",
+    ),
+}
 
 PHASES = {"project_exploration", "causal_specification", "report_production"}
 MODULE_TYPES = {
@@ -102,8 +138,6 @@ NEXT_ACTIONS = {
     "refresh_method_lead",
     "refresh_report_writer",
     "proceed_with_caveat",
-    "mark_causal_gate_ready",
-    "mark_production_gate_ready",
     "return_to_causal_specification",
     "draft_report",
     "revise_report",
@@ -122,8 +156,8 @@ ALLOWED_VALUES = {
 }
 
 BOOLEAN_PATHS = {
+    "method_lead_recheck.required",
     "blocking_signal.blocks_current_phase",
-    "blocking_signal.requires_causal_specification_recheck",
 }
 
 
@@ -210,13 +244,25 @@ def format_path(path: str, lines: dict[str, int]) -> str:
     return f"{path} (line {line})" if line else path
 
 
+def has_content(value: Any) -> bool:
+    return value not in (None, [], "")
+
+
 def validate(record_path: Path) -> list[str]:
     values, lines, present = scan_yaml(record_path)
     errors: list[str] = []
 
-    for required_path in REQUIRED_PATHS:
+    for required_path in COMMON_REQUIRED_PATHS:
         if required_path not in present:
             errors.append(f"Missing required path: {required_path}")
+
+    module_type = values.get("module_type")
+    if module_type in TYPE_SPECIFIC_REQUIRED_PATHS:
+        for required_path in TYPE_SPECIFIC_REQUIRED_PATHS[module_type]:
+            if required_path not in present:
+                errors.append(
+                    f"Missing required path for module_type {module_type!r}: {required_path}"
+                )
 
     for path, allowed in ALLOWED_VALUES.items():
         if path not in present:
@@ -237,6 +283,13 @@ def validate(record_path: Path) -> list[str]:
             value = values.get(path)
             if value is not None and not isinstance(value, bool):
                 errors.append(f"Expected boolean at {format_path(path, lines)}, found {value!r}")
+
+    if values.get("method_lead_recheck.required") is True and not has_content(
+        values.get("method_lead_recheck.reason")
+    ):
+        errors.append(
+            "method_lead_recheck.required is true, but method_lead_recheck.reason is empty."
+        )
 
     return errors
 

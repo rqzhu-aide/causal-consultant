@@ -1,47 +1,73 @@
 # Final Report Template
 
-Use this template when `report_production` evidence and materials are ready enough for a finished narrative report, memo, methods/results section, or same-evidence revision. Populate it from the project YAML state, `subskill_records`, and linked artifacts. Do not add causal claims, diagnostics, figures, tables, or preferences that are not supported by recorded evidence.
+Use this template when the user needs a finished narrative report, memo, methods/results section, or same-evidence revision. Keep the structure simple by default. Populate it from the project YAML state, report-structure notes, working report, `subskill_records`, and linked artifacts. Do not add causal claims, diagnostics, figures, tables, references, or preferences that are not supported by recorded evidence.
 
-Markdown is the default first-round deliverable. Make it coherent and lightly polished, but keep it auditable and easy to revise. Treat this file as a structured draft that can be reviewed directly, revised in place, or used with the referenced data/code/artifacts as source material for a more polished report.
+Markdown is the default first-round deliverable. Make it coherent and lightly polished, but keep it auditable and easy to revise. Omit empty subsections. Move technical detail to the appendix when it would distract from the user's main need.
+
+Before drafting, use the report-structure notes to decide the main answer, claim boundary, section jobs, module placement, figure/table placement, code appendix needs, references, and anti-claims. Bring forward only supported or clearly qualified material.
 
 ```markdown
-# [Project-Specific Final Report Title]
+# [Project-Specific Report Title]
 
-## 1. Summary And Claim Status
+## 1. Problem, User Need, And Background
 
-[State the user goal, the data used, the selected causal framework, the main result if available, the recorded claim strength, and the most important limitation.]
+[State the user's goal, practical or scientific need, relevant domain background, available data or materials, intended audience, and what this report is meant to help the user decide or understand.]
 
-## 2. Background And Domain Interpretation
+[Use references only when they support background, domain practice, data source context, or a methodological choice. Do not cite references that were not actually inspected or supplied.]
 
-[Use `domain_expert` for scientific context, construct validity, meaningful interpretation, external validity, and action-recommendation cautions.]
+## 2. Analysis Choice And Justification
 
-## 3. Causal Question And Specification
+[State the selected causal or analytic framework, target estimand or analysis target, and why this approach fits the user's question, design, data structure, and current phase.]
 
-[Use `method_lead` for treatment/exposure, comparator, outcome, population, time zero, follow-up, estimand, selected analysis framework, DAG/theory, and load-bearing assumptions.]
+[Briefly explain key alternatives that were considered, deferred, or rejected when they matter for the user's decision. Keep this focused on method fit, not a broad methods textbook.]
 
-## 4. Data And Analysis Materials
+[Name the main assumptions, diagnostics, sensitivity checks, and wording limits. If the analysis is exploratory, descriptive, associational, or bounded by unresolved causal blockers, say so here.]
 
-[Use `data_analyst` for data sources, row unit, variable construction, missingness/selection/support, reproducibility assets, analysis datasets, tables, figures, and paths.]
+## 3. Results, Figures, And Tables
 
-## 5. Method, Results, Diagnostics, And Sensitivity
+[Present the main result or current finding first, with provenance. Use figures and tables only when they help the reader understand the result better than text alone.]
 
-[Use `subskill_records`, executed reports, and artifacts for methods, estimates, uncertainty, diagnostics, sensitivity checks, and limitations. Include only sourced numbers.]
+[For each figure or table, give a short reader-facing explanation: what it shows, why it matters, and what conclusion or caution it supports. Keep interpretation consistent with the recorded claim strength.]
 
-## 6. Modular Analysis Components
+[Keep this section focused on what was found. Briefly point to diagnostics only when needed for flow; give diagnostics their own space in the next section.]
 
-[Integrate activated method/job subskills and sidecars that materially shaped the project or produced report-worthy evidence. Give each central module a coherent subsection with purpose, inputs, method/design logic, findings, diagnostics, limitations, reviewer interpretation, references, and artifact paths. If causal discovery was activated as part of the workflow, fold its discovery-report structure into a visible exploratory discovery subsection rather than attaching a separate standalone report.]
+## 4. Model Diagnostics And Sensitivity Checks
 
-## 7. Interpretation, Limits, And Recommendation Boundary
+[Summarize the diagnostics that affect whether the result can be trusted or how it must be qualified. This may include model fit, residual or prediction checks, balance/overlap/support checks, influential observations, missingness/selection checks, timing/leakage checks, robustness checks, sensitivity analyses, placebo/falsification checks, or method-specific diagnostics.]
 
-[State what can be claimed, what cannot be claimed, where the result applies, what assumptions matter, and how far any action recommendation can go.]
+[State which diagnostics were completed, which were deferred, which were not applicable, and which remain unresolved. If diagnostics are minimal in a short memo, this section can be a short paragraph or be blended into the Results section, but it should still be explicit.]
 
-## 8. Reproducibility And Artifact Index
+[Put detailed diagnostic tables, plots, model-comparison outputs, and secondary sensitivity results in the appendix.]
 
-[List source reports, rendered reports, scripts, data products, figures, tables, seeds, package versions, and rerun notes when available.]
+## 5. Summary, Conclusion, And Potential Issues
 
-## Appendix A. Code And Reproducibility
+[Answer the user's question as directly as the evidence allows. State what can be concluded, what cannot be concluded, and what the result means for the user's goal.]
 
-[If code produced reported numbers, diagnostics, tables, figures, graph artifacts, or analysis datasets, list code/notebook paths, purpose, inputs, outputs, package/version notes when available, seeds, and rerun notes. Include short code excerpts only when they clarify key transformations or models; otherwise link the full scripts/notebooks as artifacts.]
+[List the most important causal blockers, data limitations, unresolved diagnostics, scope limits, bounded-continuation warnings, and prohibited claims.]
+
+[End with the smallest useful next step: review, additional data check, diagnostic, alternative analysis, revision, decision, or follow-up artifact.]
+
+## Appendix
+
+### Appendix A. Additional Analysis Results
+
+[Optional: secondary tables, figures, diagnostics, robustness checks, sensitivity checks, exploratory outputs, or detailed result notes.]
+
+### Appendix B. Alternative Methods Or Parked Modules
+
+[Optional: method/job subskills considered but not central, alternative estimands, rejected approaches, sidecar outputs, or causal discovery material that is useful but not part of the main narrative.]
+
+### Appendix C. Reproducibility And Code Notes
+
+[Optional but required when code supports reported content: code/notebook paths, purpose, inputs, outputs, package/version notes when available, seeds, rerun notes, and short code excerpts only when they clarify a key transformation or model.]
+
+### Appendix D. References And Source Notes
+
+[List only sources actually used in the report. Include method references, domain references, data documentation, package documentation, or user-supplied source materials as appropriate. Use one consistent citation style. If no external references were used, say so.]
+
+### Appendix E. User-Requested Materials
+
+[Optional: drafted letter, memo, slide bullets, email language, decision brief, or other requested add-ons.]
 ```
 
-If a section has no supporting evidence, include a short transparent statement rather than filling the gap.
+If the project is simple, keep the diagnostics section very short or blend it into Results with an explicit diagnostic paragraph. If a section has no supporting evidence, include a transparent sentence or omit it rather than filling the gap.

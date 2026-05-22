@@ -44,7 +44,24 @@ working_agenda:
   information_to_get: []
   priority: "unknown"
 
+# Lean shared variable index. Keep only variables or variable families that
+# matter for the causal question, data construction, design, diagnostics, or
+# report. Rich inventories stay in reviewer fields or artifacts.
+variable_roster: []
+# Each entry:
+#   variable_id: null        # lead or data_analyst: stable short name
+#   label: null              # lead or data_analyst: user's/domain label
+#   user_stated_role: null   # lead: provisional role from user framing
+#   domain_meaning: null     # domain_expert: construct meaning
+#   data_binding: []         # data_analyst: compact source/column/artifact links
+#   data_status: null        # data_analyst: available|constructible|proxy_only|
+#                            #               needs_inspection|unavailable|ambiguous
+#   method_role: null        # method_lead: final causal/design role
+#   method_use_note: null    # method_lead: usage rule or caution
+
 bounded_continuation:
+  # User-forced or bounded progress despite unresolved blockers.
+  # This never clears gate blockers or upgrades claim strength by itself.
   requested: false
   acknowledged_limits: false
   requested_scope: []
@@ -68,48 +85,6 @@ domain_expert:
   constraints_and_external_validity: []
   interpretation_guidance: []
   wording_cautions: []
-  blockers: []
-  requests_for_progression: []
-
-method_lead:
-  status: "not_reviewed"
-  causal_question:
-    plain_language_question: null
-    exposure_or_intervention: null
-    comparator: null
-    outcome: null
-    population: null
-    time_zero: null
-    follow_up: null
-    causal_unit: null
-  causal_question_variants: []
-  analysis_framework_candidates: []
-  selected_framework:
-    framework_id: null
-    user_intent: null
-    fit: "unknown"
-    why_selected: null
-  causal_claims: []
-  estimand_set:
-    primary: []
-    secondary: []
-    exploratory_or_descriptive: []
-    notes: null
-  validity_requirements: []
-  dag_or_theory:
-    summary: null
-    artifact_paths: []
-    assumptions: []
-  method_literature_guidance: []
-  tools_and_methods:
-    candidate_tools: []
-    candidate_method_subskills: []
-    selected_tools: []
-    selected_method_subskills: []
-    blocked_or_not_used_options: []
-  diagnostics_plan: []
-  sensitivity_plan: []
-  report_wording_boundary: []
   blockers: []
   requests_for_progression: []
 
@@ -154,13 +129,63 @@ data_analyst:
   blockers: []
   requests_for_progression: []
 
+method_lead:
+  status: "not_reviewed"
+  causal_question:
+    plain_language_question: null
+    exposure_or_intervention: null
+    comparator: null
+    outcome: null
+    population: null
+    time_zero: null
+    follow_up: null
+    causal_unit: null
+  causal_question_variants: []
+  analysis_framework_candidates: []
+  selected_framework:
+    framework_id: null
+    user_intent: null
+    fit: "unknown"
+    why_selected: null
+  causal_claims: []
+  estimand_set:
+    primary: []
+    secondary: []
+    exploratory_or_descriptive: []
+    notes: null
+  validity_requirements: []
+  causal_structure:
+    # Progressive causal-structure memory. Keep YAML decision-relevant and put
+    # detailed DAGs, SWIGs, timing diagrams, or edge tables in artifacts.
+    narrative: null
+    graph_artifact: null
+    edge_summary: []
+    role_summary: []
+    timing_constraints: []
+    forbidden_adjustments: []
+    identification_status: "unknown"
+    identification_gaps: []
+    assumptions: []
+  method_literature_guidance: []
+  tools_and_methods:
+    candidate_tools: []
+    candidate_method_subskills: []
+    selected_tools: []
+    selected_method_subskills: []
+    blocked_or_not_used_options: []
+  diagnostics_plan: []
+  sensitivity_plan: []
+  report_wording_boundary: []
+  blockers: []
+  requests_for_progression: []
+
 analysis_state:
   project_exploration_outputs: []
   causal_specification_artifacts: []
   report_production_artifacts: []
   report_working_draft_path: null
+  report_structure_notes_path: null
   recommended_method_job_subskills: []
-  activated_method_job_subskills: []
   discovery_sidecar:
     active: false
     purpose: null
@@ -191,11 +216,19 @@ artifact_index:
   - artifact_id: "03-method-lead"
     artifact_type: "subskill"
     path: "subskills/03-method-lead/SKILL.md"
-    purpose: "causal question variants, frameworks, estimand set, validity requirements, DAG/theory, assumptions, method literature, diagnostics, sensitivity, and wording boundary"
+    purpose: "causal question variants, frameworks, estimand set, validity requirements, causal structure, assumptions, method literature, diagnostics, sensitivity, and wording boundary"
   - artifact_id: "05-report-writer"
     artifact_type: "subskill"
     path: "subskills/05-report-writer/SKILL.md"
     purpose: "polished project notebook, Markdown working report, and controlled report compilation"
+  - artifact_id: "05-report-structure-notes-template"
+    artifact_type: "template"
+    path: "subskills/05-report-writer/assets/report_structure_notes_template.md"
+    purpose: "private report-structure notes for future argument, section, evidence, module, figure/table, code, and limitation planning"
+  - artifact_id: "05-scientific-report-workflow"
+    artifact_type: "reference"
+    path: "subskills/05-report-writer/references/scientific_report_workflow.md"
+    purpose: "compact report-writing workflow for simple structure, evidence-first prose, references, figures/tables, model diagnostics, appendices, and polish"
   - artifact_id: "06-causal-discovery"
     artifact_type: "subskill"
     path: "subskills/06-causal-discovery/SKILL.md"

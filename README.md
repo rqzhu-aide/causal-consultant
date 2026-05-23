@@ -37,9 +37,45 @@ Say one of the following phrases in your request:
 
 ---
 
-## How To Install
+## How To Use Or Install
 
-One Codex-friendly example when this skill folder is the repository root:
+### Quick Start
+
+Give your AI agent this GitHub link:
+
+```text
+https://github.com/rqzhu-aide/causal-consultant
+```
+
+Then ask:
+
+```text
+Use this GitHub repo as a causal consultant skill. Start from SKILL.md.
+```
+
+That is enough for tools that can read GitHub repositories or use repository context.
+
+### Detailed Setup
+
+This repository is a skill package centered on [`SKILL.md`](SKILL.md). If your AI tool supports skills, install this repository as a skill. If it does not, give the tool the GitHub URL above and ask it to follow `SKILL.md`.
+
+#### Cursor, Claude Code, And Similar Repo-Context Tools
+
+Open this repository in your tool, or give the tool this GitHub URL:
+
+```text
+https://github.com/rqzhu-aide/causal-consultant
+```
+
+Then ask:
+
+```text
+Use this repository as a causal consultant skill. Read SKILL.md first, then load only the supporting files needed for my task.
+```
+
+#### Codex Skills
+
+Windows PowerShell:
 
 ```powershell
 py "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" `
@@ -48,16 +84,26 @@ py "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill
   --name causal-consultant
 ```
 
-If this folder lives inside a larger repository, set `--path` to the folder that contains this `SKILL.md`, for example:
+macOS or Linux:
 
-```powershell
-py "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" `
-  --repo rqzhu-aide/causal-consultant `
-  --path causal-consultant-v2 `
+```bash
+python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo rqzhu-aide/causal-consultant \
+  --path . \
   --name causal-consultant
 ```
 
-After installation, restart the agent app if needed so it can discover the skill.
+After installation, restart your agent app if needed so it can discover the skill.
+
+#### Other AI Coding Tools
+
+Use the same pattern:
+
+```text
+Use https://github.com/rqzhu-aide/causal-consultant as a causal consultant skill. Read SKILL.md first.
+```
+
+For best results, make sure the tool can access the full repository, not just the README.
 
 ---
 

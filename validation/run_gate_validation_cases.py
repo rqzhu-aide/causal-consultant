@@ -15,6 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / "assets" / "causal_project_spec_template.yaml"
+SUBSKILL_TEMPLATE = ROOT / "assets" / "method_job_subskill_record_template.yaml"
 GENERATED = ROOT / "validation" / "generated"
 SCRIPTS = ROOT / "scripts"
 sys.path.insert(0, str(SCRIPTS))
@@ -45,6 +46,87 @@ def render_case(template: str, case: Case) -> str:
     return text
 
 
+def render_subskill_record(replacements: tuple[tuple[str, str], ...]) -> str:
+    text = SUBSKILL_TEMPLATE.read_text(encoding="utf-8")
+    for old, new in replacements:
+        text = replace_once(text, old, new, "subskill-record-fixture")
+    return text
+
+
+def as_subskill_records_block(record_text: str) -> str:
+    lines = record_text.strip("\n").splitlines()
+    if not lines:
+        return "subskill_records: []"
+    block_lines = ["subskill_records:", f"  - {lines[0]}"]
+    block_lines.extend(f"    {line}" for line in lines[1:])
+    return "\n".join(block_lines)
+
+
+VALID_PROJECT_SUBSKILL_RECORDS = as_subskill_records_block(
+    render_subskill_record(
+        (
+            ("subskill_id: null", 'subskill_id: "08-single-time-observational-exposure"'),
+            ("module_type: null", 'module_type: "design_route"'),
+            ("role: null", 'role: "primary_route"'),
+            ("status: null", 'status: "plan_proposed"'),
+            ("activation_reason: null", 'activation_reason: "Check observational design fit."'),
+            (
+                "provenance_summary: null",
+                'provenance_summary: "User-described design and available YAML state."',
+            ),
+            ('  fit: "unknown"', '  fit: "direct"'),
+            ("  reason: null", '  reason: "Baseline exposure with candidate adjustment set."'),
+            ("    causal_comparison: null", '    causal_comparison: "Exposure versus comparison."'),
+            ("    design_route: null", '    design_route: "single-time observational exposure"'),
+            ("    identification_status: null", '    identification_status: "needs assumptions review"'),
+            ("    comparison_group_logic: null", '    comparison_group_logic: "Observed treated and untreated groups."'),
+            ('  status: "not_assessed"', '  status: "inference_supported"'),
+            ('  claim_scope: "unknown"', '  claim_scope: "target_sample"'),
+            (
+                "  inference_or_validation_route: []",
+                '  inference_or_validation_route:\n'
+                '    - "Robust uncertainty for the prespecified target contrast."',
+            ),
+            (
+                "  method_specific_limits: []",
+                '  method_specific_limits:\n'
+                '    - "Supports target-sample inference only under stated assumptions."',
+            ),
+        )
+    )
+)
+
+
+INVALID_PROJECT_SUBSKILL_RECORDS = as_subskill_records_block(
+    render_subskill_record(
+        (
+            ("subskill_id: null", 'subskill_id: "08-single-time-observational-exposure"'),
+            ("module_type: null", 'module_type: "design_route"'),
+            ("role: null", 'role: "primary_route"'),
+            ("status: null", 'status: "plan_proposed"'),
+            ("activation_reason: null", 'activation_reason: "Check observational design fit."'),
+            (
+                "provenance_summary: null",
+                'provenance_summary: "User-described design and available YAML state."',
+            ),
+            ('  fit: "unknown"', '  fit: "direct"'),
+            ("  reason: null", '  reason: "Baseline exposure with candidate adjustment set."'),
+            ("    causal_comparison: null", '    causal_comparison: "Exposure versus comparison."'),
+            ("    design_route: null", '    design_route: "single-time observational exposure"'),
+            ("    identification_status: null", '    identification_status: "needs assumptions review"'),
+            ("    comparison_group_logic: null", '    comparison_group_logic: "Observed treated and untreated groups."'),
+            ('  status: "not_assessed"', '  status: "inference_supported"'),
+            ('  claim_scope: "unknown"', '  claim_scope: "target_sample"'),
+            (
+                "  method_specific_limits: []",
+                '  method_specific_limits:\n'
+                '    - "Inference wording is limited to the target sample."',
+            ),
+        )
+    )
+)
+
+
 CASES = (
     Case(
         name="01-project-exploration-baseline",
@@ -60,6 +142,11 @@ CASES = (
             ('  diagnostics_status: "not_started"', '  diagnostics_status: "complete"'),
             ("  reportable_evidence: false", "  reportable_evidence: true"),
             ('  claim_strength_for_report: "unknown"', '  claim_strength_for_report: "cautious_causal"'),
+            ('    status: "not_checked"', '    status: "checked"'),
+            (
+                '    data_supported_claim_ceiling: "unknown"',
+                '    data_supported_claim_ceiling: "cautious_causal"',
+            ),
         ),
     ),
     Case(
@@ -152,6 +239,35 @@ CASES = (
             "bounded_continuation.requested is true but prohibited_claims is empty",
             "bounded_continuation.requested is true but warning is empty",
         ),
+    ),
+    Case(
+        name="08-invalid-analysis-alignment-controlled-value",
+        replacements=(
+            (
+                "    requirement_checks: []",
+                '    requirement_checks:\n'
+                '      - requirement: "Treatment timing supports the causal contrast."\n'
+                '        source: "method_lead.validity_requirements"\n'
+                '        required_for:\n'
+                '          - "causal effect estimate"\n'
+                '        data_support: "sort_of"\n'
+                '        evidence_pointer: "No timing field was inspected."\n'
+                '        related_variables: []\n'
+                '        gap_type: "timing_unclear"\n'
+                '        claim_impact: "weakens_claim"\n'
+                '        possible_resolution: "Inspect or obtain treatment timing."',
+            ),
+        ),
+        expect_errors=("Invalid value at data_analyst.analysis_alignment.requirement_checks[].data_support",),
+    ),
+    Case(
+        name="09-valid-project-subskill-record",
+        replacements=(("subskill_records: []", VALID_PROJECT_SUBSKILL_RECORDS),),
+    ),
+    Case(
+        name="10-invalid-project-subskill-record-statistical-evidence",
+        replacements=(("subskill_records: []", INVALID_PROJECT_SUBSKILL_RECORDS),),
+        expect_errors=("subskill_records[1]", "statistical_evidence.inference_or_validation_route"),
     ),
 )
 

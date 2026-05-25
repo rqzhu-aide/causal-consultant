@@ -1,146 +1,29 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "MatchingWeightingBalanceRecommendationInput",
-    "type": "object",
-    "properties": {
-        "design_route": {
-            "type": "string",
-            "enum": [
-                "single_time_observational",
-                "longitudinal",
-                "transportability",
-                "trial_reweighting",
-                "randomized_support",
-                "unknown",
-                "other"
-            ]
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MatchingWeightingBalanceRecommendationOutput",
+  "type": "object",
+  "properties": {
+    "readiness": {"type": "string"},
+    "top_choice": {"type": "string"},
+    "analysis_lane": {"type": "string"},
+    "software_options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "package": {"type": "string"},
+          "language": {"type": "string"},
+          "when_to_use": {"type": "string"}
         },
-        "estimand": {
-            "type": "string",
-            "enum": [
-                "ate",
-                "att",
-                "atc",
-                "ato_overlap",
-                "target_population",
-                "longitudinal_strategy",
-                "unknown"
-            ]
-        },
-        "treatment_type": {
-            "type": "string",
-            "enum": [
-                "binary",
-                "multi_arm",
-                "continuous",
-                "time_varying",
-                "selection_or_censoring",
-                "unknown"
-            ]
-        },
-        "covariate_timing": {
-            "type": "string",
-            "enum": [
-                "pre_treatment",
-                "mixed_or_unclear",
-                "post_treatment",
-                "unknown"
-            ]
-        },
-        "confounder_status": {
-            "type": "string",
-            "enum": [
-                "strong",
-                "partial",
-                "weak",
-                "unknown"
-            ]
-        },
-        "overlap_status": {
-            "type": "string",
-            "enum": [
-                "good",
-                "limited",
-                "poor",
-                "unknown"
-            ]
-        },
-        "balance_status": {
-            "type": "string",
-            "enum": [
-                "not_checked",
-                "acceptable",
-                "imbalanced",
-                "unknown"
-            ]
-        },
-        "missingness_status": {
-            "type": "string",
-            "enum": [
-                "none",
-                "limited",
-                "moderate",
-                "severe",
-                "unknown"
-            ]
-        },
-        "sample_size": {
-            "type": [
-                "integer",
-                "null"
-            ],
-            "minimum": 0
-        },
-        "n_covariates": {
-            "type": [
-                "integer",
-                "null"
-            ],
-            "minimum": 0
-        },
-        "survey_weights": {
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "clustered": {
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "needs_exact_match": {
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "needs_interpretability": {
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "language": {
-            "type": "string",
-            "enum": [
-                "r",
-                "python",
-                "either",
-                "unknown"
-            ]
-        }
+        "required": ["package", "language", "when_to_use"]
+      }
     },
-    "required": [
-        "design_route",
-        "estimand",
-        "treatment_type",
-        "covariate_timing",
-        "confounder_status",
-        "overlap_status",
-        "balance_status",
-        "missingness_status",
-        "language"
-    ]
+    "required_clarifications": {"type": "array", "items": {"type": "string"}},
+    "diagnostics": {"type": "array", "items": {"type": "string"}},
+    "caveats": {"type": "array", "items": {"type": "string"}},
+    "activate_other_subskills": {"type": "array", "items": {"type": "string"}},
+    "report_support": {"type": "array", "items": {"type": "string"}},
+    "recommended_next_action": {"type": "string"}
+  },
+  "required": ["readiness", "top_choice", "analysis_lane", "software_options", "required_clarifications", "diagnostics", "caveats", "activate_other_subskills", "report_support", "recommended_next_action"]
 }

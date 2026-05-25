@@ -4,6 +4,15 @@ Use this file to choose credible experiment method families and packages. Keep t
 
 ## Core Literature
 
+### Claim Boundary, Estimands, And Reporting
+
+- Schulz, Altman, and Moher (2010), [CONSORT 2010 Statement](https://pmc.ncbi.nlm.nih.gov/articles/PMC2844794/): minimum reporting structure for parallel-group randomized trials, including participant flow, outcomes, subgroup/adjusted analyses, and interpretation.
+- ICH E9(R1) (2019/2021), [Estimands and Sensitivity Analysis in Clinical Trials](https://www.fda.gov/media/148473/download): estimand framework for aligning treatment condition, population, endpoint, intercurrent events, summary measure, and sensitivity analysis.
+- FDA (2022), [Multiple Endpoints in Clinical Trials](https://www.fda.gov/media/162416/download): multiplicity logic for primary, secondary, composite, and subgroup endpoint claims.
+- FDA (2023), [Adjusting for Covariates in Randomized Clinical Trials](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/adjusting-covariates-randomized-clinical-trials-drugs-and-biological-products): baseline covariate adjustment guidance for randomized parallel-group trials.
+- Campbell et al. (2012), [CONSORT extension to cluster randomised trials](https://www.bmj.com/content/345/bmj.e5661): reporting and analysis issues when assignment or dependence is clustered.
+- Fabijan et al. (2019), [Diagnosing Sample Ratio Mismatch in Online Controlled Experiments](https://www.microsoft.com/en-us/research/publication/diagnosing-sample-ratio-mismatch-in-online-controlled-experiments-a-taxonomy-and-rules-of-thumb-for-practitioners/): taxonomy and practical SRM diagnostics for A/B tests.
+
 ### Foundations And Randomization-Based Inference
 
 - Neyman (1923/1990), [On the Application of Probability Theory to Agricultural Experiments](https://doi.org/10.1214/ss/1177012031): finite-population potential-outcomes foundation for randomized experiments.

@@ -11,6 +11,8 @@ Act as a bounded `target_goal` specialist for mechanism and pathway questions. C
 
 Do not speak to the user, own gates, or maintain a permanent YAML section. Return compact feedback using `assets/method_job_subskill_record_template.yaml` when durable.
 
+Follow the shared `Common Constructed-Input Claim Checks` in `references/method_subskill_contract.md`: judge the analysis dataset used by this method, not source-data transformations in isolation. When `data_analyst` records constructed inputs, simplifications, or alignment limits, use existing `statistical_evidence`, `method_specific_limits`, `requests`, and `method_lead_recheck` fields to state whether the input supports this module's estimand and assumptions or needs reframing.
+
 This module defines and stress-tests the mediation target. It does not make a mechanism causal by itself; timing, confounding control, mediator meaning, and the selected design route still determine claim strength.
 
 ## When To Activate
@@ -27,7 +29,7 @@ Read only the compact state needed for the target question:
 - `team_synthesis`: current user turn, facts, tensions, missing information.
 - `variable_roster`: current construct, data-binding, data-status, and method-role notes for decision-relevant variables.
 - `domain_expert`: mechanism plausibility, mediator construct meaning, intervention meaning, temporal ordering, and wording cautions.
-- `data_analyst`: exposure/mediator/outcome timing, mediator missingness, mediator measurement, covariate timing, path variables, and artifacts.
+- `data_analyst`: analysis alignment, exposure/mediator/outcome timing, mediator missingness, mediator measurement, covariate timing, path variables, and artifacts.
 - `method_lead`: design route, causal structure, estimand set, assumptions, confounding plan, sensitivity plan, and wording boundary.
 - related `subskill_records`: especially design route, longitudinal g-methods, survival, negative control/proximal, doubly robust estimation, and double machine learning records.
 
@@ -45,6 +47,8 @@ Check these before recommending a method:
 - Intervention meaning: natural or controlled mediator interventions must be scientifically interpretable enough for the target.
 - Multiple mediators: order, dependence, and joint/interventional interpretation must be specified.
 - Outcome scale: additive, ratio, odds, hazard, survival, or risk-scale decompositions can imply different interpretations.
+
+Apply the common constructed-input checks to mediation inputs. Mediator summaries, pathway scores, repeated-measure reductions, imputed mediators, or biomarker composites can be valid when their timing, intervention meaning, and mediator/outcome roles match the mediation estimand. If construction mixes pre/post-treatment information, uses outcome-derived mediators, changes the pathway target, or was selected after seeing mediated-effect patterns, cap the claim or request `method_lead_recheck`.
 
 Block or caveat causal mediation claims when timing is wrong, mediator-outcome confounding is unmeasured, exposure-induced mediator-outcome confounding is ignored, mediator intervention is not meaningful for the chosen estimand, cross-sectional timing is unsupported, or the selected design route only supports a total effect.
 
@@ -83,6 +87,75 @@ Candidate method lanes:
 
 Use `scripts/recommend.py` with `sample_input.json` when quick target/package triage is useful. Load `references/workflow.md` for detailed workflow and `references/literature_and_software.md` for paper/package selection.
 
+## Statistical Evidence And Claim Scope
+
+Fill `statistical_evidence` with the mediation claim supported by the estimand and assumptions:
+
+- `inference_supported` only when exposure, mediator, outcome, and confounder timing are coherent; exposure-outcome, exposure-mediator, and mediator-outcome confounding assumptions are recorded; and uncertainty is valid for the chosen mediation estimand.
+- `exploratory_only` for same-data selected pathways, mediator screens, post-treatment mediator adjustment without a valid mediation estimand, or mechanistic narratives not supported by timing.
+- `claim_scope`: controlled direct effect, natural direct/indirect effect, interventional direct/indirect effect, path-specific effect, or descriptive decomposition; do not mix these labels.
+- Valid routes include parametric mediation with interaction handling, nonparametric or simulation-based mediation, interventional effect estimators when natural-effect assumptions are too strong, g-computation/TMLE/DR mediation, bootstrap or influence-function intervals, and sensitivity to mediator-outcome confounding.
+- Do not treat a significant exposure-mediator and mediator-outcome association as evidence of a causal mechanism without the mediation identification assumptions.
+
+Treat the listed routes as examples, not an exhaustive whitelist. Equivalent, newer, or domain-adapted mediation routes are acceptable when their assumptions, diagnostics, uncertainty logic, data-dependence handling, and supported claim scope are explicitly recorded in `statistical_evidence`.
+
+For mediation, the statistical claim is determined by the estimand, timing, and untestable pathway assumptions. Treat these as claim-boundary issues:
+
+- controlled, natural, interventional, separable, and path-specific effects answer different scientific questions and must not be mixed;
+- mediator adjustment in a total-effect model is not automatically mediation analysis and can introduce bias;
+- exposure-induced mediator-outcome confounding often blocks ordinary natural direct/indirect effect interpretation unless the estimand is changed;
+- multiple mediators, mediator ordering, outcome scale, survival/competing events, and exposure-mediator interaction can change the decomposition;
+- sensitivity to unmeasured mediator-outcome confounding is part of claim strength, not an optional appendix detail.
+
+### Writing The YAML Handoff
+
+When writing `subskill_records.statistical_evidence`:
+
+1. Set `status: inference_supported` only when the mediation estimand is explicit, exposure/mediator/outcome timing is coherent, required confounder sets are measured with correct timing, positivity/support is adequate, and uncertainty/sensitivity match the estimand.
+2. Set `status: internally_validated` when timing, model diagnostics, sensitivity analysis, and uncertainty support a bounded pathway interpretation but key cross-world, mediator-intervention, or bridge assumptions remain substantively strong.
+3. Set `status: exploratory_only` when mediators are screened or selected after seeing results, timing is weak, pathway language is descriptive, or the analysis is a post-treatment adjustment rather than a valid mediation estimand.
+4. Set `status: descriptive_only` for association/path diagrams, exposure-mediator-outcome summaries, or mechanism narratives without causal mediation identification.
+5. Set `status: blocked` when mediator timing is wrong, mediator-outcome confounding is unmeasured and incompatible with the estimand, the mediator is a collider/selection variable, or the mediator intervention is scientifically meaningless.
+6. Set `claim_scope` to `target_sample` for an identified sample mediation estimand, `model_implied` for model-dependent decompositions, `internally_validated` for sensitivity-supported pathway evidence, or `exploratory_only` for pathway screens.
+7. Use `inference_or_validation_route` for mediation-specific support: parametric mediation with interaction handling, sequential ignorability sensitivity, interventional direct/indirect effects, g-computation, weighting, TMLE/DR mediation, bootstrap or influence-function intervals, multiple-mediator sensitivity, separable-effects logic, or path-specific identification checks.
+8. Use `method_specific_limits` to state the exact boundary: descriptive pathway only, CDE not a decomposition, NDE/NIE requires cross-world assumptions, interventional indirect effects do not necessarily add to the total effect, proportion mediated unstable or inappropriate, no mechanism claim from mediator adjustment alone, or sensitivity indicates fragile mediation.
+9. Ask `data_analyst` for the smallest missing check: exposure/mediator/outcome timing table, mediator-outcome confounder availability, exposure-induced confounder screen, mediator missingness/support, interaction terms, sensitivity inputs, bootstrap/influence intervals, and scale/proportion-mediated diagnostics.
+10. Set `method_lead_recheck.required: true` when the record changes the estimand from total effect to pathway effect, blocks mechanism wording, changes from natural to interventional/separable effects, or weakens claim strength.
+
+Example - exploratory pathway screen:
+
+```yaml
+statistical_evidence:
+  status: exploratory_only
+  claim_scope: exploratory_only
+  inference_or_validation_route:
+    - "Current output is an exposure-mediator-outcome association screen; a mediation estimand and mediator-outcome confounding strategy are not yet established."
+    - "Construct timing and confounder tables before reporting pathway claims."
+  method_specific_limits:
+    - "Do not report this as evidence that the mediator explains the causal effect."
+    - "Post-treatment adjustment is not a valid mediation decomposition without an explicit estimand."
+requests:
+  data_analyst:
+    - "Create exposure/mediator/outcome timing table, mediator missingness/support summary, and mediator-outcome confounder availability screen."
+method_lead_recheck:
+  required: true
+  reason: "Mechanism wording requires a specific mediation estimand and assumption review."
+```
+
+Example - supported mediation estimand:
+
+```yaml
+statistical_evidence:
+  status: inference_supported
+  claim_scope: target_sample
+  inference_or_validation_route:
+    - "Specific mediation estimand identified with coherent exposure, mediator, outcome, and confounder timing."
+    - "Estimator uncertainty and sensitivity to mediator-outcome confounding are documented for the chosen estimand."
+  method_specific_limits:
+    - "Claim is limited to the named direct/indirect/path-specific estimand and its assumptions."
+    - "Do not translate the result into a generic biological mechanism or proportion mediated when scale or sign conditions make that misleading."
+```
+
 ## Diagnostics And Sensitivity
 
 Review:
@@ -107,6 +180,7 @@ Return:
 - whether the request is direct, adapted, exploratory, blocked, or not applicable;
 - feasible method/package lane and why it fits;
 - assumptions, diagnostics, limitations, and sensitivity needs;
+- statistical_evidence: status, mediation estimand claim scope, pathway-specific inference or validation route, and exact wording limits;
 - concrete requests for `domain_expert`, `data_analyst`, `method_lead`, user, or another subskill;
 - `method_lead_recheck.required` and a brief reason only when the record could change causal strategy, selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary;
 - one controlled `recommended_next_action`.
@@ -117,6 +191,7 @@ For durable records, use the common envelope plus `type_specific.target_goal`:
 - set `module_type`: `target_goal`
 - set `role`: `target_module`
 - set `status`: `candidate`, `activated`, `reviewing`, `plan_proposed`, `first_pass_supported`, `diagnostics_reviewed`, `materials_ready`, `blocked`, or `deferred`
+- fill `statistical_evidence` using the section above before finalizing the record
 - fill `type_specific.target_goal`: `target_goal`, `estimand_targets`, `target_population`, `effect_scale`, `decision_or_interpretation_goal`, `design_route_needed`, and `reporting_boundary`
 
 ## Report Support

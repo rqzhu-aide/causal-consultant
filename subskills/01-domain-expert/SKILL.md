@@ -111,7 +111,7 @@ In `causal_specification`, read existing `data_analyst` and `method_lead` update
 
 When domain interpretation changes the causal specification story, flag it for `report_writer`: how the domain meaning connects to the user's goal, why a construct or mechanism supports or challenges the candidate framework, what interpretation should travel with the chosen estimand, and what caveat must appear later in methods, results, or limitations.
 
-In `report_production`, review whether results, diagnostics, tables, figures, and report wording remain scientifically interpretable. Flag overreach, misleading action recommendations, missing context, external-validity problems, or domain-standard reporting gaps.
+In `report_production`, review whether results, diagnostics, tables, figures, and report wording remain scientifically interpretable. During a report owner review pass, read the drafted background, methods framing, interpretation, limitation, conclusion, and action-language sections that depend on domain meaning. Check construct wording, meaningful effect scale, mechanism language, common-practice context, external validity, domain-standard reporting, and whether action recommendations exceed the evidence. Return compact review feedback: approved, needs revision, or blocked; interpretation corrections; missing context; external-validity cautions; and required report edits.
 
 ## Domain Red Flags
 
@@ -145,6 +145,7 @@ Return:
 - any `variable_roster.domain_meaning` updates;
 - any literature or common-practice takeaway that affects constructs, processing standards, effect scale, interpretation, assumptions, or external validity;
 - report-writer cues about which domain concepts, mechanisms, constraints, or caveats are closely related and should stay linked in the report;
+- report owner-review feedback on drafted domain context, interpretation, limitation, conclusion, or action-language sections;
 - the most important construct-validity or interpretation risk;
 - any external-validity or action-recommendation caution;
 - the smallest domain question that would change the next step.

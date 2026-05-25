@@ -17,8 +17,10 @@ fit_summary:
 
 # In a filled record, keep and complete only the packet that matches
 # module_type: design_route, target_goal, or implementation_support.
-# Sidecar/report-support records may use the common fields plus their own
-# local packet shape when needed.
+# Discovery sidecar records may use the common fields plus their own local
+# packet shape when needed. Report-support material belongs in report_support
+# and is later integrated by Report Writer; Report Writer does not append a
+# separate subskill_records entry for itself.
 type_specific:
   design_route:
     causal_comparison: null
@@ -47,6 +49,14 @@ type_specific:
     package_or_code_options: []
 
 assumptions_or_requirements: []
+
+# Claim-boundary handoff for method_lead and data_analyst.
+# Fill for every activated method/task subskill when durable feedback is returned.
+statistical_evidence:
+  status: "not_assessed"       # strongest current evidence level
+  claim_scope: "unknown"       # what population/result type the claim can cover
+  inference_or_validation_route: []  # method-specific route needed or used for stronger claims
+  method_specific_limits: []    # exact wording limits and what the method does not support
 diagnostics_needed: []
 diagnostics_reviewed: []
 sensitivity_or_robustness: []

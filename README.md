@@ -117,7 +117,7 @@ flowchart TD
     lead["Lead Consultant<br/>user-facing conversation<br/>synthesis and progression"]
     state["Project State YAML<br/>shared memory<br/>variable_roster, causal_structure<br/>subskill_records, artifacts, limits"]
     domain["domain_expert<br/>constructs and mechanisms<br/>common practice<br/>external validity"]
-    data["data_analyst<br/>data reality<br/>constructability and timing<br/>diagnostics and artifacts"]
+    data["data_analyst<br/>data reality<br/>constructability and timing<br/>analysis alignment<br/>diagnostics and artifacts"]
     method["method_lead<br/>causal question and estimands<br/>framework and assumptions<br/>method/subskill triage"]
     writer["report_writer<br/>silent notebook<br/>working report<br/>report integration"]
     discovery["06-causal-discovery<br/>graph/feature exploration<br/>advisory sidecar"]
@@ -210,21 +210,21 @@ The top-level `SKILL.md` is intentionally frontstage and short. It defines the l
 The MCT structure has four core members and one sidecar:
 
 - **`domain_expert` (`01-domain-expert`)** preserves domain meaning: constructs, mechanisms, temporal order, measurement standards, common practice, external validity, and wording cautions.
-- **`data_analyst` (`02-data-analyst`)** evaluates data reality: available sources, row and analysis units, timing, variable construction, missingness/selection, support, exploratory outputs, reproducible artifacts, and data-evidence handoffs.
+- **`data_analyst` (`02-data-analyst`)** evaluates data reality: available sources, row and analysis units, timing, variable construction, missingness/selection, support, analysis alignment between claim needs and data support, exploratory outputs, reproducible artifacts, and data-evidence handoffs.
 - **`method_lead` (`03-method-lead`)** owns causal-method judgment: causal questions, framework candidates, selected framework, estimand set, assumptions, causal structure, diagnostics, sensitivity, method literature, and method/task subskill triage.
-- **`report_writer` (`05-report-writer`)** is silent. It keeps a polished project notebook and working report from early durable content through production reporting and same-evidence revisions.
+- **`report_writer` (`05-report-writer`)** is silent. It keeps a polished project notebook and working report from early durable content through production reporting, owner-review routing, and same-evidence revisions.
 - **`06-causal-discovery`** is an any-phase sidecar for exploratory graph learning, graph comparison, variable screening, constructed-feature ideas, and discovery-only deliverables. Its outputs remain advisory until reviewed through the relevant core team logic.
 
 Three working phases organize the interaction:
 
 1. **`project_exploration`**: learn the user's goal, domain setting, data reality, feasibility, and possible candidate frameworks. Exploratory, descriptive, diagnostic, and design-learning work can happen here when data are provided.
 2. **`causal_specification`**: settle and stress-test the causal claim, estimand set, framework, causal structure, assumptions, diagnostics, sensitivity plan, data feasibility, and wording boundary.
-3. **`report_production`**: draft, diagnose, revise, improve, and deliver the report or other user-facing artifact. The project stays in this phase for report revisions unless new evidence changes the causal claim, estimand set, assumptions, framework, or core design logic.
+3. **`report_production`**: draft, diagnose, owner-review, revise, improve, and deliver the report or other user-facing artifact. The project stays in this phase for report revisions unless new evidence changes the causal claim, estimand set, assumptions, framework, or core design logic.
 
 Two gates control claim readiness:
 
 - **`causal_gate`** decides whether the causal claim, framework, assumptions, and wording boundary are ready enough for reportable use.
-- **`production_gate`** decides whether evidence, diagnostics, provenance, and materials are ready enough for a polished deliverable.
+- **`production_gate`** decides whether evidence, diagnostics, provenance, materials, and owner-review feedback are ready enough for a polished deliverable.
 
 The gates do not forbid progress. If work is blocked or incomplete, the team can still produce exploratory analysis, prototype code, diagnostics, or limitation-forward reports, but those artifacts must visibly carry the appropriate caveats and claim-strength limits.
 
@@ -232,11 +232,13 @@ With this structure in place, the practical loop is:
 
 1. Update the compact project state from the user's latest turn.
 2. Let `domain_expert`, `data_analyst`, and `method_lead` review in the default order.
-3. Allow one bounded adaptive follow-up pass only when a reviewer update would clearly improve the next user-facing move.
-4. If `method_lead` selects a bounded method/task specialist, let the lead consultant invoke it and record its returned packet in `subskill_records`.
-5. Let `report_writer` update the working notebook/report when there is substantive content to preserve or a specialist returns report support.
-6. Update gates, limitations, agenda, and next action.
-7. Return to the user with one clear practical move: a question, explanation, proposed analysis, method choice, artifact, or revision.
+3. Refresh `data_analyst.analysis_alignment` when data, claims, framework requirements, diagnostics, or report targets change, then let `method_lead` consume it before method selection or claim wording.
+4. Allow one bounded adaptive follow-up pass only when a reviewer update would clearly improve the next user-facing move.
+5. If `method_lead` selects a bounded method/task specialist, let the lead consultant invoke it and record its returned packet in `subskill_records`.
+6. Let `report_writer` update the working notebook/report when there is substantive content to preserve or a specialist returns report support.
+7. Before polished/final report delivery, route drafted sections to the owning reviewers: data evidence to `data_analyst`, causal/statistical claims to `method_lead`, domain interpretation to `domain_expert`, and activated modules to their method/task subskills.
+8. Update gates, limitations, agenda, and next action.
+9. Return to the user with one clear practical move: a question, explanation, proposed analysis, method choice, artifact, or revision.
 
 This keeps the interaction collaborative instead of over-automated. The team does enough internal work to be useful, then returns to the user when a clarification, permission, preference, or review would improve the next step.
 
@@ -246,7 +248,7 @@ Method/task subskills are organized into three specialist pools:
 - **Target goals (`20`-`25`)**: heterogeneous effects, point treatment rules, mediation, dose-response effects, transportability/generalizability, and dynamic treatment policies.
 - **Implementation support (`30`-`33`)**: matching/weighting/balance, doubly robust estimation, Double Machine Learning, and survival/competing risks.
 
-The helper `scripts/recommend_subskills.py` provides advisory recall for specialist modules, but it is not a router or judge. `method_lead` makes the causal-method decision after reading `domain_expert`, `data_analyst.method_support`, project state, and any relevant `subskill_records`; the lead consultant invokes selected specialists and records their returned packets.
+The helper `scripts/recommend_subskills.py` provides advisory recall for specialist modules, but it is not a router or judge. `method_lead` makes the causal-method decision after reading `domain_expert`, `data_analyst.analysis_alignment`, `data_analyst.method_support`, project state, and any relevant `subskill_records`; the lead consultant invokes selected specialists and records their returned packets.
 
 The durable state model lives in `assets/causal_project_spec_template.yaml`; controlled values live in `assets/workflow_enums.yaml`; activated method/task subskills use `assets/method_job_subskill_record_template.yaml`. Validation scripts are provided in `scripts/`.
 

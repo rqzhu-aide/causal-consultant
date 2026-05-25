@@ -18,8 +18,8 @@ The order is not a rigid bureaucracy. It is a practical default: domain meaning 
 - The lead consultant speaks with the user, maintains progression, and synthesizes team output.
 - The lead consultant may create lean `variable_roster` entries from user language, but final method roles, data bindings, and domain meanings belong to the reviewers below.
 - `domain_expert` provides domain meaning, construct validity, mechanisms, domain data standards, common practice, interpretation, external-validity cautions, and `variable_roster.domain_meaning`. It does not route methods.
-- `data_analyst` inspects authorized data or data descriptions, proposes compact checks, builds data evidence, records method-support handoffs, and updates `variable_roster.data_binding` and `variable_roster.data_status`. It does not validate causal identification.
-- `method_lead` turns the user goal into causal questions, framework options, estimands, causal structure, assumptions, diagnostics, final variable-role use, and method/task subskill triage. It does not overwrite domain or data facts.
+- `data_analyst` inspects authorized data or data descriptions, proposes compact checks, builds data evidence, records method-support handoffs, maintains `analysis_alignment`, and updates `variable_roster.data_binding` and `variable_roster.data_status`. It does not validate causal identification.
+- `method_lead` turns the user goal into causal questions, framework options, estimands, causal structure, assumptions, diagnostics, statistical-validity checks, final variable-role use, and method/task subskill triage. It does not overwrite domain or data facts.
 - `report_writer` silently preserves polished notes, report-structure notes, and report material; it does not release itself to the user.
 
 ## Reviewer Inputs
@@ -27,18 +27,18 @@ The order is not a rigid bureaucracy. It is a practical default: domain meaning 
 Give each reviewer enough context to work, but avoid flooding them.
 
 - Give `domain_expert` the user goal, setting, current confusion, candidate constructs, `variable_roster` entries needing meaning, and any data/method facts that need domain interpretation.
-- Give `data_analyst` `domain_expert` guidance, available data/data descriptions, `variable_roster` entries needing data binding, timing questions, and any bounded diagnostic request.
-- Give `method_lead` `variable_roster`, `domain_expert` meaning, `data_analyst.method_support`, candidate hints, activated subskill records, and current framework/estimand questions.
+- Give `data_analyst` `domain_expert` guidance, available data/data descriptions, `variable_roster` entries needing data binding, timing questions, current `method_lead` requirements or candidate framework needs, and any bounded diagnostic request.
+- Give `method_lead` `variable_roster`, `domain_expert` meaning, `data_analyst.analysis_alignment`, `data_analyst.method_support`, candidate hints, activated subskill records, current framework/estimand questions, and any new analysis results or report claims needing statistical-validity review.
 - Give `report_writer` substantive user interests, reviewer guidance, decisions, evidence, artifacts, limitations, and reportable wording boundaries. During `causal_specification`, also give it the data-analysis results or diagnostics, method-picking logic, interpretation, and user-goal alignment that explain why a framework is being selected, revised, blocked, or kept exploratory.
 
 ## Adaptive Follow-Up
 
-After the default first pass, allow at most one adaptive follow-up pass by default. Use it only when a reviewer has a concrete request or material update that would clearly change the next user-facing move.
+After the default first pass, allow at most one adaptive follow-up pass by default. Count a bounded `analysis_alignment` refresh and method-lead consumption as that follow-up when it reruns a reviewer. Use follow-up only when a reviewer has a concrete request or material update that would clearly change the next user-facing move.
 
 Good follow-up triggers:
 
 - `method_lead` asks for a specific timing, support, or variable-construction diagnostic from `data_analyst`;
-- `data_analyst` finds a data contradiction that needs `method_lead` re-triage;
+- `data_analyst` finds a data contradiction or `analysis_alignment` gap that needs `method_lead` re-triage;
 - `domain_expert` identifies a construct rule that changes data construction or wording;
 - `report_writer` finds that report wording would misrepresent a reviewer limitation.
 
@@ -69,7 +69,7 @@ Let the lead consultant load `05-report-writer` after core reviewer work when th
 Invoke it when:
 
 - durable user interests, background, choices, or open questions appear;
-- reviewer output changes data evidence, method choice, assumptions, interpretation, wording, limitations, or user-goal alignment;
+- reviewer output changes data evidence, analysis alignment, method choice, assumptions, interpretation, wording, limitations, or user-goal alignment;
 - a method/job subskill or sidecar returns report-support material;
 - figures, tables, diagnostics, code, report artifacts, references, or source notes appear;
 - the user requests a report, memo, revision, slide text, letter, or other deliverable;
@@ -77,13 +77,14 @@ Invoke it when:
 
 Skip it when no report-worthy content changed and no deliverable is being produced.
 
-During `causal_specification`, `report_writer` should actively update structure notes or the working report whenever there is an information update. Information update means a change in data evidence, data-analysis results, method selection or rejection, causal reasoning, interpretation, assumptions, diagnostics, limitations, wording boundary, or the explanation of how the analysis framework answers the user's request and goals.
+During `causal_specification`, `report_writer` should actively update structure notes or the working report whenever there is an information update. Information update means a change in data evidence, `analysis_alignment`, data-analysis results, method selection or rejection, causal reasoning, interpretation, assumptions, diagnostics, limitations, wording boundary, or the explanation of how the analysis framework answers the user's request and goals.
 
 Report writer should especially preserve:
 
 - user interests and decisions;
 - domain context and construct caveats;
 - data facts, inspected artifacts, code paths, tables, figures, and diagnostics;
+- alignment between intended claims and what the data actually support;
 - method decisions, assumptions, sensitivity plans, and wording boundaries;
 - why the chosen or candidate framework fits the user's goal, and what would make it change;
 - activated subskill outputs that should become report modules;
@@ -92,3 +93,14 @@ Report writer should especially preserve:
 Use report-structure notes for material that may shape a future report but should not yet become prose: candidate claims, evidence boundaries, section jobs, module placement, figure/table ideas, code appendix seeds, limitations, and anti-claims.
 
 After it returns, the lead consultant records returned structure-note, working-draft, report-artifact, and durable-limitation paths in `analysis_state`, then uses report-writer feedback to update `production_gate` and `next_action` when relevant.
+
+## Report Owner Review
+
+Before treating a polished or final report artifact as production-ready, run a bounded owner review pass when the report contains substantive data evidence, causal/statistical claims, domain interpretation, or activated specialist modules.
+
+- `data_analyst` reviews data facts, tables, figures, code paths, artifact provenance, stale-output risk, and `analysis_alignment`.
+- `method_lead` reviews causal framework consistency, estimands, assumptions, diagnostics, statistical-evidence status, and claim strength.
+- `domain_expert` reviews construct language, interpretation, meaningful effect scale, action language, and external-validity wording.
+- Activated method/task subskills review only their own report module, diagnostic, appendix material, or method-specific limitation.
+
+Route required edits back to `report_writer`. Use existing durable fields for unresolved issues: `production_gate.blockers`, `production_gate.unresolved_required_materials`, `analysis_state.limitations`, reviewer-owned fields, or a new `subskill_records` entry only if the review produces new substantive specialist feedback.

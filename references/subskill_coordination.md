@@ -23,7 +23,7 @@ Use this ownership chain for method/job specialist modules:
 `method_lead` selects -> lead consultant invokes -> subskill returns -> lead consultant records -> the lead routes the record by what it affects.
 
 - `method_lead` writes `method_lead.tools_and_methods.selected_method_subskills` only when a subskill is ready for a bounded activation purpose.
-- The lead consultant invokes the selected subskill and supplies compact project state, including `variable_roster`, `method_lead.causal_structure`, selected framework or estimand information, relevant data evidence, relevant artifacts, and prior `subskill_records`.
+- The lead consultant invokes the selected subskill and supplies compact project state, including `variable_roster`, `method_lead.causal_structure`, selected framework or estimand information, `data_analyst.analysis_alignment`, relevant data evidence, relevant artifacts, and prior `subskill_records`.
 - The subskill does not mutate permanent project YAML. It returns a record-shaped feedback packet with common envelope fields, one relevant `type_specific` packet, fit, assumptions, diagnostics, sensitivity needs, blockers, reviewer requests, report support, artifact paths, and `method_lead_recheck`.
 - The lead consultant appends durable specialist output to `subskill_records`.
 - Routine implementation, data-preparation, diagnostic, or reporting outputs may be routed to `data_analyst` or `report_writer` without forcing `method_lead` to rewrite its YAML fields.
@@ -48,7 +48,7 @@ The helper returns advisory specialist candidates and marks whether each is avai
 
 ## Method Lead Triage
 
-The lead consultant should read `method_lead`'s triaged recommendation, not the raw lookup list. Pass candidates to `method_lead` after `method_lead` reads `domain_expert`, `data_analyst.method_support`, `team_synthesis`, `analysis_state`, and relevant project state.
+The lead consultant should read `method_lead`'s triaged recommendation, not the raw lookup list. Pass candidates to `method_lead` after `method_lead` reads `domain_expert`, `data_analyst.analysis_alignment`, `data_analyst.method_support`, `team_synthesis`, `analysis_state`, and relevant project state.
 
 Record only triaged results:
 
@@ -62,7 +62,7 @@ Expose only the decision-relevant user-facing result, usually one to three meani
 
 ## Data Evidence Handoff
 
-`data_analyst.method_support` is data evidence for `method_lead`, not final method choice.
+`data_analyst.analysis_alignment` and `data_analyst.method_support` are data evidence for `method_lead`, not final method choice. Use `analysis_alignment` for the current claim/framework/estimand-to-data crosswalk, and `method_support` for candidate framework feasibility, processing pipelines, learner handoffs, and diagnostic artifact suggestions.
 
 Use these classifications when helpful:
 
@@ -73,7 +73,7 @@ Use these classifications when helpful:
 - `unsupported`: required data elements are absent or not constructible from current information.
 - `contradicted`: inspected data conflict with the candidate's required timing, unit, variable role, or support logic.
 
-If data evidence changes constructability, timing, support, or feasibility, route a bounded `method_lead` follow-up before selecting or activating a method/task subskill.
+If data evidence changes constructability, timing, support, feasibility, or `analysis_alignment`, route a bounded `method_lead` follow-up before selecting or activating a method/task subskill.
 
 ## Activation Records
 
@@ -81,9 +81,20 @@ Create a durable `subskill_records` entry only when a specialist subskill is act
 
 Do not create permanent YAML sections for method/task subskills. Their durable outputs should live in compact records, artifacts, code, tables, figures, or report modules. Filled method/task records should keep the common envelope plus only the `type_specific` packet that matches `module_type`: `design_route`, `target_goal`, or `implementation_support`.
 
+Do not create a `subskill_records` entry for `05-report-writer` itself. Report Writer consumes specialist records, report-support packets, structure notes, the working report, and linked artifacts when the lead consultant determines that a report or revision should be produced.
+
 Use `method_lead_recheck.required: true` only when the specialist output may change causal strategy, the selected framework, estimand set, `causal_structure`, gate status, claim strength, or wording boundary. Keep it false for routine implementation guidance, diagnostic requests, report-support material, or data-preparation notes that can be handled by `data_analyst` or `report_writer`.
 
 Do not use `recommended_next_action` to mark gates ready or complete. If the specialist thinks gate status might change, set `method_lead_recheck.required: true`, explain why, and let the lead consultant update gates only after the method-lead recheck is consumed or explicitly deferred with limitations.
+
+## Report Module Review
+
+During `report_production`, a drafted report may be routed back to activated method/task subskills for owner review of their own module, diagnostic, appendix, or method-specific limitation. This is a report consistency check, not a new subskill activation by default.
+
+- Give the subskill only the drafted section or appendix material, its own prior `subskill_records` entry, relevant artifact paths, and the current claim boundary.
+- Ask it to check whether the report faithfully represents its method logic, results or diagnostics, statistical-evidence status, limitations, artifact paths, and wording boundary.
+- Route required edits back to `report_writer`; route stale data or missing artifacts to `data_analyst`; route claim-strength or strategy changes to `method_lead`.
+- Append a new `subskill_records` entry only when the review produces new substantive specialist feedback, new diagnostics/results, a new blocker, or a changed method-specific claim boundary. Routine approval or wording edits should stay as transient review feedback and, if unresolved, as `production_gate` blockers or `analysis_state.limitations`.
 
 ## Subskill Pool
 

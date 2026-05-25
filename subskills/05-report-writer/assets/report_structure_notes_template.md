@@ -9,6 +9,7 @@ Use this file as the report writer's private structure-planning notebook. Start 
 - Intended audience:
 - Current phase:
 - Current claim-strength boundary:
+- Data-supported claim ceiling:
 - Deliverable format:
 - Working draft path:
 
@@ -37,17 +38,25 @@ Use this table for any statement that may become report text.
 |---|---|---|---|---|
 |  | user-stated / inspected / computed / reviewer judgment / subskill record | provisional / supported / blocked / deferred |  | summary / background / methods / results / limitations / appendix |
 
+## Analysis Alignment Notes
+
+- Current alignment summary:
+- Unsupported or overstated claims:
+- Claim-affecting data simplifications:
+- Requirements needing resolution:
+
 ## Section Move Plan
 
 Use this table to plan what each section needs to do for the reader.
 
 | Section | Job for the reader | Current material | Missing material | Source or owner | Priority |
 |---|---|---|---|---|---|
-| Problem, User Need, And Background |  |  |  | user / `domain_expert` |  |
-| Analysis Choice And Justification |  |  |  | `method_lead` / `data_analyst` |  |
+| Main Answer And Evidence Status |  |  |  | whole team / gates |  |
+| Question, Data, And Estimand |  |  |  | user / `data_analyst` / `method_lead` |  |
+| Analysis Framework And Assumptions |  |  |  | `method_lead` / `data_analyst` |  |
 | Results, Figures, And Tables |  |  |  | `data_analyst` / subskills / artifacts |  |
-| Model Diagnostics And Sensitivity Checks |  |  |  | `data_analyst` / `method_lead` / subskills |  |
-| Summary, Conclusion, And Potential Issues |  |  |  | whole team |  |
+| Diagnostics, Sensitivity, And Robustness |  |  |  | `data_analyst` / `method_lead` / subskills |  |
+| Interpretation, Limitations, And Next Steps |  |  |  | whole team |  |
 | Appendix |  |  |  | subskills / artifacts / user requests |  |
 
 ## Module Candidates
@@ -57,6 +66,12 @@ Record activated or likely modules that may become report components.
 | Module | Why it matters | Current output | Placement | Integration note |
 |---|---|---|---|---|
 |  |  |  | main / subsection / appendix / parked |  |
+
+## Owner Review Plan
+
+| Draft section or module | Owner reviewer | What they should check | Status | Required edits |
+|---|---|---|---|---|
+|  | `data_analyst` / `method_lead` / `domain_expert` / subskill id | data facts / claim wording / domain interpretation / module limits | needed / approved / needs revision / deferred |  |
 
 ## Figures Tables And Artifacts
 
@@ -75,6 +90,7 @@ Record activated or likely modules that may become report components.
 - Gate blockers that must remain visible:
 - Bounded-continuation limits:
 - Unsupported or prohibited claims:
+- Analysis-alignment limits:
 - Data limitations:
 - Method limitations:
 - Domain interpretation cautions:

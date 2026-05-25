@@ -25,6 +25,11 @@ COMMON_REQUIRED_PATHS = (
     "fit_summary.reason",
     "type_specific",
     "assumptions_or_requirements",
+    "statistical_evidence",
+    "statistical_evidence.status",
+    "statistical_evidence.claim_scope",
+    "statistical_evidence.inference_or_validation_route",
+    "statistical_evidence.method_specific_limits",
     "diagnostics_needed",
     "diagnostics_reviewed",
     "sensitivity_or_robustness",
@@ -89,9 +94,7 @@ MODULE_TYPES = {
     "design_route",
     "target_goal",
     "implementation_support",
-    "diagnostic_sidecar",
     "discovery_sidecar",
-    "report_support",
 }
 ROLES = {
     "primary_route",
@@ -124,6 +127,26 @@ READINESS = {
     "materials_ready",
     "blocked",
 }
+STATISTICAL_EVIDENCE_STATUS = {
+    "not_assessed",
+    "exploratory_only",
+    "descriptive_only",
+    "internally_validated",
+    "inference_supported",
+    "externally_validated",
+    "blocked",
+    "not_applicable",
+}
+STATISTICAL_EVIDENCE_CLAIM_SCOPE = {
+    "unknown",
+    "in_sample_only",
+    "model_implied",
+    "internally_validated",
+    "target_sample",
+    "target_population",
+    "exploratory_only",
+    "not_applicable",
+}
 SEVERITY = {"none", "low", "medium", "high"}
 NEXT_ACTIONS = {
     "ask_user",
@@ -150,6 +173,8 @@ ALLOWED_VALUES = {
     "status": STATUSES,
     "fit_summary.fit": FIT_VALUES,
     "readiness": READINESS,
+    "statistical_evidence.status": STATISTICAL_EVIDENCE_STATUS,
+    "statistical_evidence.claim_scope": STATISTICAL_EVIDENCE_CLAIM_SCOPE,
     "blocking_signal.target_phase": PHASES,
     "blocking_signal.severity": SEVERITY,
     "recommended_next_action": NEXT_ACTIONS,
@@ -194,13 +219,13 @@ def parse_scalar(raw: str) -> Any:
     return value
 
 
-def scan_yaml(path: Path) -> tuple[dict[str, Any], dict[str, int], set[str]]:
+def scan_yaml_text(text: str) -> tuple[dict[str, Any], dict[str, int], set[str]]:
     values: dict[str, Any] = {}
     lines: dict[str, int] = {}
     present: set[str] = set()
     stack: list[tuple[int, str]] = []
 
-    for line_no, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+    for line_no, raw_line in enumerate(text.splitlines(), start=1):
         line = strip_comment(raw_line).rstrip()
         if not line.strip() or line.strip() == "---":
             continue
@@ -239,6 +264,10 @@ def scan_yaml(path: Path) -> tuple[dict[str, Any], dict[str, int], set[str]]:
     return values, lines, present
 
 
+def scan_yaml(path: Path) -> tuple[dict[str, Any], dict[str, int], set[str]]:
+    return scan_yaml_text(path.read_text(encoding="utf-8"))
+
+
 def format_path(path: str, lines: dict[str, int]) -> str:
     line = lines.get(path)
     return f"{path} (line {line})" if line else path
@@ -248,8 +277,40 @@ def has_content(value: Any) -> bool:
     return value not in (None, [], "")
 
 
-def validate(record_path: Path) -> list[str]:
-    values, lines, present = scan_yaml(record_path)
+def validate_statistical_evidence(values: dict[str, Any], lines: dict[str, int]) -> list[str]:
+    errors: list[str] = []
+    status = values.get("statistical_evidence.status")
+    claim_scope = values.get("statistical_evidence.claim_scope")
+    route = values.get("statistical_evidence.inference_or_validation_route")
+    limits = values.get("statistical_evidence.method_specific_limits")
+
+    if status in {None, "", "not_assessed", "not_applicable"} or status == []:
+        return errors
+
+    if not has_content(claim_scope) or claim_scope == "unknown":
+        errors.append(
+            f"statistical_evidence.status is {status!r}, but "
+            f"{format_path('statistical_evidence.claim_scope', lines)} is empty or unknown."
+        )
+
+    if not has_content(limits):
+        errors.append(
+            f"statistical_evidence.status is {status!r}, but "
+            f"{format_path('statistical_evidence.method_specific_limits', lines)} is empty."
+        )
+
+    if status in {"internally_validated", "inference_supported", "externally_validated"}:
+        if not has_content(route):
+            errors.append(
+                f"statistical_evidence.status is {status!r}, but "
+                f"{format_path('statistical_evidence.inference_or_validation_route', lines)} "
+                "is empty."
+            )
+
+    return errors
+
+
+def validate_values(values: dict[str, Any], lines: dict[str, int], present: set[str]) -> list[str]:
     errors: list[str] = []
 
     for required_path in COMMON_REQUIRED_PATHS:
@@ -291,7 +352,19 @@ def validate(record_path: Path) -> list[str]:
             "method_lead_recheck.required is true, but method_lead_recheck.reason is empty."
         )
 
+    errors.extend(validate_statistical_evidence(values, lines))
+
     return errors
+
+
+def validate_text(text: str) -> list[str]:
+    values, lines, present = scan_yaml_text(text)
+    return validate_values(values, lines, present)
+
+
+def validate(record_path: Path) -> list[str]:
+    values, lines, present = scan_yaml(record_path)
+    return validate_values(values, lines, present)
 
 
 def main() -> int:

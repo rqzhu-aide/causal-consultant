@@ -12,8 +12,9 @@ Use this as a menu when data are provided or the data structure is nontrivial. D
 6. Treat exploratory models as probes. Regression, random forests, PCA, clustering, or embeddings can reveal structure and feasibility, but they do not create causal identification.
 7. Make domain-specific preprocessing explicit. Learn from `domain_expert` before processing specialized data: valid ranges, impossible values, measurement devices, coding conventions, standard transformations, domain packages/tools, reporting standards, clinical/business/scientific thresholds, and whether engineered features have interpretable meaning.
 8. Hand off compactly. Tell `method_lead` what frameworks the data appear to support or strain, and tell `report_writer` what was inspected, what artifacts exist, and what limitations must be visible.
-9. Use the ecosystem that fits the project. Python is often natural for large ML pipelines and mixed production stacks. R is often especially strong for statistical summaries, survey data, missing-data workflows, survival analysis, reproducible reports, and compact analyst-facing diagnostics.
-10. Use statistical learning methods only as a causal-support toolkit. ESL-style topics such as shrinkage, splines/GAMs, trees, boosting, SVMs, nearest-neighbor methods, ensembles, and unsupervised learning can help explore construct measurement, data structure, support, missingness, heterogeneity, nuisance functions, and feature engineering. They do not by themselves justify a causal claim.
+9. Keep `analysis_alignment` current. When a claim, framework, estimand, report target, or validity requirement changes, compare those needs against the inspected or described data and record the supported, missing, proxy-only, contradicted, or uninspected parts.
+10. Use the ecosystem that fits the project. Python is often natural for large ML pipelines and mixed production stacks. R is often especially strong for statistical summaries, survey data, missing-data workflows, survival analysis, reproducible reports, and compact analyst-facing diagnostics.
+11. Use statistical learning methods only as a causal-support toolkit. ESL-style topics such as shrinkage, splines/GAMs, trees, boosting, SVMs, nearest-neighbor methods, ensembles, and unsupervised learning can help explore construct measurement, data structure, support, missingness, heterogeneity, nuisance functions, and feature engineering. They do not by themselves justify a causal claim.
 
 ## Investigation Cycle
 
@@ -27,7 +28,7 @@ For any provided data, consider this cycle:
 - Audit timing: eligibility, time zero, baseline window, exposure window, follow-up, outcome measurement, censoring, and possible leakage.
 - Quantify data health: missingness, duplicates, impossible values, outliers, support/overlap, sparse cells, class imbalance, and selection/exclusion patterns.
 - Create bounded artifacts: summaries, plots, profiling tables, missingness maps, prototype datasets, feature dictionaries, or diagnostic notebooks.
-- Record handoff notes: data facts, unresolved questions, artifacts, limitations, and data-compatible next steps.
+- Record handoff notes: data facts, unresolved questions, artifacts, limitations, data-compatible next steps, and `analysis_alignment` entries that connect current claim needs to actual data support.
 
 ## Domain Guidance Handoff
 

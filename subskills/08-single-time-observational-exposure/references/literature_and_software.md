@@ -11,10 +11,12 @@ Use this file to choose credible observational point-exposure method families an
 - Robins (1986), [A new approach to causal inference in mortality studies with sustained exposure periods](https://doi.org/10.1016/0270-0255(86)90088-6): g-methods and time-varying exposure foundations; useful background even for point treatment.
 - Hernan and Robins (2020), [Causal Inference: What If](https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/): target trials, exchangeability, positivity, consistency, IP weighting, standardization, and sensitivity.
 - Hernan and Robins (2016), [Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available](https://doi.org/10.1093/aje/kwv254): practical target-trial emulation.
+- Hernan, Wang, and Leaf (2022), [Target trial emulation: applying principles of randomised trials to observational studies](https://www.bmj.com/content/378/bmj-2022-071108): practical BMJ overview of target-trial components and common emulation failures.
 
 ### Matching, Weighting, And Balance
 
 - Rubin (2001), [Using propensity scores to help design observational studies](https://doi.org/10.1198/016214501753208573): separate design from outcome analysis.
+- Rosenbaum and Rubin (2023), [Propensity scores in the design of observational studies for causal effects](https://doi.org/10.1093/biomet/asac054): revisits propensity scores as outcome-blind design tools, not outcome-chasing models.
 - Stuart (2010), [Matching Methods for Causal Inference: A Review and a Look Forward](https://doi.org/10.1214/09-STS313): matching approaches, diagnostics, and estimand changes.
 - Austin (2011), [An Introduction to Propensity Score Methods for Reducing the Effects of Confounding in Observational Studies](https://doi.org/10.1080/00273171.2011.568786): accessible propensity-score review.
 - Imai and Ratkovic (2014), [Covariate balancing propensity score](https://doi.org/10.1111/rssb.12027): direct balance-oriented propensity estimation.

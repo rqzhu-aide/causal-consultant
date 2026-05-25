@@ -9,17 +9,20 @@ On each meaningful user conversation turn, optimize for a useful next interactio
 1. Update obvious lead-consultant state from the user turn, including `team_synthesis.user_turn_summary` and a small `team_synthesis.turn_goal`. Add lean `variable_roster` entries only for decision-relevant variables or variable families named by the user, with provisional labels and user-stated roles.
 2. Identify candidate or potentially useful subskill hints from the user turn plus existing YAML. In `project_exploration`, the lead consultant may notice candidates directly from meaning. In `causal_specification`, optionally use `scripts/recommend_subskills.py` as advisory recall for `method_lead`; the lead consultant does not adjudicate method fit from raw lookup output.
 3. Give candidate hints to `domain_expert`, `data_analyst`, and especially `method_lead` as optional review context. Candidates are not activated yet, and raw script output should not be copied into selected methods.
-4. Run the default first pass in this order: `01-domain-expert`, `02-data-analyst`, `03-method-lead`. Let each reviewer update only its own section and assigned `variable_roster` fields.
-5. Record material changes in `team_synthesis.material_updates_this_turn`.
-6. Allow at most one adaptive follow-up pass by default, and only when a reviewer produced a concrete update that would clearly improve the next user-facing move. Examples: `method_lead` requests a bounded data diagnostic; `data_analyst` produces data evidence triage that changes framework feasibility; `domain_expert` identifies a construct rule that changes data construction.
-7. Do not rerun a reviewer just because more review might help. Extra internal passes beyond one require the user to have explicitly asked for deeper analysis, already-authorized data work to be actively running, or a clear risk that replying now would mislead the user.
-8. During `causal_specification`, let `method_lead` revise the triaged candidate set after reviewer updates if `domain_expert` or `data_analyst` changes what support may be useful.
-9. If `method_lead` selects a method/job subskill for bounded activation this turn, follow `subskill_coordination.md`: the lead consultant invokes the subskill, records its returned packet in `subskill_records`, then routes the record by what it affects. Routine data or implementation requests go to `data_analyst`; report-support material goes to `report_writer`; `method_lead` gets a bounded recheck only when `method_lead_recheck.required` is true, `blocking_signal` threatens gate status or causal claims, or the record may change causal strategy, selected framework, estimand set, `causal_structure`, claim strength, or wording boundary. If no subskill is selected for activation, keep selected candidates as triage notes rather than pretending activation happened.
-10. Decide whether to invoke `05-report-writer` as the fourth core step. Invoke it when any of these are true: substantive new user interest, discussion, evidence, decision, artifact, reviewer guidance, or limitation should be preserved; a method/job subskill returned report-support material; `causal_specification` changed data evidence, method choice, reasoning, interpretation, assumptions, limitations, wording boundary, or user-goal alignment; a report/memo/revision is requested; or `report_production` is active. If invoked, give it compact state plus relevant reviewer/subskill output and let it update `report_structure_notes`, the working report, or a report artifact according to `subskills/05-report-writer/references/workflow.md`. If nothing report-worthy changed, do not force a report-writer pass.
-11. Record only `method_lead`-triaged plausible recommendations in `analysis_state.recommended_method_job_subskills`. Use `subskill_records` as the durable source of truth for subskills that actually ran or produced durable feedback. Let `method_lead.tools_and_methods` hold the causal triage: plausible candidates, selected subskills, and blocked or not-used options.
-12. After `report_writer` feedback, record returned path updates in `analysis_state.report_structure_notes_path`, `analysis_state.report_working_draft_path`, or `analysis_state.report_production_artifacts`; record durable report limitations in `analysis_state.limitations`; and use report-writer readiness or claim-language risk when updating `production_gate`. Do not write report-writer feedback into reviewer-owned sections.
-13. Update gates, `working_agenda`, `bounded_continuation` if relevant, `analysis_state.limitations`, `team_synthesis.ready_to_reply`, `team_synthesis.reply_reason`, and `next_action` only after required rechecks have either been completed or explicitly deferred with limitations.
-14. Reply to the user in plain language when the next useful interaction is clear.
+4. Run the default first pass in this order: `01-domain-expert`, `02-data-analyst`, `03-method-lead`. Let each reviewer update only its own section and assigned `variable_roster` fields. Treat method_lead's statistical-validity check as part of this pass whenever a method, diagnostic, result, discovered pattern, or report claim is being interpreted.
+5. Run or refresh `data_analyst.analysis_alignment` when new data arrive, a causal/report claim is being formed, a method is about to be activated, an analysis is about to be interpreted, data role/provenance concerns may change interpretation, a report/memo is requested, or earlier warnings may conflict with the available data. If `method_lead` created or changed load-bearing requirements in the first pass, route a bounded `data_analyst` alignment refresh; if that alignment changes method fit, claim ceiling, diagnostics, or blockers, route a bounded `method_lead` consumption pass before method selection, claim wording, or gate readiness.
+6. Record material changes in `team_synthesis.material_updates_this_turn`, including alignment changes that affect claim strength, method fit, report wording, or next user questions.
+7. Allow at most one adaptive follow-up pass by default, counting the alignment refresh/consumption loop above when it reruns a reviewer. Use it only when a reviewer produced a concrete update that would clearly improve the next user-facing move. Examples: `method_lead` requests a bounded data diagnostic; `data_analyst` produces data evidence triage or `analysis_alignment` that changes framework feasibility; `domain_expert` identifies a construct rule that changes data construction.
+8. Do not rerun a reviewer just because more review might help. Extra internal passes beyond one require the user to have explicitly asked for deeper analysis, already-authorized data work to be actively running, or a clear risk that replying now would mislead the user.
+9. During `causal_specification`, let `method_lead` revise the triaged candidate set after reviewer updates if `domain_expert` or `data_analyst` changes what support may be useful.
+10. If `method_lead` selects a method/job subskill for bounded activation this turn, follow `subskill_coordination.md`: the lead consultant invokes the subskill, records its returned packet in `subskill_records`, then routes the record by what it affects. Routine data or implementation requests go to `data_analyst`; report-support material goes to `report_writer`; `method_lead` gets a bounded recheck only when `method_lead_recheck.required` is true, `blocking_signal` threatens gate status or causal claims, or the record may change causal strategy, selected framework, estimand set, `causal_structure`, claim strength, or wording boundary. If no subskill is selected for activation, keep selected candidates as triage notes rather than pretending activation happened.
+11. Decide whether to invoke `05-report-writer` as the fourth core step. Invoke it when any of these are true: substantive new user interest, discussion, evidence, decision, artifact, reviewer guidance, or limitation should be preserved; a method/job subskill returned report-support material; `causal_specification` changed data evidence, `analysis_alignment`, method choice, reasoning, interpretation, assumptions, limitations, wording boundary, or user-goal alignment; a report/memo/revision is requested; or `report_production` is active. If invoked, give it compact state plus relevant reviewer/subskill output and let it update `report_structure_notes`, the working report, or a report artifact according to `subskills/05-report-writer/references/workflow.md`. If nothing report-worthy changed, do not force a report-writer pass.
+12. Record only `method_lead`-triaged plausible recommendations in `analysis_state.recommended_method_job_subskills`. Use `subskill_records` as the durable source of truth for subskills that actually ran or produced durable feedback. Let `method_lead.tools_and_methods` hold the causal triage: plausible candidates, selected subskills, and blocked or not-used options.
+13. After `report_writer` feedback, record returned path updates in `analysis_state.report_structure_notes_path`, `analysis_state.report_working_draft_path`, or `analysis_state.report_production_artifacts`; record durable report limitations in `analysis_state.limitations`; and use report-writer readiness or claim-language risk when updating `production_gate`. Do not write report-writer feedback into reviewer-owned sections.
+14. When `report_writer` compiles or materially revises a report artifact that may be delivered as polished work, run a bounded report owner review pass before treating it as final or production-ready. Route the draft, or only the relevant sections, to `data_analyst`, `method_lead`, `domain_expert`, and any activated method/task subskill whose module appears in the report. Each reviewer checks only its owned facts, claims, artifacts, diagnostics, wording limits, and stale-output risks. This review pass is deliverable QA, not a reason to create new method-job records by default.
+15. Send required report edits back to `report_writer` for revision. Record only durable unresolved issues in existing locations: `production_gate.blockers`, `production_gate.unresolved_required_materials`, `analysis_state.limitations`, reviewer-owned fields, or a new `subskill_records` entry only if a specialist produces new substantive feedback beyond reviewing its own drafted section.
+16. Update gates, `working_agenda`, `bounded_continuation` if relevant, `analysis_state.limitations`, `team_synthesis.ready_to_reply`, `team_synthesis.reply_reason`, and `next_action` only after required rechecks and report owner-review issues have either been completed or explicitly deferred with visible limitations.
+17. Reply to the user in plain language when the next useful interaction is clear.
 
 ## Phase Guidance
 
@@ -45,13 +48,15 @@ Use `causal_specification` to settle and stress-test:
 - the causal claim(s), estimand set, framework, causal structure, assumptions, and wording boundary;
 - treatment/exposure, comparator, outcome, population, time zero, follow-up, and causal unit;
 - data feasibility, variable construction, timing, support, diagnostics, tool fit, and sensitivity plan;
+- `data_analyst.analysis_alignment`: whether the current data support the intended claim, framework requirements, estimands, diagnostics, data role/provenance interpretation, and report target;
 - candidate method/task subskills through `method_lead` triage, not raw lookup output;
+- statistical-validity status for methods, diagnostics, results, discovered patterns, and claim wording, especially when results are in-sample, post-hoc, tuned on the same data, or not yet honestly evaluated;
 - `method_lead.causal_structure`, using `variable_roster`, `domain_expert`, and `data_analyst` evidence rather than a standalone DAG table;
 - active `report_writer` updates whenever the team learns something that changes the data evidence, method choice, reasoning, interpretation, limitations, or connection between the analysis framework and the user's goal.
 
 Do not wait until `report_production` to preserve causal-specification reasoning. `report_writer` should keep the working report and report-structure notes current enough that later production can reuse the recorded story instead of reconstructing why the framework, estimand, assumptions, diagnostics, or wording boundary were chosen.
 
-Set `project_summary.current_phase` to `report_production` when `causal_gate.status` is `ready` or `complete`, `causal_gate.blockers` is empty, and the selected framework, estimand set, key assumptions, decision-relevant variable roles, data feasibility, diagnostics/sensitivity plan, and report wording boundary are recorded well enough to support a reportable deliverable. This does not require every diagnostic or report artifact to be complete; those are handled by `production_gate`.
+Set `project_summary.current_phase` to `report_production` when `causal_gate.status` is `ready` or `complete`, `causal_gate.blockers` is empty, and the selected framework, estimand set, key assumptions, decision-relevant variable roles, data feasibility, current `analysis_alignment`, diagnostics/sensitivity plan, and report wording boundary are recorded well enough to support a reportable deliverable. This does not require every diagnostic or report artifact to be complete; those are handled by `production_gate`.
 
 ### `report_production`
 
@@ -59,9 +64,13 @@ Use `report_production` to draft, diagnose, revise, improve, and deliver:
 
 - invoke `report_writer` on every deliverable-focused turn to choose or update the lane, preserve paths, check claim limits, and compile or revise artifacts when requested;
 - verify that analysis datasets, code, results, diagnostics, and sensitivity checks have provenance;
+- when report-needed outputs are stale or inconsistent with the current YAML state, route a bounded refresh to `data_analyst` or the owning method/task subskill before using them as report claims;
 - organize completed analyses into coherent tables, figures, appendices, and report text;
+- before final or polished delivery, run a report owner review pass: `data_analyst` checks data facts, provenance, artifacts, and `analysis_alignment`; `method_lead` checks causal/statistical framing and claim strength; `domain_expert` checks domain meaning and interpretation; activated method/task subskills check their own modules, diagnostics, and method-specific limits;
+- send owner-review corrections back to `report_writer`, then revise the report or visibly defer the issue before delivery;
 - draft, revise, and improve the report with the user across as many turns as needed;
 - after each meaningful report update, invite the user to review the new version and say which parts still need improvement;
+- after a first-round Markdown report is generated, ask whether the user wants content revisions or conversion to another format such as Word, PDF, HTML, slides, captions, or an executive memo;
 - resolve inconsistencies between evidence, wording, and reviewer cautions;
 - limit new runs to missing diagnostics, reproducibility checks, or user-approved bounded additions.
 
@@ -94,8 +103,9 @@ Inputs:
 
 - `domain_expert`: construct validity, plausible mechanisms, meaningful effect scale, interpretation cautions, external-validity limits, and domain blockers.
 - `data_analyst`: data availability, unit structure, timing, variable construction, support, missingness/selection, provenance, data-quality blockers, and method-support feasibility notes.
-- `method_lead`: causal question, selected framework, estimand set, validity requirements, `causal_structure`, diagnostics/sensitivity plan, report wording boundary, and causal blockers.
-- `subskill_records`: only when a method/task subskill produced durable feedback. If `method_lead_recheck.required` is true, do not treat the gate as ready until `method_lead` rechecks or the unresolved issue is visibly deferred.
+- `data_analyst.analysis_alignment`: current data-support crosswalk for the intended claim, framework, estimands, prior warnings, and gate requirements.
+- `method_lead`: causal question, selected framework, estimand set, validity requirements, `causal_structure`, diagnostics/sensitivity plan, statistical-validity checks, report wording boundary, and causal blockers.
+- `subskill_records`: only when a method/task subskill or causal-discovery sidecar produced durable feedback. If `method_lead_recheck.required` is true, do not treat the gate as ready until `method_lead` rechecks or the unresolved issue is visibly deferred.
 - `analysis_state.limitations`: cross-cutting limitations that affect claim strength.
 
 Set `causal_gate.status` to `ready` or `complete` only when the recorded state is sufficient for the next reportable step:
@@ -104,6 +114,7 @@ Set `causal_gate.status` to `ready` or `complete` only when the recorded state i
 - selected framework and primary estimand set are recorded;
 - decision-relevant variable roles are reflected in `variable_roster` and `method_lead.causal_structure`;
 - data feasibility is supported, constructible, or explicitly bounded;
+- `analysis_alignment.status` is `checked`, `deferred`, or `not_applicable`, and any unsupported load-bearing requirements are either resolved or reflected in claim limits and blockers;
 - key assumptions, diagnostics, sensitivity needs, and wording limits are recorded;
 - blockers and unresolved required information are empty or explicitly deferred in a way that limits the claim.
 
@@ -118,10 +129,12 @@ Use `production_gate` for deliverable readiness: whether evidence, diagnostics, 
 Inputs:
 
 - `data_analyst`: analysis dataset status, code paths, table paths, figure paths, diagnostics assets, reproducibility notes, data-quality blockers, and final report assets.
-- `method_lead`: whether executed work still matches the selected framework, estimand set, diagnostics/sensitivity plan, and claim wording boundary.
+- `data_analyst.analysis_alignment`: whether executed or reported analysis remains aligned with the data support and claim ceiling.
+- `method_lead`: whether executed work still matches the selected framework, estimand set, diagnostics/sensitivity plan, statistical-validity checks, and claim wording boundary.
 - `domain_expert`: whether results and wording remain meaningful, interpretable, and not overgeneralized.
 - `report_writer`: report lane, working draft path, structure notes path, missing evidence, claim-language risk, artifact paths, and whether the deliverable can be safely framed.
-- `subskill_records`: report-support packets, diagnostic outputs, limitations, artifact paths, and any `blocking_signal`.
+- report owner-review feedback from `data_analyst`, `method_lead`, `domain_expert`, and activated method/task subskills when their sections or outputs appear in the drafted report.
+- `subskill_records`: specialist report-support packets, diagnostic outputs, limitations, artifact paths, and any `blocking_signal`.
 - `analysis_state`: report production artifacts, discovery sidecar material, durable limitations, and report draft path.
 
 Set `production_gate.status` to `ready` or `complete` only when the deliverable can be framed without hiding unfinished work:
@@ -129,6 +142,8 @@ Set `production_gate.status` to `ready` or `complete` only when the deliverable 
 - reported numbers, tables, figures, diagnostics, and sensitivity checks have provenance or are clearly marked as missing/deferred;
 - code, notebooks, datasets, or artifact paths needed for reproducibility are recorded when they exist;
 - diagnostics are `complete`, `not_applicable`, or explicitly `deferred` with visible limitations;
+- current `analysis_alignment` has been checked or visibly deferred, and report wording does not exceed `data_supported_claim_ceiling`;
+- owner review has either approved the relevant draft sections or unresolved owner-review issues are recorded as visible blockers, deferred materials, or report limitations;
 - `production_gate.claim_strength_for_report` is no stronger than `causal_gate.claim_strength_allowed` and no stronger than the executed evidence supports;
 - blockers and unresolved required materials are empty or explicitly deferred in a way the report will show.
 

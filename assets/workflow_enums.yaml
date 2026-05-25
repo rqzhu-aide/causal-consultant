@@ -163,15 +163,44 @@ data_analyst:
     - needs_inspection
     - unsupported
     - contradicted
+  analysis_alignment.status:
+    - not_checked
+    - checked
+    - needs_update
+    - blocked
+    - deferred
+    - not_applicable
+  analysis_alignment.data_support:
+    - directly_supported
+    - constructible_with_processing
+    - proxy_only
+    - needs_inspection
+    - unsupported
+    - contradicted
+    - not_applicable
+  analysis_alignment.gap_type:
+    - missing_variable
+    - timing_unclear
+    - proxy_only
+    - support_problem
+    - selection_or_censoring
+    - provenance_unverified
+    - simplification
+    - diagnostic_missing
+    - none
+  analysis_alignment.claim_impact:
+    - no_material_impact
+    - weakens_claim
+    - blocks_causal_claim
+    - blocks_reportable_evidence
+    - requires_bounded_continuation
 
 method_task_subskill:
   module_type:
     - design_route
     - target_goal
     - implementation_support
-    - diagnostic_sidecar
     - discovery_sidecar
-    - report_support
   role:
     - primary_route
     - target_module
@@ -206,6 +235,24 @@ method_task_subskill:
     - diagnostics_deferred
     - materials_ready
     - blocked
+  statistical_evidence.status:
+    - not_assessed
+    - exploratory_only
+    - descriptive_only
+    - internally_validated
+    - inference_supported
+    - externally_validated
+    - blocked
+    - not_applicable
+  statistical_evidence.claim_scope:
+    - unknown
+    - in_sample_only
+    - model_implied
+    - internally_validated
+    - target_sample
+    - target_population
+    - exploratory_only
+    - not_applicable
   blocking_severity:
     - none
     - low

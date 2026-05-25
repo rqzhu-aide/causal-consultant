@@ -1279,7 +1279,6 @@ MODULE_TYPE_BY_CATALOG_ROLE = {
     "target_goal": "target_goal",
     "implementation_support": "implementation_support",
     "sidecar": "discovery_sidecar",
-    "silent_report_writer": "report_support",
 }
 
 DEFAULT_RECOMMENDATION_ROLES = {

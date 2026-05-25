@@ -38,6 +38,9 @@ production_gate:
   reportable_evidence: false
   claim_strength_for_report: "unknown"
   report_completion_summary: null
+  # For polished/final reports, use report_completion_summary plus blockers or
+  # unresolved_required_materials to note whether data, method, domain, and
+  # activated specialist owner reviews are approved, revised, or deferred.
 
 working_agenda:
   intent: null
@@ -114,6 +117,46 @@ data_analyst:
     learner_plugin_handoffs: []
     diagnostic_artifact_suggestions: []
     feasibility_notes: []
+  analysis_alignment:
+    # Living crosswalk from current causal/report needs to what the data support.
+    # Update when data, claims, framework, estimands, diagnostics, or report
+    # wording change, including data role/provenance concerns that affect
+    # interpretation. This is data evidence for method_lead, not causal approval.
+    status: "not_checked"
+    aligned_to:
+      user_goal: null
+      selected_framework_id: null
+      estimands: []
+      intended_claims: []
+      report_or_analysis_target: null
+    checked_against:
+      validity_requirements: []
+      causal_structure_items: []
+      gate_requirements: []
+      prior_warnings_or_user_constraints: []
+    requirement_checks: []
+    # Each requirement_checks entry:
+    #   requirement: null
+    #   source: null
+    #   required_for: []
+    #   data_support: null       # directly_supported|constructible_with_processing|
+    #                            # proxy_only|needs_inspection|unsupported|
+    #                            # contradicted|not_applicable
+    #   evidence_pointer: null
+    #   related_variables: []
+    #   gap_type: null           # missing_variable|timing_unclear|proxy_only|
+    #                            # support_problem|selection_or_censoring|
+    #                            # provenance_unverified|simplification|
+    #                            # diagnostic_missing|none
+    #   claim_impact: null       # no_material_impact|weakens_claim|
+    #                            # blocks_causal_claim|blocks_reportable_evidence|
+    #                            # requires_bounded_continuation
+    #   possible_resolution: null
+    data_simplifications_affecting_claims: []
+    unsupported_or_overstated_claims: []
+    data_supported_claim_ceiling: "unknown"
+    alignment_summary: null
+    requests_for_resolution: []
   analysis_dataset:
     path: null
     construction_status: "not_started"
@@ -197,6 +240,8 @@ analysis_state:
 # Append one filled method/task record only when that subskill is activated
 # or produces durable feedback. Use assets/method_job_subskill_record_template.yaml.
 # Optional causal-discovery trace records may also use the same compact-record idea.
+# Report Writer does not append its own record; it consumes this state plus
+# report_structure_notes, the working report, and artifacts when compiling reports.
 subskill_records: []
 
 retired_tasks:
@@ -268,7 +313,7 @@ artifact_index:
   - artifact_id: "15-negative-controls-proximal"
     artifact_type: "subskill"
     path: "subskills/15-negative-controls-proximal/SKILL.md"
-    purpose: "design route or diagnostic sidecar for negative controls, placebo/falsification tests, empirical calibration, proximal causal inference, proxy variables, bridge functions, and unmeasured-confounding probes"
+    purpose: "design route for negative controls, placebo/falsification tests, empirical calibration, proximal causal inference, proxy variables, bridge functions, and unmeasured-confounding probes"
   - artifact_id: "20-heterogeneous-effects"
     artifact_type: "subskill"
     path: "subskills/20-heterogeneous-effects/SKILL.md"

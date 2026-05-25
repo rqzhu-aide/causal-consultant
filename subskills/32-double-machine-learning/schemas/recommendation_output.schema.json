@@ -1,149 +1,29 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "DoubleMachineLearningRecommendationInput",
-    "type": "object",
-    "properties": {
-        "design_route": {
-            "type": "string",
-            "enum": [
-                "single_time_observational",
-                "randomized",
-                "longitudinal",
-                "instrumental_variable",
-                "transportability",
-                "survival",
-                "unknown",
-                "other"
-            ]
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DoubleMachineLearningRecommendationOutput",
+  "type": "object",
+  "properties": {
+    "readiness": {"type": "string"},
+    "top_choice": {"type": "string"},
+    "analysis_lane": {"type": "string"},
+    "software_options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "package": {"type": "string"},
+          "language": {"type": "string"},
+          "when_to_use": {"type": "string"}
         },
-        "target_model": {
-            "type": "string",
-            "enum": [
-                "plr",
-                "irm",
-                "pliv",
-                "iivm",
-                "cate_forest",
-                "r_learner",
-                "dr_learner",
-                "nuisance_plugin",
-                "unknown"
-            ]
-        },
-        "estimand": {
-            "type": "string",
-            "enum": [
-                "ate",
-                "att",
-                "cate",
-                "blp",
-                "iv_late",
-                "policy_score",
-                "nuisance_only",
-                "unknown"
-            ]
-        },
-        "treatment_type": {
-            "type": "string",
-            "enum": [
-                "binary",
-                "continuous",
-                "multi_arm",
-                "instrumented",
-                "time_varying",
-                "unknown"
-            ]
-        },
-        "outcome_type": {
-            "type": "string",
-            "enum": [
-                "continuous",
-                "binary",
-                "count",
-                "survival_time",
-                "unknown"
-            ]
-        },
-        "feature_status": {
-            "type": "string",
-            "enum": [
-                "valid_pre_treatment",
-                "mixed_or_unclear",
-                "contains_post_treatment",
-                "unknown"
-            ]
-        },
-        "high_dimensional": {
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "sample_size": {
-            "type": [
-                "integer",
-                "null"
-            ],
-            "minimum": 0
-        },
-        "n_features": {
-            "type": [
-                "integer",
-                "null"
-            ],
-            "minimum": 0
-        },
-        "positivity_status": {
-            "type": "string",
-            "enum": [
-                "good",
-                "limited",
-                "poor",
-                "unknown"
-            ]
-        },
-        "needs_inference": {
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "clustered_or_grouped": {
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "heterogeneity_target": {
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "policy_target": {
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "language": {
-            "type": "string",
-            "enum": [
-                "r",
-                "python",
-                "either",
-                "unknown"
-            ]
-        }
+        "required": ["package", "language", "when_to_use"]
+      }
     },
-    "required": [
-        "design_route",
-        "target_model",
-        "estimand",
-        "treatment_type",
-        "outcome_type",
-        "feature_status",
-        "positivity_status",
-        "language"
-    ]
+    "required_clarifications": {"type": "array", "items": {"type": "string"}},
+    "diagnostics": {"type": "array", "items": {"type": "string"}},
+    "caveats": {"type": "array", "items": {"type": "string"}},
+    "activate_other_subskills": {"type": "array", "items": {"type": "string"}},
+    "report_support": {"type": "array", "items": {"type": "string"}},
+    "recommended_next_action": {"type": "string"}
+  },
+  "required": ["readiness", "top_choice", "analysis_lane", "software_options", "required_clarifications", "diagnostics", "caveats", "activate_other_subskills", "report_support", "recommended_next_action"]
 }

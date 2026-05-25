@@ -6,7 +6,7 @@ flowchart TD
     lead["Lead Consultant<br/>user-facing conversation<br/>synthesis and progression"]
     state["Project State YAML<br/>shared memory<br/>variable_roster, causal_structure<br/>subskill_records, artifacts, limits"]
     domain["domain_expert<br/>constructs and mechanisms<br/>common practice<br/>external validity"]
-    data["data_analyst<br/>data reality<br/>constructability and timing<br/>diagnostics and artifacts"]
+    data["data_analyst<br/>data reality<br/>constructability and timing<br/>analysis alignment<br/>diagnostics and artifacts"]
     method["method_lead<br/>causal question and estimands<br/>framework and assumptions<br/>method/subskill triage"]
     writer["report_writer<br/>silent notebook<br/>working report<br/>report integration"]
     discovery["06-causal-discovery<br/>graph/feature exploration<br/>advisory sidecar"]

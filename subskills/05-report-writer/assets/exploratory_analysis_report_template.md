@@ -21,9 +21,15 @@ project_summary.current_phase: project_exploration | causal_specification | repo
 causal_gate.status: exploratory | not_ready | ready | blocked | complete
 production_gate.status: not_ready | ready | blocked | complete
 production_gate.claim_strength_for_report: exploratory | associational | descriptive | cautious_causal | supported_causal | unknown
+data_analyst.analysis_alignment.status: not_checked | checked | needs_update | blocked | deferred | not_applicable
+data_analyst.analysis_alignment.data_supported_claim_ceiling: exploratory | descriptive | associational | cautious_causal | supported_causal | no_causal_claim | unknown
 ```
 
 Do not present an estimate as a final validated causal effect. Use language such as "exploratory estimate", "model-based first pass", "association under this specification", "diagnostic result", or "not yet report-ready" when the gates or diagnostics are incomplete.
+
+If this progress artifact is being polished for delivery rather than used as a private draft, run evidence review for data facts, method/claim wording, interpretation, and any activated specialist modules, or make deferred review limits visible.
+
+Even in a progress report, state the learning point early, keep claims close to their evidence and scope, and separate exploratory observations from interpretation.
 
 ## Flexible Report Spine
 
@@ -38,11 +44,11 @@ Do not present an estimate as a final validated causal effect. Use language such
 
 [Name the treatment/exposure, comparator, outcome, population, timing, target estimand, and candidate framework if known. State which pieces remain uncertain or provisional.]
 
-## 3. Data Readiness And Analysis Specification
+## 3. Data Readiness, Alignment, And Analysis Specification
 
-[Describe row unit, missingness, timing/leakage risks, support/overlap, variable constructability, preprocessing, attempted model, packages, and missing diagnostics.]
+[Describe row unit, missingness, timing/leakage risks, support/overlap, variable constructability, preprocessing, alignment between intended claims and data support, attempted model, packages, and missing diagnostics.]
 
-## 4. Results And Diagnostics
+## 4. Results, Diagnostics, And Sensitivity
 
 [Present only executed or verified summaries, plots, estimates, intervals, diagnostics, and model outputs. Clearly label exploratory or first-pass outputs.]
 

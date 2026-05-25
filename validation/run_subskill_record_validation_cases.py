@@ -87,6 +87,51 @@ CASES = (
         ),
         expect_errors=("Invalid value at recommended_next_action",),
     ),
+    Case(
+        name="06-invalid-diagnostic-sidecar-module-type",
+        replacements=(
+            ("module_type: null", 'module_type: "diagnostic_sidecar"'),
+        ),
+        expect_errors=("Invalid value at module_type",),
+    ),
+    Case(
+        name="07-valid-inference-supported-statistical-evidence",
+        replacements=(
+            ('  status: "not_assessed"', '  status: "inference_supported"'),
+            ('  claim_scope: "unknown"', '  claim_scope: "target_sample"'),
+            (
+                "  inference_or_validation_route: []",
+                '  inference_or_validation_route:\n'
+                '    - "Sandwich-robust uncertainty for the prespecified target contrast."',
+            ),
+            (
+                "  method_specific_limits: []",
+                '  method_specific_limits:\n'
+                '    - "Supports target-sample inference only under stated assumptions and diagnostics."',
+            ),
+        ),
+    ),
+    Case(
+        name="08-invalid-inference-supported-missing-route",
+        replacements=(
+            ('  status: "not_assessed"', '  status: "inference_supported"'),
+            ('  claim_scope: "unknown"', '  claim_scope: "target_sample"'),
+            (
+                "  method_specific_limits: []",
+                '  method_specific_limits:\n'
+                '    - "Inference wording is limited to the target sample."',
+            ),
+        ),
+        expect_errors=("statistical_evidence.inference_or_validation_route",),
+    ),
+    Case(
+        name="09-invalid-exploratory-evidence-missing-scope-and-limits",
+        replacements=(('  status: "not_assessed"', '  status: "exploratory_only"'),),
+        expect_errors=(
+            "statistical_evidence.claim_scope",
+            "statistical_evidence.method_specific_limits",
+        ),
+    ),
 )
 
 

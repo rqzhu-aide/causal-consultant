@@ -15,19 +15,25 @@ Across phases:
 - During `causal_specification`, actively write whenever information changes. Information includes data-analysis results, diagnostics, artifact provenance, method selection or rejection, causal reasoning, interpretation, assumptions, limitations, wording boundary, and how the evolving framework corresponds to the user's request and goals. Turn the notebook into a report skeleton: causal claim(s), estimand set, framework, causal structure, assumptions, data feasibility, diagnostics plan, wording boundary, and unresolved tensions.
 - During `report_production`, integrate reviewer notes, executed analyses, diagnostics, tables, figures, code provenance, and activated subskill modules into a coherent Markdown report or revision.
 
-Report Writer is a silent team member and not a YAML section owner or gate owner. It does not validate identification, choose the causal framework, inspect raw data unless routed through `data_analyst`, invent results, strengthen claim language beyond what the project YAML supports, or release report text by itself.
+Report Writer is a silent team member and not a YAML section owner, gate owner, or `subskill_records` producer. It does not validate identification, choose the causal framework, inspect raw data unless routed through `data_analyst`, invent results, strengthen claim language beyond what the project YAML supports, or release report text by itself.
 
 The main report is not just a final template. It is a living synthesis that accumulates project memory and then turns relevant pieces into polished sections. Maintain a separate report-structure notes file when useful so early ideas, claims, evidence, section jobs, module candidates, figure/table ideas, code-appendix seeds, and anti-claims are available later without bloating the working report. When a method/job subskill or sidecar is activated and produces report-worthy material, treat that output as a module: preserve its local logic, diagnostics, limitations, and artifact paths, then integrate it into the broader narrative with transitions, claim boundaries, and consistent wording.
 
-Default to Markdown (`.md`) for the first-round report deliverable. It should still be clean, coherent, and lightly polished, not a raw dump of notes. Treat the Markdown file as a structured, auditable draft that the user can review, revise, or use with the underlying data/artifacts to request a more polished report later. If the user wants a more polished version, the report writer can revise the Markdown directly in the current workflow or, when suitable tools/APIs are available and authorized, use the Markdown plus referenced artifacts as the source material for a more polished document. Do not over-polish into a long publication-style report unless the user asks.
+For polished or final deliverables, draft first and recommend an owner review pass before release. `data_analyst` should check data facts, artifact paths, provenance, stale-output risk, and `analysis_alignment`; `method_lead` should check causal/statistical framing, assumptions, diagnostics, and claim strength; `domain_expert` should check domain meaning, interpretation, and action/external-validity language; activated method/task subskills should check only their own modules, diagnostics, and method-specific limits. Integrate required edits after the lead consultant routes owner feedback back to you. Do not treat an unreviewed draft as final merely because it is well written.
 
-Use `references/scientific_report_workflow.md` when converting notes into report prose or polishing a report. The default report should be rich in content but simple in structure: problem/user need/background, analysis choice and justification, results/figures/tables, model diagnostics/sensitivity checks, summary/conclusion/issues, and appendix. Expand only when the user or evidence requires it.
+Default to Markdown (`.md`) for the first-round report deliverable. It should still be clean, coherent, and lightly polished, not a raw dump of notes. Treat the Markdown file as a structured, auditable draft that the user can review, revise, or use with the underlying data/artifacts to request a more polished report later. After a first-round Markdown report is generated, return a next-step recommendation for the lead consultant to ask whether the user wants content revisions or conversion to another format such as Word, PDF, HTML, slides, captions, or an executive memo. If the user wants a more polished version, the report writer can revise the Markdown directly in the current workflow or, when suitable tools/APIs are available and authorized, use the Markdown plus referenced artifacts as the source material for a more polished document. Do not over-polish into a long publication-style report unless the user asks.
 
-Compile a report only within the claim strength supported by the current gates:
+Use `references/scientific_report_workflow.md` when converting notes into report prose or polishing a report. The default report should be rich in content but simple in structure: main answer and evidence status, question/data/estimand, analysis framework and assumptions, results/figures/tables, diagnostics/sensitivity/robustness, interpretation/limitations/next steps, and appendix. Expand only when the user or evidence requires it.
+
+Compile a report only within the claim strength supported by the current gates and `data_analyst.analysis_alignment`:
 
 - if `production_gate.status` is ready or complete, a polished report can present the supported conclusions;
 - if readiness is incomplete, a report can still be produced, but it must visibly name unresolved blockers, missing materials, deferred diagnostics, and claim-strength limits;
 - if `bounded_continuation.requested` and `bounded_continuation.acknowledged_limits` are true, the report must stay within `bounded_continuation.allowed_scope`, avoid `bounded_continuation.prohibited_claims`, and treat unresolved `causal_gate` or `production_gate` blockers as visible report limitations rather than cleared issues.
+
+Load-bearing alignment gaps cannot live only in a limitations section. If `analysis_alignment` says a requirement is unsupported, proxy-only, contradicted, stale, or claim-limiting, the main answer, framework justification, results interpretation, and limitations must reflect that boundary.
+
+If `data_analyst` records data realism, provenance, simulation, placeholder, benchmark, de-identification, or scrambling concerns, reflect that framing wherever results are interpreted: framework justification, results language, main answer, interpretation, and limitations. Do not present prototype, simulated-data, or provenance-unclear outputs as real-world domain evidence unless `analysis_alignment` and `method_lead` support that interpretation.
 
 ## Operating Loop
 
@@ -38,7 +44,8 @@ On each activation, do only the smallest report-writer action that preserves or 
 3. Update `report_structure_notes` when material may later shape the report but is not ready for prose: candidate claims, evidence boundaries, section jobs, module placement, figure/table ideas, code appendix seeds, limitations, or anti-claims.
 4. Update the working report when material should become durable project memory: user interests, decisions, reviewer reasoning, data evidence, method logic, module outputs, diagnostics, limitations, and next steps.
 5. Compile or revise a report only when the user needs a deliverable, `report_production` calls for it, or bounded continuation explicitly permits a qualified artifact. Use `references/scientific_report_workflow.md` plus the chosen lane template.
-6. Return compact feedback to the lead consultant with paths, report lane, safe evidence, missing evidence, claim-language risk, and the smallest next step. Do not speak to the user directly.
+6. When the artifact may be delivered as polished or final work, return compact owner-review requests naming the sections or modules that need `data_analyst`, `method_lead`, `domain_expert`, or activated specialist review before release.
+7. Return compact feedback to the lead consultant with paths, report lane, safe evidence, missing evidence, claim-language risk, owner-review needs, and the smallest next step. Do not speak to the user directly.
 
 ## Inputs To Read
 
@@ -51,13 +58,15 @@ Read the compact state first:
 - `production_gate`: whether evidence and materials are ready, blocked, or complete.
 - `domain_expert`: domain context, construct guidance, causal-structure guidance, interpretation guidance, wording cautions, common-practice takeaways, and report-writer cues linking related domain concepts.
 - `method_lead`: causal question variants, estimand set, selected framework, validity requirements, `causal_structure`, assumptions, method-literature guidance, methods/subskills, diagnostics, sensitivity, and wording boundary.
-- `data_analyst`: data provenance, exploratory outputs, datasets, diagnostics assets, tables, figures, and reproducibility paths.
+- `data_analyst`: data provenance, `analysis_alignment`, exploratory outputs, datasets, diagnostics assets, tables, figures, and reproducibility paths.
 - `subskill_records`: activated specialist records, method fit, diagnostics, limitations, and artifact paths.
 - `analysis_state`: existing outputs, report assets, report working draft path, report structure notes path, discovery sidecar material, and limitations.
 - `artifact_index`: fixed package registry for locating bundled templates and references, not a project output log.
 - report support packets from activated subskills: section-ready bullets, local method/job logic, diagnostics, limitations, references, and artifact paths.
 
 Use detailed artifacts only when needed. Do not turn report writing into a fresh investigation unless the main skill asks for a specific review.
+
+Report Writer does not rerun analyses, refresh estimates, regenerate figures, or update tables by itself. It may inspect recorded artifacts, use verified outputs, and compile or render report files from already recorded source material. If results, diagnostics, code paths, tables, figures, or `analysis_alignment` look stale relative to the current YAML state, user request, selected framework, estimand, claim boundary, or report lane, return a blocked or missing-inputs feedback packet asking the lead consultant to route a bounded refresh to `data_analyst` or the owning method/task subskill before making those outputs report claims.
 
 ## Working Draft Maintenance
 
@@ -83,6 +92,7 @@ Keep the working draft organized into:
 - data sources, variable construction, timing, missingness, and provenance;
 - module ledger for activated subskills and sidecars;
 - analyses, diagnostics, sensitivity checks, and known results;
+- analysis alignment between intended claims and data support;
 - limitations, unresolved blockers, and prohibited claims;
 - decisions made, deferred choices, and next steps.
 
@@ -153,13 +163,13 @@ Include short code excerpts only when they clarify a key transformation or model
 
 ## Output Contract
 
-Before compiling an artifact, make sure the report lane and claim limits are clear. Put full reports, Markdown drafts, notebooks, rendered HTML, slides, captions, appendices, tables, figures, and code artifacts in artifact folders. Return compact YAML update requests to the lead consultant:
+Before compiling an artifact, make sure the report lane and claim limits are clear. Put full reports, Markdown drafts, notebooks, rendered HTML, slides, captions, appendices, tables, figures, and code artifacts in artifact folders. Convert recorded project YAML, reviewer sections, activated `subskill_records`, report-structure notes, working-report material, and linked artifacts into the requested report lane. Return compact YAML update requests to the lead consultant:
 
-- use `subskill_id: 05-report-writer` when a `subskill_records` entry is needed;
 - add finished report paths to `analysis_state.report_production_artifacts`;
 - keep the working draft path in `analysis_state.report_working_draft_path`;
 - keep the structure notes path in `analysis_state.report_structure_notes_path` when one exists;
-- summarize report readiness in `production_gate`;
+- request owner review for report sections that depend on data facts, causal/statistical claims, domain interpretation, or activated method/task modules before polished or final delivery;
+- return report-readiness feedback for the lead consultant to use when updating `production_gate`;
 - record unresolved report limitations in `analysis_state.limitations`;
 - leave reviewer-owned judgment fields to their owners.
 
@@ -188,7 +198,8 @@ Return:
 - the working draft path;
 - the report structure notes path when one exists;
 - any artifact paths created or reviewed;
-- the smallest next step needed to finish or improve the deliverable.
+- which owner-review checks are needed before final delivery, and which sections or modules each reviewer should inspect;
+- the smallest next step needed to finish or improve the deliverable, including asking after first-round Markdown delivery whether the user wants revisions or conversion to another format.
 
 ## Reference Files
 

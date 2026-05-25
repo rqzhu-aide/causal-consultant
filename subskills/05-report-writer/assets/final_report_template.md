@@ -6,32 +6,53 @@ Markdown is the default first-round deliverable. Make it coherent and lightly po
 
 Before drafting, use the report-structure notes to decide the main answer, claim boundary, section jobs, module placement, figure/table placement, code appendix needs, references, and anti-claims. Bring forward only supported or clearly qualified material.
 
+Before polished/final delivery, route the drafted report through owner review for sections that depend on data evidence, causal/statistical claims, domain interpretation, or activated method/task modules. Revise required edits or make unresolved issues visible before release.
+
+## Report Construction Rules
+
+- Draft the main answer before drafting prose. The report should not make the reader wait until the conclusion to learn what the evidence currently supports.
+- For each major claim, keep the evidence and boundary close to the claim. Use the structure: claim, evidence, limitation or scope.
+- Build the results as an evidence ladder, not a chronological log of analysis attempts. Lead with the most decision-relevant result, then add supporting diagnostics, comparisons, or sensitivity checks.
+- Separate results from interpretation: results say what was observed or computed; interpretation says what it means for the user's question and where that interpretation may fail.
+- Give each paragraph one job. A paragraph should either orient, state a claim, present evidence, compare alternatives, explain a diagnostic, interpret meaning, or state a limitation.
+- Before release, run an overclaim check for unsupported causal language, broader generalization than the data support, unverified novelty, hidden unresolved diagnostics, and action recommendations that exceed the evidence.
+
 ```markdown
 # [Project-Specific Report Title]
 
-## 1. Problem, User Need, And Background
+## 1. Main Answer And Evidence Status
 
-[State the user's goal, practical or scientific need, relevant domain background, available data or materials, intended audience, and what this report is meant to help the user decide or understand.]
+[Answer the user's question directly in one to three short paragraphs. State the main finding or current position, the evidence source, the allowed claim strength, and the most important limitation.]
 
-[Use references only when they support background, domain practice, data source context, or a methodological choice. Do not cite references that were not actually inspected or supplied.]
+[If the report is exploratory, descriptive, associational, causally cautious, or bounded by unresolved materials, say that here. Do not let claim boundaries appear only in a late limitations section.]
 
-## 2. Analysis Choice And Justification
+[State whether the report has passed evidence review or whether any data, method, interpretation, or artifact issue remains deferred.]
 
-[State the selected causal or analytic framework, target estimand or analysis target, and why this approach fits the user's question, design, data structure, and current phase.]
+## 2. Question, Data, And Estimand
 
-[Briefly explain key alternatives that were considered, deferred, or rejected when they matter for the user's decision. Keep this focused on method fit, not a broad methods textbook.]
+[State the user's goal, practical or scientific need, intended audience, treatment/exposure, comparator, outcome, population, causal unit, timing, and target estimand or analysis target.]
 
-[Name the main assumptions, diagnostics, sensitivity checks, and wording limits. If the analysis is exploratory, descriptive, associational, or bounded by unresolved causal blockers, say so here.]
+[Describe the data or materials used, including provenance, row unit, analysis unit, sample or file scope when known, and whether the data were inspected, computed from code, user-provided, or unavailable.]
 
-## 3. Results, Figures, And Tables
+[State whether the inspected data align with the requirements for the intended claim. If load-bearing timing, confounder, support, diagnostic, or provenance requirements are missing, proxy-only, contradicted, or deferred, make that boundary part of the setup.]
+
+## 3. Analysis Framework And Assumptions
+
+[State the selected causal or analytic framework and why this approach fits the user's question, design, data structure, and current phase.]
+
+[Name the main assumptions, diagnostics, sensitivity checks, and wording limits. Briefly explain key alternatives that were considered, deferred, or rejected when they matter for the user's decision. Keep this focused on method fit, not a broad methods textbook.]
+
+[When activated method/job modules contribute to the report, state each central module's role, evidence status, and claim scope in plain language, using its `subskill_records.statistical_evidence` packet.]
+
+## 4. Results, Figures, And Tables
 
 [Present the main result or current finding first, with provenance. Use figures and tables only when they help the reader understand the result better than text alone.]
 
 [For each figure or table, give a short reader-facing explanation: what it shows, why it matters, and what conclusion or caution it supports. Keep interpretation consistent with the recorded claim strength.]
 
-[Keep this section focused on what was found. Briefly point to diagnostics only when needed for flow; give diagnostics their own space in the next section.]
+[Keep this section focused on what was observed, estimated, or verified. Briefly point to diagnostics only when needed for flow; give diagnostic implications their own space in the next section.]
 
-## 4. Model Diagnostics And Sensitivity Checks
+## 5. Diagnostics, Sensitivity, And Robustness
 
 [Summarize the diagnostics that affect whether the result can be trusted or how it must be qualified. This may include model fit, residual or prediction checks, balance/overlap/support checks, influential observations, missingness/selection checks, timing/leakage checks, robustness checks, sensitivity analyses, placebo/falsification checks, or method-specific diagnostics.]
 
@@ -39,9 +60,9 @@ Before drafting, use the report-structure notes to decide the main answer, claim
 
 [Put detailed diagnostic tables, plots, model-comparison outputs, and secondary sensitivity results in the appendix.]
 
-## 5. Summary, Conclusion, And Potential Issues
+## 6. Interpretation, Limitations, And Next Steps
 
-[Answer the user's question as directly as the evidence allows. State what can be concluded, what cannot be concluded, and what the result means for the user's goal.]
+[Interpret the evidence for the user's goal. State what can be concluded, what cannot be concluded, and what the result means for the user's practical or scientific decision.]
 
 [List the most important causal blockers, data limitations, unresolved diagnostics, scope limits, bounded-continuation warnings, and prohibited claims.]
 

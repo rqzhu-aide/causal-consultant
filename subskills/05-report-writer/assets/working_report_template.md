@@ -19,6 +19,7 @@ Use this Markdown file as the report writer's private polished project notebook 
 - Key references or source materials:
 - Important artifact paths:
 - Activated module index:
+- Owner review status:
 - Current user confusion or immediate intent:
 - Open questions for the user:
 
@@ -50,6 +51,7 @@ Use this Markdown file as the report writer's private polished project notebook 
 - Variable construction:
 - Timing windows:
 - Missingness, selection, support, and data quality:
+- Analysis alignment: [claim/framework needs, data support, unsupported requirements, data-supported claim ceiling]
 - Reproducibility notes:
 
 ## Analyses, Diagnostics, And Results
@@ -86,6 +88,7 @@ Use this as a module ledger. Each activated method/job subskill or sidecar that 
 - Diagnostics or checks:
 - Reviewer interpretation:
 - Limitations and wording boundary:
+- Report-review status:
 - References:
 - Artifact paths:
 - Intended report placement: [main section / subsection / appendix / parked note]
@@ -95,6 +98,7 @@ Use this as a module ledger. Each activated method/job subskill or sidecar that 
 - Domain limitations:
 - Method or assumption limitations:
 - Data limitations:
+- Analysis-alignment limits:
 - Gate blockers:
 - Bounded-continuation warnings:
 - Prohibited claims:

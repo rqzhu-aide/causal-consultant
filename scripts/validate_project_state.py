@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from validate_subskill_record import validate_text as validate_subskill_record_text
+
 
 REQUIRED_TOP_LEVEL = (
     "project_summary",
@@ -52,6 +54,15 @@ REQUIRED_PATHS = (
     "data_analyst.method_support.learner_plugin_handoffs",
     "data_analyst.method_support.diagnostic_artifact_suggestions",
     "data_analyst.method_support.feasibility_notes",
+    "data_analyst.analysis_alignment",
+    "data_analyst.analysis_alignment.status",
+    "data_analyst.analysis_alignment.aligned_to",
+    "data_analyst.analysis_alignment.checked_against",
+    "data_analyst.analysis_alignment.requirement_checks",
+    "data_analyst.analysis_alignment.data_simplifications_affecting_claims",
+    "data_analyst.analysis_alignment.unsupported_or_overstated_claims",
+    "data_analyst.analysis_alignment.data_supported_claim_ceiling",
+    "data_analyst.analysis_alignment.requests_for_resolution",
     "data_analyst.analysis_dataset.construction_status",
     "method_lead.status",
     "method_lead.selected_framework.fit",
@@ -129,6 +140,34 @@ VARIABLE_METHOD_ROLE = {
 }
 DATA_STATUS = {"none", "user_described", "available_not_inspected", "inspected", "analysis_ready", "unavailable", "unknown"}
 CONSTRUCTION_STATUS = {"not_started", "in_progress", "complete", "blocked", "deferred", "not_applicable"}
+ALIGNMENT_STATUS = {"not_checked", "checked", "needs_update", "blocked", "deferred", "not_applicable"}
+ALIGNMENT_DATA_SUPPORT = {
+    "directly_supported",
+    "constructible_with_processing",
+    "proxy_only",
+    "needs_inspection",
+    "unsupported",
+    "contradicted",
+    "not_applicable",
+}
+ALIGNMENT_GAP_TYPE = {
+    "missing_variable",
+    "timing_unclear",
+    "proxy_only",
+    "support_problem",
+    "selection_or_censoring",
+    "provenance_unverified",
+    "simplification",
+    "diagnostic_missing",
+    "none",
+}
+ALIGNMENT_CLAIM_IMPACT = {
+    "no_material_impact",
+    "weakens_claim",
+    "blocks_causal_claim",
+    "blocks_reportable_evidence",
+    "requires_bounded_continuation",
+}
 ARTIFACT_INDEX_TYPE = {"subskill", "template", "reference", "script", "asset", "other"}
 PACKAGE_PATH_PREFIXES = ("subskills/", "assets/", "references/", "scripts/")
 PROJECT_OUTPUT_PATH_PREFIXES = (
@@ -169,6 +208,8 @@ ALLOWED_VALUES = {
     "method_lead.causal_structure.identification_status": IDENTIFICATION_STATUS,
     "data_analyst.phase_role": PHASES | {"unknown"},
     "data_analyst.data_status": DATA_STATUS,
+    "data_analyst.analysis_alignment.status": ALIGNMENT_STATUS,
+    "data_analyst.analysis_alignment.data_supported_claim_ceiling": CLAIM_STRENGTH,
     "data_analyst.analysis_dataset.construction_status": CONSTRUCTION_STATUS,
     "analysis_state.discovery_sidecar.return_to_phase": PHASES,
 }
@@ -326,6 +367,78 @@ def validate_variable_roster(path: Path, errors: list[str]) -> None:
             )
 
 
+def validate_analysis_alignment(path: Path, errors: list[str]) -> None:
+    """Validate controlled values inside data_analyst.analysis_alignment lists."""
+
+    alignment_indent: int | None = None
+    checks_indent: int | None = None
+    in_alignment = False
+    in_checks = False
+
+    allowed_by_key = {
+        "data_support": ALIGNMENT_DATA_SUPPORT,
+        "gap_type": ALIGNMENT_GAP_TYPE,
+        "claim_impact": ALIGNMENT_CLAIM_IMPACT,
+    }
+
+    for line_no, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        line = strip_comment(raw_line).rstrip()
+        if not line.strip() or line.strip() == "---":
+            continue
+
+        indent = len(line) - len(line.lstrip(" "))
+        text = line.strip()
+
+        if text.startswith("analysis_alignment:"):
+            alignment_indent = indent
+            in_alignment = text not in {"analysis_alignment: []", "analysis_alignment: [ ]"}
+            in_checks = False
+            checks_indent = None
+            continue
+
+        if in_alignment and alignment_indent is not None and indent <= alignment_indent:
+            in_alignment = False
+            in_checks = False
+            alignment_indent = None
+            checks_indent = None
+            continue
+
+        if not in_alignment:
+            continue
+
+        if text.startswith("requirement_checks:"):
+            checks_indent = indent
+            in_checks = text not in {"requirement_checks: []", "requirement_checks: [ ]"}
+            continue
+
+        if in_checks and checks_indent is not None and indent <= checks_indent and not text.startswith("- "):
+            in_checks = False
+            checks_indent = None
+
+        if not in_checks:
+            continue
+
+        item_text = text[2:].strip() if text.startswith("- ") else text
+        if ":" not in item_text:
+            continue
+
+        key, raw_value = item_text.split(":", 1)
+        key = key.strip()
+        if key not in allowed_by_key:
+            continue
+
+        value = parse_scalar(raw_value)
+        if value in (None, []):
+            continue
+
+        allowed = allowed_by_key[key]
+        if value not in allowed:
+            errors.append(
+                f"Invalid value at data_analyst.analysis_alignment.requirement_checks[].{key} "
+                f"(line {line_no}): {value!r}. Allowed: {', '.join(sorted(allowed))}"
+            )
+
+
 def validate_artifact_index(path: Path, errors: list[str], warnings: list[str]) -> None:
     artifact_index_indent: int | None = None
     in_artifact_index = False
@@ -410,6 +523,106 @@ def has_content(value: Any) -> bool:
     return value not in (None, [], "")
 
 
+def deindent_sequence_item(item_lines: list[str], start_line: int) -> str:
+    record_lines: list[str] = []
+    for index, line in enumerate(item_lines):
+        if index == 0:
+            marker_index = line.find("-")
+            after_marker = line[marker_index + 1 :] if marker_index >= 0 else line
+            if after_marker.startswith(" "):
+                after_marker = after_marker[1:]
+            if after_marker.strip():
+                record_lines.append(after_marker)
+            continue
+
+        if line.startswith("    "):
+            record_lines.append(line[4:])
+        elif line.strip():
+            record_lines.append(line.lstrip())
+        else:
+            record_lines.append("")
+
+    return ("\n" * (start_line - 1)) + "\n".join(record_lines) + "\n"
+
+
+def extract_top_level_sequence_items(
+    project_path: Path,
+    section_name: str,
+    errors: list[str],
+) -> list[tuple[int, str]]:
+    raw_lines = project_path.read_text(encoding="utf-8").splitlines()
+
+    section_index: int | None = None
+    for index, raw_line in enumerate(raw_lines):
+        line = strip_comment(raw_line).rstrip()
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip(" "))
+        text = line.strip()
+        if indent == 0 and text.startswith(f"{section_name}:"):
+            section_index = index
+            raw_value = text.split(":", 1)[1].strip()
+            if raw_value in {"[]", "[ ]"}:
+                return []
+            if raw_value:
+                errors.append(
+                    f"{section_name} must be an empty list or block list "
+                    f"(line {index + 1}), found {raw_value!r}."
+                )
+                return []
+            break
+
+    if section_index is None:
+        return []
+
+    items: list[tuple[int, str]] = []
+    current_lines: list[str] = []
+    current_start_line: int | None = None
+
+    for index in range(section_index + 1, len(raw_lines)):
+        raw_line = raw_lines[index]
+        line = strip_comment(raw_line).rstrip()
+        if not line.strip():
+            if current_lines:
+                current_lines.append(raw_line)
+            continue
+
+        indent = len(line) - len(line.lstrip(" "))
+        text = line.strip()
+        if indent == 0:
+            break
+
+        if indent == 2 and text.startswith("-"):
+            if current_lines and current_start_line is not None:
+                items.append(
+                    (current_start_line, deindent_sequence_item(current_lines, current_start_line))
+                )
+            current_lines = [raw_line]
+            current_start_line = index + 1
+            continue
+
+        if current_start_line is None:
+            errors.append(
+                f"{section_name} has content before its first list item "
+                f"(line {index + 1})."
+            )
+            continue
+        current_lines.append(raw_line)
+
+    if current_lines and current_start_line is not None:
+        items.append((current_start_line, deindent_sequence_item(current_lines, current_start_line)))
+
+    return items
+
+
+def validate_subskill_records(project_path: Path, errors: list[str]) -> None:
+    records = extract_top_level_sequence_items(project_path, "subskill_records", errors)
+    for index, (start_line, record_text) in enumerate(records, start=1):
+        record_errors = validate_subskill_record_text(record_text)
+        for error in record_errors:
+            errors.append(f"subskill_records[{index}] starting line {start_line}: {error}")
+
+
 def validate_gate_consistency(values: dict[str, Any], errors: list[str], warnings: list[str]) -> None:
     current_phase = values.get("project_summary.current_phase")
     causal_status = values.get("causal_gate.status")
@@ -422,12 +635,28 @@ def validate_gate_consistency(values: dict[str, Any], errors: list[str], warning
     production_claim = values.get("production_gate.claim_strength_for_report")
     bounded_requested = values.get("bounded_continuation.requested") is True
     bounded_acknowledged = values.get("bounded_continuation.acknowledged_limits") is True
+    alignment_status = values.get("data_analyst.analysis_alignment.status")
+    alignment_ceiling = values.get("data_analyst.analysis_alignment.data_supported_claim_ceiling")
+    missing_or_weak_alignment = values.get("data_analyst.analysis_alignment.unsupported_or_overstated_claims")
+    data_simplifications = values.get("data_analyst.analysis_alignment.data_simplifications_affecting_claims")
 
     if causal_claim in CLAIM_STRENGTH_ORDER and production_claim in CLAIM_STRENGTH_ORDER:
         if CLAIM_STRENGTH_ORDER[production_claim] > CLAIM_STRENGTH_ORDER[causal_claim]:
             errors.append(
                 "production_gate.claim_strength_for_report is stronger than "
                 "causal_gate.claim_strength_allowed."
+            )
+
+    if alignment_ceiling in CLAIM_STRENGTH_ORDER and alignment_ceiling != "unknown":
+        if causal_claim in CLAIM_STRENGTH_ORDER and CLAIM_STRENGTH_ORDER[causal_claim] > CLAIM_STRENGTH_ORDER[alignment_ceiling]:
+            warnings.append(
+                "causal_gate.claim_strength_allowed is stronger than "
+                "data_analyst.analysis_alignment.data_supported_claim_ceiling."
+            )
+        if production_claim in CLAIM_STRENGTH_ORDER and CLAIM_STRENGTH_ORDER[production_claim] > CLAIM_STRENGTH_ORDER[alignment_ceiling]:
+            warnings.append(
+                "production_gate.claim_strength_for_report is stronger than "
+                "data_analyst.analysis_alignment.data_supported_claim_ceiling."
             )
 
     if causal_status in {"ready", "complete"}:
@@ -440,6 +669,10 @@ def validate_gate_consistency(values: dict[str, Any], errors: list[str], warning
             warnings.append(
                 "causal_gate.status is ready/complete while causal_gate.unresolved_required_information is non-empty."
             )
+        if alignment_status == "blocked":
+            warnings.append(
+                "causal_gate.status is ready/complete while data_analyst.analysis_alignment.status is blocked."
+            )
 
     if production_status in {"ready", "complete"}:
         if has_content(production_blockers):
@@ -450,6 +683,10 @@ def validate_gate_consistency(values: dict[str, Any], errors: list[str], warning
         if has_content(production_unresolved):
             warnings.append(
                 "production_gate.status is ready/complete while production_gate.unresolved_required_materials is non-empty."
+            )
+        if alignment_status == "blocked":
+            warnings.append(
+                "production_gate.status is ready/complete while data_analyst.analysis_alignment.status is blocked."
             )
 
     if causal_status in {"blocked", "not_ready", "needs_information"} and causal_claim in {
@@ -462,6 +699,11 @@ def validate_gate_consistency(values: dict[str, Any], errors: list[str], warning
         )
 
     if current_phase == "report_production":
+        if alignment_status in {None, "not_checked", "needs_update"}:
+            warnings.append(
+                "current_phase is report_production but data_analyst.analysis_alignment is not checked/current. "
+                "Check data support against the intended claim before reportable interpretation."
+            )
         causal_ready = causal_status in {"ready", "complete"} and not has_content(causal_blockers)
         if not causal_ready:
             if bounded_requested and bounded_acknowledged:
@@ -474,6 +716,30 @@ def validate_gate_consistency(values: dict[str, Any], errors: list[str], warning
                     "current_phase is report_production but causal_gate is not ready/complete or has blockers, "
                     "and bounded_continuation is not acknowledged."
                 )
+
+    if values.get("production_gate.reportable_evidence") is True:
+        if alignment_status in {None, "not_checked", "needs_update"}:
+            warnings.append(
+                "production_gate.reportable_evidence is true but data_analyst.analysis_alignment is not checked/current."
+            )
+        if alignment_status == "blocked":
+            warnings.append(
+                "production_gate.reportable_evidence is true while data_analyst.analysis_alignment.status is blocked."
+            )
+
+    if causal_status in {"ready", "complete"} and has_content(missing_or_weak_alignment):
+        warnings.append(
+            "causal_gate.status is ready/complete while data_analyst.analysis_alignment.unsupported_or_overstated_claims "
+            "is non-empty. Keep claim limits visible or lower gate readiness."
+        )
+
+    if production_status in {"ready", "complete"} and (
+        has_content(missing_or_weak_alignment) or has_content(data_simplifications)
+    ):
+        warnings.append(
+            "production_gate.status is ready/complete while analysis_alignment records unsupported claims or "
+            "claim-affecting data simplifications. Ensure the report explicitly reflects them."
+        )
 
     if bounded_requested:
         if not bounded_acknowledged:
@@ -523,7 +789,9 @@ def validate(project_path: Path) -> tuple[list[str], list[str]]:
                 errors.append(f"Expected boolean at {format_path(path, lines)}, found {value!r}")
 
     validate_variable_roster(project_path, errors)
+    validate_analysis_alignment(project_path, errors)
     validate_artifact_index(project_path, errors, warnings)
+    validate_subskill_records(project_path, errors)
     validate_gate_consistency(values, errors, warnings)
 
     if values.get("analysis_state.discovery_sidecar.active") is True and not values.get(

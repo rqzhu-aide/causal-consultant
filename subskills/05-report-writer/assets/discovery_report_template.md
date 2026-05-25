@@ -105,7 +105,7 @@ Discovery output can suggest adjustment questions, but it cannot choose the fina
 
 ## 9. Recommended Next Effect-Estimation Questions
 
-[When useful, propose candidate next questions without running them automatically. Name candidate treatment or exposure, comparator, outcome, population, unit, and time horizon. Name suggested owner review before estimation, such as `domain_expert`, `data_analyst`, or `method_lead`, and list data or design information needed before effect estimation.]
+[When useful, propose candidate next questions without running them automatically. Name candidate treatment or exposure, comparator, outcome, population, unit, and time horizon. Name the domain, data, or method review needed before estimation, and list data or design information needed before effect estimation.]
 
 Frame these as follow-up options, not as completed causal answers.
 
@@ -129,7 +129,7 @@ Every causal discovery report must cover these elements somewhere in the report:
 
 | Required element | What must be covered |
 |---|---|
-| Discovery scope | Discovery goal, whether the report is discovery-only, and whether findings feed later owner review. |
+| Discovery scope | Discovery goal, whether the report is discovery-only, and whether findings feed later domain, data, or method review. |
 | Data and variables | Data provenance, row unit, time structure, variables included/excluded, background knowledge, and preprocessing choices. |
 | Graph target and method | Graph object, algorithm family, assumptions, packages, tuning, seeds, and code paths when available. |
 | Graph findings | Candidate edges, uncertain orientations, equivalence-class ambiguity, conflicts with background knowledge, and artifact support. |

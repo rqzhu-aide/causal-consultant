@@ -14,6 +14,7 @@ Record the smallest useful longitudinal design:
 - Intervention strategy: static, sustained, dynamic, stochastic, modified treatment policy, threshold, dose accumulation, or grace-period rule.
 - Outcome: final, repeated, survival, recurrent, competing-risk, cumulative, or utility outcome.
 - Estimand: mean/risk/survival under a strategy, contrast between strategies, cumulative effect, regime value, or modified-treatment-policy effect.
+- Model-input dataset: row structure, retained time-varying treatment/covariate/censoring/outcome histories, and source-data fields that were summarized, windowed, lagged, or collapsed before estimation.
 
 If the user wants a learned or deployable adaptive rule, activate `25-dynamic-treatment-policies`; keep this module responsible for longitudinal identification and support.
 
@@ -25,6 +26,7 @@ Minimum checks before estimation:
 - time-varying confounders affected by prior treatment are measured before the next treatment decision;
 - strategy definitions are feasible interventions, not just labels for observed behavior;
 - observed histories support the candidate strategies;
+- the analysis dataset actually passed to the estimator preserves the histories required by the chosen longitudinal method;
 - censoring and missingness are measurable and can be modeled, bounded, or explicitly caveated;
 - outcome and follow-up windows align with the strategy and target population;
 - competing events and death are handled with the appropriate target question.
@@ -47,6 +49,7 @@ Minimum checks before estimation:
 Ask for one or two concrete checks at a time:
 
 - long-format person-time data dictionary with id, time, treatment, covariates, censoring, and outcome;
+- model-input audit showing what source data were retained longitudinally, what were summarized, and why the resulting input matches or does not match the claimed method;
 - timeline diagram or table for treatment, confounders, censoring, and outcomes;
 - visit/grid construction and lag/grace-period sensitivity plan;
 - regime adherence counts over time;
@@ -73,6 +76,7 @@ Use this design route with other modules when the target or implementation needs
 Minimum diagnostic set:
 
 - time-ordering and history-construction checks;
+- model-input compatibility: estimator rows, retained histories, collapsed/summarized features, and claim consequences;
 - strategy definitions and feasibility;
 - positivity/support over histories;
 - treatment and censoring model diagnostics;
@@ -92,6 +96,7 @@ Use careful longitudinal language:
 - "weighted pseudo-population estimate from a marginal structural model";
 - "parametric g-formula simulation under the specified strategy";
 - "exploratory longitudinal association" when identification is incomplete.
+- "baseline summaries of pre-treatment history were used as covariates while post-baseline treatment/censoring histories remained longitudinal."
 
 Avoid:
 
@@ -99,3 +104,4 @@ Avoid:
 - "adjusted for time-varying confounding" when the time order is not reconstructed;
 - "dynamic treatment effect" when the target is only a fixed sustained regimen;
 - "optimal regime" unless `25-dynamic-treatment-policies` has defined the policy target and validation.
+- "longitudinal g-methods estimate" when the estimator input has collapsed the post-baseline histories required by the claimed strategy; reframe or reroute instead.

@@ -1,6 +1,6 @@
 # A Causal Consultant Skill
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-0.6.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
 *A Modular Consultant Team (MCT) skill for causal reasoning, data feasibility, analysis framework selection, diagnostics, interpretation, and report production.*
 

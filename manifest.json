@@ -1,6 +1,6 @@
 {
   "package": "causal-consultant",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "created_for": "lean modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
   "last_updated_focus": "Split the top-level lead consultant skill into a lean user-facing SKILL.md plus backend reference files for workflow, YAML management, team coordination, subskill coordination, and conversation boundaries.",

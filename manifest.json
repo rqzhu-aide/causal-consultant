@@ -1,6 +1,7 @@
 {
   "package": "causal-consultant",
   "version": "1.2.0",
+  "license": "MIT",
   "created_for": "lean modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
   "last_updated_focus": "Strengthen DAG artifact decisions, report inclusion of causal-structure artifacts, conditioning-risk checks, diagnostics visibility, and reproducibility expectations.",

@@ -47,6 +47,20 @@ Read the current state before updating domain guidance:
 
 Use these inputs to evaluate domain meaning and provide suggestions. Do not overwrite reviewer-owned data or method fields.
 
+## Refresh Boundary
+
+Domain guidance is persistent project memory. Run or refresh `domain_expert` when new information changes, challenges, or depends on domain meaning:
+
+- new user facts about setting, goal, population, exposure, comparator, outcome, timing, mechanism, audience, or action context;
+- new variables or data fields need construct meaning, measurement standards, invalid values, preprocessing norms, or effect-scale interpretation;
+- `data_analyst` finds a data feature, proxy, derived variable, or quality issue that needs domain interpretation;
+- `method_lead` needs domain plausibility for intervention versions, variable roles, assumptions, effect scale, external validity, or wording boundary;
+- report wording, conclusions, limitations, or action recommendations depend on domain meaning;
+- user-stated domain facts conflict with inspected evidence or prior project state;
+- the user asks for field practice, literature, guidelines, or how similar questions are usually handled.
+
+Do not refresh `domain_expert` just because another turn happened. Reuse existing domain guidance when the turn is only file intake, code execution, table or figure generation, report formatting, `method_lead` consumption of already-recorded domain facts, or a bounded data check that does not change construct meaning or interpretation.
+
 ## Downstream Guidance
 
 Provide information in a form later reviewers can use directly:
@@ -58,7 +72,7 @@ Provide information in a form later reviewers can use directly:
 
 ## Domain Interest And Difficulty Scan
 
-On each meaningful update, scan for the domain features that make the user's question important, difficult, or easy to misinterpret. Keep the scan compact, but make it rich enough that later reviewers can reason from it.
+On each meaningful domain update, scan for the domain features that make the user's question important, difficult, or easy to misinterpret. Keep the scan compact, but make it rich enough that later reviewers can reason from it.
 
 Focus on:
 

@@ -94,6 +94,8 @@ Before reportable interpretation, make sure `analysis_alignment.status` is `chec
 
 When `method_lead.causal_structure`, selected framework, or estimand set already exists, read it as context for data construction and diagnostics. Use it to decide which variables, timing windows, supports, diagnostics, and report assets matter, but do not rewrite causal-structure or identification judgments.
 
+For every variable used in adjustment, filtering, restriction, matching, weighting, stratification, feature construction, model covariates, or complete-case analysis, check when it was measured or created relative to time zero, exposure, and outcome. Flag variables that may be downstream, selected-on, missingness-driven, or outcome-derived so `method_lead` can judge collider, post-treatment, mediator, or selection risk.
+
 ## Data-To-Method Alignment
 
 For early `project_exploration` intake, keep data-to-method feedback lightweight: name obvious data possibilities, uncertainty, and the next cheap check. Do not load deeper alignment guidance unless a safe reply depends on it.
@@ -114,6 +116,7 @@ Record a blocker, data quality issue, limitation, or request for progression whe
 - row unit, causal unit, or clustering level is unclear or inconsistent;
 - exposure, comparator, outcome, covariates, IDs, or time fields are missing, proxy-only, or not constructible;
 - timing makes leakage, immortal time, reverse ordering, or post-treatment feature construction plausible;
+- adjustment, filtering, restriction, matching, weighting, stratification, model covariates, or complete-case rules may condition on downstream, selected-on, missingness-driven, or outcome-derived variables;
 - missingness, selection, exclusions, attrition, censoring, or support problems could change the analysis population or estimand;
 - sample size, sparse cells, privacy rules, or small-cell disclosure limits constrain reporting;
 - outputs, tables, plots, or estimates lack reproducible code paths or inspected provenance.

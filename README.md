@@ -1,6 +1,6 @@
 # A Causal Consultant Skill
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
 *A Modular Consultant Team (MCT) skill for causal reasoning, data feasibility, analysis framework selection, diagnostics, interpretation, and report production.*
 
@@ -10,7 +10,7 @@
 
 This is a causal inference consultant skill for agent systems that load a top-level `SKILL.md` and then selectively read supporting references, subskills, scripts, examples, schemas, and templates. It helps a user move from an informal causal question to a defensible causal specification, useful exploratory or diagnostic analysis, appropriate method/task specialist support, and a report or memo with clear claim boundaries.
 
-Version 1.1.0 uses a Modular Consultant Team (MCT) architecture: a user-facing lead consultant coordinates four core team members, `domain_expert`, `data_analyst`, `method_lead`, and silent `report_writer`. The lead consultant keeps the conversation coherent, while the core team preserves domain meaning, data reality, causal validity, and reportability. Early exploration stays lightweight, `method_lead` maps plausible causal options before narrowing, and method/task subskills are used as bounded specialist modules only when they are useful.
+Version 1.2.0 uses a Modular Consultant Team (MCT) architecture: a user-facing lead consultant coordinates four core team members, `domain_expert`, `data_analyst`, `method_lead`, and silent `report_writer`. The lead consultant keeps the conversation coherent, while the core team preserves domain meaning, data reality, causal validity, and reportability. Early exploration stays lightweight, `method_lead` maps plausible causal options before narrowing, and method/task subskills are used as bounded specialist modules only when they are useful. This version strengthens DAG artifact decisions, report inclusion of causal-structure artifacts, conditioning-risk checks, diagnostics visibility, and reproducibility expectations.
 
 The skill keeps a compact project state with the user's goal, project phase, working facts, domain guidance, data properties, candidate frameworks, estimands, assumptions, diagnostics, limitations, recommended or activated subskills, and report materials. As new information appears, the workflow can recheck earlier decisions, revise the analysis framework, narrow the estimand, request a bounded data diagnostic, produce a qualified progress artifact, or explain why a causal claim is not yet supported.
 

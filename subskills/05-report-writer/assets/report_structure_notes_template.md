@@ -30,6 +30,13 @@ Alternative framings:
 
 - 
 
+## Causal Structure Artifact Plan
+
+- Is graph, timing, or variable-role reasoning load-bearing:
+- `method_lead.causal_structure.graph_artifact` path:
+- Planned report placement:
+- If not shown in the report, reason:
+
 ## Claim Evidence Boundary Map
 
 Use this table for any statement that may become report text.

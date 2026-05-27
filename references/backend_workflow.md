@@ -62,6 +62,7 @@ Use `causal_specification` to settle and stress-test:
 - candidate method/task subskills through `method_lead` triage, not raw lookup output;
 - statistical-validity status for methods, diagnostics, results, discovered patterns, and claim wording, especially when results are in-sample, post-hoc, tuned on the same data, or not yet honestly evaluated;
 - `method_lead.causal_structure`, using `variable_roster`, `domain_expert`, and `data_analyst` evidence rather than a standalone DAG table;
+- the causal-structure artifact decision: if graph, timing, or role reasoning is load-bearing, `method_lead.causal_structure.graph_artifact` should point to a current project artifact; if not, `causal_structure.narrative` should explain why the compact YAML summary is enough;
 - narrowing the exploration option map toward one primary working framework, while preserving one or two serious alternates only when current domain or data uncertainty genuinely supports them, with the evidence that would make each alternate replace or modify the primary framework;
 - active `report_writer` updates whenever the team learns something that changes the data evidence, method choice, reasoning, interpretation, limitations, or connection between the analysis framework and the user's goal.
 
@@ -124,6 +125,8 @@ Set `causal_gate.status` to `ready` or `complete` only when the recorded state i
 - causal question, exposure/intervention, comparator, outcome, population, time zero, follow-up, and causal unit are clear enough for the intended claim;
 - selected framework and primary estimand set are recorded;
 - decision-relevant variable roles are reflected in `variable_roster` and `method_lead.causal_structure`;
+- graph, timing, or role reasoning is either externalized in a current `method_lead.causal_structure.graph_artifact` when load-bearing, or the `causal_structure.narrative` explains why no separate artifact is needed;
+- load-bearing adjustment, restriction, matching/weighting, stratification, complete-case, or model-covariate choices have passed a timing/role check, or unresolved collider, post-treatment, mediator, selection, missingness, or outcome-derived-feature risk is recorded as a blocker or claim limitation;
 - data feasibility is supported, constructible, or explicitly bounded;
 - `analysis_alignment.status` is `checked`, `deferred`, or `not_applicable`, and any unsupported load-bearing requirements are either resolved or reflected in claim limits and blockers;
 - key assumptions, diagnostics, sensitivity needs, and wording limits are recorded;

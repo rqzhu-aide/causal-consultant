@@ -80,6 +80,7 @@ Focus on:
 - construct validity: whether the exposure, comparator, outcome, population, subgroup, timing, and proxies mean what the user intends;
 - mechanisms and timing: plausible pathways, lag periods, feedback loops, competing mechanisms, reverse ordering risks, and intervention versions;
 - variable-role hypotheses: likely confounders, mediators, colliders, instruments, selection variables, and effect modifiers, stated as domain hypotheses for `method_lead`;
+- conditioning-risk clues: common effects, selection processes, downstream measurements, or proxies generated after exposure/outcome processes begin, where adjustment, restriction, matching, weighting, stratification, or complete-case analysis could create bias;
 - measurement and preprocessing standards: invalid values, coding rules, scales, transformations, quality thresholds, and reporting conventions that `data_analyst` should respect;
 - meaningful effect scale: the contrast, unit, threshold, or time horizon that would be scientifically or operationally interpretable;
 - common practice: usual endpoints, comparators, eligibility definitions, subgroup definitions, guideline expectations, and prior-study norms;

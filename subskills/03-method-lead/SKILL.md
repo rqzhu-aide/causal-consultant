@@ -171,6 +171,12 @@ For every candidate framework or method suggestion, ask:
 
 Record decision-relevant graph, timing, role, and identification reasoning in `causal_structure`. Classify options as direct, adapted, exploratory, blocked, or not applicable. A runnable estimator is not enough. If design assumptions fail, timing is wrong, variables are post-treatment/colliders/selection variables, support is absent, `analysis_alignment` shows load-bearing data requirements are unsupported, or the estimand is not meaningful, keep the option exploratory or blocked.
 
+## Causal Structure Artifact Decision
+
+During `causal_specification`, decide whether graph, timing, or variable-role reasoning is load-bearing for the intended causal claim, gate decision, or report wording. If it is load-bearing, create or request a project artifact and record the path in `method_lead.causal_structure.graph_artifact`. Suitable artifacts include a DAG, SWIG, timing diagram, edge table, adjustment table, mediator path map, interference or spillover exposure map, selection or transportability diagram, or role/timing table.
+
+Create or refresh the artifact when causal interpretation depends on adjustment choice, forbidden adjustment, mediation or pathway logic, interference or spillover mapping, selection or transportability, time-varying treatment, causal-discovery output, or reportable causal wording. If no separate artifact is needed, record in `causal_structure.narrative` why the compact YAML summary is sufficient. Do not create decorative graphs when a short role/timing table would be clearer.
+
 ## Phase Behavior
 
 In `project_exploration`, generate a shallow option map: 2-4 plausible causal question variants or framework families, why each might fit, the domain/data facts or user choices that would separate them, the data reality each would require, and the smallest next question or data check. Use broad causal-method knowledge and the subskill pool to suggest possibilities, but do not pretend the final framework, causal structure, or estimand set is settled.
@@ -188,7 +194,7 @@ Record a blocker, wording boundary, diagnostic need, or request for progression 
 - the user's goal, deliverable, exposure/intervention, comparator, outcome, population, causal unit, time zero, or follow-up is unclear;
 - treatment/exposure may not precede the outcome;
 - eligibility, baseline, exposure, follow-up, outcome, or censoring windows conflict;
-- proposed adjustment variables may be post-treatment, mediators, colliders, selection variables, instruments, precision variables, or effect modifiers requiring different handling;
+- proposed adjustment, restriction, matching/weighting, stratification, complete-case, or model-covariate choices may condition on post-treatment variables, mediators, colliders, selection variables, instruments, precision variables, or effect modifiers requiring different handling;
 - the row unit described by data does not match the causal unit required by one or more target estimands;
 - support, overlap, randomization, instrument validity, cutoff logic, parallel trends, censoring assumptions, or no-interference assumptions are fragile;
 - missingness, selection, exclusions, or censoring may depend on treatment, outcome, or post-treatment processes;
@@ -205,7 +211,7 @@ Record a blocker, wording boundary, diagnostic need, or request for progression 
 5. Name what would make a framework direct, adapted, exploratory, or blocked.
 6. Tie method suggestions to domain meaning, data structure, timing, estimand set, assumptions, diagnostics, and report needs.
 7. Prefer timing and variable-role clarity over decorative graph complexity.
-8. Do not accept an adjustment set until post-treatment variables, colliders, mediators, instruments, selection variables, and effect modifiers have been considered. Record decision-relevant restrictions in `causal_structure.forbidden_adjustments`.
+8. Do not accept adjustment, restriction, matching/weighting, stratification, complete-case, or model-covariate choices until post-treatment variables, mediators, colliders, instruments, selection variables, outcome-derived features, and effect modifiers have been considered. Treat "control for more variables" as unsafe until timing and causal role are checked, and record decision-relevant restrictions in `causal_structure.forbidden_adjustments`.
 9. Keep the selected framework, estimand set, validity requirements, `causal_structure`, and wording boundary auditable enough that report production can finish without silently changing the causal question.
 10. When multiple estimands are active, separate primary targets from secondary, exploratory, descriptive, diagnostic, or sensitivity targets. Do not let a convenient secondary estimand quietly replace the user's main causal target.
 11. When requesting another internal pass, make it a bounded request tied to the current `team_synthesis.turn_goal`; otherwise return the smallest useful question, choice, or next step for the lead consultant to take back to the user.

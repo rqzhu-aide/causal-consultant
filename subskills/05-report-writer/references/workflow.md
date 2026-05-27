@@ -119,6 +119,8 @@ Each module should contribute purpose, inputs, method/design logic, outputs/find
 
 If `06-causal-discovery` was a meaningful early sidecar, keep a visible discovery section or appendix entry with purpose, graph target, methods/settings, main findings, diagnostics, reviewer-routing implications, wording boundary, and artifact paths.
 
+If `method_lead.causal_structure.graph_artifact` exists, treat it as report material. Include the DAG, timing diagram, edge table, adjustment table, mediator path map, interference or spillover map, selection or transportability diagram, or role/timing table in the framework/assumptions section when it helps the reader understand the causal claim, adjustment choice, forbidden adjustment, identification gap, or wording boundary. Use the appendix only when the artifact is technical or supplemental. If the artifact is not shown in the report, state the reason in the report notes or limitations.
+
 ## Evidence And Reference Rules
 
 Populate report material from recorded state and inspected artifacts:
@@ -148,6 +150,8 @@ Before delivering a report artifact, check:
 - load-bearing `analysis_alignment` gaps shape the main answer, framework justification, results interpretation, and limitations rather than appearing only as late caveats;
 - unresolved blockers and bounded-continuation limits are visible;
 - figures/tables are explained and have provenance;
+- any existing causal-structure graph, timing, or role artifact that is material to the claim is included in the report or has a clear omission reason;
+- adjusted, restricted, matched, weighted, stratified, complete-case, or model-conditioned results state whether conditioning variables passed timing/role review, or visibly carry the unresolved collider/post-treatment/selection risk;
 - diagnostics and sensitivity checks are completed, deferred, or visibly missing;
 - diagnostics, sensitivity, and robustness checks have their own visible space, either as a short standalone section or an explicit paragraph inside Results for very short reports;
 - code-derived content has a reproducibility appendix or path index;

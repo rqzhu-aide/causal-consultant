@@ -13,7 +13,12 @@ Before polished/final delivery, route the drafted report through owner review fo
 - Draft the main answer before drafting prose. The report should not make the reader wait until the conclusion to learn what the evidence currently supports.
 - For each major claim, keep the evidence and boundary close to the claim. Use the structure: claim, evidence, limitation or scope.
 - Build the results as an evidence ladder, not a chronological log of analysis attempts. Lead with the most decision-relevant result, then add supporting diagnostics, comparisons, or sensitivity checks.
+- For substantive analysis reports, include a small visual evidence plan: at least one decision-useful figure or table for the main result, data support, or key diagnostic when such an artifact exists or can be generated from recorded outputs. If no visualization is included, say why text or tables are sufficient.
+- If `method_lead.causal_structure.graph_artifact` exists, include the DAG, timing diagram, edge table, adjustment table, mediator path map, interference or spillover map, selection or transportability diagram, or role/timing table in the report unless it is no longer current or not relevant to the report lane. Place it in the framework/assumptions section when it carries the causal claim; use the appendix when it is technical or supplemental. If it is omitted, say why.
 - Separate results from interpretation: results say what was observed or computed; interpretation says what it means for the user's question and where that interpretation may fail.
+- If adjusted, restricted, matched, weighted, stratified, complete-case, or model-conditioned results are reported, state whether conditioning variables were checked for timing and causal role. If not checked, make collider, post-treatment, mediator, selection, missingness, or outcome-derived-feature risk visible as a limitation.
+- When the report uses a method with standard diagnostics, include those diagnostics in the main text or appendix, or state that they were not run, not applicable, or deferred. For matching, weighting, propensity scores, IPW/IPTW, overlap weights, or balancing weights, this normally includes balance before/after adjustment, propensity or balancing-score overlap, weight distribution and tails, truncation, effective sample size, retained/discarded units, and target-population changes.
+- When code generated reported results, figures, tables, diagnostics, transformed datasets, or sensitivity checks, include a complete reproducibility package: source notebook/script paths, run order, inputs, outputs, seeds/randomness controls, package/version notes when available, and all code needed to reproduce reported content. For short analyses, include the code directly in the appendix; for longer analyses, link complete source artifacts and include the key code excerpts needed to audit the main transformations and models.
 - Give each paragraph one job. A paragraph should either orient, state a claim, present evidence, compare alternatives, explain a diagnostic, interpret meaning, or state a limitation.
 - Before release, run an overclaim check for unsupported causal language, broader generalization than the data support, unverified novelty, hidden unresolved diagnostics, and action recommendations that exceed the evidence.
 
@@ -40,21 +45,25 @@ Before polished/final delivery, route the drafted report through owner review fo
 
 [State the selected causal or analytic framework and why this approach fits the user's question, design, data structure, and current phase.]
 
+[If a causal-structure artifact exists, include or link it here when it helps explain the DAG, timing, variable roles, adjustment choice, forbidden adjustment, mediator pathway, interference/spillover mapping, selection/transportability logic, or claim boundary. Give a short caption explaining what the reader should learn from it.]
+
 [Name the main assumptions, diagnostics, sensitivity checks, and wording limits. Briefly explain key alternatives that were considered, deferred, or rejected when they matter for the user's decision. Keep this focused on method fit, not a broad methods textbook.]
 
 [When activated method/job modules contribute to the report, state each central module's role, evidence status, and claim scope in plain language, using its `subskill_records.statistical_evidence` packet.]
 
 ## 4. Results, Figures, And Tables
 
-[Present the main result or current finding first, with provenance. Use figures and tables only when they help the reader understand the result better than text alone.]
+[Present the main result or current finding first, with provenance. Include the key result figure or table when it makes the result easier to inspect, compare, or explain. For most substantive analysis reports, use at least one visual or table for the main result, data support, or key diagnostic; if omitted, explain why.]
 
 [For each figure or table, give a short reader-facing explanation: what it shows, why it matters, and what conclusion or caution it supports. Keep interpretation consistent with the recorded claim strength.]
 
-[Keep this section focused on what was observed, estimated, or verified. Briefly point to diagnostics only when needed for flow; give diagnostic implications their own space in the next section.]
+[Keep this section focused on what was observed, estimated, or verified. Briefly point to diagnostics only when needed for flow; give diagnostic implications their own space in the next section. Use captions or short notes that make figures and tables readable without asking the user to reverse-engineer the analysis.]
 
 ## 5. Diagnostics, Sensitivity, And Robustness
 
 [Summarize the diagnostics that affect whether the result can be trusted or how it must be qualified. This may include model fit, residual or prediction checks, balance/overlap/support checks, influential observations, missingness/selection checks, timing/leakage checks, robustness checks, sensitivity analyses, placebo/falsification checks, or method-specific diagnostics.]
+
+[For matching, weighting, propensity score, IPW/IPTW, overlap-weight, or balancing-weight analyses, explicitly report or defer: balance before and after adjustment, propensity or balancing-score overlap, weight distribution and tails, truncation rules, effective sample size, retained/discarded units, target-population changes, and sensitivity to trimming or learner/model choice. Do not present a weighted estimate as production-ready when extreme weights, poor overlap, or unresolved balance dominate the result.]
 
 [State which diagnostics were completed, which were deferred, which were not applicable, and which remain unresolved. If diagnostics are minimal in a short memo, this section can be a short paragraph or be blended into the Results section, but it should still be explicit.]
 
@@ -72,15 +81,15 @@ Before polished/final delivery, route the drafted report through owner review fo
 
 ### Appendix A. Additional Analysis Results
 
-[Optional: secondary tables, figures, diagnostics, robustness checks, sensitivity checks, exploratory outputs, or detailed result notes.]
+[Optional: secondary tables, figures, diagnostics, robustness checks, sensitivity checks, exploratory outputs, or detailed result notes. Include diagnostic visuals that are too detailed for the main text, such as balance plots, propensity-score overlap, weight-tail plots, residual checks, placebo plots, sensitivity curves, or subgroup/support summaries.]
 
-### Appendix B. Alternative Methods Or Parked Modules
+### Appendix B. Causal Structure, Alternative Methods, Or Parked Modules
 
-[Optional: method/job subskills considered but not central, alternative estimands, rejected approaches, sidecar outputs, or causal discovery material that is useful but not part of the main narrative.]
+[Optional: causal-structure artifacts that are too technical for the main text, method/job subskills considered but not central, alternative estimands, rejected approaches, sidecar outputs, or causal discovery material that is useful but not part of the main narrative.]
 
-### Appendix C. Reproducibility And Code Notes
+### Appendix C. Reproducibility Package And Code Appendix
 
-[Optional but required when code supports reported content: code/notebook paths, purpose, inputs, outputs, package/version notes when available, seeds, rerun notes, and short code excerpts only when they clarify a key transformation or model.]
+[Optional for purely narrative reports, but required when code supports reported content. Include all code needed to reproduce the reported results, figures, tables, diagnostics, transformed datasets, and sensitivity checks, either directly in this appendix for short analyses or through complete linked source notebooks/scripts for longer analyses. Record run order, code/notebook paths, purpose, inputs, outputs, package/version notes when available, seeds or randomness controls, rerun notes, saved figure/table paths, and key code excerpts for load-bearing transformations and models.]
 
 ### Appendix D. References And Source Notes
 

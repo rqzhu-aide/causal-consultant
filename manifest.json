@@ -1,9 +1,9 @@
 {
   "package": "causal-consultant",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "created_for": "lean modular causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Tighten the interactive workflow contracts for lighter exploration intake, active method option mapping, staged data alignment, and report production with clearer claim boundaries.",
+  "last_updated_focus": "Strengthen DAG artifact decisions, report inclusion of causal-structure artifacts, conditioning-risk checks, diagnostics visibility, and reproducibility expectations.",
   "subskills": [
     "01-domain-expert",
     "02-data-analyst",

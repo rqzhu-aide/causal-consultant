@@ -42,6 +42,7 @@ Use this Markdown file as the report writer's private polished project notebook 
 - Candidate or selected framework:
 - Estimand:
 - Causal structure and assumptions:
+- Causal structure artifact path and report placement:
 - Wording boundary:
 
 ## Data And Variables

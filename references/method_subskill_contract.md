@@ -54,7 +54,7 @@ Activate a method/task subskill only for a bounded reason:
 - a user asks about a named method or target;
 - a report module needs method-specific wording, diagnostics, or limitations.
 
-Do not activate a method/task subskill just because its keywords appear. Candidate subskills are advisory until reviewed by `domain_expert`, `data_analyst`, and especially `method_lead`.
+Do not activate a method/task subskill just because its keywords appear. Candidate subskills are advisory until checked against current domain guidance, current data evidence, and especially `method_lead` triage. Refresh `domain_expert` only when domain meaning is missing, stale, disputed, or material to the candidate's fit.
 
 ## Inputs To Read
 

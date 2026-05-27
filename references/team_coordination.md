@@ -11,7 +11,7 @@ Default reviewer order:
 3. `method_lead`
 4. `report_writer`
 
-The order is not a rigid bureaucracy. It is a practical default: domain meaning informs data handling; data evidence informs method judgment; method judgment and team notes inform report writing. Invoke `report_writer` only when it has work to do, but treat it as the normal fourth core member whenever content should be preserved or a deliverable is active.
+The order is not a rigid bureaucracy, and it is not a rerun requirement. It is a practical default when multiple reviewer lanes are needed: domain meaning informs data handling; data evidence informs method judgment; method judgment and team notes inform report writing. Invoke `report_writer` only when it has work to do, but treat it as the normal fourth core member whenever content should be preserved or a deliverable is active.
 
 ## Role Boundaries
 
@@ -22,18 +22,24 @@ The order is not a rigid bureaucracy. It is a practical default: domain meaning 
 - `method_lead` turns the user goal into causal questions, framework options, estimands, causal structure, assumptions, diagnostics, statistical-validity checks, final variable-role use, and method/task subskill triage. It does not overwrite domain or data facts.
 - `report_writer` silently preserves polished notes, report-structure notes, and report material; it does not release itself to the user.
 
+## Domain Expert Timing
+
+Domain guidance is persistent. Invoke or refresh `domain_expert` when new information changes, challenges, or depends on domain meaning: user goals, setting, population, exposure, comparator, outcome, timing, mechanisms, variable construct meaning, measurement standards, plausible intervention versions, effect scale, external validity, interpretation, action language, or report wording.
+
+Reuse existing domain guidance when later work only consumes already-recorded meaning. Do not rerun `domain_expert` for ordinary file intake, code execution, table or figure generation, report formatting, method-lead consumption of stable domain facts, or a bounded data check that does not change construct meaning or interpretation.
+
 ## Reviewer Inputs
 
 Give each reviewer enough context to work, but avoid flooding them.
 
-- Give `domain_expert` the user goal, setting, current confusion, candidate constructs, `variable_roster` entries needing meaning, and any data/method facts that need domain interpretation.
+- Give `domain_expert` the user goal, setting, current confusion, candidate constructs, `variable_roster` entries needing meaning, and any data/method facts that need domain interpretation, but only when a domain refresh is triggered.
 - Give `data_analyst` `domain_expert` guidance, available data/data descriptions, `variable_roster` entries needing data binding, timing questions, current `method_lead` requirements or candidate framework needs, and any bounded diagnostic request.
 - Give `method_lead` `variable_roster`, `domain_expert` meaning, `data_analyst.analysis_alignment`, `data_analyst.method_support`, candidate hints, activated subskill records, current framework/estimand questions, and any new analysis results or report claims needing statistical-validity review.
 - Give `report_writer` substantive user interests, reviewer guidance, decisions, evidence, artifacts, limitations, and reportable wording boundaries. During `causal_specification`, also give it the data-analysis results or diagnostics, method-picking logic, interpretation, and user-goal alignment that explain why a framework is being selected, revised, blocked, or kept exploratory.
 
 ## Adaptive Follow-Up
 
-After the default first pass, allow at most one adaptive follow-up pass by default. Count a bounded `analysis_alignment` refresh and method-lead consumption as that follow-up when it reruns a reviewer. Use follow-up only when a reviewer has a concrete request or material update that would clearly change the next user-facing move.
+After the triggered first pass, allow at most one adaptive follow-up pass by default. Count a bounded `analysis_alignment` refresh and method-lead consumption as that follow-up when it reruns a reviewer. Use follow-up only when a reviewer has a concrete request or material update that would clearly change the next user-facing move.
 
 Good follow-up triggers:
 

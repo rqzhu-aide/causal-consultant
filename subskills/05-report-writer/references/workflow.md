@@ -14,6 +14,23 @@ Do not collapse these surfaces. Structure notes are not prose. The working repor
 
 The main skill owns `causal_gate`, `production_gate`, `bounded_continuation`, `analysis_state`, and project YAML updates. Report Writer returns concise feedback and requested path updates; it does not open gates, validate identification, append its own `subskill_records` entry, or talk to the user directly.
 
+## Working Draft And Structure Notes
+
+Start the Markdown project notebook or working report only when durable content is stable enough that preserving it will help later work. Use the existing `analysis_state.report_working_draft_path` if present. If no path exists and a draft is needed, create or request a project-local Markdown path such as `artifacts/report_working_draft.md`, then ask the lead consultant to record it in `analysis_state.report_working_draft_path`.
+
+Use `../assets/report_structure_notes_template.md` for companion structure notes when the report shape is emerging or material may later matter but is not ready for prose. Use the existing `analysis_state.report_structure_notes_path` if present. If no path exists and notes are needed, create or request a project-local Markdown path such as `artifacts/report_structure_notes.md`, then ask the lead consultant to record it in `analysis_state.report_structure_notes_path`.
+
+Use the two private artifacts differently:
+
+- structure notes are for report architecture: candidate claims, evidence/provenance, claim boundaries, section jobs, module placement, figure/table ideas, code appendix candidates, limitations, anti-claims, and the smallest report question for the user;
+- the working report is for durable project memory and draftable content: background, user priorities, reviewer reasoning, data/method evidence, module ledger, diagnostics, limitations, and next steps.
+
+Do not turn either artifact into a transcript, and do not use either artifact to strengthen claims beyond the gates.
+
+Keep the working draft organized around project background, user goals, domain interpretation, causal question, framework, estimand set, assumptions, data sources, variable construction, analysis alignment, activated modules, diagnostics, sensitivity checks, limitations, decisions, and next steps.
+
+Preserve reviewer cues that connect report sections. For example, if `domain_expert` says a construct-validity concern, mechanism, common-practice finding, or external-validity boundary is closely related to the causal framework or interpretation, keep those pieces linked in the relevant draft sections rather than scattering them as unrelated caveats.
+
 ## Activation Procedure
 
 On each activation:
@@ -44,12 +61,14 @@ On each activation:
 
 ### `project_exploration`
 
-Start report memory only after durable content appears. Useful content includes user interests, domain background, early data reality, possible directions, confusions, and open questions.
+Default to `no_action` during ordinary exploration intake. Start report memory only after durable content appears or the user requests a deliverable. Useful durable content includes stable user interests, audience or deliverable choices, domain background, early data reality, decisions, possible directions, confusions, and open questions that are likely to matter later.
 
 Prefer:
 
 - structure notes for possible report spine, user need, background references, candidate claims, and early anti-claims;
 - working report for stable background, user priorities, decisions, and open questions.
+
+Do not delay the first orientation reply to create notes. A single file-intake or clarification turn usually needs no report-writer artifact unless it contains an explicit deliverable request or a stable decision/evidence point.
 
 Do not make the notes look like final evidence.
 
@@ -81,11 +100,11 @@ After a first-round Markdown report is generated, recommend that the lead consul
 
 Use the smallest lane that satisfies the user:
 
-- `../assets/planning_communication_memo_template.md`: advisory memo, wording, slides, email, caveat, design explanation, or no analyzable data.
-- `../assets/exploratory_analysis_report_template.md`: progress artifact, first-pass output, diagnostic report, or exploratory summary when gates are incomplete.
-- `../assets/reproducible_analysis_report_template.md`: evidence-backed report with code, inspected artifacts, tables, figures, and diagnostics.
-- `../assets/final_report_template.md`: finished narrative report or same-evidence revision. Default to the simple main-answer, evidence, diagnostics, and limitations spine unless the project needs more.
-- `../assets/discovery_report_template.md`: standalone discovery report. If discovery supports a broader report, use it as a module source instead.
+- `../assets/planning_communication_memo_template.md`: advisory memo, wording, slides, email, caveat, design explanation, no analyzable data, or early `project_exploration`.
+- `../assets/exploratory_analysis_report_template.md`: progress artifact, first-pass output, diagnostic report, or exploratory summary when analyzable data or prototype outputs exist but `causal_gate` or `production_gate` readiness is incomplete.
+- `../assets/reproducible_analysis_report_template.md`: evidence-backed report when `causal_gate.status` is ready, `production_gate` is ready enough to report, and executed code or verified artifacts support the reported numbers, diagnostics, figures, and tables.
+- `../assets/final_report_template.md`: finished narrative report or same-evidence revision. Default to the simple main-answer, evidence, diagnostics, and limitations spine unless the project needs more. If blockers remain but the user still needs a report, use final-report structure only with visible limitation framing and claim language no stronger than `production_gate.claim_strength_for_report`.
+- `../assets/discovery_report_template.md`: standalone discovery report only when the requested deliverable is graph exploration, causal discovery, variable screening, or a discovery-only summary rather than treatment-effect reporting. If discovery supports a broader report, use it as a module source instead.
 
 ## Modular Integration
 
@@ -114,6 +133,10 @@ Do not cite or summarize sources that were not inspected or supplied. Use one co
 
 Include numeric results, diagnostics, p-values, intervals, table values, figure interpretations, or code-derived claims only when they are user-provided, computed by authorized code, copied from inspected artifacts, or clearly labeled as placeholders.
 
+If a result is missing, unavailable, not run, or illustrative, state that visibly. Match wording to recorded claim strength: `supported_causal`, `cautious_causal`, `associational`, `descriptive`, `exploratory`, or `unknown`. Separate effect interpretation from action recommendations. Keep privacy, access, small-cell, direct identifier, credential, and secret constraints out of public-facing artifacts.
+
+If code generated reported numbers, diagnostics, tables, figures, graph artifacts, or transformed analysis datasets, include a reproducibility appendix or code appendix. The appendix should list code/notebook paths, purpose, inputs, outputs, package/version notes when available, seeds or randomness controls, and rerun notes. Include short code excerpts only when they clarify a key transformation or model. Keep long scripts and notebooks as linked artifacts rather than pasting them into the main narrative. Do not report code-derived results without provenance.
+
 ## Pre-Release Check
 
 Before delivering a report artifact, check:
@@ -130,6 +153,22 @@ Before delivering a report artifact, check:
 - code-derived content has a reproducibility appendix or path index;
 - limitations are clear without overwhelming the main conclusion;
 - appendices carry secondary detail, alternative methods, references, code notes, and user-requested extras.
+
+If diagnostics are incomplete, write a progress report or diagnostic review rather than a final causal conclusion unless the main skill records the deferral and the report makes the limitation clear.
+
+## Output Contract
+
+Before compiling an artifact, make sure the report lane and claim limits are clear. Put full reports, Markdown drafts, notebooks, rendered HTML, slides, captions, appendices, tables, figures, and code artifacts in artifact folders. Convert recorded project YAML, reviewer sections, activated `subskill_records`, report-structure notes, working-report material, and linked artifacts into the requested report lane.
+
+Return compact YAML update requests to the lead consultant:
+
+- add finished report paths to `analysis_state.report_production_artifacts`;
+- keep the working draft path in `analysis_state.report_working_draft_path`;
+- keep the structure notes path in `analysis_state.report_structure_notes_path` when one exists;
+- request owner review for report sections that depend on data facts, causal/statistical claims, domain interpretation, or activated method/task modules before polished or final delivery;
+- return report-readiness feedback for the lead consultant to use when updating `production_gate`;
+- record unresolved report limitations in `analysis_state.limitations`;
+- leave reviewer-owned judgment fields to their owners.
 
 ## Feedback Patterns
 

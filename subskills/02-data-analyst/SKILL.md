@@ -17,7 +17,17 @@ The lead consultant speaks with the user and owns progression. Update only `data
 
 Data work can happen in any project phase when data are provided or described. The phase changes the purpose of the work, not whether data analysis is allowed.
 
-When data are provided, do not wait for a narrow request if a compact investigation would help the team. Use `references/data_investigation_playbook.md` as a menu for missingness, high-dimensional data, specialized data structures, causal-support uses of statistical learning, Python/R package choices, and cross-team handoffs. Do not run every possible check; choose the smallest set that would materially improve the next causal decision.
+In early `project_exploration`, default to intake mode. Return only the smallest data packet needed for the next useful user-facing reply:
+
+- what sources were provided or described, their provenance, and whether they were inspected;
+- coarse structure, such as file type, document type, table names, row/column counts when cheap, headings, schemas, or obvious data units;
+- obvious candidate exposure, comparator, outcome, time, unit, ID, or grouping fields when visible;
+- one or two cheap checks that would most reduce uncertainty for the next decision;
+- the smallest data clarification, permission, or inspection action needed next.
+
+Use full data-analyst duty once the user asks for deeper audit or analysis, the lead consultant authorizes a bounded data check, the project moves beyond intake into `causal_specification`, a method/subskill activation depends on data facts, an analysis is being interpreted, or report production needs provenance, artifacts, or stale-output review. Full duty can include profiling, missingness/support/timing audits, plots, prototype datasets, model or diagnostic runs, report assets, and `analysis_alignment`.
+
+When data are provided outside early intake mode, do not wait for a narrow request if a compact investigation would help the team. Use `references/data_investigation_playbook.md` as a menu for missingness, high-dimensional data, specialized data structures, causal-support uses of statistical learning, Python/R package choices, and cross-team handoffs. Do not run every possible check; choose the smallest set that would materially improve the next causal decision.
 
 ## What To Track
 
@@ -74,7 +84,7 @@ In every phase, look for useful ways to prepare the team for better decisions:
 
 Be proactive but bounded. If one small data inspection, diagnostic, or prototype would materially improve the next user-facing move, recommend it clearly or perform it when already authorized and low-risk. If the result changes framework fit, claim language, support, timing, or variable construction, request a bounded `method_lead` follow-up rather than trying to settle causal validity yourself.
 
-In `project_exploration`, perform authorized exploratory data analysis when data are provided and it can help the team learn: schema checks, row-unit checks, missingness, simple summaries, timing checks, support checks, quick plots, variable inventories, and candidate constructed features. Label outputs as exploratory, descriptive, diagnostic, or design-learning.
+In `project_exploration`, use intake mode by default. Start with sources, provenance, coarse structure, obvious candidate fields, and the next cheap check. Perform broader exploratory data analysis only when the user asks for it, the lead consultant authorizes a bounded check, or the next safe reply depends on it. When authorized, exploratory work can include schema checks, row-unit checks, missingness, simple summaries, timing checks, support checks, quick plots, variable inventories, and candidate constructed features. Label outputs as exploratory, descriptive, diagnostic, or design-learning.
 
 In `causal_specification`, map `domain_expert` constructs, standards, and processing guidance plus `method_lead` candidate frameworks onto observable or constructible data. Use `variable_roster.data_binding` and `variable_roster.data_status` as the compact cross-team index, and use `variable_map`, `timing_windows`, `method_support`, `analysis_alignment`, and artifacts for richer data evidence. Identify what is directly supported, proxy-only, unavailable, contradicted, or not yet inspected. Actively prepare feasibility evidence for the team: timing checks, support/overlap summaries, analysis-unit checks, variable-construction tests, missingness/selection profiles, and prototype analysis datasets when appropriate. For each plausible method/job subskill, say what data shape, preprocessing pipeline, model plugin, or diagnostic artifact would make that subskill feasible or not feasible. Update `analysis_alignment` when the checked data do or do not satisfy load-bearing requirements for the current claim, framework, estimand, diagnostics, or report wording. When data evidence, diagnostics, prototype results, alignment results, or analysis-dataset construction changes the method choice or interpretation, prepare a compact `report_writer` handoff explaining what was learned, where it came from, what artifact paths exist, and how it affects the user's request.
 
@@ -84,61 +94,17 @@ Before reportable interpretation, make sure `analysis_alignment.status` is `chec
 
 When `method_lead.causal_structure`, selected framework, or estimand set already exists, read it as context for data construction and diagnostics. Use it to decide which variables, timing windows, supports, diagnostics, and report assets matter, but do not rewrite causal-structure or identification judgments.
 
-## Data Evidence Triage
+## Data-To-Method Alignment
 
-Treat candidate frameworks, method/job subskills, and `method_lead` requests as questions to test against the data, not decisions to accept. Read `domain_expert` first when construct meaning, coding rules, invalid values, preprocessing norms, domain-specific tools, or interpretation constraints could affect the data evidence.
+For early `project_exploration` intake, keep data-to-method feedback lightweight: name obvious data possibilities, uncertainty, and the next cheap check. Do not load deeper alignment guidance unless a safe reply depends on it.
 
-For each relevant candidate or request, classify the data support compactly:
+For deeper causal-specification work, method/subskill support, reportable interpretation, or stale-output review, use `references/data_method_alignment.md`. That reference gives the detailed contract for:
 
-- `directly_supported`: required variables, timing, unit structure, and support are visible or already inspected.
-- `constructible_with_processing`: feasible after a concrete preprocessing, linkage, feature construction, reshaping, or restriction step.
-- `proxy_only`: the data contain imperfect proxies, not the requested construct.
-- `needs_inspection`: support cannot be judged until a bounded check is run.
-- `unsupported`: required data elements are absent or not constructible from current information.
-- `contradicted`: inspected data conflict with the candidate's required timing, unit, variable role, or support logic.
+- data evidence triage: whether candidate frameworks, method/job subskills, or `method_lead` requests are directly supported, constructible, proxy-only, uninspected, unsupported, or contradicted by current data;
+- `analysis_alignment`: the living crosswalk between user goals, claims, frameworks, estimands, validity requirements, report targets, and what the data actually support;
+- method-fit feedback: data-compatible framework suggestions, diagnostic artifacts, learner-plugin handoffs, and processing-pipeline suggestions for `method_lead` review.
 
-Use existing `method_support` fields for this handoff:
-
-- `data_compatible_frameworks`: candidate frameworks or subskills with support classification and the key data reason.
-- `processing_pipeline_suggestions`: concrete steps needed to make data usable for a plausible framework or subskill.
-- `learner_plugin_handoffs`: where flexible learners could replace or augment simple model components inside a causal framework, plus diagnostic cautions.
-- `diagnostic_artifact_suggestions`: one or two bounded artifacts that would settle a data question, such as support plots, missingness tables, timing checks, or unit summaries.
-- `feasibility_notes`: constraints, contradictions, privacy limits, sparse support, or unknowns that `method_lead` must consider.
-
-Keep the boundary clear. `data_analyst` may say that the data shape supports checking a DiD/event-study design, or that RD is unsupported because no running variable or cutoff exists. `data_analyst` should not say that DiD is causally valid, that RD assumptions hold, or that a final framework is selected. That judgment belongs to `method_lead`.
-
-Prefer a small, decision-useful handoff: the few data facts that change framework fit, one or two bounded checks, and the smallest processing plan that would make progress. Re-triage when new data, domain guidance, or inspection results change constructability, timing, support, or feasibility.
-
-When an activated method/job subskill leaves a `subskill_records` entry with routine data, implementation, or diagnostic requests, treat it as a bounded data-work request. Build or check the requested analysis-dataset shape, preprocessing step, diagnostic artifact, code path, table, or figure when authorized and useful. If execution contradicts the causal strategy, changes data feasibility, or the record has `method_lead_recheck.required: true`, request a bounded `method_lead` recheck instead of resolving causal validity yourself.
-
-## Analysis Alignment
-
-Use `analysis_alignment` to connect data facts to the current analysis claim. This is the field that prevents the team from forgetting earlier requirements once data arrive.
-
-Update it when any of these change:
-
-- inspected or described data sources;
-- user goal, intended claim, framework, estimand, or report target;
-- `method_lead.validity_requirements`, `method_lead.causal_structure`, diagnostics plan, or wording boundary;
-- `causal_gate.unresolved_required_information` or `production_gate.unresolved_required_materials`;
-- prior warnings, user constraints, newly discovered data simplifications, or data role/provenance concerns that affect interpretation.
-
-Use the fields this way:
-
-- `aligned_to`: the current user goal, framework, estimands, intended claims, and report or analysis target being checked.
-- `checked_against`: the requirements, causal-structure items, gate needs, prior warnings, user constraints, or data role/provenance concerns used as the checklist.
-- `requirement_checks`: one compact row per load-bearing requirement. Say the requirement, source, what it is required for, data support, evidence pointer, related variables, gap type, claim impact, and possible resolution.
-- `data_simplifications_affecting_claims`: claim-relevant derived analysis constructs, transformations, or reductions that need interpretation notes, such as longitudinal summaries, collapsed exposure histories, dose grouping, outcome-window choices, aggregation, sample restrictions, or feature reductions.
-- `unsupported_or_overstated_claims`: statements the current data cannot support at the requested strength, including statements that treat simulated, placeholder, scrambled, or provenance-unclear data as real-world evidence.
-- `data_supported_claim_ceiling`: strongest claim strength the data evidence can support before `method_lead` and gates apply stricter causal limits; lower it when data role or provenance limits interpretation.
-- `alignment_summary`: one or two sentences for `method_lead`, `report_writer`, and the lead consultant.
-- `requests_for_resolution`: the smallest data, design, user, or method check that would resolve the main alignment gap.
-
-Treat ad hoc data treatments as allowed analysis construction choices unless they conflict with the intended claim. Do not flag a collapse, grouping, imputation, dimension reduction, window definition, restriction, or proxy construction as a flaw solely because it simplifies the data. Instead, record what was constructed, the input data and rule/window used, what causal or descriptive claim the constructed variable can support, what stronger or different claim it no longer supports, and what diagnostic, sensitivity, provenance, or user confirmation would make the construction more defensible.
-
-For `requirement_checks.data_support`, use the same support logic as `method_support`: `directly_supported`, `constructible_with_processing`, `proxy_only`, `needs_inspection`, `unsupported`, `contradicted`, or `not_applicable`.
-
-Do not decide causal validity here. State what the data support against the need. `method_lead` decides how that changes framework choice, method selection, identification gaps, diagnostics, and claim wording.
+Keep the boundary clear. `data_analyst` can say what the data appear to support or strain, and what check would resolve uncertainty. Final causal framework choice, identification validity, and claim wording belong to `method_lead`, gates, and the lead consultant.
 
 ## Data Red Flags
 
@@ -155,29 +121,6 @@ Record a blocker, data quality issue, limitation, or request for progression whe
 When inspected data show unusual realism or provenance patterns, such as overly clean values, implausibly uniform correlations, impossible ranges, missing expected domain relationships, or synthetic-looking structure, record a brief data realism note in `data_quality_issues`. Do not block analysis solely because data may be simulated, simplified, de-identified, scrambled, benchmark, placeholder, or teaching data. Ask or infer what role the data play when needed; if that role affects interpretation, reflect the consequence in `analysis_alignment` so `method_lead`, gates, and `report_writer` distinguish scientific evidence from method demonstration or exploratory prototype.
 
 Do not treat red flags as dead ends when useful bounded work is possible. For example, if missingness is present, investigate severity, pattern, likely mechanism, imputability, and sensitivity options. If dimensions are high, check sparsity, correlation, effective rank, PCA/eigenvalue concentration, and whether dimension reduction would be interpretable or only predictive. If the data type is specialized, ask `domain_expert` what domain-specific preprocessing, invalid values, meaningful scales, measurement constraints, package/tool conventions, or reporting standards matter before creating analysis-ready features.
-
-## Method-Fit Feedback
-
-You may suggest data-compatible framework families or diagnostics for `method_lead` review, such as regression adjustment, matching/weighting, doubly robust estimation, DML, DiD, RD, IV, synthetic control, survival analysis, mediation, interference, or descriptive fallback. Phrase these as data-fit suggestions, not final method decisions.
-
-Machine learning tools can be useful for prediction, nuisance models, heterogeneity, or flexible adjustment, but they do not solve identification by themselves. Flag when advanced methods are feasible computationally but the data do not support the causal framework.
-
-When a candidate method or sidecar subskill seems data-compatible, explain why in data terms: unit structure, timing, exposure/outcome constructability, repeated measures, clustering, support, sample size, feature richness, censoring, or available diagnostics. Update `variable_roster.data_status` only for the compact variable-level state; put richer evidence in `method_support` or artifacts. When it seems incompatible, give the smallest data fact or artifact that would change that judgment.
-
-Use statistical learning tools only as causal-support tools. Before suggesting or running one, name the causal-consulting purpose: construct validation, missingness/selection diagnosis, support/overlap assessment, high-dimensional pre-treatment feature reduction, nuisance-function feasibility, exploratory heterogeneity, sensitivity/diagnostic support, or report artifact generation. Do not turn `data_analyst` into a general supervised-learning specialist.
-
-When flexible learners may help a causal method subskill, return a compact learner-plugin handoff rather than a generic model recommendation. State which simple model the learner might replace or augment, which role it would play, why the data can support it, and what extra diagnostics or caution it creates. Examples include replacing a linear outcome regression with random forests/boosting/GAMs inside adjustment or AIPW, replacing logistic propensity regression with regularized or tree-based propensity models for weighting/matching diagnostics, using Super Learner in TMLE, using DML-compatible learners for nuisance functions, or using `grf`/causal forests when heterogeneity or CATE estimation is part of the selected framework.
-
-When a method/job subskill is plausible, also suggest a compact processing pipeline for that subskill when useful:
-
-- input data shape needed;
-- variable construction or feature-engineering steps;
-- timing restrictions and leakage checks;
-- missingness, selection, support, or overlap diagnostics;
-- simple baseline model and optional flexible learner replacement;
-- artifact paths that should be created for reviewer or report use.
-
-If a method/job specialist would help, frame the request as a bounded support need, such as "ask `method_lead` whether this support pattern justifies activating `30`" or "use `32` only if DML-style nuisance modeling is part of the selected framework." Do not ask for broad rerouting when one specific diagnostic or design fact would be enough for the next user interaction.
 
 ## Feedback To Main Skill
 
@@ -202,4 +145,5 @@ Return:
 
 ## Reference Files
 
+- `references/data_method_alignment.md`
 - `references/data_investigation_playbook.md`

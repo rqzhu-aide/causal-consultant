@@ -142,6 +142,20 @@ Record consequences in existing fields:
 - `blockers` for issues that block the intended causal or statistical claim;
 - `requests_for_progression` for the smallest next data check, user decision, or analysis needed.
 
+## Exploration Option-Map Mode
+
+In `project_exploration`, be active but shallow. Users often need to see the plausible causal routes before they can clarify the final question.
+
+Return an option map with 2-4 plausible causal framings or framework families. For each option, include:
+
+- a short user-facing label;
+- why it might fit the user's goal;
+- the fact, assumption, or user choice that would distinguish it from the others;
+- the data reality it would require, such as timing, unit structure, comparison group, repeated measures, cutoff, instrument, intervention assignment, or measured confounders;
+- the smallest next question or data check that would clarify whether it remains viable.
+
+Do not settle the final framework, estimand set, causal structure, diagnostics plan, or subskill activation during ordinary exploration unless the user asks for that depth or the next safe reply depends on it.
+
 ## Validity Discipline
 
 For every candidate framework or method suggestion, ask:
@@ -159,9 +173,9 @@ Record decision-relevant graph, timing, role, and identification reasoning in `c
 
 ## Phase Behavior
 
-In `project_exploration`, generate a small set of plausible causal question variants and frameworks plus the domain/data facts that would separate them. Use broad causal-method knowledge and the subskill pool to suggest possibilities, but do not pretend the final framework, causal structure, or estimand set is settled.
+In `project_exploration`, generate a shallow option map: 2-4 plausible causal question variants or framework families, why each might fit, the domain/data facts or user choices that would separate them, the data reality each would require, and the smallest next question or data check. Use broad causal-method knowledge and the subskill pool to suggest possibilities, but do not pretend the final framework, causal structure, or estimand set is settled.
 
-In `causal_specification`, read `variable_roster`, `domain_expert`, and `data_analyst`, especially `data_analyst.analysis_alignment`, then narrow to the selected framework, estimand set, validity requirements, `causal_structure`, assumptions, diagnostics, sensitivity checks, tools/subskills, statistical-validity needs, and wording boundary. Mark which estimand is primary, secondary, exploratory/descriptive, or not yet supportable. If `analysis_alignment` is missing, stale, or shows unsupported load-bearing requirements, either request a bounded data check or lower the framework fit and claim boundary before selecting methods. Use the bundled subskill catalog when specialist subskills could help identify or narrow candidates. Treat method selection, rejection, adaptation, and reasoning as report-worthy information: return concise `report_writer` cues explaining why the framework fits the user's goal, what alternatives were considered or blocked, what assumptions and diagnostics carry the claim, and what wording boundary should follow the eventual report.
+In `causal_specification`, read `variable_roster`, `domain_expert`, and `data_analyst`, especially `data_analyst.analysis_alignment`, then narrow the exploration option map. Prefer one primary working framework when possible, with at most one or two serious alternates when unresolved domain or data facts still matter. For each alternate, state the switching condition: what evidence, clarification, or feasibility result would make it replace, merge with, or drop below the primary framework. Then specify the selected or working framework, estimand set, validity requirements, `causal_structure`, assumptions, diagnostics, sensitivity checks, tools/subskills, statistical-validity needs, and wording boundary. Mark which estimand is primary, secondary, exploratory/descriptive, or not yet supportable. If `analysis_alignment` is missing, stale, or shows unsupported load-bearing requirements, either request a bounded data check or lower the framework fit and claim boundary before selecting methods. Use the bundled subskill catalog when specialist subskills could help identify or narrow candidates. Treat method selection, rejection, adaptation, and reasoning as report-worthy information: return concise `report_writer` cues explaining why the framework fits the user's goal, what alternatives were considered or blocked, what assumptions and diagnostics carry the claim, and what wording boundary should follow the eventual report.
 
 In `report_production`, check whether the implementation still matches the selected framework and whether diagnostics, sensitivity results, and statistical-validity checks support the intended claim strength. Keep exploratory or in-sample fitted patterns clearly separated from validated evidence. During a report owner review pass, read the drafted method, results, diagnostics, limitations, and conclusion sections that carry causal or statistical claims. Check that the report matches `method_lead`'s selected framework, estimand set, assumptions, diagnostics and sensitivity plan, statistical-evidence status, `report_wording_boundary`, gate claim strength, and any activated specialist limits. Return compact review feedback: approved, needs revision, or blocked; claim-language corrections; missing diagnostics; stale method assumptions; and required report edits. If production findings change the question, estimand set, assumptions, or feasible framework, recommend returning to `causal_specification`.
 

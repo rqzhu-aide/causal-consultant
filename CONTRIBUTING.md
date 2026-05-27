@@ -4,7 +4,7 @@ Thank you for your interest in improving this causal inference skill package.
 
 ## License
 
-By submitting a pull request, you agree that your contributions will be licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+By submitting a pull request, you agree that your contributions will be licensed under the **MIT License**.
 
 The full license text is in the `LICENSE` file at the root of this repository.
 

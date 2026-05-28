@@ -22,7 +22,7 @@ Use `../assets/report_structure_notes_template.md` for companion structure notes
 
 Use the two private artifacts differently:
 
-- structure notes are for report architecture: candidate claims, evidence/provenance, claim boundaries, section jobs, module placement, figure/table ideas, code appendix candidates, limitations, anti-claims, and the smallest report question for the user;
+- structure notes are for report architecture: candidate claims, evidence/provenance, claim boundaries, section jobs, module placement, the report asset checklist, figure/table ideas, code appendix candidates, rendered-output QA notes, limitations, anti-claims, and the smallest report question for the user;
 - the working report is for durable project memory and draftable content: background, user priorities, reviewer reasoning, data/method evidence, module ledger, diagnostics, limitations, and next steps.
 
 Do not turn either artifact into a transcript, and do not use either artifact to strengthen claims beyond the gates.
@@ -54,8 +54,10 @@ On each activation:
    - working report for user interests, decisions, domain interpretation, causal specification reasoning, data evidence, analysis alignment, method logic, diagnostics, module ledger, limitations, and next steps;
    - released artifact only when a deliverable is needed.
 5. If a needed result, diagnostic, table, figure, code path, or alignment check appears stale or inconsistent with the current report target, ask the lead consultant to route a bounded refresh to `data_analyst` or the owning method/task subskill. Do not rerun or silently update the analysis inside Report Writer.
-6. For polished or final deliverables, recommend an owner review pass before release. Name which sections need `data_analyst`, `method_lead`, `domain_expert`, or activated method/task subskill review, and why.
-7. Return compact feedback to the lead consultant: action performed, lane, evidence basis, claim boundary, missing inputs, owner-review needs, path updates, artifact paths, and smallest next step. The durable report record is the updated structure notes, working report, released artifact, and lead-recorded paths or limitations, not a separate Report Writer subskill record.
+6. Before compiling a user-facing analysis report, complete a compact report asset checklist: main result visual/table, key diagnostic visual/table, and provenance path for each asset. If one is omitted, record the reason and whether a bounded data or subskill refresh is needed.
+7. If a rendered artifact such as HTML is requested or produced, keep the source report path and rendered output path together. Do not treat a standalone HTML file as a complete reproducible report artifact when the source report is missing.
+8. For polished or final deliverables, recommend an owner review pass before release. Name which sections need `data_analyst`, `method_lead`, `domain_expert`, or activated method/task subskill review, and why.
+9. Return compact feedback to the lead consultant: action performed, lane, evidence basis, claim boundary, missing inputs, owner-review needs, path updates, source/rendered report paths, artifact paths, report asset checklist status, rendered-output QA status, and smallest next step. The durable report record is the updated structure notes, working report, released artifact, and lead-recorded paths or limitations, not a separate Report Writer subskill record.
 
 ## Phase Behavior
 
@@ -89,6 +91,8 @@ Do not wait for `report_production` to reconstruct this reasoning later.
 ### `report_production`
 
 Use the working report and structure notes as source material. Compile or revise only within recorded claim limits. For final-report prose, use `scientific_report_workflow.md` and the selected lane template.
+
+When the deliverable includes rendered HTML, pair it with the source report (`.md`, `.qmd`, `.Rmd`, `.ipynb`, or equivalent). The source file is the editable and reproducible artifact; the rendered HTML is the reading and sharing artifact.
 
 Before polished or final delivery, support a bounded owner review pass. `data_analyst` reviews data facts, artifact provenance, stale outputs, tables, figures, and `analysis_alignment`; `method_lead` reviews causal/statistical framing, assumptions, diagnostics, and claim strength; `domain_expert` reviews domain meaning, interpretation, action language, and external-validity wording; activated method/task subskills review only their own modules and method-specific limits. Integrate required owner-review edits when the lead consultant routes them back.
 
@@ -139,6 +143,13 @@ If a result is missing, unavailable, not run, or illustrative, state that visibl
 
 If code generated reported numbers, diagnostics, tables, figures, graph artifacts, or transformed analysis datasets, include a reproducibility appendix or code appendix. The appendix should list code/notebook paths, purpose, inputs, outputs, package/version notes when available, seeds or randomness controls, and rerun notes. Include short code excerpts only when they clarify a key transformation or model. Keep long scripts and notebooks as linked artifacts rather than pasting them into the main narrative. Do not report code-derived results without provenance.
 
+Before report release, maintain a small report asset checklist in the structure notes or working report:
+
+- main result visual or table: path, provenance, source owner, and report placement;
+- key diagnostic visual or table: path, provenance, source owner, and report placement;
+- source report and rendered output paths when HTML or another rendered format is delivered;
+- omitted asset reason when a visual/table is not useful, not applicable, not yet created, or blocked by missing data/diagnostics.
+
 ## Pre-Release Check
 
 Before delivering a report artifact, check:
@@ -150,7 +161,11 @@ Before delivering a report artifact, check:
 - load-bearing `analysis_alignment` gaps shape the main answer, framework justification, results interpretation, and limitations rather than appearing only as late caveats;
 - unresolved blockers and bounded-continuation limits are visible;
 - figures/tables are explained and have provenance;
+- the report asset checklist covers the main result visual/table, key diagnostic visual/table, and provenance paths, or records why an asset is omitted;
+- rendered HTML or other rendered output has a paired source report path;
+- rendered-output QA was performed for headings, lists, tables, figures, captions, broken local paths, broken source/report links, and source-path visibility;
 - any existing causal-structure graph, timing, or role artifact that is material to the claim is included in the report or has a clear omission reason;
+- if adjustment, exclusion, restriction, matching, weighting, stratification, complete-case, or model-covariate choices are load-bearing for the claim, a DAG, timing diagram, role table, forbidden-adjustment table, or adjustment/exclusion table is included or a clear omission reason is visible;
 - adjusted, restricted, matched, weighted, stratified, complete-case, or model-conditioned results state whether conditioning variables passed timing/role review, or visibly carry the unresolved collider/post-treatment/selection risk;
 - diagnostics and sensitivity checks are completed, deferred, or visibly missing;
 - diagnostics, sensitivity, and robustness checks have their own visible space, either as a short standalone section or an explicit paragraph inside Results for very short reports;
@@ -164,11 +179,15 @@ If diagnostics are incomplete, write a progress report or diagnostic review rath
 
 Before compiling an artifact, make sure the report lane and claim limits are clear. Put full reports, Markdown drafts, notebooks, rendered HTML, slides, captions, appendices, tables, figures, and code artifacts in artifact folders. Convert recorded project YAML, reviewer sections, activated `subskill_records`, report-structure notes, working-report material, and linked artifacts into the requested report lane.
 
+If HTML is delivered, also deliver or record the paired source report. The source report may be Markdown, Quarto, R Markdown, notebook, or another project-appropriate source, but the rendered HTML should not be the only durable report artifact. Run a rendered-report QA pass before marking the artifact ready: inspect the rendered file for malformed Markdown lists, broken tables, missing figures or captions, broken local paths, broken source links, and a missing source-report reference.
+
 Return compact YAML update requests to the lead consultant:
 
 - add finished report paths to `analysis_state.report_production_artifacts`;
 - keep the working draft path in `analysis_state.report_working_draft_path`;
 - keep the structure notes path in `analysis_state.report_structure_notes_path` when one exists;
+- record both source report and rendered report paths when HTML or another rendered artifact is delivered;
+- record report asset checklist status and rendered-report QA issues in the working report, structure notes, `analysis_state.report_production_artifacts`, or `analysis_state.limitations` as appropriate;
 - request owner review for report sections that depend on data facts, causal/statistical claims, domain interpretation, or activated method/task modules before polished or final delivery;
 - return report-readiness feedback for the lead consultant to use when updating `production_gate`;
 - record unresolved report limitations in `analysis_state.limitations`;
@@ -216,6 +235,15 @@ report_writer_feedback:
   claim_language_boundary: null
   working_draft_path: null
   structure_notes_path: null
+  source_report_path: null
+  rendered_report_path: null
+  report_asset_checklist:
+    main_result_asset: null
+    key_diagnostic_asset: null
+    missing_or_deferred_assets: []
+  rendered_output_qa:
+    status: "not_applicable | passed | issues_found"
+    issues: []
   artifact_paths: []
   recommended_next_step: null
 ```

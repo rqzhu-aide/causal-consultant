@@ -47,12 +47,16 @@ Use these rules for polished reports, progress artifacts, and same-evidence revi
    - statements the report must not make because they are unsupported, causally invalid, outside scope, or prohibited by `bounded_continuation`.
 6. Check `data_analyst.analysis_alignment`:
    - whether the data support the intended claim, estimand, framework requirements, diagnostics, prior warnings, and report target; if not, make that boundary part of the report's main answer.
-7. Plan owner review before polished delivery:
+7. Complete the report asset checklist:
+   - main result visual/table with provenance path or omission reason;
+   - key diagnostic visual/table with provenance path or omission reason;
+   - source report and rendered report paths when HTML or another rendered artifact is delivered.
+8. Plan owner review before polished delivery:
    - identify which sections need `data_analyst`, `method_lead`, `domain_expert`, or activated specialist review, and keep the draft easy for those owners to check.
 
 ## Before Release
 
-For polished or final deliverables, do not rely on prose polish as validation. The lead consultant should route data-dependent sections to `data_analyst`, causal/statistical sections to `method_lead`, domain interpretation to `domain_expert`, and activated modules to the owning method/task subskills. Revise required edits before release, or make unresolved review limits visible in the report and production gate state.
+For polished or final deliverables, do not rely on prose polish as validation. The lead consultant should route data-dependent sections to `data_analyst`, causal/statistical sections to `method_lead`, domain interpretation to `domain_expert`, and activated modules to the owning method/task subskills. Revise required edits before release, or make unresolved review limits visible in the report and production gate state. When the deliverable is rendered HTML or another rendered artifact, inspect the rendered output for malformed lists, broken tables, missing figures or captions, broken local paths, broken source/report links, and a missing source-report path.
 
 ## Report Spine
 

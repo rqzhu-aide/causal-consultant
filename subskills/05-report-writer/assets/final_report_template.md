@@ -2,9 +2,9 @@
 
 Use this template when the user needs a finished narrative report, memo, methods/results section, or same-evidence revision. Keep the structure simple by default. Populate it from the project YAML state, report-structure notes, working report, `subskill_records`, and linked artifacts. Do not add causal claims, diagnostics, figures, tables, references, or preferences that are not supported by recorded evidence.
 
-Markdown is the default first-round deliverable. Make it coherent and lightly polished, but keep it auditable and easy to revise. Omit empty subsections. Move technical detail to the appendix when it would distract from the user's main need.
+Markdown is the default first-round deliverable. Make it coherent and lightly polished, but keep it auditable and easy to revise. Omit empty subsections. Move technical detail to the appendix when it would distract from the user's main need. If HTML or another rendered artifact is delivered, preserve the paired source report and record both paths.
 
-Before drafting, use the report-structure notes to decide the main answer, claim boundary, section jobs, module placement, figure/table placement, code appendix needs, references, and anti-claims. Bring forward only supported or clearly qualified material.
+Before drafting, use the report-structure notes to decide the main answer, claim boundary, section jobs, module placement, report asset checklist, figure/table placement, code appendix needs, references, and anti-claims. Bring forward only supported or clearly qualified material.
 
 Before polished/final delivery, route the drafted report through owner review for sections that depend on data evidence, causal/statistical claims, domain interpretation, or activated method/task modules. Revise required edits or make unresolved issues visible before release.
 
@@ -13,12 +13,13 @@ Before polished/final delivery, route the drafted report through owner review fo
 - Draft the main answer before drafting prose. The report should not make the reader wait until the conclusion to learn what the evidence currently supports.
 - For each major claim, keep the evidence and boundary close to the claim. Use the structure: claim, evidence, limitation or scope.
 - Build the results as an evidence ladder, not a chronological log of analysis attempts. Lead with the most decision-relevant result, then add supporting diagnostics, comparisons, or sensitivity checks.
-- For substantive analysis reports, include a small visual evidence plan: at least one decision-useful figure or table for the main result, data support, or key diagnostic when such an artifact exists or can be generated from recorded outputs. If no visualization is included, say why text or tables are sufficient.
+- For substantive analysis reports, complete the report asset checklist before release. Include or explicitly defer one decision-useful figure or table for the main result and one decision-useful figure or table for the key diagnostic. Each included asset needs a provenance path; each omitted asset needs a reason. If a needed asset does not exist, ask the lead consultant to route a bounded refresh to `data_analyst` or the owning method/task subskill rather than inventing it.
 - If `method_lead.causal_structure.graph_artifact` exists, include the DAG, timing diagram, edge table, adjustment table, mediator path map, interference or spillover map, selection or transportability diagram, or role/timing table in the report unless it is no longer current or not relevant to the report lane. Place it in the framework/assumptions section when it carries the causal claim; use the appendix when it is technical or supplemental. If it is omitted, say why.
 - Separate results from interpretation: results say what was observed or computed; interpretation says what it means for the user's question and where that interpretation may fail.
 - If adjusted, restricted, matched, weighted, stratified, complete-case, or model-conditioned results are reported, state whether conditioning variables were checked for timing and causal role. If not checked, make collider, post-treatment, mediator, selection, missingness, or outcome-derived-feature risk visible as a limitation.
 - When the report uses a method with standard diagnostics, include those diagnostics in the main text or appendix, or state that they were not run, not applicable, or deferred. For matching, weighting, propensity scores, IPW/IPTW, overlap weights, or balancing weights, this normally includes balance before/after adjustment, propensity or balancing-score overlap, weight distribution and tails, truncation, effective sample size, retained/discarded units, and target-population changes.
 - When code generated reported results, figures, tables, diagnostics, transformed datasets, or sensitivity checks, include a complete reproducibility package: source notebook/script paths, run order, inputs, outputs, seeds/randomness controls, package/version notes when available, and all code needed to reproduce reported content. For short analyses, include the code directly in the appendix; for longer analyses, link complete source artifacts and include the key code excerpts needed to audit the main transformations and models.
+- Before delivering a rendered artifact such as HTML, inspect the rendered output for malformed lists, broken tables, missing figures or captions, broken local paths, broken source links, and missing source-report path.
 - Give each paragraph one job. A paragraph should either orient, state a claim, present evidence, compare alternatives, explain a diagnostic, interpret meaning, or state a limitation.
 - Before release, run an overclaim check for unsupported causal language, broader generalization than the data support, unverified novelty, hidden unresolved diagnostics, and action recommendations that exceed the evidence.
 
@@ -47,13 +48,15 @@ Before polished/final delivery, route the drafted report through owner review fo
 
 [If a causal-structure artifact exists, include or link it here when it helps explain the DAG, timing, variable roles, adjustment choice, forbidden adjustment, mediator pathway, interference/spillover mapping, selection/transportability logic, or claim boundary. Give a short caption explaining what the reader should learn from it.]
 
+[When included or excluded covariates carry the identification logic, include or link a DAG, timing diagram, role table, forbidden-adjustment table, or adjustment/exclusion table. The artifact should make clear which variables were adjusted for, excluded, restricted on, matched on, weighted on, stratified by, used for complete-case analysis, or treated as model covariates; why those choices were made; and which timing or role risks remain unresolved.]
+
 [Name the main assumptions, diagnostics, sensitivity checks, and wording limits. Briefly explain key alternatives that were considered, deferred, or rejected when they matter for the user's decision. Keep this focused on method fit, not a broad methods textbook.]
 
 [When activated method/job modules contribute to the report, state each central module's role, evidence status, and claim scope in plain language, using its `subskill_records.statistical_evidence` packet.]
 
 ## 4. Results, Figures, And Tables
 
-[Present the main result or current finding first, with provenance. Include the key result figure or table when it makes the result easier to inspect, compare, or explain. For most substantive analysis reports, use at least one visual or table for the main result, data support, or key diagnostic; if omitted, explain why.]
+[Present the main result or current finding first, with provenance. Include the key result figure or table when it makes the result easier to inspect, compare, or explain. For most substantive analysis reports, use at least one visual or table for the main result and one visual or table for the key diagnostic; if either is omitted, explain why and whether it is deferred, not applicable, unavailable, or unnecessary.]
 
 [For each figure or table, give a short reader-facing explanation: what it shows, why it matters, and what conclusion or caution it supports. Keep interpretation consistent with the recorded claim strength.]
 
@@ -89,7 +92,7 @@ Before polished/final delivery, route the drafted report through owner review fo
 
 ### Appendix C. Reproducibility Package And Code Appendix
 
-[Optional for purely narrative reports, but required when code supports reported content. Include all code needed to reproduce the reported results, figures, tables, diagnostics, transformed datasets, and sensitivity checks, either directly in this appendix for short analyses or through complete linked source notebooks/scripts for longer analyses. Record run order, code/notebook paths, purpose, inputs, outputs, package/version notes when available, seeds or randomness controls, rerun notes, saved figure/table paths, and key code excerpts for load-bearing transformations and models.]
+[Optional for purely narrative reports, but required when code supports reported content. Include all code needed to reproduce the reported results, figures, tables, diagnostics, transformed datasets, and sensitivity checks, either directly in this appendix for short analyses or through complete linked source notebooks/scripts for longer analyses. Record run order, code/notebook paths, purpose, inputs, outputs, package/version notes when available, seeds or randomness controls, rerun notes, saved figure/table paths, source report path, rendered report path when applicable, rendered-output QA status, and key code excerpts for load-bearing transformations and models.]
 
 ### Appendix D. References And Source Notes
 

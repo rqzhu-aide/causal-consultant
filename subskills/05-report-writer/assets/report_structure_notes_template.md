@@ -12,6 +12,9 @@ Use this file as the report writer's private structure-planning notebook. Start 
 - Data-supported claim ceiling:
 - Deliverable format:
 - Working draft path:
+- Source report path:
+- Rendered report path:
+- Rendered-output QA status:
 
 ## User Interest And Reader Takeaways
 
@@ -80,11 +83,32 @@ Record activated or likely modules that may become report components.
 |---|---|---|---|---|
 |  | `data_analyst` / `method_lead` / `domain_expert` / subskill id | data facts / claim wording / domain interpretation / module limits | needed / approved / needs revision / deferred |  |
 
-## Figures Tables And Artifacts
+## Report Asset Checklist
+
+Use this checklist before any user-facing analysis report is released. Every substantive report should either include these assets or record why they are unnecessary, unavailable, deferred, or blocked.
+
+| Required asset | Purpose in report | Evidence source or owner | Status | Path or omission reason |
+|---|---|---|---|---|
+| Main result visual or table | Show the central result or comparison | `data_analyst` / subskill / artifact | planned / created / inspected / omitted / blocked |  |
+| Key diagnostic visual or table | Show the diagnostic that most affects trust or claim strength | `data_analyst` / `method_lead` / subskill / artifact | planned / created / inspected / omitted / blocked |  |
+| Source report | Editable/reproducible source when HTML or another rendered artifact is delivered | `report_writer` / code artifact | not_applicable / created / inspected / missing |  |
+| Rendered report | Reading/sharing artifact such as HTML | `report_writer` / rendered artifact | not_applicable / created / inspected / missing |  |
+
+## Additional Figures Tables And Artifacts
 
 | Candidate item | Purpose in report | Evidence source | Status | Path |
 |---|---|---|---|---|
 |  |  |  | planned / created / inspected / blocked |  |
+
+## Rendered Report QA
+
+| Check | Status | Notes |
+|---|---|---|
+| Lists render correctly, with no raw Markdown bullets trapped in paragraphs | not_applicable / passed / issue |  |
+| Tables render with headers, rows, captions or explanatory notes, and readable alignment | not_applicable / passed / issue |  |
+| Figures load, have captions or explanatory notes, and are referenced correctly | not_applicable / passed / issue |  |
+| Local paths and links resolve or are visibly marked as unavailable | not_applicable / passed / issue |  |
+| Source report path is visible when HTML or another rendered artifact is delivered | not_applicable / passed / issue |  |
 
 ## Code And Reproducibility Seeds
 

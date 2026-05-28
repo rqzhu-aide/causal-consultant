@@ -1,24 +1,24 @@
 # A Causal Consultant Skill
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.2.1-blue.svg)]() [![Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
 
-*A Modular Consultant Team (MCT) skill for causal reasoning, data feasibility, analysis framework selection, diagnostics, interpretation, and report production.*
+*An interactive causal inference consultant skill for moving from a causal question to a defensible analysis plan, diagnostic workflow, interpretation, and report.*
+
+> I cannot give you a definitive answer, but I can help you explore.
 
 ---
 
 ## What This Skill Is About
 
-This is a causal inference consultant skill for agent systems that load a top-level `SKILL.md` and then selectively read supporting references, subskills, scripts, examples, schemas, and templates. It helps a user move from an informal causal question to a defensible causal specification, useful exploratory or diagnostic analysis, appropriate method/task specialist support, and a report or memo with clear claim boundaries.
+This is an interactive causal inference skill for users who want help thinking through a causal question, not just running a model. It works step by step with the user to decide what analysis is defensible, feasible, and useful given the scientific question, domain context, available data, assumptions, diagnostics, and reporting goal.
 
-Version 1.2.0 uses a Modular Consultant Team (MCT) architecture: a user-facing lead consultant coordinates four core team members, `domain_expert`, `data_analyst`, `method_lead`, and silent `report_writer`. The lead consultant keeps the conversation coherent, while the core team preserves domain meaning, data reality, causal validity, and reportability. Early exploration stays lightweight, `method_lead` maps plausible causal options before narrowing, and method/task subskills are used as bounded specialist modules only when they are useful. This version strengthens DAG artifact decisions, report inclusion of causal-structure artifacts, conditioning-risk checks, diagnostics visibility, and reproducibility expectations.
+The skill is intended for data scientists, analysts, researchers, domain experts, and applied teams who want a careful causal partner rather than a black-box method picker. It asks targeted follow-up questions when missing context would materially affect the choice of design, estimand, data requirements, model, diagnostics, or interpretation. It avoids jumping into a hands-off analysis before the causal question, data reality, and claim boundaries are clear enough.
 
-The skill keeps a compact project state with the user's goal, project phase, working facts, domain guidance, data properties, candidate frameworks, estimands, assumptions, diagnostics, limitations, recommended or activated subskills, and report materials. As new information appears, the workflow can recheck earlier decisions, revise the analysis framework, narrow the estimand, request a bounded data diagnostic, produce a qualified progress artifact, or explain why a causal claim is not yet supported.
+In practice, the skill helps a user move from an informal question to a structured causal specification, useful exploratory or diagnostic analysis, appropriate method/task specialist support, and a report or memo with clear limits on what can be claimed. The core safety rule is simple: causal language should never be stronger than the design, assumptions, data support, diagnostics, and sensitivity checks justify.
 
-It is for data scientists, analysts, researchers, domain experts, and applied teams who want a careful causal partner rather than a black-box method picker. It can support exploratory planning, data audit, design critique, causal-structure reasoning, method selection, causal discovery sidecar work, R/Python code examples, diagnostic review, result interpretation, and reproducible reporting.
+The skill uses a Modular Consultant Team (MCT) architecture. A user-facing lead consultant coordinates four core team members: `domain_expert`, `data_analyst`, `method_lead`, and silent `report_writer`. The lead keeps the conversation coherent, while the core team preserves domain meaning, data reality, causal validity, and reportability. Early exploration stays lightweight, `method_lead` maps plausible causal options before narrowing, and method/task subskills are used as bounded specialist modules only when they are useful. `causal-discovery` can also serve as an advisory sidecar when graph or feature discovery would help the project.
 
-The core safety rule is simple: causal language should never be stronger than the design, assumptions, data support, diagnostics, and sensitivity checks justify.
-
-> I cannot give you a definitive answer, but I can help you explore.
+The skill keeps a compact project state with the user's goal, project phase, working facts, domain guidance, data properties, candidate frameworks, estimands, assumptions, causal-structure notes, diagnostics, limitations, recommended or activated subskills, report materials, and reproducibility expectations. As new information appears, the workflow can recheck earlier decisions, revise the analysis framework, narrow the estimand, request a bounded data diagnostic, produce a qualified progress artifact, or explain why a causal claim is not yet supported.
 
 ---
 
@@ -37,31 +37,69 @@ Say one of the following phrases in your request:
 
 ---
 
-## How To Use Or Install
+## How To Install Or Use
 
-### Quick Start
+Install the full repository, not just the README, so the agent can load the skill instructions and supporting files when needed.
 
-Give your AI agent this GitHub link:
+### Recommended: Skills CLI
 
-```text
-https://github.com/rqzhu-aide/causal-consultant
+For most users, install with the cross-agent [`skills` CLI](https://www.skills.sh/docs/cli):
+
+```bash
+npx skills add rqzhu-aide/causal-consultant --skill causal-consultant
 ```
 
-Then ask:
+To target a specific supported agent, use `--agent`:
 
-```text
-Use this GitHub repo as a causal consultant skill. Start from SKILL.md.
+```bash
+npx skills add rqzhu-aide/causal-consultant --skill causal-consultant --agent codex
 ```
 
-That is enough for tools that can read GitHub repositories or use repository context.
+Replace `codex` with another supported agent name, such as `cursor` or `claude-code`, or pass multiple agent names in the same command:
 
-### Detailed Setup
+```bash
+npx skills add rqzhu-aide/causal-consultant --skill causal-consultant --agent claude-code cursor codex
+```
 
-This repository is a skill package centered on [`SKILL.md`](SKILL.md). If your AI tool supports skills, install this repository as a skill. If it does not, give the tool the GitHub URL above and ask it to follow `SKILL.md`.
+This is the recommended route for Codex, Cursor, Windsurf, Gemini, Cline, and similar agents when the `skills` CLI supports the target agent.
 
-#### Cursor, Claude Code, And Similar Repo-Context Tools
+After installation, ask your agent:
 
-Open this repository in your tool, or give the tool this GitHub URL:
+```text
+Use the causal-consultant skill for this causal inference project.
+```
+
+If your agent has its own native skill installer, install this repository as a skill package named `causal-consultant`.
+
+### Direct Filesystem Copy For Claude Code
+
+Claude Code also supports direct filesystem installs. For a project-local install, first navigate to your project folder, then run:
+
+```bash
+git clone https://github.com/rqzhu-aide/causal-consultant .claude/skills/causal-consultant
+```
+
+For a personal install available across Claude Code projects, use:
+
+```bash
+git clone https://github.com/rqzhu-aide/causal-consultant ~/.claude/skills/causal-consultant
+```
+
+On Windows PowerShell, the personal install command is:
+
+```powershell
+git clone https://github.com/rqzhu-aide/causal-consultant "$env:USERPROFILE\.claude\skills\causal-consultant"
+```
+
+After installation, restart Claude Code if needed. Claude Code can activate skills automatically based on the request, or you can invoke this skill directly:
+
+```bash
+/causal-consultant
+```
+
+### Repository-Context Fallback
+
+If your tool does not have a skill installer but can read GitHub repositories, give it this repository URL:
 
 ```text
 https://github.com/rqzhu-aide/causal-consultant
@@ -71,36 +109,6 @@ Then ask:
 
 ```text
 Use this repository as a causal consultant skill. Read SKILL.md first, then load only the supporting files needed for my task.
-```
-
-#### Codex Skills
-
-Windows PowerShell:
-
-```powershell
-py "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" `
-  --repo rqzhu-aide/causal-consultant `
-  --path . `
-  --name causal-consultant
-```
-
-macOS or Linux:
-
-```bash
-python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
-  --repo rqzhu-aide/causal-consultant \
-  --path . \
-  --name causal-consultant
-```
-
-After installation, restart your agent app if needed so it can discover the skill.
-
-#### Other AI Coding Tools
-
-Use the same pattern:
-
-```text
-Use https://github.com/rqzhu-aide/causal-consultant as a causal consultant skill. Read SKILL.md first.
 ```
 
 For best results, make sure the tool can access the full repository, not just the README.

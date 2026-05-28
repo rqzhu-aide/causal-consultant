@@ -1,6 +1,6 @@
 # Reproducible Analysis Report Template
 
-Use this template when analyzable data exist, the analysis is run in code, and the recorded workflow state supports a reportable causal or non-causal claim. The default deliverable is a source report plus rendered HTML:
+Use this template when analyzable data exist, the analysis is run in code, and the recorded workflow state supports a reportable causal or non-causal claim. The default deliverable is a source report plus rendered HTML. If HTML is delivered, the paired source report is required and must be recorded with the rendered path:
 
 ```text
 artifacts/
@@ -56,12 +56,19 @@ Use the same writing discipline as the final report: state the main answer early
 
 ## 6. Reproducibility And Artifact Appendix
 
-[Record source report path, rendered HTML path, code paths, seeds, package versions, saved figures/tables, and rerun notes.]
+[Record source report path, rendered HTML path, code paths, seeds, package versions, saved figures/tables, rendered-output QA status, and rerun notes.]
 ```
 
 ## Required Coverage
 
-Cover data provenance, causal question/design, data readiness, analysis alignment, analysis specification, results, diagnostics/sensitivity, interpretation/limits, reproducibility, evidence-review status, and the workflow gate state.
+Cover data provenance, causal question/design, data readiness, analysis alignment, analysis specification, results, diagnostics/sensitivity, interpretation/limits, reproducibility, evidence-review status, report asset checklist status, rendered-output QA status when applicable, and the workflow gate state.
+
+Before release, the report asset checklist should identify:
+
+- the main result visual or table, with provenance path;
+- the key diagnostic visual or table, with provenance path;
+- any intentionally omitted or deferred main result or diagnostic asset and why;
+- the source report path and rendered report path when HTML is delivered.
 
 ## Route-Aware Package Guidance
 
@@ -83,4 +90,5 @@ Use packages that match the route or specialist subskill actually used. Do not l
 - Results, diagnostics, plots, and tables must come from executed code, verified artifacts, or explicitly labeled user-provided outputs.
 - Do not hand-write numeric results into prose unless their source is visible in the source report or linked artifacts.
 - If a result is missing, unavailable, or not run, say so and explain how that limits the claim.
+- Before delivering HTML, inspect the rendered file for malformed lists, broken tables, missing figures or captions, broken local paths, broken source links, and missing source-report path.
 - Keep sensitive raw rows, direct identifiers, secrets, and small-cell details out of the rendered report unless explicitly approved and necessary.

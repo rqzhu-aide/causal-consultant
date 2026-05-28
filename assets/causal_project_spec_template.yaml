@@ -225,6 +225,8 @@ method_lead:
 analysis_state:
   project_exploration_outputs: []
   causal_specification_artifacts: []
+  # Include both source report paths and rendered report paths when HTML,
+  # PDF, slides, or another rendered artifact is produced.
   report_production_artifacts: []
   report_working_draft_path: null
   report_structure_notes_path: null
@@ -262,6 +264,18 @@ artifact_index:
     artifact_type: "subskill"
     path: "subskills/03-method-lead/SKILL.md"
     purpose: "causal question variants, frameworks, estimand set, validity requirements, causal structure, assumptions, method literature, diagnostics, sensitivity, and wording boundary"
+  - artifact_id: "03-statistical-validity-reference"
+    artifact_type: "reference"
+    path: "subskills/03-method-lead/references/statistical_validity.md"
+    purpose: "deeper method-lead guidance for claim-strength decisions, same-data selection risks, data-provenance limits, method-specific validation routes, and bounded diagnostic requests"
+  - artifact_id: "03-subskill-triage-reference"
+    artifact_type: "reference"
+    path: "subskills/03-method-lead/references/subskill_triage.md"
+    purpose: "deeper method-lead guidance for classifying, selecting, blocking, or activating method/job subskills"
+  - artifact_id: "03-red-flags-reference"
+    artifact_type: "reference"
+    path: "subskills/03-method-lead/references/red_flags.md"
+    purpose: "detailed causal-method red flags and response pattern for blockers, diagnostics, wording boundaries, and progression requests"
   - artifact_id: "05-report-writer"
     artifact_type: "subskill"
     path: "subskills/05-report-writer/SKILL.md"

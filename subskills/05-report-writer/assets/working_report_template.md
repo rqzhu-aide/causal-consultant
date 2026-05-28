@@ -18,6 +18,9 @@ Use this Markdown file as the report writer's private polished project notebook 
 - Current issues or tensions:
 - Key references or source materials:
 - Important artifact paths:
+- Source report path:
+- Rendered report path:
+- Rendered-output QA status:
 - Activated module index:
 - Owner review status:
 - Current user confusion or immediate intent:
@@ -63,6 +66,17 @@ Use this Markdown file as the report writer's private polished project notebook 
 - Diagnostics and sensitivity checks:
 - Known results with provenance:
 - Tables, figures, or artifact paths:
+
+## Report Asset Checklist
+
+Use this before releasing a user-facing analysis report.
+
+| Required asset | Purpose | Provenance or owner | Status | Path or omission reason |
+|---|---|---|---|---|
+| Main result visual or table |  |  | planned / created / inspected / omitted / blocked |  |
+| Key diagnostic visual or table |  |  | planned / created / inspected / omitted / blocked |  |
+| Source report, if rendered output is delivered |  |  | not_applicable / created / inspected / missing |  |
+| Rendered report, if requested |  |  | not_applicable / created / inspected / missing |  |
 
 ## Code And Reproducibility Appendix Notes
 

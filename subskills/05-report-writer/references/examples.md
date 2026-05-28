@@ -31,6 +31,15 @@ report_writer_feedback:
   claim_language_boundary: "Use exploratory/model-based association language; do not call this a final causal effect."
   working_draft_path: "artifacts/report_working_draft.md"
   structure_notes_path: "artifacts/report_structure_notes.md"
+  source_report_path: "artifacts/renewal-exploratory-report.qmd"
+  rendered_report_path: "artifacts/renewal-exploratory-report.html"
+  report_asset_checklist:
+    main_result_asset: "artifacts/tables/renewal-model-summary.csv"
+    key_diagnostic_asset: "artifacts/figures/renewal-overlap-check.png"
+    missing_or_deferred_assets: []
+  rendered_output_qa:
+    status: "passed"
+    issues: []
   artifact_paths:
     - "artifacts/renewal-exploratory-report.html"
   recommended_next_step: "Clarify time zero and comparator before moving to causal specification."
@@ -46,10 +55,19 @@ report_writer_feedback:
   evidence_basis:
     - "Specification gate is ready."
     - "report_production diagnostics are complete or explicitly deferred."
-    - "All reported numbers come from the rendered source report."
+    - "All reported numbers come from the paired source report and rendered report artifacts."
   claim_language_boundary: "Cautious causal language is allowed within the recorded population, time window, and assumptions."
   working_draft_path: "artifacts/report_working_draft.md"
   structure_notes_path: "artifacts/report_structure_notes.md"
+  source_report_path: "artifacts/renewal-effect-report.qmd"
+  rendered_report_path: "artifacts/renewal-effect-report.html"
+  report_asset_checklist:
+    main_result_asset: "artifacts/figures/renewal-effect-estimate.png"
+    key_diagnostic_asset: "artifacts/figures/renewal-balance-diagnostics.png"
+    missing_or_deferred_assets: []
+  rendered_output_qa:
+    status: "passed"
+    issues: []
   artifact_paths:
     - "artifacts/renewal-effect-report.qmd"
     - "artifacts/renewal-effect-report.html"

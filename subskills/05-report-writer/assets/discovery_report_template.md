@@ -9,7 +9,7 @@ When discovery is the deliverable, this can become a standalone report. When dis
 Choose the report format from the evidence source:
 
 - If discovery is conceptual, based on user-described graph output, or based on existing artifacts that were not rerun, a short `.md` discovery report is acceptable.
-- If discovery algorithms are run on data, the default deliverable is a reproducible source report plus rendered HTML:
+- If discovery algorithms are run on data, the default deliverable is a reproducible source report plus rendered HTML. If HTML is delivered, the paired source report is required and must be recorded with the rendered path:
 
 ```text
 artifacts/
@@ -20,6 +20,8 @@ artifacts/
 ```
 
 The source file is the reproducible discovery artifact. The `.html` is the reading and sharing artifact. Graph plots, edge lists, stability tables, tuning summaries, and other discovery outputs should be saved separately when useful and indexed in the report.
+
+Before delivering rendered HTML, inspect the rendered file for malformed lists, broken tables, missing figures or captions, broken local paths, broken source links, and missing source-report path.
 
 ## Template Instructions
 
@@ -138,6 +140,7 @@ Every causal discovery report must cover these elements somewhere in the report:
 | Diagnostics | Stability, sensitivity, background consistency, hidden-confounding, temporal/non-IID, and preprocessing checks. |
 | Interpretation limits | What the graph can suggest and what it cannot prove. |
 | Reproducibility | Source report or memo, rendered HTML when data-backed, graph artifacts, edge lists, stability tables, software, seeds, and tuning notes. |
+| Rendered-output QA | For HTML reports, source report path, rendered path, checked lists/tables/figures, and any broken-path or source-link issues. |
 
 ## Optional Coverage Ledger
 

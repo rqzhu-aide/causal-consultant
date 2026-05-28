@@ -78,6 +78,8 @@ Use `report_production` to draft, diagnose, revise, improve, and deliver:
 - verify that analysis datasets, code, results, diagnostics, and sensitivity checks have provenance;
 - when report-needed outputs are stale or inconsistent with the current YAML state, route a bounded refresh to `data_analyst` or the owning method/task subskill before using them as report claims;
 - organize completed analyses into coherent tables, figures, appendices, and report text;
+- keep a report asset checklist for the main result visual/table, key diagnostic visual/table, and provenance path for each included or omitted asset;
+- when HTML or another rendered artifact is delivered, keep the paired source report path and run rendered-output QA for lists, tables, figures, broken paths, and source/report links;
 - before final or polished delivery, run a report owner review pass: `data_analyst` checks data facts, provenance, artifacts, and `analysis_alignment`; `method_lead` checks causal/statistical framing and claim strength; `domain_expert` checks domain meaning and interpretation; activated method/task subskills check their own modules, diagnostics, and method-specific limits;
 - send owner-review corrections back to `report_writer`, then revise the report or visibly defer the issue before delivery;
 - draft, revise, and improve the report with the user across as many turns as needed;

@@ -2,7 +2,7 @@
 
 Use this flexible template when analyzable data, exploratory summaries, or prototype model outputs exist but the causal specification or report_production evidence is not ready for a final causal report. This report is for learning, debugging, model exploration, diagnostics, and progress review.
 
-The default deliverable is a reproducible source report plus rendered HTML when feasible:
+The default deliverable is a reproducible source report plus rendered HTML when feasible. If HTML is delivered, the paired source report is required and must be recorded with the rendered path:
 
 ```text
 artifacts/
@@ -58,16 +58,24 @@ Even in a progress report, state the learning point early, keep claims close to 
 
 ## 6. Reproducibility Appendix
 
-[Record source report path, rendered HTML path, code paths, saved figures/tables, package versions, seeds, and rerun notes.]
+[Record source report path, rendered HTML path, code paths, saved figures/tables, package versions, seeds, rendered-output QA status, and rerun notes.]
 ```
 
 ## Required Coverage
 
-Every exploratory/progress report must cover report scope, data provenance, candidate question/design, data checks, analysis specification, results provenance, claim boundary, upgrade path, and reproducibility.
+Every exploratory/progress report must cover report scope, data provenance, candidate question/design, data checks, analysis specification, results provenance, claim boundary, upgrade path, reproducibility, report asset checklist status, and rendered-output QA status when applicable.
+
+Before release, the report asset checklist should identify:
+
+- the main result visual or table, with provenance path;
+- the key diagnostic visual or table, with provenance path;
+- any intentionally omitted or deferred main result or diagnostic asset and why;
+- the source report path and rendered report path when HTML is delivered.
 
 ## Code And Output Rules
 
 - Results, diagnostics, plots, and tables must come from executed code, verified artifacts, or explicitly labeled user-provided outputs.
 - If illustrative or simulated data are used, label them clearly.
 - If data are unavailable, empty, inaccessible, or not constructible, switch to a planning/communication memo or code scaffold.
+- Before delivering HTML, inspect the rendered file for malformed lists, broken tables, missing figures or captions, broken local paths, broken source links, and missing source-report path.
 - Keep sensitive raw rows, direct identifiers, secrets, and small-cell details out of the rendered report unless explicitly approved and necessary.

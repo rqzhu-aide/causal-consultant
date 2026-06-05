@@ -221,9 +221,9 @@ After every `execution_authorized` unit, main stops and sends a compact Return G
 
 The Return Gate must use this shape:
 
-- `[✅ Confirmed] Ran:` completed unit, source script/notebook path, and analysis note path.
-- `[🚨 Boundary] Status:` claim boundary plus dependency, deviation, packet-match, and gatekeeper issues only as needed.
-- `[🛠 Method Options] Next:` one remaining user intent, consultant idea, repair choice, stopping option, or final HTML report option.
+- `[OK Confirmed] Ran:` completed unit, source script/notebook path, and analysis note path.
+- `[! Boundary] Status:` claim boundary plus dependency, deviation, packet-match, and gatekeeper issues only as needed.
+- `[+ Method Options] Next:` one remaining user intent, consultant idea, repair choice, stopping option, or final HTML report option.
 
 Before sending the Return Gate, update the current `execution_records` item. The durable record still needs completed unit and confirmed scope; claim boundary; source path; analysis note path; external artifacts and reasons; embedded-table status; report assets produced or missing; dependency/deviation status; packet match; causal-structure sketch match when relevant; post-analysis gatekeeper status when analysis was run; and queue reconciliation.
 
@@ -233,7 +233,7 @@ Closeout is incomplete unless the current execution record has `closeout_status:
 
 If `report_ready: false`, the next choice should surface one remaining item: try it, park it for report, mark it unnecessary, or block it with a reason. Report writing, stop/final wrap-up, or another branch cannot be the default next step until reconciliation is resolved.
 
-The Return Gate is blocked if code supported results but source code path is missing, or if no `analysis_note_*.md` or equivalent technical note records the executed unit. Set `closeout_status: blocked`; the `[🚨 Boundary] Status` line names the missing fact, and `[🛠 Method Options] Next` offers repair or stopping with a technical note before report work.
+The Return Gate is blocked if code supported results but source code path is missing, or if no `analysis_note_*.md` or equivalent technical note records the executed unit. Set `closeout_status: blocked`; the `[! Boundary] Status` line names the missing fact, and `[+ Method Options] Next` offers repair or stopping with a technical note before report work.
 
 ## Report Readiness Clearing
 

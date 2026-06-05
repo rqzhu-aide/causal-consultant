@@ -1,9 +1,9 @@
 ---
 name: causal-consultant
-description: "Consultation-style causal inference skill. Use when the user wants to work with an agent on a causal question, causal data analysis, causal design and discovery, method choice, interpretation, diagnostics, or report writing. The skill interacts with the user to turn a raw idea such as 'analyze the causal effect of X on Y' into a defensible causal question before running or recommending analysis."
+description: "Interactive consultation-style causal inference skill. Use when the user wants to work with an agent on a causal question, causal data analysis, causal design and discovery, method choice, interpretation, diagnostics, or report writing. The skill interacts with the user to turn a raw idea such as 'analyze the causal effect of X on Y' into a defensible causal question before running or recommending analysis."
 ---
 
-# Causal Consultant
+# Interactive Causal Consultant
 
 ## Activation Message
 

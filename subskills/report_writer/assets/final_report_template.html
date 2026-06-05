@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Project-Specific Report Title]</title>
+  <style>
+    :root {
+      --text: #1f2933;
+      --muted: #5f6b7a;
+      --line: #d7dde5;
+      --panel: #f6f8fb;
+      --accent: #2457a6;
+      --warning: #8a4b0f;
+      --danger: #9f1d1d;
+      --ok: #1b6b43;
+    }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: #ffffff;
+      font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
+    .page {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 40px 28px 64px;
+    }
+    header {
+      border-bottom: 3px solid var(--accent);
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+    }
+    h1, h2, h3 {
+      line-height: 1.25;
+      margin: 1.6em 0 0.6em;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-top: 0;
+    }
+    h2 {
+      color: var(--accent);
+      font-size: 1.35rem;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 0.25rem;
+    }
+    h3 {
+      font-size: 1.05rem;
+    }
+    .meta, .note, figcaption {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--panel);
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+    .boundary {
+      border-left-color: var(--warning);
+    }
+    .blocked {
+      border-left-color: var(--danger);
+    }
+    .ready {
+      border-left-color: var(--ok);
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 12px 0 18px;
+      font-size: 0.94rem;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: var(--panel);
+      font-weight: 650;
+    }
+    code, pre {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    pre {
+      background: #f3f5f8;
+      border: 1px solid var(--line);
+      padding: 12px;
+      overflow: auto;
+    }
+    figure {
+      margin: 18px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    a {
+      color: var(--accent);
+    }
+    @media print {
+      .page { max-width: none; padding: 24px; }
+      a { color: inherit; text-decoration: underline; }
+      h2 { break-after: avoid; }
+      table, figure, pre { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>[Project-Specific Report Title]</h1>
+      <p class="meta">
+        <strong>Prepared for:</strong> [Audience or user]<br>
+        <strong>Prepared by:</strong> Causal Consultant<br>
+        <strong>Date:</strong> [Date]<br>
+        <strong>Final HTML report:</strong> <a href="[final_report_path]">[final_report_path]</a>
+      </p>
+    </header>
+
+    <section id="at-a-glance">
+      <h2>At A Glance</h2>
+      <table>
+        <tr><th>Field</th><th>Summary</th></tr>
+        <tr><td>Report type</td><td>supported causal / cautious causal / exploratory / descriptive / diagnostic / planning</td></tr>
+        <tr><td>Evidence status</td><td>ready / qualified / preliminary / blocked / descriptive-only</td></tr>
+        <tr><td>Main answer</td><td>[One-sentence answer or current finding.]</td></tr>
+        <tr><td>Claim boundary</td><td>[What wording is allowed: causal, qualified causal, association-only, planning-only, or no claim.]</td></tr>
+        <tr><td>Main limitation</td><td>[The single most important limitation.]</td></tr>
+        <tr><td>Next decision</td><td>[The smallest useful next step for the user.]</td></tr>
+        <tr><td>Report asset status</td><td>ready / needs assets / blocked / terse technical note. [State missing figures, citations, or narrative cues if any.]</td></tr>
+        <tr><td>HTML QA status</td><td>ready / needs revision / blocked. [State unresolved QA issue if not ready.]</td></tr>
+      </table>
+    </section>
+
+    <section id="key-takeaways">
+      <h2>Key Takeaways</h2>
+      <ol>
+        <li>[Most important result, decision, or status.]</li>
+        <li>[Most important reason to trust or qualify the result.]</li>
+        <li>[Most important next action or unresolved issue.]</li>
+      </ol>
+    </section>
+
+    <section id="what-not-to-claim">
+      <h2>What Not To Claim</h2>
+      <div class="callout boundary">
+        <ul>
+          <li>Do not claim: [unsupported causal, policy, subgroup, mechanism, prediction, or generalization statement].</li>
+          <li>Do not compare: [unsupported comparison or population].</li>
+          <li>Do not interpret: [proxy, post-treatment variable, exploratory diagnostic, or descriptive association] as [prohibited causal meaning].</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="main-answer">
+      <h2>Main Answer And Evidence Status</h2>
+      <p>[Answer the user's question directly. State whether the answer is supported, qualified, exploratory, descriptive, diagnostic, or planning-focused.]</p>
+      <div class="callout boundary"><strong>Claim boundary:</strong> [State exactly what the report can and cannot say.]</div>
+      <div class="callout"><strong>Most important limitation:</strong> [State the limitation that most affects the conclusion.]</div>
+    </section>
+
+    <section id="question">
+      <h2>Original Question And Refined Causal Question</h2>
+      <table>
+        <tr><th>Item</th><th>Reported value</th></tr>
+        <tr><td>Original user question</td><td>[Original wording.]</td></tr>
+        <tr><td>Refined causal question</td><td>[Exposure/intervention, comparator, outcome, population, unit, time zero, follow-up, and estimand.]</td></tr>
+        <tr><td>Why refinement matters</td><td>[One or two sentences.]</td></tr>
+      </table>
+    </section>
+
+    <section id="decision-trace">
+      <h2>Consultation And Decision Trace</h2>
+      <p>Use this section to show how the final deliverable was reached. Include every stage that materially shaped the analysis or claim boundary.</p>
+      <table>
+        <tr><th>Stage</th><th>What was decided or learned</th><th>Evidence/source</th><th>Status</th></tr>
+        <tr><td>Causal framing</td><td>[Question, contrast, or reframe selected.]</td><td>[Conversation/state/source.]</td><td>completed / qualified / missing</td></tr>
+        <tr><td>Data reality and role card</td><td>[Unit, exposure, outcome, timing, support, design fields.]</td><td>[data_facts / file path.]</td><td>completed / qualified / missing</td></tr>
+        <tr><td>Method/fallback choice</td><td>[Options considered and path selected.]</td><td>[method_alignments / specialist output.]</td><td>completed / qualified / missing</td></tr>
+        <tr><td>Selected work-unit spec</td><td>[Variables, sample, model family, diagnostics, outputs.]</td><td>[spec card / execution confirmation.]</td><td>completed / qualified / missing</td></tr>
+        <tr><td>Validity boundary</td><td>[Allowed wording and blockers.]</td><td>[causal_validity.]</td><td>completed / qualified / missing</td></tr>
+        <tr><td>Execution and deviations</td><td>[Confirmed scope, dependency decisions, deviations.]</td><td>[artifact_index / execution notes.]</td><td>completed / qualified / missing</td></tr>
+        <tr><td>Pending and parked work</td><td>[User-requested tasks and consultant alternatives resolved, declined, blocked, or parked for report.]</td><td>[pending_user_intents / exploration_threads / method_ideas.]</td><td>completed / qualified / missing</td></tr>
+        <tr><td>Report shape</td><td>[Audience, depth, optional components.]</td><td>[report plan.]</td><td>completed / qualified / missing</td></tr>
+      </table>
+      <div class="callout"><strong>Decision trace note:</strong> [Explain any missing stage evidence, skipped stage, or user-approved narrowing.]</div>
+    </section>
+
+    <section id="data-reality">
+      <h2>Data Reality And Provenance</h2>
+      <table>
+        <tr><th>Data item</th><th>Status</th><th>Notes</th></tr>
+        <tr><td>Data/materials used</td><td>inspected / user-described / supplied artifact</td><td>[Path or description.]</td></tr>
+        <tr><td>Row or analysis unit</td><td>known / unclear</td><td>[Unit and ID fields.]</td></tr>
+        <tr><td>Exposure/intervention</td><td>observed / proxy / constructible / missing / unclear</td><td>[Field and measurement notes.]</td></tr>
+        <tr><td>Outcome</td><td>observed / proxy / constructible / missing / unclear</td><td>[Field and measurement notes.]</td></tr>
+        <tr><td>Timing and follow-up</td><td>clear / qualified / missing / unclear</td><td>[Time zero, exposure window, baseline, outcome window.]</td></tr>
+        <tr><td>Comparison group</td><td>available / limited / missing / unclear</td><td>[Comparator notes.]</td></tr>
+        <tr><td>Design fields</td><td>available / limited / not applicable</td><td>[Weights, clusters, strata, repeated measures, sites, geography, network.]</td></tr>
+      </table>
+      <div class="callout"><strong>Data limitation:</strong> [Missingness, selection, support, measurement, timing, provenance, privacy, or access limitation that affects the claim.]</div>
+
+      <h3>Variable Role Card</h3>
+      <table>
+        <tr><th>Role</th><th>Field or source</th><th>Usability for this report</th><th>Notes</th></tr>
+        <tr><td>Unit/ID</td><td>[Field.]</td><td>usable / limited / missing</td><td>[Notes.]</td></tr>
+        <tr><td>Exposure/status/intervention</td><td>[Field.]</td><td>usable / proxy / missing / ambiguous</td><td>[Notes.]</td></tr>
+        <tr><td>Outcome/proxy</td><td>[Field.]</td><td>usable / proxy / missing / ambiguous</td><td>[Notes.]</td></tr>
+        <tr><td>Comparator</td><td>[Field or group definition.]</td><td>usable / limited / missing</td><td>[Notes.]</td></tr>
+        <tr><td>Timing/time zero/follow-up</td><td>[Fields or user-stated facts.]</td><td>clear / qualified / missing</td><td>[Notes.]</td></tr>
+        <tr><td>Covariates/modifiers</td><td>[Fields.]</td><td>usable / limited / not used</td><td>[Notes.]</td></tr>
+        <tr><td>Weights/clusters/design</td><td>[Fields.]</td><td>used / approximated / unavailable / not applicable</td><td>[Notes.]</td></tr>
+      </table>
+    </section>
+
+    <section id="methods">
+      <h2>Method Options Considered And Selected Work Unit</h2>
+      <table>
+        <tr><th>Option</th><th>Role</th><th>Why it was considered</th><th>Decision</th></tr>
+        <tr><td>[Original causal route]</td><td>primary / parked / blocked</td><td>[Reason.]</td><td>selected / deferred / blocked</td></tr>
+        <tr><td>[Data or goal twist]</td><td>secondary / sensitivity / parked</td><td>[Reason.]</td><td>selected / deferred / blocked</td></tr>
+        <tr><td>[Fallback or descriptive path]</td><td>fallback / planning</td><td>[Reason.]</td><td>selected / deferred / blocked</td></tr>
+      </table>
+
+      <h3>Selected Work-Unit Specification</h3>
+      <table>
+        <tr><th>Spec item</th><th>Confirmed value</th></tr>
+        <tr><td>Branch label</td><td>primary / secondary / sensitivity / report</td></tr>
+        <tr><td>Target wording</td><td>causal / qualified causal / non-causal association / diagnostic / planning</td></tr>
+        <tr><td>Exposure/intervention</td><td>[Field and coding.]</td></tr>
+        <tr><td>Outcome</td><td>[Field and coding.]</td></tr>
+        <tr><td>Comparison</td><td>[Groups or contrast.]</td></tr>
+        <tr><td>Sample and exclusions</td><td>[Rules and counts, if available.]</td></tr>
+        <tr><td>Covariates or adjustment set</td><td>[Variables and role cautions.]</td></tr>
+        <tr><td>Weights, clusters, or design handling</td><td>[Used / approximated / not used, with reason.]</td></tr>
+        <tr><td>Model or workflow</td><td>[Estimator/model family/workflow.]</td></tr>
+        <tr><td>Diagnostics and outputs</td><td>[Tables, figures, checks, artifacts.]</td></tr>
+        <tr><td>Required report assets</td><td>[Main visual/table, diagnostic visual/table, citation/source needs, narrative cues, and omission reasons.]</td></tr>
+        <tr><td>Wording boundary</td><td>[What the output can and cannot say.]</td></tr>
+      </table>
+    </section>
+
+    <section id="causal-framework">
+      <h2>Causal Framework, Estimand, And Assumptions</h2>
+      <table>
+        <tr><th>Component</th><th>Specification</th></tr>
+        <tr><td>Selected framework</td><td>[Design or analysis framework and why it matches the question/data.]</td></tr>
+        <tr><td>Estimand</td><td>[Target quantity, population, contrast, scale, horizon.]</td></tr>
+        <tr><td>Assumptions</td><td>[Identification, timing, measurement, positivity/support, interference, censoring, transport, or statistical assumptions.]</td></tr>
+        <tr><td>Review status</td><td>[causal_gatekeeper status and owner-review status.]</td></tr>
+      </table>
+      <div class="callout"><strong>Assumptions needing care:</strong> [State assumptions that are user-stated, externally sourced, or not directly verified in inspected data.]</div>
+
+      <h3>Causal Structure Sketch</h3>
+      <p>Include this subsection when causal, qualified-causal, adjusted/model-based, matching, weighting, stratification, or causal-question fallback logic matters. Use the inline sketch from <code>causal_validity.dag_and_timing.causal_structure_sketch.markdown</code>; do not replace it with a separate graph file by default.</p>
+      <p><strong>Sketch status:</strong> not_required / ready / missing / blocked / omitted_by_user<br>
+      <strong>Report placement:</strong> main text / Appendix A / omitted with reason</p>
+      <pre>[Inline causal-structure sketch with arrows.]</pre>
+      <p><strong>How to read it:</strong> [Explain the exposure, outcome, confounders, timing concern, adjustment role, or reason causal wording is blocked/qualified.]</p>
+      <p><strong>Omission or blocker:</strong> [If missing, blocked, or omitted by user, state why and keep the report wording terse and qualified.]</p>
+      <p>[If causal discovery was used, state whether it is a graph-hypothesis sidecar, how it was reviewed, and whether it belongs in the main text or appendix.]</p>
+    </section>
+
+    <section id="execution">
+      <h2>Execution And Dependency Notes</h2>
+      <table>
+        <tr><th>Item</th><th>Status</th><th>Notes</th></tr>
+        <tr><td>Execution scope confirmation</td><td>confirmed / qualified / missing / not applicable</td><td>[What was authorized.]</td></tr>
+        <tr><td>Execution record</td><td>cleared / install_approved / fallback_approved / accepted_after_execution / blocked / unresolved</td><td>[Execution record id and status.]</td></tr>
+        <tr><td>Package or tool availability</td><td>available / installed with permission / fallback approved / accepted after execution / unavailable</td><td>[Package, function, or HTML tool notes.]</td></tr>
+        <tr><td>Estimator or diagnostic substitution</td><td>none / approved before execution / accepted after execution / blocked / unresolved</td><td>[If changed, explain why and how it affects interpretation.]</td></tr>
+        <tr><td>Survey/design approximation</td><td>none / approved before execution / accepted after execution / blocked / not applicable / unresolved</td><td>[Notes.]</td></tr>
+        <tr><td>Material deviations</td><td>none / approved before execution / accepted after execution / unresolved</td><td>[List deviations from confirmed spec. If fallback/substitution occurred, this cannot be none.]</td></tr>
+      </table>
+      <div class="callout"><strong>HTML QA status:</strong> [Ready / needs revision / blocked. If not ready, name missing stage evidence, missing source script path, broken links, unreadable table, or missing owner review.]</div>
+    </section>
+
+    <section id="results">
+      <h2>Results, Figures, And Tables</h2>
+      <p>Present the main result, table, or figure first. Each visual or table should have a headline title, short interpretation, source/path, and limitation.</p>
+      <figure>
+        <h3>[Result/Figure/Table Title]</h3>
+        <p><strong>What it shows:</strong> [Plain-language interpretation.]</p>
+        <p><strong>Why it matters:</strong> [Decision, claim, diagnostic, or limitation supported.]</p>
+        <p><strong>Source/path:</strong> <a href="[artifact_path]">[artifact_path]</a></p>
+        <p><strong>Accessible description:</strong> [Text description of visual pattern, if a figure is included.]</p>
+        <p><strong>Caution:</strong> [What this result does not show.]</p>
+        <div>[Insert table, figure, or result summary.]</div>
+      </figure>
+      <div class="callout"><strong>Missing report asset:</strong> [If a required figure, source note, or narrative cue is absent, state whether this report is blocked, intentionally terse, or waiting on bounded asset generation.]</div>
+    </section>
+
+    <section id="diagnostics">
+      <h2>Diagnostics, Sensitivity, And Robustness</h2>
+      <table>
+        <tr><th>Diagnostic or sensitivity check</th><th>Status</th><th>Interpretation</th><th>Artifact</th></tr>
+        <tr><td>[Balance/overlap/weight tails/pre-trends/bandwidth/weak instrument/censoring/missingness/model fit/placebo/sensitivity check]</td><td>completed / deferred / not applicable / blocked / unresolved</td><td>[What it changes or protects.]</td><td>[Path or omission reason.]</td></tr>
+      </table>
+      <div class="callout"><strong>Unresolved diagnostic:</strong> [The diagnostic gap that most affects trust, if any.]</div>
+    </section>
+
+    <section id="interpretation">
+      <h2>Interpretation, Limitations, And Next Steps</h2>
+      <h3>Interpretation</h3>
+      <p>[Interpret the evidence for the user's practical or scientific goal, staying inside the claim boundary.]</p>
+      <h3>Limitations</h3>
+      <ol>
+        <li>[Most important limitation.]</li>
+        <li>[Second limitation.]</li>
+        <li>[Third limitation, if needed.]</li>
+      </ol>
+      <h3>Next Steps</h3>
+      <table>
+        <tr><th>Next step</th><th>Why it matters</th><th>Owner or route</th></tr>
+        <tr><td>[Review / diagnostic / alternative analysis / revision / decision / follow-up artifact]</td><td>[Reason.]</td><td>[main / data_analyst / method_lead / causal_gatekeeper / method subskill / report_writer / user]</td></tr>
+      </table>
+    </section>
+
+    <section id="appendix">
+      <h2>Appendix</h2>
+
+      <h3>Appendix A. Causal Structure, Timing, Role, Or Adjustment Notes</h3>
+      <p>[Include the inline causal-structure sketch here if it was not in the main text, plus timing notes, variable role tables, adjustment/exclusion logic, exploratory discovery modules, optional graph artifacts, stability tables, or omission reasons.]</p>
+
+      <h3>Appendix B. Method Modules And Additional Diagnostics</h3>
+      <p>[Include activated method/task modules, secondary diagnostics, sensitivity checks, robustness checks, and parked alternatives. If the user or consultant left relevant work unrun, list it with status: resolved, declined, blocked, or parked for report.]</p>
+
+      <h3>Appendix C. Code And Reproducibility</h3>
+      <p>If code supports any reported result, diagnostic, table, or figure, the actual source script or notebook path is required.</p>
+      <table>
+        <tr><th>Reproducibility item</th><th>Path or note</th></tr>
+        <tr><td>Source notebook/script</td><td><a href="[source_script_path]">[Required path to .py / .R / .ipynb / .do / .sas / other.]</a></td></tr>
+        <tr><td>Run order</td><td>[Steps.]</td></tr>
+        <tr><td>Inputs</td><td>[Paths.]</td></tr>
+        <tr><td>Outputs</td><td>[Paths.]</td></tr>
+        <tr><td>Seeds/randomness controls</td><td>[Notes.]</td></tr>
+        <tr><td>Package/version notes</td><td>[Notes.]</td></tr>
+        <tr><td>Analysis note</td><td><a href="[analysis_note_path]">[analysis_note_*.md path]</a></td></tr>
+        <tr><td>Final HTML report</td><td><a href="[final_report_path]">[final_report_*.html path]</a></td></tr>
+        <tr><td>HTML QA</td><td>passed / needs revision / not applicable. Check duplicate titles, wrapper/container, links, readable tables, source script/artifact links, and visible claim boundary.</td></tr>
+      </table>
+
+      <h3>Appendix D. Embedded Tables And External Artifact Index</h3>
+      <table>
+        <tr><th>Artifact or table</th><th>Placement</th><th>Path if external</th><th>Reason</th></tr>
+        <tr><td>[Key estimate table]</td><td>embedded main text / embedded appendix / external</td><td>[Path or not applicable.]</td><td>[Compact / large / reproducibility / user requested.]</td></tr>
+        <tr><td>[Diagnostic summary]</td><td>embedded main text / embedded appendix / external</td><td>[Path or not applicable.]</td><td>[Compact / large / reproducibility / user requested.]</td></tr>
+        <tr><td>[Balance or role table]</td><td>embedded main text / embedded appendix / external</td><td>[Path or not applicable.]</td><td>[Compact / large / reproducibility / user requested.]</td></tr>
+        <tr><td>[Bootstrap draws or per-unit outputs]</td><td>external / omitted</td><td>[Path.]</td><td>[Large reproducibility artifact / not needed.]</td></tr>
+      </table>
+
+      <h3>Appendix E. Citation Ledger, References, And Source Notes</h3>
+      <table>
+        <tr><th>Claim, method, software, dataset fact, or domain statement</th><th>Source or artifact inspected</th><th>Status</th><th>Report placement</th></tr>
+        <tr><td>[Propensity scores / matching / weighting / survey inference / domain precedent / package docs]</td><td>[Citation, URL, local doc path, or user-provided source.]</td><td>ready / missing / not_needed / user_supplied / blocked</td><td>Main text / appendix / source notes.</td></tr>
+      </table>
+
+      <h3>Appendix F. User-Requested Materials</h3>
+      <p>[Optional: executive summary, memo language, captions, email language, or other requested add-ons.]</p>
+    </section>
+  </main>
+</body>
+</html>

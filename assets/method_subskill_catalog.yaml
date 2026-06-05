@@ -1,0 +1,246 @@
+# Compact recall map for method_lead.
+# Use this to notice relevant method/task specialists. It does not decide causal validity,
+# force activation, or replace causal_gatekeeper review.
+
+help_tags:
+  framework: "Helps frame a design route or target family."
+  estimand: "Helps name the target quantity or comparison."
+  data_shape: "Helps specify the analysis-ready data structure."
+  diagnostics: "Helps name checks, sensitivity work, or validity probes."
+  implementation: "Helps choose estimators, packages, or modeling routes."
+  reporting: "Helps shape report sections, figures, tables, and claim wording."
+
+categories:
+  design_route:
+    numbers: "00-08"
+    meaning: "Primary design or identification route candidates."
+  target_goal:
+    numbers: "10-15"
+    meaning: "Target, estimand, interpretation, or decision-goal refiners that depend on a design route."
+  implementation_support:
+    numbers: "20-23"
+    meaning: "Estimation, diagnostic, or outcome-scale support inside a selected design route and target."
+  sidecar:
+    numbers: "unnumbered"
+    meaning: "Optional exploratory sidecars that can inform the team but do not decide causal validity or method commitment."
+
+subskills:
+  - number: "00"
+    id: "00-randomized-trials-and-ab-tests"
+    category: "design_route"
+    useful_when: "Randomized trials, A/B tests, experiments, encouragement or lottery assignment, holdouts, blocked or cluster randomization, assignment logs, sample-ratio mismatch, compliance, attrition, randomization inference, or CUPED/ANCOVA precision."
+    needs: "Assignment mechanism, assignment unit, analysis unit, eligibility, time zero, arms and probabilities, treatment exposure, outcome window, analysis set, compliance, attrition, missingness, clustering/blocking, and assignment-integrity evidence."
+    proactive_contributions:
+      - "Volunteer ITT, CACE, assignment-integrity, SRM, compliance, attrition, blocking, or cluster-aware framing when randomized assignment is plausible."
+      - "Suggest CUPED or ANCOVA precision, randomization inference, or design-audit fallback when experiment structure exists but trust needs checking."
+      - "Recommend assignment-flow, attrition, compliance, and arm-balance report assets when experimental claims are reportable."
+    helps_with: ["framework", "estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "01"
+    id: "01-single-time-observational-exposure"
+    category: "design_route"
+    useful_when: "Baseline or one-time observational exposure, treated-versus-untreated comparisons, exposed-versus-unexposed comparisons, target-trial emulation, confounding adjustment, propensity scores, matching, weighting, overlap, sensitivity analysis, or cautious observational report support."
+    needs: "Eligibility, time zero, exposure, comparator, outcome window, pre-exposure confounders, analysis unit, sample construction, missingness, selection, support or overlap, and claim boundary."
+    proactive_contributions:
+      - "Volunteer target-trial framing, ATE/ATT/overlap estimand choices, and cautious observational claim boundaries for baseline exposure comparisons."
+      - "Suggest support, overlap, adjustment, matching, weighting, or sensitivity checks before interpreting adjusted comparisons."
+      - "Recommend data twists such as rebuilding time zero, defining outcome windows, restricting eligibility, or shifting to overlap-supported populations."
+    helps_with: ["framework", "estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "02"
+    id: "02-longitudinal-gmethods"
+    category: "design_route"
+    useful_when: "Treatment, exposure, covariates, censoring, adherence, eligibility, or outcomes evolve over repeated time points; sustained strategies, dynamic regimes, cumulative exposure, time-varying confounding, MSMs, g-formula, g-estimation, longitudinal TMLE, LMTP, or cloning/censoring/weighting."
+    needs: "Long-format or reconstructible id-time history with treatment, covariates, censoring, eligibility, adherence, outcomes, time grid, lags, grace periods, support over histories, and a definable intervention strategy."
+    proactive_contributions:
+      - "Volunteer sustained-strategy, dynamic-regime, cumulative-exposure, or sequential estimand framing when treatment and covariates evolve over time."
+      - "Suggest id-time reshaping, lag construction, adherence indicators, censoring fields, weight diagnostics, and support-over-history checks."
+      - "Recommend longitudinal report assets such as strategy definitions, history support summaries, censoring diagnostics, and time-varying confounding explanation."
+    helps_with: ["framework", "estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "03"
+    id: "03-did-event-study"
+    category: "design_route"
+    useful_when: "Treated and comparison units are observed before and after an intervention; policy timing, staggered adoption, event time, panel or repeated cross-section data, group-time ATT, synthetic DiD, or pre-trend diagnostics."
+    needs: "Unit-time or repeated cross-section data, treatment timing, cohorts, comparison-group availability, pre-period outcome history, event-time coding, clustering, and composition checks."
+    proactive_contributions:
+      - "Volunteer group-time ATT, event-study, staggered-adoption, or descriptive event-time framing when intervention timing and comparison histories exist."
+      - "Suggest event-time construction, cohort coding, comparison-group composition checks, pre-trend diagnostics, and cluster-aware uncertainty."
+      - "Recommend event-study plots, pre-period diagnostics, cohort tables, and modern DiD wording for reports."
+    helps_with: ["framework", "estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "04"
+    id: "04-regression-discontinuity"
+    category: "design_route"
+    useful_when: "Treatment, eligibility, intensity, encouragement, or policy status changes at a known cutoff, threshold, score, rank, age, date, boundary, or running variable."
+    needs: "Cutoff rule, running variable measured before treatment, treatment jump, local support on both sides, outcome timing, density/manipulation checks, covariate continuity, and bandwidth sensitivity."
+    proactive_contributions:
+      - "Volunteer local cutoff, fuzzy, kink, or local-randomization framing when a pre-treatment running variable and threshold govern exposure."
+      - "Suggest centering the running variable, local support review, manipulation/density checks, covariate continuity, and bandwidth sensitivity."
+      - "Recommend cutoff plots, density checks, bandwidth sensitivity tables, and local-effect wording for reports."
+    helps_with: ["framework", "estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "05"
+    id: "05-instrumental-variables"
+    category: "design_route"
+    useful_when: "Instruments, encouragement, lotteries, noncompliance, judge/provider/distance/preference instruments, weak instruments, control functions, IV-DML, or Mendelian randomization."
+    needs: "Instrument, treatment/exposure, outcome, timing, first stage, exclusion and independence rationale, monotonicity or complier logic, weak-instrument diagnostics, and falsification or MR sensitivity."
+    proactive_contributions:
+      - "Volunteer LATE, CACE, encouragement, provider-preference, distance, lottery, or Mendelian-randomization framing when instrument-like variation exists."
+      - "Suggest first-stage, weak-instrument, exclusion, independence, monotonicity, falsification, or MR sensitivity checks."
+      - "Recommend first-stage tables, weak-IV diagnostics, falsification checks, and complier-boundary wording for reports."
+    helps_with: ["framework", "estimand", "diagnostics", "implementation", "reporting"]
+
+  - number: "06"
+    id: "06-synthetic-control-time-series"
+    category: "design_route"
+    useful_when: "One or a few treated aggregate units, intervention dates, donor pools, synthetic control, synthetic DiD, interrupted time series, comparative ITS, BSTS/CausalImpact, matrix completion, pre-period fit, or placebo inference."
+    needs: "Unit-time panel or treated time series, treated/donor map, intervention date, pre/post windows, outcome consistency, donor comparability, pre-fit diagnostics, placebos, and concurrent-shock review."
+    proactive_contributions:
+      - "Volunteer synthetic control, synthetic DiD, interrupted-time-series, or aggregate policy-impact framing when treated units and time series are available."
+      - "Suggest donor eligibility, calendar alignment, pre-period fit, placebo inference, concurrent-shock review, and aggregate unit-time reshaping."
+      - "Recommend treated-versus-synthetic plots, pre-fit diagnostics, placebo summaries, and donor sensitivity report assets."
+    helps_with: ["framework", "estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "07"
+    id: "07-interference-spillovers"
+    category: "design_route"
+    useful_when: "One unit's treatment or exposure may affect another unit's outcome: spillovers, peer effects, contagion, networks, geography, clusters, markets, treatment saturation, contamination, or SUTVA concerns."
+    needs: "Unit structure, cluster/network/geographic data, exposure map, timing, own and spillover treatment support, dependence-aware inference plan, and sensitivity to exposure definitions."
+    proactive_contributions:
+      - "Volunteer direct, spillover, total, overall, saturation, peer, or spatial effect framing when one unit's exposure may affect another unit."
+      - "Suggest network, cluster, geographic, distance-band, neighbor-exposure, or saturation-map construction and sensitivity checks."
+      - "Recommend exposure-map diagnostics, dependence-aware uncertainty, and interference-aware claim wording for reports."
+    helps_with: ["framework", "estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "08"
+    id: "08-negative-controls-proximal"
+    category: "design_route"
+    useful_when: "Negative control outcomes or exposures, placebo or falsification tests, empirical calibration, residual confounding probes, proxy variables, bridge functions, or proximal causal inference."
+    needs: "Control/proxy role, timing, null or exclusion logic, shared-bias rationale, proxy relevance, bridge/completeness plausibility when proximal, support, and sensitivity to selected controls."
+    proactive_contributions:
+      - "Volunteer negative-control, falsification, empirical-calibration, or proximal-bridge framing when proxy or placebo variables have credible roles."
+      - "Suggest control/proxy timing review, shared-bias rationale, null-logic checks, bridge plausibility, and sensitivity to selected controls."
+      - "Recommend negative-control tables, calibration diagnostics, and bias-boundary wording for reports."
+    helps_with: ["framework", "estimand", "diagnostics", "implementation", "reporting"]
+
+  - number: "10"
+    id: "10-heterogeneous-effects"
+    category: "target_goal"
+    useful_when: "The user asks whether effects differ across groups, covariates, strata, sites, time periods, or units; subgroup effects, GATE, CATE, causal forests, meta-learners, or effect-modifier screening."
+    needs: "Selected design route, effect scale, baseline modifier timing, subgroup support and overlap, prespecified versus exploratory status, and validation or multiplicity plan."
+    proactive_contributions:
+      - "Volunteer subgroup, GATE, CATE, site/time variation, or policy-relevant modifier framing when heterogeneity would change the decision."
+      - "Suggest baseline modifier review, support by subgroup, validation splits, multiplicity control, and prespecified-versus-exploratory labels."
+      - "Recommend subgroup support tables, effect-modifier plots, and cautious heterogeneity wording for reports."
+    helps_with: ["estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "11"
+    id: "11-point-treatment-rules"
+    category: "target_goal"
+    useful_when: "The user asks who should receive treatment, how to target or prioritize, budgeted allocation, uplift, individualized treatment rules, policy value, or one-time rule evaluation."
+    needs: "One decision point, feasible action set, baseline information set, value/cost/harm target, action support, design route, and honest policy-value evaluation plan."
+    proactive_contributions:
+      - "Volunteer decision-rule, uplift, prioritization, budgeted-allocation, or policy-value framing when the user wants action targeting."
+      - "Suggest baseline information-set, feasible action, cost/harm, support, and honest policy-evaluation checks."
+      - "Recommend policy-value tables, deployable-feature checks, and decision-boundary wording for reports."
+    helps_with: ["estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "12"
+    id: "12-mediation"
+    category: "target_goal"
+    useful_when: "The user asks how an effect works, whether a mediator explains the effect, direct and indirect effects, mechanisms, pathways, separable effects, or whether an intermediate variable should be adjusted for."
+    needs: "Exposure, mediator, outcome, and covariate timing; mediator meaning; mediator-outcome confounders; chosen mediation estimand; and sensitivity to mediator-outcome confounding."
+    proactive_contributions:
+      - "Volunteer controlled, natural, interventional, separable, path-specific, or descriptive mediation framing when mechanisms matter."
+      - "Suggest mediator-window, mediator-outcome confounder, post-treatment adjustment, and sensitivity-to-mediator-confounding checks."
+      - "Recommend pathway sketches, mediator timing tables, and mechanism-boundary wording for reports."
+    helps_with: ["estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "13"
+    id: "13-dose-response-effects"
+    category: "target_goal"
+    useful_when: "Continuous, ordinal, multi-level, or intensity treatments; exposure-response curves; dose contrasts; thresholds; stochastic shifts; modified treatment policies; or cumulative exposure targets."
+    needs: "Dose scale, intervention meaning, timing, support across dose range, positivity, confounders, measurement error, and sparse-tail or extrapolation review."
+    proactive_contributions:
+      - "Volunteer dose curve, threshold, dose contrast, stochastic shift, or modified-treatment-policy framing when exposure has levels or intensity."
+      - "Suggest support across dose range, sparse-tail trimming, measurement-scale review, dose-window construction, and positivity diagnostics."
+      - "Recommend exposure-response plots, dose support summaries, and extrapolation-boundary wording for reports."
+    helps_with: ["estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "14"
+    id: "14-transportability-generalizability"
+    category: "target_goal"
+    useful_when: "The user asks whether results apply to another population, site, setting, target audience, time period, trial-to-target translation, or target-population effect."
+    needs: "Source and target definitions, internally valid source effect, compatible treatment/outcome versions, measured effect modifiers, source-target overlap, and target data for selection or standardization."
+    proactive_contributions:
+      - "Volunteer target-population, site-transport, source-target, trial-to-target, or external-validity framing when applicability is part of the decision."
+      - "Suggest source-target overlap, target weighting, standardization, compatible treatment/outcome version, and effect-modifier checks."
+      - "Recommend source-target comparison tables, overlap diagnostics, and transport-boundary wording for reports."
+    helps_with: ["estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "15"
+    id: "15-dynamic-treatment-policies"
+    category: "target_goal"
+    useful_when: "Adaptive strategies, sequential decision rules, dynamic regimes, SMART designs, Q-learning, A-learning, outcome-weighted learning, policy value, off-policy evaluation, or longitudinal decision support."
+    needs: "Decision schedule, history set, action set, value target, long-format histories, support over histories, censoring handling, longitudinal design route, and honest policy-value evaluation."
+    proactive_contributions:
+      - "Volunteer dynamic-regime, sequential-policy, SMART-style, Q-learning, or policy-value framing when treatment decisions repeat over time."
+      - "Suggest decision-time rows, history set, feasible actions, censoring handling, and support-over-history checks."
+      - "Recommend regime diagrams, policy-value summaries, and adaptive-policy boundary wording for reports."
+    helps_with: ["estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "20"
+    id: "20-matching-weighting-balance"
+    category: "implementation_support"
+    useful_when: "A selected design route needs propensity scores, balancing scores, matching, weighting, trimming, overlap checks, ATT/ATE/ATO targets, survey or calibration weights, or balance diagnostics."
+    needs: "Design route, estimand, pre-treatment covariates, missingness plan, support, propensity or balancing model, weight/match construction, balance diagnostics, and effective sample size."
+    proactive_contributions:
+      - "Volunteer overlap, balance, matching, weighting, trimming, ATT/ATE/ATO, or target-population support when adjusted comparisons need transparency."
+      - "Suggest common-support restriction, extreme-weight trimming, missingness handling, coarsening sparse covariates, or switching to ATT/overlap targets."
+      - "Recommend love plots, propensity overlap plots, weight distributions, ESS summaries, and balance tables for reports."
+    helps_with: ["data_shape", "diagnostics", "implementation", "reporting"]
+
+  - number: "21"
+    id: "21-doubly-robust-estimation"
+    category: "implementation_support"
+    useful_when: "A selected target needs AIPW, augmented IPW, TMLE, one-step estimation, efficient influence functions, Super Learner nuisance models, cross-fitting, missingness/censoring nuisance support, or targeted-learning implementation."
+    needs: "Settled design route, estimand, valid nuisance variables, treatment/outcome/censoring/sampling models, positivity, cross-fitting or complexity control, variance route, and influence-curve diagnostics."
+    proactive_contributions:
+      - "Volunteer AIPW, TMLE, one-step, efficient-influence-function, or nuisance-model support when a settled design needs robust implementation."
+      - "Suggest nuisance-model, positivity, cross-fitting, truncation, variance, influence-curve, or missingness/censoring diagnostics."
+      - "Recommend nuisance diagnostics, influence-curve summaries, truncation sensitivity, and doubly robust claim boundaries for reports."
+    helps_with: ["diagnostics", "implementation", "reporting"]
+
+  - number: "22"
+    id: "22-double-machine-learning"
+    category: "implementation_support"
+    useful_when: "A selected target needs orthogonal or debiased ML, cross-fitting, residualization, high-dimensional controls, PLR/IRM/PLIV, R-learner logic, orthogonal forests, ML nuisance plugins, or learner sensitivity."
+    needs: "Settled design route, low-dimensional target or nuisance role, leakage-free feature matrix, fold and tuning plan, support diagnostics, learner stability, and score-specific uncertainty."
+    proactive_contributions:
+      - "Volunteer orthogonal-score, debiased ML, cross-fitting, residualization, R-learner, PLR/IRM/PLIV, or learner-sensitivity support when high-dimensional nuisance modeling matters."
+      - "Suggest leakage-free feature review, fold construction, tuning separation, learner stability, nuisance performance, support, and residualization diagnostics."
+      - "Recommend learner-sensitivity tables, fold diagnostics, nuisance summaries, and DML claim-boundary wording for reports."
+    helps_with: ["diagnostics", "implementation", "reporting"]
+
+  - number: "23"
+    id: "23-survival-competing-risks"
+    category: "implementation_support"
+    useful_when: "The outcome, mediator, censoring process, or nuisance model is time to event, duration, mortality, event-free survival, cumulative incidence, competing risks, recurrent events, RMST, hazards, or survival CATE/policy value."
+    needs: "Time zero, event definition, follow-up time, censoring, competing events, delayed entry if relevant, target horizon or scale, event counts, censoring diagnostics, and design route."
+    proactive_contributions:
+      - "Volunteer fixed-horizon risk, RMST, CIF, hazard-boundary, censoring, competing-risk, or survival nuisance support when outcomes are time-to-event."
+      - "Suggest time-zero, follow-up, event definition, censoring, competing-event, delayed-entry, and horizon checks."
+      - "Recommend survival/CIF curves, risk tables, event/censoring summaries, and survival-scale wording for reports."
+    helps_with: ["estimand", "data_shape", "diagnostics", "implementation", "reporting"]
+
+sidecars:
+  - id: "causal_discovery"
+    category: "sidecar"
+    useful_when: "The user asks for graph learning, variable-neighborhood screening, discovery diagnostics, time-series graph exploration, or a discovery-only deliverable; or when DAG/timing/role uncertainty, many candidate variables, competing graph stories, or existing graph artifacts would benefit from exploratory graph hypotheses."
+    needs: "User-approved discovery purpose, graph target, variable set, data structure, timing/background knowledge, hidden-confounding tolerance, preprocessing review, and a concrete return phase."
+    proactive_contributions:
+      - "Volunteer bounded graph-hypothesis, local-neighborhood, discovery-diagnostic, or time-series graph exploration when structure is complex enough to inform the next decision."
+      - "Suggest stability checks, background-knowledge review, variable-set narrowing, and reviewer routing before any discovery implication affects method or claims."
+      - "Recommend exploratory graph/stability report material while preserving that discovery never validates adjustment or upgrades causal wording."
+    helps_with: ["framework", "data_shape", "diagnostics", "reporting"]

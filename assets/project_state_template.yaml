@@ -1,0 +1,130 @@
+# Causal consultant project state.
+# Keep sections sparse. Add detail only when it changes the next useful action.
+
+# Main-owned.
+project_summary:
+  current_phase: null
+  current_gate_status: null
+  user_goal: null
+  user_provided_info: []
+
+# Main-owned. Core subskills may read this section and suggest handoffs; main records, updates, resolves, or clears them.
+team_synthesis:
+  current_status: null
+  next_suggested_action: null
+  # Items: direction, status, next_prompt, why_it_matters.
+  exploration_threads: []
+  open_questions: []
+
+# domain_expert-owned.
+domain_information:
+  notes: []
+  open_questions: []
+
+# data_analyst-owned.
+data_facts:
+  sources: []
+  observation_structure:
+    row_unit: null
+    candidate_analysis_unit: null
+    id_fields: []
+    time_fields: []
+    grouping_or_dependence: []
+  variable_candidates: []
+  timing_map:
+    time_zero_candidates: []
+    exposure_windows: []
+    baseline_windows: []
+    followup_windows: []
+    outcome_windows: []
+    unresolved_timing_issues: []
+  claim_data_consistency:
+    checked_claims: []
+    contradictions: []
+    unresolved_claims: []
+  data_quality:
+    missingness: []
+    support_or_overlap: []
+    selection_or_censoring: []
+    measurement_or_coding_issues: []
+    privacy_or_access_limits: []
+  processing_paths: []
+  artifacts: []
+  open_questions: []
+
+# method_lead-owned.
+method_alignments:
+  method_ideas: []
+  causal_question_options: []
+  candidate_frameworks: []
+  estimand_options: []
+  data_shaping_needs: []
+  diagnostics_sensitivity: []
+  implementation_tools: []
+  open_questions: []
+
+# causal_gatekeeper-owned.
+causal_validity:
+  current_assessment:
+    status: null
+    summary: null
+  method_data_alignment: []
+  dag_and_timing:
+    summary: null
+    artifact_path: null
+    causal_structure_sketch:
+      # status: not_required | ready | missing | blocked | omitted_by_user.
+      # markdown should be an inline text/Markdown arrow sketch, not a file artifact.
+      status: not_required
+      markdown: null
+      report_placement: null
+      omission_reason: null
+    timing_constraints: []
+    role_constraints: []
+    adjustment_implications: []
+    report_use: null
+  statistical_claims: []
+  suggested_modifications: []
+  blockers: []
+  alarms: []
+  open_questions: []
+
+# Main-owned. Lifecycle state for the optional causal discovery sidecar.
+# Active or paused sidecars must be routed, returned, parked, closed, or
+# blocked before unrelated analysis/report work continues.
+discovery_sidecar:
+  status: inactive
+  purpose: null
+  return_to_phase: null
+  graph_target: null
+  affects_main_framework: false
+  artifact_paths: []
+  reviewer_requests: []
+  next_action: null
+
+# Main-owned. Filled records from activated method/task subskills or sidecars.
+specialist_outputs: []
+
+# Main-owned. One compact record for each immediate execution-authorized unit.
+# Items: unit_id, record_status, confirmed_scope, claim_boundary,
+# causal_structure_sketch_status, intended_tool_lanes, fallback_policy,
+# allowed_outputs, report_asset_plan, dependency_status, deviation_status,
+# deviation_items, permission_status, source_code_path, analysis_note_path,
+# external_artifacts, closeout_status, queue_reconciliation, report_status,
+# next_action.
+# report_asset_plan: required_visuals_or_tables, citation_source_needs,
+# narrative_cues, omission_reasons.
+# closeout_status: incomplete | complete | blocked.
+# queue_reconciliation: remaining_user_intents, remaining_consultant_ideas,
+# next_item_to_offer, report_ready, reconciliation_note.
+execution_records: []
+
+# Main-owned. User-requested work that should not be forgotten but is not
+# immediate execution permission. Items: intent_id, user_request, intent_type,
+# status, why_it_matters, needed_before_action, next_prompt, resolution.
+pending_user_intents: []
+
+# Main-owned. Compact index for project artifacts, including report plans,
+# final HTML reports, report assets, code artifacts, discovery artifacts, and diagnostics.
+# Items: artifact_type, path, description, owner, status.
+artifact_index: []

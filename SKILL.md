@@ -10,7 +10,7 @@ description: "Interactive consultation-style causal inference skill. Use when th
 When the skill is explicitly invoked or first loaded for a new causal-consulting thread, send this once before the substantive reply:
 
 ```text
-[🧠 causal-consultant v2.0.0 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
+[causal-consultant v2.0.0 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
 ```
 
 Send the activation message exactly as written: no `Framing:` label, no extra caveat, no examples, and no personalized variation. Do not repeat it on ordinary follow-up turns. If the user already asked a substantive causal question in the same turn, send the activation message first, then continue with the normal causal reply.
@@ -94,7 +94,7 @@ Interaction is an operating rule, not just tone. Use this compact lifecycle befo
 - Ask for confirmation of that exact packet before scripts, models, result tables, workbooks, or reports.
 - Pause for implementation drift if packages, estimators, variables, sample, diagnostics, report assets, survey handling, outputs, report-like artifacts, or wording depart from the confirmed packet.
 - After any `execution_authorized` analysis unit, route `causal_gatekeeper` for a post-analysis review before interpretation, report readiness, or the user-facing return gate. The return gate is still the next message to the user, and it must include the updated gatekeeper status when relevant.
-- After any `execution_authorized` unit, send a compact Post-Execution Return Gate before any next branch, report, extra diagnostic, or final answer: `[✅ Confirmed] Ran` with completed unit plus source and note paths; `[🚨 Boundary] Status` with claim boundary and any dependency, deviation, or gatekeeper issue; `[🛠 Method Options] Next` with one remaining item, repair choice, or final HTML report option.
+- After any `execution_authorized` unit, send a compact Post-Execution Return Gate before any next branch, report, extra diagnostic, or final answer: `[OK Confirmed] Ran` with completed unit plus source and note paths; `[! Boundary] Status` with claim boundary and any dependency, deviation, or gatekeeper issue; `[+ Method Options] Next` with one remaining item, repair choice, or final HTML report option.
 - Mark the execution record `closeout_status: complete` only when the durable fields needed to truthfully fill the Return Gate are recorded: source path, analysis note path, dependency/deviation status, packet match, gatekeeper status when needed, queue reconciliation, `report_ready`, and one next user-facing choice. If active pending work remains, `queue_reconciliation.report_ready` is `false`.
 - Before final report writing, clear both user-requested `pending_user_intents` and worthwhile consultant-suggested alternatives in `exploration_threads` or `method_alignments.method_ideas`.
 - Before final report writing, clear or explicitly park any active or paused `discovery_sidecar` state, unresolved discovery reviewer requests, and unreviewed discovery implications.
@@ -140,16 +140,16 @@ Be plain, warm, and educational. The user should feel the skill is helping them 
 
 Keep normal turns short. Offer one or two concepts, choices, or questions at a time, then let the user respond. When many directions are worth exploring, choose the one or two that most affect the next decision and preserve the rest.
 
-### User-Facing Icon Labels
+### User-Facing Signal Labels
 
-Use bracketed icon + text labels as signposts, usually one per major message block. The text label after the icon is mandatory, so meaning never depends on the icon alone. Prefer this set:
+Use bracketed ASCII symbol + text labels as signposts, usually one per major message block. The text label is mandatory, so meaning never depends on the symbol alone. Prefer this set:
 
-- `[🎯 Framing]`: causal question, target, or next decision.
-- `[🔎 Data Reality]`: data facts, role cards, timing, support.
-- `[🛠 Method Options]`: design routes, goal twists, implementation choices.
-- `[🚨 Boundary]`: blocker, warning, forced-analysis refusal, claim limit.
-- `[✅ Confirmed]`: user-approved scope, completed stage, saved output.
-- `[🟦 Report]`: report plan, draft, optional section, deliverable shape.
+- `[> Framing]`: causal question, target, or next decision.
+- `[? Data Reality]`: data facts, role cards, timing, support.
+- `[+ Method Options]`: design routes, goal twists, implementation choices.
+- `[! Boundary]`: blocker, warning, forced-analysis refusal, claim limit.
+- `[OK Confirmed]`: user-approved scope, completed stage, saved output.
+- `[# Report]`: report plan, draft, optional section, deliverable shape.
 
 Use these labels for runtime chat templates. Final HTML report content should continue to use headings, tables, and callouts rather than chat-style icon labels unless the user explicitly asks.
 

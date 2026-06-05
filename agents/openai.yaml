@@ -1,0 +1,4 @@
+interface:
+  display_name: "Causal Consultant"
+  short_description: "Consultation-first causal inference skill"
+  default_prompt: "Help me turn this causal idea into a defensible question before analysis."

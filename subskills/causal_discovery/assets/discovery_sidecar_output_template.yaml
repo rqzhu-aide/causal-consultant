@@ -1,0 +1,68 @@
+---
+# Compact durable packet from causal_discovery.
+# Main appends filled copies to project YAML > specialist_outputs only when useful.
+
+specialist_id: causal-discovery
+module_type: discovery_sidecar
+status: null              # candidate | activated | diagnostics_reviewed | materials_ready | blocked | deferred
+activation_reason: null
+inputs_reviewed: []
+provenance_summary: null
+
+sidecar_lifecycle:
+  status: null            # active | paused | closed
+  purpose: null
+  return_to_phase: null
+  affects_main_framework: false
+
+discovery_target:
+  graph_target: null      # DAG | CPDAG | PAG | local_neighborhood | edge_ranking | stability_table | discovery_report
+  variable_set: []
+  focal_variables: []
+  graph_object_type: null
+  background_knowledge_used: []
+
+method_summary:
+  algorithm_family: []
+  package_or_tool: []
+  assumptions_or_requirements: []
+  settings_summary: null
+
+findings:
+  candidate_edges_or_paths: []
+  local_neighborhood_notes: []
+  negative_findings: []
+  implications_to_review: []
+
+diagnostics_needed: []
+diagnostics_reviewed: []
+sensitivity_or_robustness: []
+limitations: []
+
+requests:
+  domain_expert: []
+  data_analyst: []
+  method_lead: []
+  causal_gatekeeper: []
+  report_writer: []
+  user: []
+  other_subskills: []
+
+report_support: []
+artifact_paths: []
+readiness: unknown       # materials_ready | diagnostics_needed | diagnostics_deferred | blocked | candidate_only | unknown
+
+method_lead_recheck:
+  required: false
+  reason: null
+
+causal_gatekeeper_recheck:
+  required: false
+  reason: null
+
+blocking_signal:
+  blocks_current_phase: false
+  severity: none          # none | caution | major | stop
+  reason: null
+
+recommended_next_action: null

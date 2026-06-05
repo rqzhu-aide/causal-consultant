@@ -1,0 +1,94 @@
+---
+# Compact durable record from an activated method/task subskill.
+# Main appends filled copies to project YAML > specialist_outputs.
+# Design-route specialists can use assets/design_route_specialist_output_template.yaml.
+
+specialist_id: null
+module_type: null          # design_route | target_goal | implementation_support
+status: null               # candidate | activated | fit_supported | needs_data_check | adapted | blocked | deferred
+activation_reason: null
+inputs_reviewed: []
+provenance_summary: null
+
+method_idea:
+  idea_type: null          # direct_fit | data_twist | goal_twist | implementation_enhancement
+  original_user_need: null
+  data_or_goal_twist: null
+  why_this_helps: null
+  difference_from_user_request_or_data_reality: null
+
+fit_summary:
+  fit: unclear             # direct | adapted | exploratory | blocked | not_applicable | unclear
+  reason: null
+
+type_specific:
+  design_route:
+    causal_comparison: null
+    design_route: null
+    identification_status: null
+    exposure_or_assignment: null
+    analysis_unit: null
+    time_zero_or_index: null
+    required_timing: []
+    assignment_or_exposure_logic: null
+    comparison_group_logic: null
+    data_shape_required: null
+    key_identification_assumptions: []
+    invalidating_conditions: []
+    estimands_supported: []
+    data_or_goal_twists_reviewed: []
+  target_goal:
+    target_goal: null
+    estimand_targets: []
+    target_population: null
+    effect_scale: null
+    decision_or_interpretation_goal: null
+    design_route_needed: null
+    reporting_boundary: null
+  implementation_support:
+    implementation_role: null
+    estimator_or_model_family: []
+    required_data_shape: null
+    diagnostic_outputs: []
+    reproducibility_outputs: []
+    package_or_code_options: []
+
+diagnostics_needed: []
+diagnostics_reviewed: []
+sensitivity_or_robustness: []
+limitations: []
+
+statistical_evidence:
+  status: unclear          # exploratory_only | descriptive_only | internally_validated | inference_supported | externally_validated | blocked | unclear
+  claim_scope: null
+  inference_or_validation_route: []
+  method_specific_limits: []
+
+requests:
+  domain_expert: []
+  data_analyst: []
+  method_lead: []
+  causal_gatekeeper: []
+  user: []
+  other_subskills: []
+
+alternatives_if_not_fit: []
+report_support:
+  required_visual_assets: []      # e.g., overlap plot, love/SMD plot, event-study plot, RD cutoff plot
+  required_tables: []             # compact report-critical tables
+  citation_source_needs: []       # method/software/domain/data sources that should be inspected or cited
+  narrative_cues: []              # rationale, interpretation, and "what not to claim" points for report prose
+  omission_reasons: []            # required assets that are impossible, blocked, or intentionally omitted
+artifact_paths: []
+readiness: unknown
+
+method_lead_recheck:
+  required: false
+  reason: null
+
+blocking_signal:
+  blocks_current_phase: false
+  severity: none           # none | caution | major | stop
+  reason: null
+
+recommended_next_action: null

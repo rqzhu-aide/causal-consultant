@@ -1,35 +1,48 @@
 {
   "package": "causal-consultant",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "license": "MIT",
-  "created_for": "lean modular causal inference consultant skill",
+  "created_for": "interactive causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Strengthen report-production reproducibility, figure/table asset checks, rendered-output QA, method-lead workload boundaries, and statistical-evidence contracts.",
-  "subskills": [
-    "01-domain-expert",
-    "02-data-analyst",
-    "03-method-lead",
-    "05-report-writer",
-    "06-causal-discovery",
-    "07-randomized-assignment-and-experiments",
-    "08-single-time-observational-exposure",
-    "09-longitudinal-gmethods",
-    "10-did-event-study",
-    "11-regression-discontinuity",
-    "12-instrumental-variables",
-    "13-synthetic-control-time-series",
-    "14-interference-spillovers",
-    "15-negative-controls-proximal",
-    "20-heterogeneous-effects",
-    "21-point-treatment-rules",
-    "22-mediation",
-    "23-dose-response-effects",
-    "24-transportability-generalizability",
-    "25-dynamic-treatment-policies",
-    "30-matching-weighting-balance",
-    "31-doubly-robust-estimation",
-    "32-double-machine-learning",
-    "33-survival-competing-risks"
+  "last_updated_focus": "Major architecture redesign with main-led interactive consulting, four core reviewers, checkpoint reviews, method specialist catalog, causal discovery sidecar, and evidence-bound report production.",
+  "core_subskills": [
+    "domain_expert",
+    "data_analyst",
+    "method_lead",
+    "causal_gatekeeper"
   ],
-  "notes": "Lead consultant identity and user-facing behavior live in SKILL.md. Backend workflow details live in references/backend_workflow.md, references/yaml_management.md, references/team_coordination.md, references/subskill_coordination.md, and references/conversation_boundary.md. YAML state lives in assets/causal_project_spec_template.yaml; controlled values live in assets/workflow_enums.yaml. Enriched method/task subskills use progressive disclosure through references, examples, schemas, and scripts."
+  "deliverable_subskills": [
+    "report_writer"
+  ],
+  "sidecar_subskills": [
+    "causal_discovery"
+  ],
+  "method_subskills": {
+    "design_route": [
+      "00-randomized-trials-and-ab-tests",
+      "01-single-time-observational-exposure",
+      "02-longitudinal-gmethods",
+      "03-did-event-study",
+      "04-regression-discontinuity",
+      "05-instrumental-variables",
+      "06-synthetic-control-time-series",
+      "07-interference-spillovers",
+      "08-negative-controls-proximal"
+    ],
+    "target_goal": [
+      "10-heterogeneous-effects",
+      "11-point-treatment-rules",
+      "12-mediation",
+      "13-dose-response-effects",
+      "14-transportability-generalizability",
+      "15-dynamic-treatment-policies"
+    ],
+    "implementation_support": [
+      "20-matching-weighting-balance",
+      "21-doubly-robust-estimation",
+      "22-double-machine-learning",
+      "23-survival-competing-risks"
+    ]
+  },
+  "notes": "Public package identity is causal-consultant. The main skill is the only user-facing voice. Core reviewers own their YAML sections, method specialists return specialist_outputs, causal_discovery is an exploratory unnumbered sidecar, and report_writer is a silent deliverable specialist."
 }

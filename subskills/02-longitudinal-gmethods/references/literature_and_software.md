@@ -62,7 +62,7 @@ Use this reference when choosing longitudinal g-methods, diagnostics, packages, 
 Docs checked: 2026-05-31
 Primary docs: [lmtp manual](https://cran.r-universe.dev/lmtp/doc/manual.html), [ltmle `ltmle`](https://www.rdocumentation.org/packages/ltmle/versions/1.3-0/topics/ltmle), [gfoRmula index](https://search.r-project.org/CRAN/refmans/gfoRmula/html/00Index.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save estimate/table, diagnostic/plot, and source code paths for `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
 
 ```r
 # Tiny sketch, not a complete script.

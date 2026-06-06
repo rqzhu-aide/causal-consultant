@@ -80,7 +80,7 @@ Use this file to choose credible IV, weak-instrument, IV-DML, and Mendelian rand
 Docs checked: 2026-05-31
 Primary docs: [ivreg `ivreg`](https://zeileis.github.io/ivreg/reference/ivreg.html), [linearmodels `IV2SLS`](https://bashtage.github.io/linearmodels/iv/iv/linearmodels.iv.model.IV2SLS.html), [DoubleML PLIV](https://docs.doubleml.org/stable/api/generated/doubleml.plm.DoubleMLPLIV.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save estimate/table, diagnostic/plot, and source code paths for `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
 
 ```r
 # Tiny sketch, not a complete script.

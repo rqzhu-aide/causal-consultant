@@ -37,7 +37,7 @@ Stages:
 
 - `method_option_map`: produce a screened durable idea pool tied to the variable-role card: try for 2-3 catalog-aware design-route or fallback ideas plus 1-2 proactive twists or contributions, but keep only ideas with a concrete hook.
 - `selected_path_refinement`: after the user chooses a path, clarify estimand, target population, assumptions, data shape, and possible enhancements.
-- `analysis_spec_draft`: for one selected work unit only, draft the method portion of the Execution Authorization Packet: exact model families, variable sets, covariates, weights/design handling, intended package/tool lanes, diagnostics, report assets, allowed and forbidden outputs, fallback policy, and non-causal wording if needed.
+- `analysis_spec_draft`: for one selected work unit only, draft the method portion of the Execution Authorization Packet: exact model families, variable sets, covariates, weights/design handling, intended package/tool lanes, diagnostics, report assets, analysis unit folder needs, allowed and forbidden outputs, fallback policy, and non-causal wording if needed.
 - `specialist_routing_recommendation`: suggest whether a method subskill, implementation support, gatekeeper review, or data check is needed next.
 
 Stage output follows the backend core-stage contract: `completed_stage`, `stage_finding`, `blocker_or_uncertainty`, `next_stage_options` with 1-3 options for main, `recommended_option`, and `main_user_handoff`.
@@ -107,8 +107,9 @@ Include the minimum packet content main must show before execution:
 - covariate or adjustment set candidates, with roles if known;
 - model or estimator family, weights/design handling, and uncertainty plan;
 - intended package/tool lanes and fallback policy for estimator/model, matching/weighting, uncertainty or variance, diagnostics, and reporting when relevant;
-- required report assets for this unit: main result visual/table, key diagnostic visual/table, citation/source needs, and narrative cues for interpreting the result;
-- allowed output classes and table placement: source script/notebook, `analysis_note_*.md`, embedded compact tables, and any justified external artifacts;
+- required report assets for this unit: main result visual/table, key diagnostic visual/table, citation/source needs, estimand/model formula cue when helpful, and manuscript narrative cues for interpreting the result;
+- analysis unit folder and manifest needs: `outputs/analyses/NNN_unit_id/`, `source/`, figures/tables/data as relevant, and `manifest.json`;
+- allowed output classes and table placement: source script/notebook, `analysis_note_*.md`, embedded compact tables, required figures/tables in the unit folder, and any justified external artifacts;
 - forbidden outputs unless separately authorized, such as final HTML reports, workbooks, extra diagnostics, or unplanned compact CSVs;
 - diagnostics, sensitivity checks, and output artifacts for this unit only;
 - assumptions that are user-stated, externally sourced, or unverified in inspected data;
@@ -160,14 +161,16 @@ Practical implementation routes: intended tool or package lane, implementation-s
 
 ### Report Asset Guidance
 
-For `analysis_spec_draft`, name the report assets the selected method would need if the user later wants a polished report. Include method-sensitive figures or tables, citation/source needs, and narrative cues. Examples:
+For `analysis_spec_draft`, name the report assets the selected method would need if the user later wants a polished report. Include method-sensitive figures or tables, citation/source needs, estimand/model formula cues when they clarify the causal logic, and manuscript narrative cues. Examples:
 
 - matching/weighting: propensity overlap plot, love plot or SMD plot, weight/ESS diagnostic, main estimate plot or table, and matching/weighting references;
 - survival/event-time: survival/CIF/event-time visual, risk or censoring support summary, and survival method references;
 - DiD/RD/IV/discovery: pre-trend/event-study, cutoff/density, first-stage/weak-IV, or graph/stability visual as relevant;
 - non-causal fallback: descriptive or diagnostic figures that help the reader see data reality without implying a causal effect.
 
-If a required visual or citation would require separate artifact generation, ask main to route that as a bounded next step or include it in the execution packet. Do not treat report assets as permission to execute.
+Formula cues should stay lightweight and static, such as `ATE = E[Y(1) - Y(0)]`, a regression adjustment equation, a DiD contrast, an RD cutoff estimand, or a survival hazard/risk contrast. Each cue should say what symbols mean and whether it belongs in the main text or appendix.
+
+If a required visual, formula cue, or citation would require separate artifact generation or owner review, ask main to route that as a bounded next step or include it in the execution packet. Do not treat report assets as permission to execute.
 
 ## Writing Posture
 

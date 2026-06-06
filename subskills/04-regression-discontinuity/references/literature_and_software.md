@@ -69,7 +69,7 @@ Use this file to choose credible regression-discontinuity, regression-kink, loca
 Docs checked: 2026-05-31
 Primary docs: [rdrobust GitHub/docs](https://github.com/rdpackages/rdrobust), [rdrobust package reference](https://www.rdocumentation.org/packages/rdrobust/versions/3.0.0), [rddensity reference](https://www.rdocumentation.org/packages/rddensity/versions/2.6/topics/rddensity)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save estimate/table, diagnostic/plot, and source code paths for `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
 
 ```r
 # Tiny sketch, not a complete script.

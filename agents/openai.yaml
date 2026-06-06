@@ -1,4 +1,4 @@
 interface:
-  display_name: "Interactive Causal Consultant"
+  display_name: "Causal Consultant"
   short_description: "Interactive consultation-style causal inference skill"
   default_prompt: "Help me turn this causal idea into a defensible question before analysis."

@@ -62,7 +62,7 @@ Use this file to choose credible negative-control, empirical-calibration, and pr
 Docs checked: 2026-05-31
 Primary docs: [EmpiricalCalibration reference](https://ohdsi.github.io/EmpiricalCalibration/reference/index.html), [PCL package files](https://rdrr.io/cran/PCL/f/), [adjustedCurves proximal survival reference](https://www.rdocumentation.org/packages/adjustedCurves/versions/0.11.4/topics/surv_prox_aiptw)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Proximal APIs are research-stage and fragmented; check package docs carefully before using bridge-function code. Save estimate/table, diagnostic/plot, and source code paths for `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Proximal APIs are research-stage and fragmented; check package docs carefully before using bridge-function code. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
 
 ```r
 # Tiny sketch, not a complete script.

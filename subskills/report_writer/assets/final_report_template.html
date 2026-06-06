@@ -67,6 +67,24 @@
     .ready {
       border-left-color: var(--ok);
     }
+    .evidence-block {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 14px;
+      margin: 16px 0;
+    }
+    .equation {
+      background: #f3f5f8;
+      border-left: 4px solid var(--accent);
+      padding: 10px 12px;
+      margin: 12px 0;
+      font-size: 0.96rem;
+    }
+    .source-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
     table {
       border-collapse: collapse;
       width: 100%;
@@ -184,6 +202,7 @@
         <tr><td>Selected work-unit spec</td><td>[Variables, sample, model family, diagnostics, outputs.]</td><td>[spec card / execution confirmation.]</td><td>completed / qualified / missing</td></tr>
         <tr><td>Validity boundary</td><td>[Allowed wording and blockers.]</td><td>[causal_validity.]</td><td>completed / qualified / missing</td></tr>
         <tr><td>Execution and deviations</td><td>[Confirmed scope, dependency decisions, deviations.]</td><td>[artifact_index / execution notes.]</td><td>completed / qualified / missing</td></tr>
+        <tr><td>Analysis unit folders</td><td>[Completed analysis units included in this report.]</td><td>[report_assembly / execution_records / unit manifests.]</td><td>completed / qualified / missing</td></tr>
         <tr><td>Pending and parked work</td><td>[User-requested tasks and consultant alternatives resolved, declined, blocked, or parked for report.]</td><td>[pending_user_intents / exploration_threads / method_ideas.]</td><td>completed / qualified / missing</td></tr>
         <tr><td>Report shape</td><td>[Audience, depth, optional components.]</td><td>[report plan.]</td><td>completed / qualified / missing</td></tr>
       </table>
@@ -219,6 +238,7 @@
 
     <section id="methods">
       <h2>Method Options Considered And Selected Work Unit</h2>
+      <p>[Explain the analytical choice in prose: what the original causal goal required, what the data could support, why the selected method or fallback was chosen, and which alternatives were parked or ruled out.]</p>
       <table>
         <tr><th>Option</th><th>Role</th><th>Why it was considered</th><th>Decision</th></tr>
         <tr><td>[Original causal route]</td><td>primary / parked / blocked</td><td>[Reason.]</td><td>selected / deferred / blocked</td></tr>
@@ -246,6 +266,7 @@
 
     <section id="causal-framework">
       <h2>Causal Framework, Estimand, And Assumptions</h2>
+      <p>[Explain the causal logic before listing components: the target contrast, population, timing, and assumptions that make the analysis interpretable.]</p>
       <table>
         <tr><th>Component</th><th>Specification</th></tr>
         <tr><td>Selected framework</td><td>[Design or analysis framework and why it matches the question/data.]</td></tr>
@@ -254,6 +275,12 @@
         <tr><td>Review status</td><td>[causal_gatekeeper status and owner-review status.]</td></tr>
       </table>
       <div class="callout"><strong>Assumptions needing care:</strong> [State assumptions that are user-stated, externally sourced, or not directly verified in inspected data.]</div>
+
+      <h3>Causal Estimand And Analytical Logic</h3>
+      <p>[State the estimand or model logic in words. Include a formula only when it clarifies a causal estimand, adjustment, matching/weighting, DiD/RD/IV, survival, DR/DML, or other model-based route.]</p>
+      <div class="equation"><code>[Example: ATE = E[Y(1) - Y(0)] or logit Pr(Y = 1) = beta0 + beta1 X + beta2 C]</code></div>
+      <p><strong>Symbols:</strong> [Define Y, X, C, time horizon, population, weights, or contrast.]</p>
+      <p><strong>Plain-language reading:</strong> [Translate the formula into the report's causal or non-causal claim boundary.]</p>
 
       <h3>Causal Structure Sketch</h3>
       <p>Include this subsection when causal, qualified-causal, adjusted/model-based, matching, weighting, stratification, or causal-question fallback logic matters. Use the inline sketch from <code>causal_validity.dag_and_timing.causal_structure_sketch.markdown</code>; do not replace it with a separate graph file by default.</p>
@@ -269,6 +296,8 @@
       <h2>Execution And Dependency Notes</h2>
       <table>
         <tr><th>Item</th><th>Status</th><th>Notes</th></tr>
+        <tr><td>Analysis unit folder</td><td>ready / missing / blocked</td><td><a href="[analysis_dir]">[outputs/analyses/NNN_unit_id/]</a></td></tr>
+        <tr><td>Unit manifest</td><td>ready / missing / blocked</td><td><a href="[manifest_path]">[manifest.json path]</a></td></tr>
         <tr><td>Execution scope confirmation</td><td>confirmed / qualified / missing / not applicable</td><td>[What was authorized.]</td></tr>
         <tr><td>Execution record</td><td>cleared / install_approved / fallback_approved / accepted_after_execution / blocked / unresolved</td><td>[Execution record id and status.]</td></tr>
         <tr><td>Package or tool availability</td><td>available / installed with permission / fallback approved / accepted after execution / unavailable</td><td>[Package, function, or HTML tool notes.]</td></tr>
@@ -281,25 +310,36 @@
 
     <section id="results">
       <h2>Results, Figures, And Tables</h2>
-      <p>Present the main result, table, or figure first. Each visual or table should have a headline title, short interpretation, source/path, and limitation.</p>
-      <figure>
-        <h3>[Result/Figure/Table Title]</h3>
-        <p><strong>What it shows:</strong> [Plain-language interpretation.]</p>
-        <p><strong>Why it matters:</strong> [Decision, claim, diagnostic, or limitation supported.]</p>
-        <p><strong>Source/path:</strong> <a href="[artifact_path]">[artifact_path]</a></p>
-        <p><strong>Accessible description:</strong> [Text description of visual pattern, if a figure is included.]</p>
-        <p><strong>Caution:</strong> [What this result does not show.]</p>
-        <div>[Insert table, figure, or result summary.]</div>
-      </figure>
+      <p>[Start with a short reasoning paragraph: what evidence would answer the refined question, how the reported result was produced, and why this display belongs in the main text.]</p>
+      <article class="evidence-block">
+        <h3>[Result/Figure/Table Headline]</h3>
+        <p><strong>Evidence role:</strong> result / diagnostic / data support / sensitivity / limitation / causal structure.</p>
+        <p><strong>Question answered:</strong> [The specific causal, diagnostic, or fallback question this display answers.]</p>
+        <div>[Insert table, figure, inline sketch, or result summary.]</div>
+        <p><strong>Interpretation:</strong> [Explain what the display means inside the claim boundary.]</p>
+        <p><strong>Limitation:</strong> [State what this evidence does not establish.]</p>
+        <p class="source-note"><strong>Source/path:</strong> <a href="[artifact_path]">[artifact_path]</a>. <strong>Accessible description:</strong> [Text description of visual pattern, if a figure is included.]</p>
+      </article>
+      <p>[Close the section by connecting the result to the claim boundary, the next diagnostic, or the user's decision.]</p>
       <div class="callout"><strong>Missing report asset:</strong> [If a required figure, source note, or narrative cue is absent, state whether this report is blocked, intentionally terse, or waiting on bounded asset generation.]</div>
     </section>
 
     <section id="diagnostics">
       <h2>Diagnostics, Sensitivity, And Robustness</h2>
+      <p>[Explain why these diagnostics matter for trusting, weakening, or refusing the causal or model-based interpretation.]</p>
       <table>
         <tr><th>Diagnostic or sensitivity check</th><th>Status</th><th>Interpretation</th><th>Artifact</th></tr>
         <tr><td>[Balance/overlap/weight tails/pre-trends/bandwidth/weak instrument/censoring/missingness/model fit/placebo/sensitivity check]</td><td>completed / deferred / not applicable / blocked / unresolved</td><td>[What it changes or protects.]</td><td>[Path or omission reason.]</td></tr>
       </table>
+      <article class="evidence-block">
+        <h3>[Diagnostic Display Headline]</h3>
+        <p><strong>Evidence role:</strong> diagnostic / sensitivity / support / limitation.</p>
+        <p><strong>Question answered:</strong> [For example: overlap, balance, pre-trend, cutoff continuity, censoring support, weak instrument, or model stability.]</p>
+        <div>[Insert diagnostic figure/table or state omission reason.]</div>
+        <p><strong>Interpretation:</strong> [What the diagnostic changes about trust in the result.]</p>
+        <p><strong>Limitation:</strong> [What risk remains unresolved.]</p>
+        <p class="source-note"><strong>Source/path:</strong> <a href="[diagnostic_artifact_path]">[diagnostic_artifact_path]</a>.</p>
+      </article>
       <div class="callout"><strong>Unresolved diagnostic:</strong> [The diagnostic gap that most affects trust, if any.]</div>
     </section>
 
@@ -333,14 +373,16 @@
       <p>If code supports any reported result, diagnostic, table, or figure, the actual source script or notebook path is required.</p>
       <table>
         <tr><th>Reproducibility item</th><th>Path or note</th></tr>
+        <tr><td>Analysis unit folder</td><td><a href="[analysis_dir]">[outputs/analyses/NNN_unit_id/]</a></td></tr>
+        <tr><td>Unit manifest</td><td><a href="[manifest_path]">[manifest.json path]</a></td></tr>
         <tr><td>Source notebook/script</td><td><a href="[source_script_path]">[Required path to .py / .R / .ipynb / .do / .sas / other.]</a></td></tr>
         <tr><td>Run order</td><td>[Steps.]</td></tr>
         <tr><td>Inputs</td><td>[Paths.]</td></tr>
         <tr><td>Outputs</td><td>[Paths.]</td></tr>
         <tr><td>Seeds/randomness controls</td><td>[Notes.]</td></tr>
         <tr><td>Package/version notes</td><td>[Notes.]</td></tr>
-        <tr><td>Analysis note</td><td><a href="[analysis_note_path]">[analysis_note_*.md path]</a></td></tr>
-        <tr><td>Final HTML report</td><td><a href="[final_report_path]">[final_report_*.html path]</a></td></tr>
+        <tr><td>Analysis note</td><td><a href="[analysis_note_path]">[analysis_note_*.md path inside the analysis unit folder]</a></td></tr>
+        <tr><td>Final HTML report</td><td><a href="[final_report_path]">[outputs/reports/final_report_*.html path]</a></td></tr>
         <tr><td>HTML QA</td><td>passed / needs revision / not applicable. Check duplicate titles, wrapper/container, links, readable tables, source script/artifact links, and visible claim boundary.</td></tr>
       </table>
 

@@ -52,7 +52,7 @@ Use this file to choose credible dynamic treatment policy estimands, methods, an
 Docs checked: 2026-05-31
 Primary docs: [DynTxRegime CRAN manual](https://cran.r-project.org/web/packages/DynTxRegime/DynTxRegime.pdf), [polle manual](https://andreasnordland.r-universe.dev/polle/polle.pdf), [lmtp manual](https://cran.r-universe.dev/lmtp/doc/manual.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Dynamic-policy APIs differ across packages; re-check examples before executing. Save estimate/table, diagnostic/plot, and source code paths for `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Dynamic-policy APIs differ across packages; re-check examples before executing. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
 
 ```r
 # Tiny sketch, not a complete script.

@@ -1,10 +1,10 @@
 {
   "package": "causal-consultant",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "license": "MIT",
   "created_for": "interactive causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Major architecture redesign with main-led interactive consulting, four core reviewers, checkpoint reviews, method specialist catalog, causal discovery sidecar, and evidence-bound report production.",
+  "last_updated_focus": "Interactive causal-consultant release with main-led staged workflow, hook-readable execution records, per-analysis output folders, final HTML report assembly, and manuscript-style causal report guidance.",
   "core_subskills": [
     "domain_expert",
     "data_analyst",

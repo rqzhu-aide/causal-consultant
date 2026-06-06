@@ -60,8 +60,10 @@ alternatives_if_not_fit: []
 report_support:
   required_visual_assets: []      # e.g., design diagram, diagnostic plot, event-time plot, graph/stability visual
   required_tables: []             # compact report-critical tables
+  formula_cues: []                # static estimand/model formulas plus symbol notes when useful
+  display_items: []               # figure/table/sketch role, question answered, interpretation, limitation, placement
   citation_source_needs: []       # method/software/domain/data sources that should be inspected or cited
-  narrative_cues: []              # rationale, interpretation, and "what not to claim" points for report prose
+  narrative_cues: []              # setup, reasoning, interpretation, limitation, and "what not to claim" points
   omission_reasons: []            # required assets that are impossible, blocked, or intentionally omitted
 artifact_paths: []
 readiness: unknown

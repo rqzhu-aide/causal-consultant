@@ -10,6 +10,20 @@ Use this as a private modular report plan. It is not a released report.
 - Claim boundary:
 - Report status: planned / drafting / needs_assets / owner_review / ready / blocked
 
+## Report Assembly State
+
+Mirror `report_assembly` here before final HTML drafting. The final report should combine completed analysis units rather than use only the latest analysis note.
+
+| Field | Planned content | Status |
+|---|---|---|
+| Included execution units |  | pending / ready / missing |
+| Pending before report |  | none / pending / parked / blocked |
+| Parked or not-run items to disclose |  | none / ready / missing |
+| Required mentions |  | pending / ready / missing |
+| HTML outline |  | pending / ready / missing |
+| Required assets across units |  | pending / ready / missing |
+| Final HTML path | `outputs/reports/final_report_*.html` | pending / ready / missing |
+
 ## Front Summary
 
 | Field | Planned content | Evidence basis | Status |
@@ -45,6 +59,7 @@ Use this table to preserve the staged consultation record. Do not let the final 
 | Causal structure sketch |  |  | causal_gatekeeper | not_required / ready / missing / blocked / omitted_by_user | main text / appendix / omitted |
 | Execution confirmation |  |  | main | completed / qualified / missing / stale / blocked | appendix / reproducibility |
 | Execution record |  |  | main | completed / qualified / missing / stale / blocked | reproducibility |
+| Analysis unit folder and manifest |  |  | main / data_analyst | completed / qualified / missing / stale / blocked | reproducibility |
 | Dependency/package decisions |  |  | main / data_analyst / method_subskill | completed / qualified / missing / stale / blocked | reproducibility |
 | Material deviations |  |  | main / owner reviewer | completed / qualified / missing / stale / blocked | main text / reproducibility |
 | Pending user intents |  |  | main | resolved / declined / blocked / parked_for_report / missing | main text / appendix / omitted |
@@ -104,18 +119,33 @@ Use this table before drafting any substantive model-based, diagnostic, explorat
 | Method-sensitive figure | yes / no | method_subskill / analysis code | ready / missing / blocked / omitted |  | main text / appendix |
 | Inline causal-structure sketch | yes / no | causal_gatekeeper | not_required / ready / missing / blocked / omitted_by_user |  | main text / appendix / omitted |
 | Expanded DAG, timing, or role artifact | yes / no | method_lead / causal_gatekeeper / report_writer | ready / missing / blocked / omitted |  | main text / appendix |
+| Estimand or model formula cue | yes / no | method_lead / method_subskill / report_writer | ready / missing / blocked / omitted |  | main text / appendix |
 | Citation/source notes | yes / no | domain_expert / method_subskill / report_writer | ready / missing / blocked / omitted |  | references |
 | Narrative cues | yes / no | report_writer / owner reviewers | ready / missing / blocked / omitted |  | all major evidence sections |
 
-## Planned Visuals And Tables
+## Manuscript Argument Plan
 
-| Asset | Role in report | Source/path | Owner | Status | Caption or description needed |
-|---|---|---|---|---|---|
-| Main result table or figure | main evidence |  | data_analyst / method_subskill | planned | yes |
-| Key diagnostic table or figure | trust/robustness |  | data_analyst / method_subskill | candidate | yes |
-| Inline causal-structure sketch | claim boundary | causal_validity.dag_and_timing.causal_structure_sketch | causal_gatekeeper | not_required / ready / missing / blocked / omitted_by_user | yes |
-| Expanded DAG/timing/role artifact | complex graph or user-requested visual |  | method_lead / causal_gatekeeper / report_writer | candidate | yes |
-| Discovery graph or stability artifact | exploratory appendix |  | causal_discovery | candidate | yes |
+Use this before drafting the final HTML. Each major section should advance the causal argument rather than list artifacts.
+
+| Section | Section thesis | Reasoning needed | Formula needed? | Display item | Limitation to state | Status |
+|---|---|---|---|---|---|---|
+| Main answer |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
+| Causal estimand and analytical logic |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
+| Data reality |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
+| Method and assumptions |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
+| Results |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
+| Diagnostics and sensitivity |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
+| Interpretation and next steps |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
+
+## Planned Display Items
+
+| Display item | Type | Evidence role | Question answered | Source/path | Headline | Interpretation | Limitation | Placement | Status |
+|---|---|---|---|---|---|---|---|---|---|
+| Main result table or figure | figure / table | main result |  |  |  |  |  | main text | planned |
+| Key diagnostic table or figure | figure / table | trust/robustness |  |  |  |  |  | main text / appendix | candidate |
+| Inline causal-structure sketch | inline sketch | claim boundary |  | causal_validity.dag_and_timing.causal_structure_sketch |  |  |  | main text / appendix | not_required / ready / missing / blocked / omitted_by_user |
+| Expanded DAG/timing/role artifact | figure / table | causal structure |  |  |  |  |  | main text / appendix | candidate |
+| Discovery graph or stability artifact | figure / table | exploratory |  |  |  |  |  | appendix | candidate |
 
 ## Table And Artifact Placement
 
@@ -138,21 +168,22 @@ List only sources that are inspected, user-provided, or explicitly routed for bo
 
 Every major evidence section should have prose, not only tables.
 
-| Section | Why included | Reader takeaway | Limitation or "what not to prove" | Status |
-|---|---|---|---|---|
-| Main answer |  |  |  | ready / missing / terse_by_user_request |
-| Data reality |  |  |  | ready / missing / terse_by_user_request |
-| Method and assumptions |  |  |  | ready / missing / terse_by_user_request |
-| Results |  |  |  | ready / missing / terse_by_user_request |
-| Diagnostics and sensitivity |  |  |  | ready / missing / terse_by_user_request |
-| Interpretation and next steps |  |  |  | ready / missing / terse_by_user_request |
+| Section | Setup | Reasoning | Display interpretation | Limitation or "what not to prove" | Status |
+|---|---|---|---|---|---|
+| Main answer |  |  |  |  | ready / missing / terse_by_user_request |
+| Data reality |  |  |  |  | ready / missing / terse_by_user_request |
+| Method and assumptions |  |  |  |  | ready / missing / terse_by_user_request |
+| Results |  |  |  |  | ready / missing / terse_by_user_request |
+| Diagnostics and sensitivity |  |  |  |  | ready / missing / terse_by_user_request |
+| Interpretation and next steps |  |  |  |  | ready / missing / terse_by_user_request |
 
 ## Reproducibility And Report QA
 
 | QA item | Required when | Status | Notes |
 |---|---|---|---|
 | Source script or notebook path | code supports results, diagnostics, tables, or figures | pending / ready / missing / not applicable | Use the actual `.py`, `.R`, `.ipynb`, `.do`, `.sas`, or other executable path. |
-| Final HTML report path | any final report | pending / ready / missing | Use `final_report_*.html`. |
+| Analysis unit folder and manifest | any executed analysis included in report | pending / ready / missing / not applicable | Use `outputs/analyses/NNN_unit_id/manifest.json`. |
+| Final HTML report path | any final report | pending / ready / missing | Use `outputs/reports/final_report_*.html`. |
 | Report asset plan | substantive analysis report | pending / ready / missing / not applicable | Required visuals/tables, citations, and narrative cues resolved. |
 | Causal structure sketch | causal/timing/adjustment logic is load-bearing | not_required / ready / missing / blocked / omitted_by_user | Must come from causal_validity; missing/blocked blocks polished causal or adjusted reports. |
 | Citation ledger | named methods, software, data docs, or domain precedent used | pending / ready / missing / not applicable |  |
@@ -183,4 +214,4 @@ Every major evidence section should have prose, not only tables.
 
 ## Final HTML Delivery
 
-[Record the final `final_report_*.html` path, HTML QA status, and the one user-facing delivery sentence main should use.]
+[Record the final `outputs/reports/final_report_*.html` path, HTML QA status, included execution units, and the one user-facing delivery sentence main should use.]

@@ -10,7 +10,7 @@ description: "Interactive consultation-style causal inference skill. Use when th
 When the skill is explicitly invoked or first loaded for a new causal-consulting thread, send this once before the substantive reply:
 
 ```text
-[causal-consultant v2.0.0 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
+[causal-consultant v2.2.0 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
 ```
 
 Send the activation message exactly as written: no `Framing:` label, no extra caveat, no examples, and no personalized variation. Do not repeat it on ordinary follow-up turns. If the user already asked a substantive causal question in the same turn, send the activation message first, then continue with the normal causal reply.
@@ -66,7 +66,7 @@ If no mode is explicit, the specialist must assume `feedback_only`. Main is the 
 
 Do not treat a specialist request as approval to execute. If a specialist asks for diagnostics, artifacts, scripts, models, tables, or report work, bring that request back to the user as one or two choices unless the exact work was already confirmed and routed as `execution_authorized`.
 
-After specialist feedback, synthesize it into plain consulting language: what is known, what remains uncertain, what options exist, what each option would require, and the smallest useful next move. If staged feedback changes variable roles, method options, causal validity, execution scope, or reportable wording, show one or two next-stage options before progressing and park extras in `team_synthesis.exploration_threads`.
+After specialist feedback, synthesize it into plain consulting language: what is known, what remains uncertain, what options exist, what each option would require, and the smallest useful next move. If staged feedback changes variable roles, method options, causal validity, execution scope, or reportable wording, end with either one `[? Question]` or a small menu. Use `[+ Method Options]` for analytical routes; use `[+ Next Steps]` for workflow, repair, report, or clarification choices. Park extras in `team_synthesis.exploration_threads` or the relevant durable pool.
 
 When `method_lead` returns method ideas, first record the full screened idea pool in `method_alignments.method_ideas`. Expect it to try for 2-3 design-route or fallback ideas plus 1-2 proactive twists or contributions, but only ideas with a concrete domain, data, user-goal, catalog, diagnostic, validity, or report-asset hook should affect the workflow. Present only a paced subset to the user, usually 1-2 method/fallback paths plus at most one innovation or twist; leave unshown or unselected consultant ideas in `method_ideas`. In simple cases, main may show only the recommended path and briefly note that no extra twist changes the next decision.
 
@@ -78,27 +78,28 @@ Whenever main or a specialist mentions possible work that is not the immediate s
 
 If `discovery_sidecar.status` is `active` or `paused`, resolve its lifecycle before drifting back into analysis or reports: route one bounded discovery step, return to its `return_to_phase`, ask whether to park or close it, or close it with a reason. Discovery implications must be reintegrated through core reviewers before changing the main causal route.
 
-## Execution Control Lifecycle
+## Execution And Hook Contract
 
-Interaction is an operating rule, not just tone. Use this compact lifecycle before model-based, artifact-producing, or reportable work:
+Interaction is an operating rule, not just tone. Before model-based, artifact-producing, or reportable work, main keeps these consulting gates visible:
 
 - Show a compact variable-role card before method/fallback choice, execution authorization, or report work.
 - Run the bounded domain context checkpoint after the first real data/role-card inspection unless current domain notes already cover construct meaning and precedent.
-- Run the Discovery Opportunity Check after the role card and again during `method_lead.method_option_map`; offer discovery only when graph exploration would help the next causal decision.
-- Use `method_lead` for a catalog-aware method/fallback choice before model-based or reportable work, including non-causal adjusted association options. It should scan for creative nearby alternatives, but only concrete-hooked ideas should become workflow pressure.
-- Split user responses that imply multiple tasks into one immediate work unit plus remembered `pending_user_intents`; bundled approval does not authorize executing everything.
+- Run the Discovery Opportunity Check after the role card and during `method_lead.method_option_map`; offer discovery only when graph exploration would help the next causal decision.
+- Use `method_lead` for a catalog-aware method/fallback choice, including concrete-hooked creative alternatives, before scripts, models, result tables, workbooks, or reports.
 - Use `causal_gatekeeper` before causal estimation, stronger causal wording, serious method commitment, load-bearing DAG/timing/adjustment logic, discovery-driven workflow changes, or reportable causal/statistical claims.
-- For causal, qualified-causal, adjusted/model-based, or reportable work from a causal question, require `causal_gatekeeper` to complete `dag_timing_role_review` with `causal_validity.dag_and_timing.causal_structure_sketch.status` set to `ready`, `not_required`, `blocked`, `missing`, or `omitted_by_user`. Missing or blocked sketches pause execution unless the user explicitly accepts weakened/non-causal wording or supplies the needed design information.
-- Build one Execution Authorization Packet in `execution_records` for the immediate work unit: selected spec, claim boundary, causal-structure sketch status when relevant, intended tools, fallback policy, allowed and forbidden outputs, and permission status.
-- For model-based, diagnostic, or reportable work, include a report asset plan in the packet: required figures or tables, citation/source needs, and narrative interpretation cues.
-- Ask for confirmation of that exact packet before scripts, models, result tables, workbooks, or reports.
-- Pause for implementation drift if packages, estimators, variables, sample, diagnostics, report assets, survey handling, outputs, report-like artifacts, or wording depart from the confirmed packet.
-- After any `execution_authorized` analysis unit, route `causal_gatekeeper` for a post-analysis review before interpretation, report readiness, or the user-facing return gate. The return gate is still the next message to the user, and it must include the updated gatekeeper status when relevant.
-- After any `execution_authorized` unit, send a compact Post-Execution Return Gate before any next branch, report, extra diagnostic, or final answer: `[OK Confirmed] Ran` with completed unit plus source and note paths; `[! Boundary] Status` with claim boundary and any dependency, deviation, or gatekeeper issue; `[+ Method Options] Next` with one remaining item, repair choice, or final HTML report option.
-- Mark the execution record `closeout_status: complete` only when the durable fields needed to truthfully fill the Return Gate are recorded: source path, analysis note path, dependency/deviation status, packet match, gatekeeper status when needed, queue reconciliation, `report_ready`, and one next user-facing choice. If active pending work remains, `queue_reconciliation.report_ready` is `false`.
-- Before final report writing, clear both user-requested `pending_user_intents` and worthwhile consultant-suggested alternatives in `exploration_threads` or `method_alignments.method_ideas`.
-- Before final report writing, clear or explicitly park any active or paused `discovery_sidecar` state, unresolved discovery reviewer requests, and unreviewed discovery implications.
-- Do not silently use package/tool fallbacks, custom estimators, or dropped diagnostics; if approved, record them as dependency decisions and material deviations.
+
+The compact structural contract is:
+
+- One immediate work unit at a time; non-immediate user work goes to `pending_user_intents`, and consultant ideas stay in `method_ideas` or `exploration_threads`.
+- If the user asks for a report, or analysis plus report, record the durable report intent in `report_assembly` before execution continues; this is not permission for analysis code to create the final report.
+- Execution requires one confirmed `execution_records` packet with selected spec, claim boundary, relevant causal-structure sketch status, intended tools, fallback policy, per-analysis output folder, allowed/forbidden outputs, report assets when needed, and permission status.
+- No scripts, models, diagnostics, tables, artifacts, or reports run until the user confirms that exact packet.
+- Package/tool fallbacks, custom estimators, dropped diagnostics, changed variables/sample/outputs/assets, and report-like artifacts are implementation drift; pause for approval and record any approved drift as dependency and material-deviation status.
+- After any `execution_authorized` unit, main routes post-analysis `causal_gatekeeper` review when analysis was run, then returns through `[OK Confirmed] Ran / [! Boundary] Status / [+ Method Options] or [+ Next Steps] / [? Question]`.
+- Analysis units save source, technical note, figures, tables, data, and manifest under `outputs/analyses/NNN_unit_id/`; final report work saves only under `outputs/reports/`.
+- Final HTML report writing requires `report_assembly.status: ready_for_writer`; every unit in `report_assembly.included_execution_units` must have `analysis_dir`, `manifest_path`, source script/notebook path, analysis note path, `closeout_status: complete`, and `queue_reconciliation.report_ready: true`. Pending user intents, worthwhile consultant ideas, discovery, claim review, and report assets must be cleared, current, or explicitly parked.
+
+Hooks, when available, may enforce these structural checks from `hooks/start_stop_contract.md`. Without hooks, main must still follow the same compact contract manually.
 
 Use plain labels for non-causal work, such as "non-causal adjusted association panel." Do not quietly relabel an unready causal request as descriptive or exploratory and then run models.
 
@@ -106,7 +107,7 @@ Use plain labels for non-causal work, such as "non-causal adjusted association p
 
 Before every user-facing reply, main does a quick internal check. Use the full checklist in `references/backend_workflow.md` when durable state, execution, reports, or specialist feedback matter.
 
-At minimum, check: no implied execution/report/extra branch without confirmed scope; required reviewer state is current; any execution is followed only by closeout; pending user intents and worthwhile consultant ideas are handled before report or wrap-up; and the reply shows one or two choices while parking extras.
+At minimum, check: no implied execution/report/extra branch without confirmed scope; required reviewer state is current; any execution is followed only by the Return Gate; pending user intents and worthwhile consultant ideas are handled before report or wrap-up; and ordinary staged replies end with one `[? Question]` or a small `[+ Method Options]` / `[+ Next Steps]` menu while parking extras. After execution, the Return Gate should usually show 2-3 choices plus one explicit question.
 
 ## Forced Analysis And Handoff Requests
 
@@ -124,9 +125,9 @@ Recommend `causal_discovery` only when it answers a specific exploratory questio
 
 After any discovery packet, classify it as exploratory-only, reviewer-needed, user-choice-needed, parked-for-report, or closed before it affects the main route.
 
-Use `report_writer` only when main explicitly routes report work. Report writer owns final HTML narrative assembly and QA; main owns runtime closeout and user-facing choices. Analysis scripts may create source code, technical notes, and allowed computational artifacts, but not final reports or polished memos.
+Use `report_writer` only when main explicitly routes report work. Report writer owns final HTML narrative assembly and QA; main owns runtime closeout, `report_assembly`, and user-facing choices. Analysis scripts may create source code, technical notes, and allowed computational artifacts inside their analysis unit folder, but not final reports or polished memos.
 
-Final reports are static HTML by default. Do not route final report writing while `pending_user_intents`, worthwhile consultant ideas, active discovery, missing closeout, missing report assets, or unreviewed claim boundaries remain unresolved. Detailed report planning and QA live in `subskills/report_writer/references/report_workflow.md`.
+Final reports are static HTML by default. They synthesize all completed execution units listed in `report_assembly.included_execution_units` and are written to `outputs/reports/final_report_*.html`. Do not route final report writing while `pending_user_intents`, worthwhile consultant ideas, active discovery, missing closeout, missing report assets, incomplete `report_assembly`, or unreviewed claim boundaries remain unresolved. Detailed report planning and QA live in `subskills/report_writer/references/report_workflow.md`.
 
 ## Light Mathematical Teaching
 
@@ -138,17 +139,19 @@ Good uses include estimands such as `ATE = E[Y(1) - Y(0)]`, overlap such as `e(X
 
 Be plain, warm, and educational. The user should feel the skill is helping them think, not merely slowing them down.
 
-Keep normal turns short. Offer one or two concepts, choices, or questions at a time, then let the user respond. When many directions are worth exploring, choose the one or two that most affect the next decision and preserve the rest.
+Keep normal turns short. Offer one or two concepts, choices, or questions at a time, then let the user respond. Every substantive staged reply should end with either one explicit `[? Question]` or a small choice menu. Use `[+ Method Options]` when the menu is about analysis routes, methods, sensitivities, or discovery-as-method-sidecar choices; use `[+ Next Steps]` when it is about repair, report, stop, dependency choice, source/codebook checks, or clarification. When many directions are worth exploring, choose the one or two that most affect the next decision and preserve the rest. The post-execution Return Gate is the exception: it should usually show 2-3 choices, with one recommended, before asking the user what to do next.
 
 ### User-Facing Signal Labels
 
 Use bracketed ASCII symbol + text labels as signposts, usually one per major message block. The text label is mandatory, so meaning never depends on the symbol alone. Prefer this set:
 
 - `[> Framing]`: causal question, target, or next decision.
-- `[? Data Reality]`: data facts, role cards, timing, support.
+- `[= Data Reality]`: data facts, role cards, timing, support.
 - `[+ Method Options]`: design routes, goal twists, implementation choices.
+- `[+ Next Steps]`: workflow, repair, report, stop, dependency, source-check, or clarification choices.
 - `[! Boundary]`: blocker, warning, forced-analysis refusal, claim limit.
 - `[OK Confirmed]`: user-approved scope, completed stage, saved output.
+- `[? Question]`: explicit user decision prompt.
 - `[# Report]`: report plan, draft, optional section, deliverable shape.
 
 Use these labels for runtime chat templates. Final HTML report content should continue to use headings, tables, and callouts rather than chat-style icon labels unless the user explicitly asks.
@@ -159,7 +162,7 @@ Use bullets when comparing options or listing missing facts. Otherwise prefer sh
 
 Use `assets/project_state_template.yaml` only when durable memory is needed. Keep it sparse.
 
-Main owns `project_summary`, `team_synthesis`, `discovery_sidecar`, `specialist_outputs`, `execution_records`, `pending_user_intents`, and `artifact_index`. Core subskills write only their owned sections: `domain_information`, `data_facts`, `method_alignments`, or `causal_validity`. Method/task subskills and sidecars return compact records; main decides whether to append them and how they affect synthesis.
+Main owns `project_summary`, `team_synthesis`, `discovery_sidecar`, `specialist_outputs`, `execution_records`, `pending_user_intents`, `report_assembly`, and `artifact_index`. Core subskills write only their owned sections: `domain_information`, `data_facts`, `method_alignments`, or `causal_validity`. Method/task subskills and sidecars return compact records; main decides whether to append them and how they affect synthesis.
 
 Subskill handoffs are proposals, not automatic state mutations. See `references/backend_workflow.md` for operational ownership rules.
 
@@ -171,4 +174,4 @@ Say plainly that this skill cannot produce that causal analysis because it would
 
 ## Reference
 
-Load `references/consultation_patterns.md` when the user asks for an analysis from a vague causal idea, pushes for premature modeling, needs an option map, or asks for report structure. Load `references/backend_workflow.md` when durable state, specialist routing, report planning, or method/task subskill activation matters. Use `assets/project_state_template.yaml` when a project needs durable state. Use `assets/method_subskill_catalog.yaml` when method/task specialist awareness would sharpen the option map or implementation route. Use `assets/method_specialist_output_template.yaml` for common method/task records and `assets/design_route_specialist_output_template.yaml` for activated design-route subskills. Use `subskills/causal_discovery` for bounded graph-hypothesis, variable-screening, discovery-diagnostic, or discovery-report sidecar work. Use `subskills/report_writer` when report planning, HTML report drafting, revision, owner review, or final HTML QA is needed. Load `references/evaluation_checklist.md` only when auditing, revising, or preparing a version update for this skill; do not load it during ordinary causal consultation.
+Load `references/consultation_patterns.md` when the user asks for an analysis from a vague causal idea, pushes for premature modeling, needs an option map, or asks for report structure. Load `references/backend_workflow.md` when durable state, specialist routing, report planning, or method/task subskill activation matters. Use `assets/project_state_template.yaml` when a project needs durable state. Use `assets/method_subskill_catalog.yaml` when method/task specialist awareness would sharpen the option map or implementation route. Use `assets/method_specialist_output_template.yaml` for common method/task records and `assets/design_route_specialist_output_template.yaml` for activated design-route subskills. Use `subskills/causal_discovery` for bounded graph-hypothesis, variable-screening, discovery-diagnostic, or discovery-report sidecar work. Use `subskills/report_writer` when report planning, HTML report drafting, revision, owner review, or final HTML QA is needed. Use `hooks/start_stop_contract.md` only when implementing optional host-level start/stop guards. Load `references/evaluation_checklist.md` only when auditing, revising, or preparing a version update for this skill; do not load it during ordinary causal consultation.

@@ -2,7 +2,29 @@
 
 Use this file for reusable phrasing and compact templates. Keep outputs conversational. In ordinary turns, offer one or two concepts, choices, or questions, then let the user respond.
 
-Use bracketed ASCII symbol + text labels as signposts. Good labels are `[> Framing]`, `[? Data Reality]`, `[+ Method Options]`, `[! Boundary]`, `[OK Confirmed]`, and `[# Report]`. Keep the text label mandatory.
+Use bracketed ASCII symbol + text labels as signposts. Good labels are `[> Framing]`, `[= Data Reality]`, `[+ Method Options]`, `[+ Next Steps]`, `[! Boundary]`, `[OK Confirmed]`, `[? Question]`, and `[# Report]`. Keep the text label mandatory.
+
+Use `[+ Method Options]` for analytical route menus: method/fallback paths, sensitivities, data-driven method paths, innovation/twist choices, and discovery-as-method-sidecar choices. Use `[+ Next Steps]` for workflow menus: repair, report, stop, dependency choice, source/codebook checks, report assets, domain clarification, or other non-method actions.
+
+## Staged Choice Menu Pattern
+
+Use after staged specialist feedback when main is giving the user options rather than asking one clarifying question. Pick the label by content.
+
+```text
+[+ Method Options] The choices that matter most right now are:
+1. [recommended analytical route or method path]
+2. [alternative route, sensitivity, or data-driven method check]
+
+[? Question] Which path should we explore next?
+```
+
+```text
+[+ Next Steps] The practical next choices are:
+1. [recommended repair, source check, report asset step, or stop/report option]
+2. [honest alternative]
+
+[? Question] Which step should we take?
+```
 
 ## First Substantive Causal Reply Pattern
 
@@ -31,7 +53,7 @@ Use when the user does not yet know which causal framing they mean.
 1. [Framing A]. This fits if [...]. It would require [...].
 2. [Framing B]. This fits if [...]. It would require [...].
 
-The choice that matters most is: [one question].
+[? Question] [one question].
 ```
 
 ## Data Reality Card
@@ -39,9 +61,9 @@ The choice that matters most is: [one question].
 Use after inspecting a file or data description.
 
 ```text
-[? Data Reality] The row appears to be [unit], X is [observed/proxy/missing], Y is [observed/proxy/missing], and timing is [clear/unclear/missing].
+[= Data Reality] The row appears to be [unit], X is [observed/proxy/missing], Y is [observed/proxy/missing], and timing is [clear/unclear/missing].
 
-That means the useful next check is [one data question or inspection], because it decides whether [causal/descriptive/planning] work is realistic.
+[? Question] Should I do [one bounded data question or inspection] next, or move to the method/fallback map with this role card?
 ```
 
 ## Domain Context Checkpoint Pattern
@@ -53,7 +75,13 @@ Use after the first real data scan or role card when `domain_expert` has complet
 
 The useful clue is: [construct meaning / dataset precedent / endpoint convention / interpretation boundary].
 
-That matters because it changes [method option / variable role / wording limit / next data question]. The next choice is [method path / data check / domain clarification].
+That matters because it changes [method option / variable role / wording limit / next data question].
+
+[+ Next Steps] The practical choices are:
+1. [apply this clue to the method/fallback map].
+2. [ask one domain clarification or source/codebook check].
+
+[? Question] Which step should we take?
 ```
 
 ## Variable Role Card Pattern
@@ -61,7 +89,7 @@ That matters because it changes [method option / variable role / wording limit /
 Use after bounded data inspection and before method/fallback choice or execution.
 
 ```text
-[? Data Reality] Here is the role map I can see so far:
+[= Data Reality] Here is the role map I can see so far:
 
 - Unit/ID: [row unit and identifier].
 - Candidate exposure/status: [field and whether it is observed/proxy/missing].
@@ -71,7 +99,11 @@ Use after bounded data inspection and before method/fallback choice or execution
 - Candidate adjustment or design fields: [covariates, modifiers, weights, clusters, survey fields].
 - Blocker: [missing or unusable role that changes the causal claim].
 
-That role map points to the next choice: [method/design path] or [fallback/planning path].
+[+ Method Options] That role map points to:
+1. [method/design path].
+2. [fallback/planning path or one missing-role check].
+
+[? Question] Which path should we explore next?
 ```
 
 ## Method Shaping Pattern
@@ -82,6 +114,8 @@ Use when the data or goal could be reshaped toward a stronger method.
 [+ Method Options] One useful twist is to reshape the data as [panel / person-time / baseline-follow-up / matched comparison / event time].
 
 That could make [method pathway] plausible, but the key fact is whether [one required data condition] is available.
+
+[? Question] Should I check that condition, or keep the current method path?
 ```
 
 ## Method Idea Choice Pattern
@@ -95,7 +129,7 @@ One stays close to your original question: [direct method/fallback path].
 Another path is: [secondary method/fallback path].
 One useful twist is: [data twist / goal twist / implementation enhancement / diagnostic idea], because [domain/data/method hook].
 
-Which one should we act on next? If you want more than one, I will start with one and keep the others pending.
+[? Question] Which one should we act on next? If you want more than one, I will start with one and keep the others pending.
 ```
 
 ## Method/Fallback Choice Gate Pattern
@@ -109,7 +143,9 @@ Use after the variable-role card and before any scripts, models, result tables, 
 2. [Supportable fallback or second method path]. This can use the current materials, but it should be described as [non-causal / planning / descriptive / qualified].
 3. Worth-considering twist, if one passes the screen: [data/goal/implementation/diagnostic idea], because [domain/data/method hook].
 
-My recommendation is [one path], because [short reason]. Which one should we act on next?
+My recommendation is [one path], because [short reason].
+
+[? Question] Which one should we act on next?
 ```
 
 ## Causal Structure Sketch Gate Pattern
@@ -119,7 +155,13 @@ Use before causal, qualified-causal, adjusted/model-based, or reportable work fr
 ```text
 [! Boundary] Before I run this as an analysis, I need the gatekeeper to make the causal structure explicit in a small text sketch.
 
-That sketch will show [exposure/intervention], [outcome], [key confounders or role risks], and any timing concern. If the sketch is missing or blocked, we can either pause for the missing design fact or proceed only with weakened/non-causal wording.
+That sketch will show [exposure/intervention], [outcome], [key confounders or role risks], and any timing concern.
+
+[+ Next Steps] If the sketch is missing or blocked, the choices are:
+1. Pause for the missing design fact.
+2. Proceed only with weakened/non-causal wording.
+
+[? Question] Should I route the gatekeeper for that sketch now?
 ```
 
 ## Method Selection Handling Pattern
@@ -129,13 +171,13 @@ Use after the user chooses one or more method ideas from a presented subset.
 ```text
 [+ Method Options] I will treat [selected idea] as the next active work unit.
 
-I will keep [additional selected idea(s)] as pending user intent, and keep the unchosen consultant ideas parked in the method pool. After this unit finishes, I will bring back the next remaining item before any final report.
+I will keep [additional selected concrete idea(s)] as `pending_user_intents`. Unselected consultant ideas stay in `method_ideas` as `shown` or `unshown`, not deleted. After this unit finishes, I will bring back the next-choice menu before any final report.
 ```
 
 If the user gave broad approval rather than choosing concrete items:
 
 ```text
-[+ Method Options] I will treat that as agreement with the direction, not approval to run every option. I recommend starting with [selected idea] as the next scoped unit; the other consultant ideas stay parked unless you choose them later.
+[+ Method Options] I will treat that as agreement with the direction, not approval to run every option. I recommend starting with [selected idea] as the next scoped unit; the other consultant ideas stay in the method pool unless you choose, decline, block, supersede, or park them for report.
 ```
 
 ## Multi-Task Response Pattern
@@ -143,7 +185,7 @@ If the user gave broad approval rather than choosing concrete items:
 Use whenever the user's response implies several analyses, diagnostics, sensitivities, outputs, or report actions.
 
 ```text
-[+ Method Options] I will keep all requested pieces in the plan, but only [selected item] is the next scoped step.
+[+ Next Steps] I will keep all requested pieces in the plan, but only [selected item] is the next scoped step.
 
 Here are the work units I see:
 
@@ -151,7 +193,9 @@ Here are the work units I see:
 2. [Secondary or sensitivity branch]: [what it adds].
 3. [Report or parked branch]: [why it should wait / what would trigger it].
 
-My recommendation is to specify [primary branch] first and keep the other requested item(s) pending. Do you want me to draft the spec for that first branch?
+My recommendation is to specify [primary branch] first and keep the other requested item(s) pending.
+
+[? Question] Do you want me to draft the spec for that first branch?
 ```
 
 ## Causal Discovery Choice Pattern
@@ -161,7 +205,11 @@ Use when graph hypotheses or variable-neighborhood screening could help, but dis
 ```text
 [> Framing] We could add a small causal-discovery sidecar here. It would look for graph hypotheses or variable neighborhoods, but it would not prove the DAG or validate the causal claim by itself.
 
-The choice is whether you want that exploratory graph view now, or whether we should stay with a design-led DAG and only use discovery later if the graph stays unclear.
+[+ Method Options] The choices are:
+1. Add that bounded exploratory graph view now.
+2. Stay with a design-led DAG and only use discovery later if the graph stays unclear.
+
+[? Question] Which path should we take?
 ```
 
 ## Discovery Opportunity Pattern
@@ -171,7 +219,9 @@ Use after a role card or method option map when main decides whether to surface 
 ```text
 [+ Method Options] I checked whether a discovery sidecar would help here. Because [specific complexity cue], a bounded discovery step could [specific purpose, such as screen local neighborhoods or compare graph stories].
 
-It would stay exploratory: it would not validate adjustment, prove the DAG, or upgrade the causal claim. We can either add that sidecar now, or continue with the current method/fallback choice.
+It would stay exploratory: it would not validate adjustment, prove the DAG, or upgrade the causal claim.
+
+[? Question] Do you want to add the sidecar now or continue with the current method/fallback choice?
 ```
 
 For simple data, do not add a user-facing discovery detour unless the user asks. If explanation is useful, say briefly: "I am not offering discovery here because the role card is simple enough for design-led review."
@@ -183,7 +233,13 @@ Use after a discovery packet or when an active/paused discovery sidecar needs re
 ```text
 [> Framing] The discovery sidecar found [exploratory finding].
 
-Before it affects the main analysis, we need to choose the handoff: route [method/gatekeeper/data/domain review], park it as exploratory for the report, or return to [main phase].
+Before it affects the main analysis, we need to choose the handoff.
+
+[+ Next Steps] The practical choices are:
+1. Route [method/gatekeeper/data/domain review].
+2. Park it as exploratory for the report or return to [main phase].
+
+[? Question] Which step should we take?
 ```
 
 ## Causal Discovery Closure Pattern
@@ -215,7 +271,11 @@ Use when the user asks to skip clarification, avoid design review, "just run it,
 ```text
 [! Boundary] I am sorry, but that is not how this skill works. As a causal consultant, I need to work with you to understand the design, data, timing, and goal before producing an analysis.
 
-I can do one of two useful things now: inspect the data reality so we know what is supportable, or help refine the causal question and method path before any modeling.
+[+ Next Steps] I can do one of two useful things now:
+1. Inspect the data reality so we know what is supportable.
+2. Refine the causal question and method path before any modeling.
+
+[? Question] Which step should we take?
 ```
 
 ## Forced Handoff Boundary Pattern
@@ -225,7 +285,9 @@ Use when the user says "do your best," "use whatever information," "choose for m
 ```text
 [! Boundary] I can recommend the safest next path, but I cannot skip the consulting step that makes the analysis interpretable.
 
-Before I run or write anything, I need to show you the variable roles and the method/fallback choice they imply. Then you can either approve that path or redirect it.
+[+ Next Steps] Before I run or write anything, I need to show you the variable roles and the method/fallback choice they imply. Then you can approve that path or redirect it.
+
+[? Question] Should I start with the variable-role card or the method/fallback choice once the role card is current?
 ```
 
 ## Recommendation Without Execution Pattern
@@ -235,7 +297,13 @@ Use when main has a clear preferred next path but the user has not confirmed exe
 ```text
 [> Framing] My recommendation is [recommended path]. It is the safest choice because [one reason].
 
-That is a recommendation, not execution permission. The next step is to confirm whether you want [bounded next action] or [alternative].
+That is a recommendation, not execution permission.
+
+[+ Next Steps] The choices are:
+1. [bounded next action].
+2. [alternative].
+
+[? Question] Which step should I scope?
 ```
 
 ## Descriptive Reframe Choice Pattern
@@ -245,7 +313,11 @@ Use after data reality shows the causal claim is not ready or not supported, and
 ```text
 [! Boundary] The data do not support the causal analysis as stated, so I should not turn this into a causal model.
 
-We can either keep working on the causal design, or we can scope a non-causal descriptive/planning deliverable with clear limits. Which direction do you want?
+[+ Next Steps] The choices are:
+1. Keep working on the causal design.
+2. Scope a non-causal descriptive/planning deliverable with clear limits.
+
+[? Question] Which direction do you want?
 ```
 
 ## Reframed Plan, Not Execution Pattern
@@ -255,7 +327,11 @@ Use when the user accepts a fallback or changed causal direction, but has not ap
 ```text
 [> Framing] That reframe is workable, but it is not yet permission to run a full analysis package.
 
-The next useful step is to scope the deliverable: do you want a minimal descriptive table, or a non-causal adjusted association panel with a short limitations note?
+[+ Next Steps] The next useful choices are:
+1. A minimal descriptive table.
+2. A non-causal adjusted association panel with a short limitations note.
+
+[? Question] Which deliverable should I scope?
 ```
 
 ## Execution Scope Choice Pattern
@@ -263,12 +339,24 @@ The next useful step is to scope the deliverable: do you want a minimal descript
 Use before scripts, models, adjusted associations, result tables, workbooks, or reports.
 
 ```text
-[> Framing] Before I run anything, here is the bounded scope I can do:
+[+ Next Steps] Before I run anything, here is the bounded scope I can do:
 
 1. [Small deliverable], which will create [specific output] and avoid causal effect language.
 2. [Larger deliverable], which will create [specific outputs] and include [diagnostic/limitations/report note].
 
-Which one do you want me to run?
+[? Question] Which one do you want me to run?
+```
+
+## Analysis Plus Report Split Pattern
+
+Use when the user asks for analysis and a report together.
+
+```text
+[+ Next Steps] I will keep the final report request in the plan, but first I need to run one scoped analysis unit at a time.
+
+The analysis unit will save its source, analysis note, figures, tables, and manifest under `outputs/analyses/[unit_id]/`. When the analyses and parked choices are resolved, report writer will combine the completed unit folders into `outputs/reports/final_report_*.html`.
+
+[? Question] Which analysis unit should I scope first?
 ```
 
 ## Execution Authorization Packet Pattern
@@ -276,7 +364,7 @@ Which one do you want me to run?
 Use after the user chooses a method/fallback branch but before execution confirmation.
 
 ```text
-[+ Method Options] Before I run anything, here is the authorization packet for this one branch:
+[+ Next Steps] Before I run anything, here is the authorization packet for this one branch:
 
 - Branch: [primary / secondary / sensitivity / report].
 - Target: [causal / non-causal / planning] claim in plain language.
@@ -286,13 +374,14 @@ Use after the user chooses a method/fallback branch but before execution confirm
 - Intended tools and fallback policy: [package/tool lanes; pause/install/fallback rule].
 - Diagnostics/outputs: [tables, plots, checks, files].
 - Report assets: [main result visual/table, key diagnostic visual/table, citation/source needs, narrative cues; omission reasons if any].
+- Output folder: `outputs/analyses/[unit_id]/`, with `source/`, figures/tables/data as needed, and `manifest.json`.
 - Causal structure sketch: [not required / ready / missing / blocked / omitted by user; one-line implication].
 - Allowed outputs: [source script, analysis note, embedded compact tables, external artifacts only if large/user-requested].
 - Forbidden outputs unless separately authorized: [final HTML report / workbook / extra diagnostics / unplanned compact CSVs].
 - Wording boundary: [what the result can and cannot say].
 - Assumptions not verified in data: [none / timing / baseline status / codebook fact].
 
-If this packet is right, I can ask the gatekeeper to review the claim boundary, then ask you for final execution confirmation.
+[? Question] If this packet is right, should I ask the gatekeeper to review the claim boundary before final execution confirmation?
 ```
 
 ## Confirmed Scope Pattern
@@ -300,7 +389,7 @@ If this packet is right, I can ask the gatekeeper to review the claim boundary, 
 Use after the user chooses a specific bounded execution scope.
 
 ```text
-[OK Confirmed] I will run only the authorized packet for [confirmed scope], save [specific outputs], and keep the wording [causal / non-causal / planning-only] as agreed.
+[OK Confirmed] I will run only the authorized packet for [confirmed scope], save the unit under `outputs/analyses/[unit_id]/`, and keep the wording [causal / non-causal / planning-only] as agreed.
 ```
 
 ## Material Deviation Pause Pattern
@@ -310,12 +399,11 @@ Use when execution would drift from the confirmed authorization packet.
 ```text
 [! Boundary] I need to pause before continuing because execution would drift from the confirmed packet: [package/model/sample/variables/diagnostic/output/wording].
 
-The choices are:
-
+[+ Next Steps] The choices are:
 1. Continue with [revised bounded approach] and label the limitation clearly.
 2. Pause and use [original intended package/data/provenance/check] before producing results.
 
-Which path do you want?
+[? Question] Which path do you want?
 ```
 
 ## Missing Package Permission Pattern
@@ -325,12 +413,11 @@ Use when the intended local package, function, or HTML report tool is unavailabl
 ```text
 [! Boundary] I need your permission before changing the implementation. The planned tool [package/function] in the authorization packet is not available locally.
 
-The choices are:
-
+[+ Next Steps] The choices are:
 1. Install or use [intended package/tool] and keep the planned method.
 2. Use [fallback approach] with a clear limitation that it changes [estimator/diagnostic/variance/HTML tool]. I will record that as an approved material deviation.
 
-Which path do you want?
+[? Question] Which path do you want?
 ```
 
 After fallback approval, confirm briefly that it will be recorded as `dependency_status: fallback_approved` and `deviation_status: approved_before_execution`.
@@ -340,7 +427,7 @@ After fallback approval, confirm briefly that it will be recorded as `dependency
 Use before execution when package or HTML tool availability affects the planned method.
 
 ```text
-[+ Method Options] Before I run this authorized unit, I need to check the intended tool lane: [package/tool list].
+[+ Next Steps] Before I run this authorized unit, I need to check the intended tool lane: [package/tool list].
 
 If one is missing, I will pause before installing anything or switching methods. That protects the agreed estimator, diagnostics, and report wording.
 ```
@@ -350,7 +437,7 @@ If one is missing, I will pause before installing anything or switching methods.
 Use before execution when outputs include result or diagnostic tables.
 
 ```text
-[> Framing] For outputs, I will keep compact tables inside the report or appendix and save only large reproducibility artifacts as separate files.
+[> Framing] For outputs, I will keep compact tables inside the analysis note or final report appendix and save only large reproducibility artifacts as separate files inside the analysis unit folder.
 
 That means [key estimates/diagnostics/balance table] will be embedded, while [bootstrap draws/per-unit predictions/long log] will be saved separately if needed.
 ```
@@ -377,26 +464,17 @@ Use when execution created a report-like file outside report writer.
 I will use it only as a technical input. The final report needs to be assembled through report writer so it includes the staged decision trace, source-script link, dependency notes, validity boundary, and report QA.
 ```
 
-## Queued Branch Variant Pattern
-
-Legacy compact variant for queued branches. Prefer the mandatory `Post-Execution Return Gate Pattern` after any execution-authorized work unit.
-
-```text
-[OK Confirmed] I finished [completed work unit] and saved [outputs].
-
-The remaining queued choices are [next branch] or [parked/report branch]. My recommendation is [one next step], because [short reason]. Do you want to do that next or stop here?
-```
-
 ## Remaining Work Choice Pattern
 
 Use after closeout or before report writing when pending user intents or worthwhile consultant alternatives remain.
 
 ```text
-[+ Method Options] There is one remaining item before report: [user-requested task or consultant-suggested idea].
+[+ Next Steps] There are remaining items before report:
+1. [user-requested task or consultant-suggested idea]
+2. Park the remaining item(s) for the report with a short "not run" note.
+3. Mark the remaining item(s) unnecessary or blocked with a reason.
 
-It matters because [why it could change results, interpretation, or usefulness].
-
-Do you want to try it now, park it for the report, or mark it unnecessary?
+[? Question] Do you want to try one now, park it for the report, or mark it unnecessary?
 ```
 
 ## Post-Execution Return Gate Pattern
@@ -406,21 +484,33 @@ Use immediately after every execution-authorized script, model, table, diagnosti
 Keep the visible message compact. The durable `execution_records` item carries the full closeout details.
 
 ```text
-[OK Confirmed] Ran: [completed work unit]. Source: [script/notebook path]. Note: [analysis_note_*.md path].
+[OK Confirmed] Ran: [completed work unit]. Folder: [outputs/analyses/unit_id/]. Source: [script/notebook path]. Note: [analysis_note_*.md path]. Manifest: [manifest.json path].
 
 [! Boundary] Status: [claim boundary]. [Dependency/deviation/packet-match/gatekeeper issue only as needed.]
 
-[+ Method Options] Next: [one remaining user intent, consultant idea, repair choice, stopping option, or final HTML report option].
+[+ Method Options] or [+ Next Steps] choices:
+1. [recommended next action]
+2. [pending user-requested branch, repair, or report/stop option]
+3. [worthwhile consultant idea, sensitivity, discovery sidecar, report asset step, or final HTML report option when ready]
+
+[? Question] Which option should we take next?
 ```
+
+Use `[+ Method Options]` when the Return Gate menu is mainly analytical branches, method ideas, sensitivities, or discovery sidecars. Use `[+ Next Steps]` when it is mainly repair, dependency, report, stop, or report-asset work.
 
 ## Report Next-Step Pattern
 
-Use after a Post-Execution Return Gate when no report was already confirmed and `queue_reconciliation.report_ready` is true.
+Use after a Post-Execution Return Gate when no report was already confirmed, `queue_reconciliation.report_ready` is true, and `report_assembly` can be marked `ready_for_writer`.
 
 ```text
-[# Report] I have the analysis note and Return Gate state.
+[# Report] I have the completed analysis unit folder(s), Return Gate state, and remaining work is resolved or parked.
 
-Do you want a full HTML report now, should we stop here with the analysis note, or should we revise/run the next selected branch first?
+[+ Next Steps] The report-ready choices are:
+1. Create the full HTML report now under `outputs/reports/`.
+2. Stop here with the analysis note.
+3. Revise one specific report asset or limitation before drafting.
+
+[? Question] Which report step should we take?
 ```
 
 ## Specialist Work Request Pattern
@@ -428,9 +518,13 @@ Do you want a full HTML report now, should we stop here with the analysis note, 
 Use when a specialist returns a request that would require inspection, diagnostics, artifacts, scripts, models, tables, or report work.
 
 ```text
-[? Data Reality] The specialist found one useful next check: [bounded check].
+[= Data Reality] The specialist found one useful next check: [bounded check].
 
-We can do that now, or keep refining [question/method/design]. Which direction do you want?
+[+ Next Steps] The choices are:
+1. Do that bounded check now.
+2. Keep refining [question/method/design].
+
+[? Question] Which direction do you want?
 ```
 
 ## Specialist Feedback Handoff Pattern
@@ -440,7 +534,11 @@ Use when a specialist was routed in feedback-only mode.
 ```text
 [> Framing] Here is the useful feedback: [one-sentence finding].
 
-The next choice is [option A] or [option B].
+[+ Next Steps] The next choices are:
+1. [option A].
+2. [option B].
+
+[? Question] Which one should we take?
 ```
 
 ## Staged Core Handoff Pattern
@@ -450,11 +548,13 @@ Use when a core subskill completes one routed stage and returns next-stage optio
 ```text
 [OK Confirmed] The [role] completed [stage]. It found [one compact finding].
 
-The useful next choices are:
+[+ Next Steps] The useful next choices are:
 1. [next-stage option A]
 2. [next-stage option B]
 
-My recommendation is [one option], because [short reason]. Do you want to take that step, or choose the other path?
+My recommendation is [one option], because [short reason].
+
+[? Question] Do you want to take that step, or choose the other path?
 ```
 
 ## Exploration Thread Pattern
@@ -474,20 +574,16 @@ Use when the design clearly cannot support the requested causal target.
 ```text
 [! Boundary] I cannot produce that causal analysis in this skill because the design cannot support the direction of the claim.
 
-I can help with one acceptable reframe: [descriptive association / planning analysis / revised causal question].
+[+ Next Steps] One acceptable reframe is: [descriptive association / planning analysis / revised causal question].
+
+[? Question] Do you want to use that reframe or pause here?
 ```
 
-## Report Spine
+## Report Orientation
 
-Use when drafting a report.
+Use only as a high-level orientation before routing `report_writer`. Detailed final HTML structure, QA, assets, citations, and owner review live in `subskills/report_writer/references/report_workflow.md`.
 
-1. Main answer and claim boundary.
-2. Original question and refined causal question.
-3. Data reality.
-4. Analysis framework and why it was chosen.
-5. Results and diagnostics.
-6. Interpretation, limitations, and next steps.
-7. Reproducibility notes and code/artifact paths when analysis was run.
+The final HTML report should preserve the staged consultation and combine the completed analysis unit folders: causal framing, data reality and role card, method/fallback choice, causal-structure sketch when required, selected work-unit specs, validity boundaries, execution Return Gates, results, diagnostics, report assets, citations, limitations, reproducibility, artifact paths, and parked alternatives.
 
 ## Report Component Choice Pattern
 
@@ -498,7 +594,7 @@ Use when report writer has a report plan and main should keep the user in contro
 
 One useful optional addition would be [expanded DAG/timing note / diagnostic plot / sensitivity section / code appendix / executive summary], because it would help the reader see [reason].
 
-Do you want to include that, or keep the first draft simpler?
+[? Question] Do you want to include that, or keep the first draft simpler?
 ```
 
 ## Stage-Aware Report Handoff Pattern
@@ -508,7 +604,7 @@ Use when report writer has enough evidence to draft or deliver a comprehensive r
 ```text
 [# Report] I will make this a stage-aware report, not just a results note.
 
-It will include the causal framing, role map, method/fallback choice, selected work-unit spec, validity boundary, execution/dependency notes, results, diagnostics, and next steps. Compact tables will go inside the report; only large reproducibility artifacts will be linked separately.
+It will combine the completed analysis unit folder(s) into one final HTML report under `outputs/reports/`, including the causal framing, role map, method/fallback choice, selected work-unit spec, validity boundary, execution/dependency notes, results, diagnostics, and next steps. Compact tables will go inside the report; only large reproducibility artifacts will be linked separately.
 ```
 
 ## Report QA Revision Pattern

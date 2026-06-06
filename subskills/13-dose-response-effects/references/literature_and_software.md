@@ -51,7 +51,7 @@ Use this file to choose credible dose-response estimands, methods, and packages.
 Docs checked: 2026-05-31
 Primary docs: [CausalGPS `estimate_gps`](https://nsaph-software.github.io/CausalGPS/reference/estimate_gps.html), [CausalGPS reference](https://nsaph-software.github.io/CausalGPS/reference/index.html), [lmtp manual](https://cran.r-universe.dev/lmtp/doc/manual.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. CausalGPS is a developing package, so re-check examples and argument names before production use. Save estimate/table, diagnostic/plot, and source code paths for `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. CausalGPS is a developing package, so re-check examples and argument names before production use. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
 
 ```r
 # Tiny sketch, not a complete script.

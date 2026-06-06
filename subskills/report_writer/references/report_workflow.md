@@ -18,7 +18,7 @@ Do not collapse these surfaces. A report plan is not a report. A technical note 
 
 Runtime execution Return Gate state is owned by main, not report writer. When analysis was run, consume `execution_records`, the Post-Execution Return Gate state, `analysis_note_*.md`, source script path, queue reconciliation, report asset plan, and artifact paths as report inputs.
 
-Final report readiness also depends on main clearing pending work. User-requested `pending_user_intents`, worthwhile consultant alternatives in `team_synthesis.exploration_threads` or `method_alignments.method_ideas`, and any active or paused discovery sidecar should be resolved, declined, blocked, closed, or explicitly parked for the report before drafting a final substantive report. If analysis was run, the latest execution record must have `closeout_status: complete` and `queue_reconciliation.report_ready: true`.
+Final report readiness also depends on main clearing pending work and maintaining `report_assembly`. User-requested `pending_user_intents`, worthwhile consultant alternatives in `team_synthesis.exploration_threads` or `method_alignments.method_ideas`, and any active or paused discovery sidecar should be resolved, declined, blocked, closed, or explicitly parked for the report before drafting a final substantive report. If analysis was run, every execution unit listed in `report_assembly.included_execution_units` must have `analysis_dir`, `manifest_path`, `closeout_status: complete`, `queue_reconciliation.next_choices_to_offer`, `queue_reconciliation.recommended_choice`, and `queue_reconciliation.report_ready: true`.
 
 ## Activation Timing
 
@@ -26,12 +26,14 @@ Default activation:
 
 - no report request or confirmed report scope: `no_action`;
 - user requests a report or report was part of the confirmed work unit: create a report plan before drafting;
-- post-execution Return Gate plus user chooses report: assemble from `execution_records`, queue reconciliation, analysis note, source code path, artifacts, and stage evidence;
+- post-execution Return Gate plus user chooses report: assemble from `report_assembly`, completed `execution_records`, unit manifests, analysis notes, source code paths, artifacts, and stage evidence;
 - existing HTML report needs QA/revision: inspect only that routed artifact and return feedback or a revision.
 
 Readiness can be qualified. A progress or exploratory report may proceed with visible limitations, but a structurally invalid causal target must be reframed before report drafting.
 
 Do not activate opportunistically to monitor stable decisions during ordinary execution. Main records those decisions in the Return Gate state, analysis note, `team_synthesis`, and `artifact_index`.
+
+If the user asked for "analysis and report," treat that as a future report intent, not permission for the analysis code to create a final report. The final report starts only after the included analysis units are complete and `report_assembly.status` is `ready_for_writer`.
 
 ## Report Plan Creation
 
@@ -65,6 +67,8 @@ Optional components are offered through main:
 
 Offer optional components only when they are useful, available, or required for truthful claim wording. Missing assets should trigger a bounded refresh request, not invented content.
 
+For final HTML reports, the report plan should mirror `report_assembly`: included execution units, pending-before-report items, parked items, required mentions, required assets, and the HTML outline. If this state is absent or stale, return a planning/repair request before drafting.
+
 ## Report Asset Plan
 
 For substantive model-based, diagnostic, exploratory, or causal reports, the report plan must include a report asset plan. This plan is not decorative; it tells main what evidence must exist before a polished report can be drafted.
@@ -76,6 +80,8 @@ Track:
 - narrative cues: section purpose, reader takeaway, interpretation limit, and "what this does not prove";
 - status: ready / missing / blocked / optional / explicitly_omitted;
 - owner or route: analysis code, data_analyst, method/task subskill, domain_expert, causal_gatekeeper, causal_discovery, report_writer, or user.
+
+For each important display item, record a compact display contract inside the report asset plan or report-support notes: `type` (figure/table/inline sketch), `evidence_role` (result/diagnostic/data support/sensitivity/limitation/causal structure), `question_answered`, `source_unit_or_artifact`, `headline`, `interpretation`, `limitation`, `report_placement`, and `status`.
 
 If required data-dependent figures were not created during authorized execution, ask main for a bounded report-asset generation work unit before drafting. Report writer may not compute data plots, rerun models, or infer figure patterns from tables. It may create schematic report-only diagrams from recorded state only when main routes that exact deliverable.
 
@@ -122,7 +128,9 @@ Also include a report-readiness entry for pending user intents, worthwhile consu
 
 If discovery was active, paused, or parked, add a discovery-readiness entry: sidecar status, unresolved next action or reviewer requests, whether implications were reviewed, and whether the material belongs in main text, appendix, or a "Not Run / Parked Discovery" note.
 
-When an execution record or Return Gate state exists, use it as the spine for execution-related ledger entries. If it is missing source code path, analysis note path, dependency status, deviation status, artifact reasons, `closeout_status`, or queue reconciliation, ask main to repair the record before drafting a final report.
+When an execution record or Return Gate state exists, use it as the spine for execution-related ledger entries. If it is missing source code path, analysis note path, dependency status, deviation status, artifact reasons, `closeout_status`, queue reconciliation, `next_choices_to_offer`, or `recommended_choice`, ask main to repair the record before drafting a final report.
+
+When multiple execution records are included, create one ledger entry per analysis unit plus one synthesis entry explaining how the final report integrates, compares, or separates them.
 
 Dependency/deviation consistency check: fallback used, estimator substitution, approximation, dropped diagnostics, or changed outputs cannot appear with `Material deviations: none`. Use the execution record status instead: `none`, `approved before execution`, `accepted after execution`, or `unresolved`.
 
@@ -149,16 +157,19 @@ For figures and tables, include:
 
 Visual cues should emphasize the main message, not decorate the page. Formal reports should usually avoid emoji; use headings, labels, tables, and callouts instead.
 
-## Narrative Minimums
+## Manuscript Narrative Contract
 
-A final report should read like a report, not a pasted workbook. Unless the user explicitly requested a terse technical appendix, every major evidence section needs:
+A final report should read like a causal manuscript, not a pasted workbook. Unless the user explicitly requested a terse technical appendix, every major evidence section needs this paragraph flow:
 
-- one short setup paragraph explaining why the section is there;
-- table/figure-specific interpretation that tells the reader what to look at;
-- a limitation sentence stating what the evidence does not show;
-- a transition or decision sentence connecting the evidence to the claim boundary or next step.
+- setup: why this section matters for the causal question;
+- reasoning: how the method, data reality, or evidence connects to the claim;
+- display: place the figure, table, or inline sketch only after the reader knows why it is there;
+- interpretation: what the result means inside the claim boundary;
+- limitation: what the evidence does not establish.
 
-For each important table or figure, include: headline, what it shows, why it matters, source/path, accessible description when visual, and caution. A section that contains only tables fails report-ready QA.
+For each important table, figure, or inline causal sketch, include: headline, evidence role, what question it answers, what it shows, why it matters, source/path, accessible description when visual, and caution. A polished section that is mostly bullets, status rows, or stacked tables fails report-ready QA.
+
+Use lightweight formula blocks when they clarify the estimand or model logic for named causal estimands, matching/weighting, regression adjustment, DiD/RD/IV, survival, DR/DML, or other model-based routes. Keep formulas static and HTML-safe, for example `<div class="equation"><code>ATE = E[Y(1) - Y(0)]</code></div>`. Define symbols immediately after the formula and add one plain-language sentence. Do not add MathJax, scripts, or formulas that do not improve causal reasoning.
 
 ## Artifact Minimalism And Table Placement
 
@@ -175,14 +186,15 @@ Every external artifact should have a short role description and path in the rep
 
 ## Drafting
 
-Use static HTML for final reports. Use `assets/final_report_template.html` for comprehensive reports. Private report plans may remain Markdown, and `analysis_note_*.md` technical notes remain valid inputs, but the final narrative report should be `final_report_*.html`.
+Use static HTML for final reports. Use `assets/final_report_template.html` for comprehensive reports. Private report plans may remain Markdown under `outputs/reports/`, and `analysis_note_*.md` technical notes remain valid inputs inside `outputs/analyses/NNN_unit_id/`, but the final narrative report should be `outputs/reports/final_report_*.html`.
 
 Draft from:
 
 - project YAML state;
+- `report_assembly`;
 - report plan;
 - post-execution Return Gate state when analysis was run;
-- `analysis_note_*.md` or routed technical note;
+- unit manifests and `analysis_note_*.md` files from included analysis folders;
 - `domain_information`, `data_facts`, `method_alignments`, and `causal_validity`;
 - `specialist_outputs`;
 - `discovery_sidecar` when causal discovery was activated or requested;
@@ -191,7 +203,9 @@ Draft from:
 
 Do not report numeric results, diagnostics, p-values, intervals, tables, figures, references, or code claims unless they are recorded, computed by authorized work, supplied by the user, or inspected as artifacts.
 
-Analysis scripts may create one source script or notebook, one compact `analysis_note_*.md` or `technical_note_*.md`, and large or reproducibility-focused external artifacts. Report writer assembles the final HTML narrative report. If a script-generated Markdown, HTML, or memo exists, treat it as a technical input or invalid final report unless report writer was explicitly routed to create or revise that exact final HTML deliverable.
+Analysis scripts may create one source script or notebook, one compact `analysis_note_*.md` or `technical_note_*.md`, required figures/tables, and large or reproducibility-focused external artifacts inside the dedicated analysis unit folder. The unit should include `manifest.json` mirroring the execution record: `unit_id`, completed unit, claim boundary, source path, note path, figures, tables, external artifacts, dependency/deviation status, and report relevance. Report writer assembles the final HTML narrative report under `outputs/reports/`. If a script-generated Markdown, HTML, or memo exists, treat it as a technical input or invalid final report unless report writer was explicitly routed to create or revise that exact final HTML deliverable.
+
+When several analysis units are complete, do not stitch notes together mechanically. Build a coherent report that explains why each unit was run, what each contributed, how their results relate, and what remains parked or unrun.
 
 Use a short memo format only when main states that the user explicitly requested a brief deliverable. Otherwise, include the stage evidence ledger material in organized sections before detailed results.
 
@@ -208,6 +222,7 @@ Before a substantive analysis report is treated as ready, check:
 - optional expanded DAG/timing/role artifact only when the inline sketch is not enough, discovery produced a complex graph, or the user requested a polished visual;
 - discovery graph, edge/stability table, or diagnostic paths when a discovery sidecar was user-visible or materially shaped the project;
 - actual source script or notebook path when code supports reported content, regardless of language or extension;
+- analysis directory and unit manifest for each included execution unit;
 - final HTML report path and QA status.
 
 If code supports reported content and the source script path is missing, the report is not ready. Ask main to route a bounded artifact refresh or revise the reproducibility appendix.
@@ -238,6 +253,8 @@ When a final HTML report is produced, inspect or request inspection for:
 - broken local paths;
 - broken source script, artifact, figure, or appendix links;
 - missing final HTML report path;
+- final HTML report path outside `outputs/reports/`;
+- missing included analysis folder or unit manifest;
 - missing source script or notebook link when code supports results;
 - visible claim boundary and limitations.
 
@@ -257,22 +274,24 @@ Return `blocked` or request revision when a substantive report lacks any require
 - resolved, declined, blocked, or explicitly parked worthwhile consultant alternatives;
 - closed, blocked, inactive, or explicitly parked discovery sidecar state when discovery was opened or requested;
 - execution Return Gate state and execution record when analysis was run;
-- `closeout_status: complete` and `queue_reconciliation.report_ready: true` when analysis was run;
+- `report_assembly.status: ready_for_writer` before drafting or `delivered` after final delivery;
+- valid analysis directory and unit manifest for each included execution unit;
+- `closeout_status: complete`, `queue_reconciliation.next_choices_to_offer`, `queue_reconciliation.recommended_choice`, and `queue_reconciliation.report_ready: true` when analysis was run;
 - post-analysis gatekeeper review when analysis was run;
 - dependency/deviation notes;
 - source script or notebook path when code supports results;
 - required report asset plan and asset status for model-based, diagnostic, exploratory, or reportable work;
 - required figures or explicit omission reasons;
 - citation ledger or explicit internal-note limitation when named methods/software/domain sources are used;
-- narrative prose around major evidence sections;
-- final HTML report path;
+- manuscript-style section reasoning around major evidence sections, including formulas when they clarify estimands or model logic;
+- final HTML report path under `outputs/reports/`;
 - external artifact index when external files exist;
 - owner review for substantive data, method, interpretation, or claim content.
 
-Also fail QA when dependency/deviation notes conflict with the execution record, especially fallback or substitution paired with `Material deviations: none`. Fail polished-report QA when a results or diagnostics section is only stacked tables with no rationale, interpretation, and limitation prose.
+Also fail QA when dependency/deviation notes conflict with the execution record, especially fallback or substitution paired with `Material deviations: none`. Fail polished-report QA when a results or diagnostics section is only stacked tables, bullets, or status rows with no setup, reasoning, interpretation, and limitation prose.
 
 ## Feedback To Main
 
-Return one compact `report_writer_feedback` packet. Use `needs_assets` when the report cannot be polished until required figures, citation/source notes, or narrative cues are generated or explicitly omitted. Include the final HTML report path when created, missing assets, citation needs, narrative gaps, owner-review needs, claim boundary, optional components to offer, and one next user question.
+Return one compact `report_writer_feedback` packet. Use `needs_assets` when the report cannot be polished until required figures, citation/source notes, or display items are generated or explicitly omitted. Use `needs_narrative` when the evidence exists but manuscript reasoning, formula cues, or section interpretation is missing. Include the final HTML report path when created, missing assets, citation needs, narrative gaps, owner-review needs, claim boundary, optional components to offer, and one next user question.
 
-Main records durable paths in `artifact_index` and speaks to the user.
+Main records durable artifact paths in `artifact_index`, final-report assembly status in `report_assembly`, and speaks to the user.

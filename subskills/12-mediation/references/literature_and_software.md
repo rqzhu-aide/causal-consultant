@@ -53,7 +53,7 @@ Use this file to choose credible mediation estimands, methods, and packages. Kee
 Docs checked: 2026-05-31
 Primary docs: [mediation CRAN manual](https://cran.r-project.org/web/packages/mediation/mediation.pdf), [CMAverse `cmest`](https://bs1125.github.io/CMAverse/reference/cmest.html), [medflex CRAN manual](https://cran.r-project.org/web/packages/medflex/medflex.pdf)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save estimate/table, diagnostic/plot, and source code paths for `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
 
 ```r
 # Tiny sketch, not a complete script.

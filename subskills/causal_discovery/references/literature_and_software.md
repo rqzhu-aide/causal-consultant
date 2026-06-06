@@ -35,7 +35,7 @@ Docs checked: 2026-05-31
 
 Primary docs: [causal-learn search methods](https://causal-learn.readthedocs.io/en/latest/search_methods_index/index.html), [Tigramite documentation](https://jakobrunge.github.io/tigramite/), [LiNGAM documentation](https://lingam.readthedocs.io/), [NetworkX documentation](https://networkx.org/documentation/stable/)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the user-approved discovery purpose is clear. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save graph, diagnostic, figure, table, and source code paths for `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the user-approved discovery purpose is clear. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save graph outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, graph, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
 
 ```python
 # Tiny sketch, not a complete script.

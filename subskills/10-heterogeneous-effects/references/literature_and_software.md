@@ -53,7 +53,7 @@ Use this file to choose credible method families and packages for heterogeneous 
 Docs checked: 2026-05-31
 Primary docs: [grf `causal_forest`](https://grf-labs.github.io/grf/reference/causal_forest.html), [EconML `CausalForestDML`](https://www.pywhy.org/EconML/_autosummary/econml.dml.CausalForestDML.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save estimate/table, diagnostic/plot, and source code paths for `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
 
 ```r
 # Tiny sketch, not a complete script.

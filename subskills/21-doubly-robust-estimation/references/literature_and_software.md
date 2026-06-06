@@ -53,7 +53,7 @@ Use this file to choose credible doubly robust, one-step, and targeted-learning 
 Docs checked: 2026-05-31
 Primary docs: [tmle3 manual](https://ictml-project.r-universe.dev/tmle3/doc/manual.html), [drtmle CRAN manual](https://cran.r-project.org/web/packages/drtmle/drtmle.pdf), [AIPW reference](https://yqzhong7.github.io/AIPW/reference/AIPW.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. TMLE/AIPW APIs can be package-specific; keep the code minimal and re-check examples. Save estimate/table, diagnostic/plot, and source code paths for `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. TMLE/AIPW APIs can be package-specific; keep the code minimal and re-check examples. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
 
 ```r
 # Tiny sketch, not a complete script.

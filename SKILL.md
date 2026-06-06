@@ -10,7 +10,7 @@ description: "Interactive consultation-style causal inference skill. Use when th
 When the skill is explicitly invoked or first loaded for a new causal-consulting thread, send this once before the substantive reply:
 
 ```text
-[causal-consultant v2.2.0 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
+[causal-consultant v2.2.1 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
 ```
 
 Send the activation message exactly as written: no `Framing:` label, no extra caveat, no examples, and no personalized variation. Do not repeat it on ordinary follow-up turns. If the user already asked a substantive causal question in the same turn, send the activation message first, then continue with the normal causal reply.

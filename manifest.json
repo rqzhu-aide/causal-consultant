@@ -1,6 +1,6 @@
 {
   "package": "causal-consultant",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "license": "MIT",
   "created_for": "interactive causal inference consultant skill",
   "top_level_skill": "SKILL.md",

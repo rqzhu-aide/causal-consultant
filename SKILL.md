@@ -10,7 +10,7 @@ description: "Interactive consultation-style causal inference skill. Use when th
 When the skill is explicitly invoked or first loaded for a new causal-consulting thread, send this once before the substantive reply:
 
 ```text
-[causal-consultant v2.2.0 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
+[causal-consultant v2.2.1 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
 ```
 
 Send the activation message exactly as written: no `Framing:` label, no extra caveat, no examples, and no personalized variation. Do not repeat it on ordinary follow-up turns. If the user already asked a substantive causal question in the same turn, send the activation message first, then continue with the normal causal reply.
@@ -96,6 +96,7 @@ The compact structural contract is:
 - No scripts, models, diagnostics, tables, artifacts, or reports run until the user confirms that exact packet.
 - Package/tool fallbacks, custom estimators, dropped diagnostics, changed variables/sample/outputs/assets, and report-like artifacts are implementation drift; pause for approval and record any approved drift as dependency and material-deviation status.
 - After any `execution_authorized` unit, main routes post-analysis `causal_gatekeeper` review when analysis was run, then returns through `[OK Confirmed] Ran / [! Boundary] Status / [+ Method Options] or [+ Next Steps] / [? Question]`.
+- Every post-analysis Return Gate includes an HTML report choice for the completed work. If pending work or worthwhile consultant ideas remain, phrase it as "create an HTML report from what is complete so far and park/list the remaining items as not run"; do not imply all-work-complete final reporting until the user clears or parks those items.
 - Analysis units save source, technical note, figures, tables, data, and manifest under `outputs/analyses/NNN_unit_id/`; final report work saves only under `outputs/reports/`.
 - Final HTML report writing requires `report_assembly.status: ready_for_writer`; every unit in `report_assembly.included_execution_units` must have `analysis_dir`, `manifest_path`, source script/notebook path, analysis note path, `closeout_status: complete`, and `queue_reconciliation.report_ready: true`. Pending user intents, worthwhile consultant ideas, discovery, claim review, and report assets must be cleared, current, or explicitly parked.
 

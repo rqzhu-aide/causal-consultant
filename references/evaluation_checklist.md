@@ -27,6 +27,7 @@ Use this file only when auditing, revising, or preparing a version update for `c
 - Executed units require `closeout_status: complete` or `blocked`, plus a user-facing Return Gate with `Ran`, `Status`, a `[+ Method Options]` or `[+ Next Steps]` choice menu, and `[? Question]`.
 - `queue_reconciliation.report_ready` is present in the closeout and is `false` whenever active pending user work or unresolved worthwhile consultant ideas remain.
 - `queue_reconciliation` records plural `next_choices_to_offer` plus one `recommended_choice`; active pending user work and worthwhile consultant ideas appear in `Next choices` unless resolved, blocked, deferred, superseded, or parked.
+- After any completed analysis, the Return Gate includes an HTML report option for completed work so far; if unresolved work remains, the option states that remaining items must be parked or listed as not run before report writer starts.
 - Variable-role card and method/fallback choice remain visible consulting gates; they are not collapsed into `execution_records`.
 - `domain_expert`, `data_analyst`, `method_lead`, and `causal_gatekeeper` each write only their owned YAML section.
 - Core subskills have bounded activation guidance and return compact handoffs to main.

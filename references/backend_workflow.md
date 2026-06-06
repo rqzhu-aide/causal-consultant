@@ -199,7 +199,7 @@ The `Next choices` menu should reflect current queues and specialist outputs:
 
 - If active `pending_user_intents` exist, include at least one user-requested item.
 - If unresolved worthwhile `method_ideas` or `exploration_threads` exist, include at least one consultant idea unless it is blocked, deferred, superseded, or explicitly parked.
-- If `report_ready: true`, final HTML report may be one option.
+- After a completed analysis with a usable analysis folder, source path, analysis note, and manifest, include an HTML report choice. If `report_ready: false`, word it as creating an HTML report from completed work so far only if the user explicitly parks or lists remaining items as not run. If `report_ready: true`, final integrated HTML may be offered or recommended.
 - If a repair is required, include repair and usually recommend it.
 - Do not pad with generic methods; if only one substantive path remains, include a genuine stop, park-for-report, repair, or final-report choice as the second option.
 - The user may see multiple choices, but only one selected choice becomes the next immediate execution packet. If the user selects multiple concrete choices, promote one and record the others in `pending_user_intents`.

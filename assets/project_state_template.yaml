@@ -124,7 +124,9 @@ specialist_outputs: []
 # queue_reconciliation: remaining_user_intents, remaining_consultant_ideas,
 # next_choices_to_offer, recommended_choice, report_ready, reconciliation_note.
 # next_choices_to_offer uses the same staged-menu discipline as user-facing
-# `[+ Method Options]` or `[+ Next Steps]` blocks; it remains plural.
+# `[+ Method Options]` or `[+ Next Steps]` blocks; it remains plural. After a
+# completed analysis, include an HTML report choice for completed work so far,
+# with unresolved work explicitly parked or listed as not run if selected.
 execution_records: []
 
 # Main-owned. User-requested work that should not be forgotten but is not

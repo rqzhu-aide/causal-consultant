@@ -490,17 +490,18 @@ Keep the visible message compact. The durable `execution_records` item carries t
 
 [+ Method Options] or [+ Next Steps] choices:
 1. [recommended next action]
-2. [pending user-requested branch, repair, or report/stop option]
-3. [worthwhile consultant idea, sensitivity, discovery sidecar, report asset step, or final HTML report option when ready]
+2. [HTML report option]: create an HTML report from the completed analysis so far; if work remains, list it as not run or parked for report.
+3. [pending user-requested branch, repair, worthwhile consultant idea, sensitivity, discovery sidecar, report asset step, or stop option]
 
 [? Question] Which option should we take next?
 ```
 
 Use `[+ Method Options]` when the Return Gate menu is mainly analytical branches, method ideas, sensitivities, or discovery sidecars. Use `[+ Next Steps]` when it is mainly repair, dependency, report, stop, or report-asset work.
+Include an HTML report option after any completed analysis. When remaining user-requested work or worthwhile consultant ideas are unresolved, the report option is a user choice to park or list those items as not run before report writer starts; it is not silent permission to drop them.
 
 ## Report Next-Step Pattern
 
-Use after a Post-Execution Return Gate when no report was already confirmed, `queue_reconciliation.report_ready` is true, and `report_assembly` can be marked `ready_for_writer`.
+Use after a Post-Execution Return Gate when no report was already confirmed and the user chooses the HTML report option. If `queue_reconciliation.report_ready` is false, first ask whether to park, decline, block, or run the remaining items; only mark `report_assembly` as `ready_for_writer` after that decision is recorded.
 
 ```text
 [# Report] I have the completed analysis unit folder(s), Return Gate state, and remaining work is resolved or parked.

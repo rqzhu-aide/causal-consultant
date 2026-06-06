@@ -125,8 +125,8 @@ Return Gate shape required after execution:
 
 [+ Method Options] or [+ Next Steps] choices:
 1. [recommended next action]
-2. [pending user-requested branch, repair, or report/stop option]
-3. [worthwhile consultant idea, sensitivity, discovery sidecar, report asset step, or final HTML report option when ready]
+2. [HTML report option for completed work so far, with remaining items parked/listed as not run if needed]
+3. [pending user-requested branch, repair, worthwhile consultant idea, sensitivity, discovery sidecar, report asset step, or stop option]
 
 [? Question] Which option should we take next?
 ```
@@ -140,8 +140,11 @@ Warnings:
 - A staged specialist response ends without either one explicit `[? Question]`
   or a small `[+ Method Options]` / `[+ Next Steps]` menu.
 - The post-execution Return Gate does not include 2-3 next choices when pending
-  user work, worthwhile consultant ideas, repair choices, stop choices, or final
-  HTML report options are available.
+  user work, worthwhile consultant ideas, repair choices, stop choices, or HTML
+  report options are available.
+- A completed analysis Return Gate omits an HTML report option for the completed
+  work, or offers report writing while `report_ready` is false without saying
+  remaining items must be parked, resolved, or listed as not run first.
 - The post-execution Return Gate omits active pending user work or unresolved
   worthwhile consultant ideas from `Next choices`.
 - Report delivery omits `report_assembly.final_report_path`, included analysis

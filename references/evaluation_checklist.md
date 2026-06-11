@@ -14,7 +14,8 @@ Use this file only when auditing, revising, or preparing a version update for
   `pending_actions`, `council_chamber`, owner evidence sections,
   `method_task_results`, `discovery_sidecar`, `report_assembly`, and
   `artifact_index`.
-- `pending_actions` is the only backlog.
+- `pending_actions` is the only open/parked/rejected action backlog; completed, done,
+  selected, routed, or superseded work is not stored there as history.
 - `council_chamber` is the only shared opinion log.
 - Core subskills have role-focused `SKILL.md` files and local
   `backend_workflow.md` files when they own a routed backend contract.
@@ -51,6 +52,9 @@ Use this file only when auditing, revising, or preparing a version update for
 - User asks for several things: main records useful choices in
   `pending_actions`; `next_step_plan.steps` is populated only when internal
   routed work or confirmed execution must happen before the next reply.
+- When an action is selected into `next_step_plan`, main removes it from
+  `pending_actions`; completed routed work is recorded in owner/result sections,
+  council, artifacts, report state, or transcript.
 - Main runs a Core Relevance Scan after substantive user updates and completed
   internal steps.
 - After each routed step, main reviews unfinished planned steps and routes only
@@ -72,8 +76,11 @@ Use this file only when auditing, revising, or preparing a version update for
 - After execution, the next user-facing message is the Return Gate.
 - Report work is selected through `pending_actions` and tracked in
   `report_assembly`.
-- Open report-relevant actions are done, declined, parked, or blocked before
-  report delivery.
+- Report-relevant pending actions are either included, omitted, parked, or
+  disclosed through `report_assembly`; they are not blockers by themselves.
+- User-requested report work first routes `report_writer.feedback_only` when the
+  report structure has not already been checked; report execution follows user
+  confirmation of the proposed structure.
 - Hooks, when available, audit structure only and do not mutate state or perform
   causal reasoning.
 
@@ -101,10 +108,11 @@ Use this file only when auditing, revising, or preparing a version update for
 - Execution completes: actual produced outputs are indexed by the executing
   subskill through its owner/result pathway, and the Return Gate includes
   folder, output paths, boundary/status, and next steps.
-- Planning report before data analysis: report type is planning-only and no
-  empirical estimates are implied.
-- Empirical report after analysis: report uses completed artifacts and final HTML
-  path under `outputs/reports/`.
+- Planning report before data analysis: `report_writer.feedback_only` checks a
+  planning-only structure and no empirical estimates are implied.
+- Empirical report after analysis: `report_writer.feedback_only` checks the
+  structure; after user confirmation, execution creates final HTML under
+  `outputs/reports/`.
 
 ## Scorecard
 

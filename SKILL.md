@@ -11,7 +11,7 @@ When the skill is explicitly invoked or first loaded for a new causal-consulting
 thread, send this once before the substantive reply:
 
 ```text
-[causal-consultant v3.4.1 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
+[causal-consultant v3.4.2 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
 ```
 
 Send it exactly as written. Do not repeat it on follow-up turns. If the user
@@ -90,9 +90,12 @@ This model is internal coordination, not the user-facing response template. In
 substantive causal-project replies, main should orient the user with
 `[> Framing]` before presenting options or next steps.
 
-`pending_actions` is the only backlog. `next_step_plan` is the active internal
-sequential route plan only when routed work or confirmed execution is needed
-before the next reply.
+`pending_actions` is the action backlog, not history; pending action statuses are
+`open`, `parked`, or `rejected`.
+`next_step_plan` is the active internal sequential route plan only when routed
+work or confirmed execution is needed before the next reply. It may contain
+multiple confirmed non-report execution steps when they are part of the same
+analysis, diagnostic, discovery, or report-asset plan.
 `council_chamber` is the shared opinion log. Owner evidence sections are memory,
 not menus.
 
@@ -114,32 +117,20 @@ stop. After the subskill stops, main rereads the live YAML, scans all current
 chamber options, and decides what becomes a pending action, active plan
 revision, blocker, or user-facing choice.
 
+When an action is selected into `next_step_plan`, remove it from
+`pending_actions`. Completed routed work is recorded in owner/result sections,
+`council_chamber`, `artifact_index`, `method_task_results`, `report_assembly`,
+and the transcript, not as `pending_actions.status: completed`.
+
 ## Routing And Permission
 
 Use checkpoint reviews before commitments, not all-team reviews on every turn.
-Route by `agent_called`, `mode`, and `action_goal`:
-
-- `feedback_only`: read state, reason, create or update one current council
-  opinion, stop.
-- `bounded_inspection`: inspect only named files, fields, facts, or artifacts,
-  update evidence and create or update one current council opinion, stop.
-- `execution_authorized`: run only the exact user-confirmed step, produce only
-  outputs implied by that step's `execution.expected_outputs`, stop.
-
-Allowed modes by owner:
-
-- `domain_expert`, `method_lead`, and `causal_gatekeeper`: only
-  `feedback_only` or `bounded_inspection`; never `execution_authorized`.
-- `data_analyst`, `causal_discovery`, and `report_writer`: `feedback_only`,
-  `bounded_inspection`, or `execution_authorized`, with execution limited to the
-  exact confirmed routed task.
-- Numbered method/task specialists: `feedback_only`, `bounded_inspection`, or
-  `execution_authorized`. Use `feedback_only` for method_lead-recommended
-  specialist consultation, `bounded_inspection` for named existing evidence
-  review, and `execution_authorized` only for approved specialist analysis work.
-
-If no mode is explicit, the route is `feedback_only`. Specialist requests are not
-approval to execute; main converts them into `pending_actions` or asks the user.
+Route by `agent_called`, `mode`, and `action_goal`. Use `feedback_only` by
+default, `bounded_inspection` for named existing evidence, and
+`execution_authorized` only for exact user-confirmed work with a step-local
+execution scope. The exact mode matrix lives in `references/backend_workflow.md`.
+Specialist requests are not approval to execute; main converts them into
+`pending_actions` or asks the user.
 When `method_lead` recommends an actionable `specialist_probe` needed to assess
 the current method menu, route the numbered specialist in `feedback_only` before
 returning to the user unless the user must choose among alternatives first.
@@ -148,19 +139,10 @@ pointers, not automatic activation.
 
 Main may plan a short internal chain in `next_step_plan.steps`, such as
 `data_analyst -> method_lead -> causal_gatekeeper`, then return to the user.
-After each internal
-step, main reads new evidence, `method_task_results` when applicable, scans all
-current council options into pending actions, reviews the unfinished planned
-steps, and continues only to the earliest pending step.
-
-If new evidence changes later planned steps, main may lightly revise the
-`action_goal`, `mode`, or `refs` of an unfinished step if it still represents
-the same intended work. If an unfinished step is no longer the right work, mark
-it `superseded` and add a replacement pending step when needed. Do not delete
-unfinished planned steps during the internal chain. After all planned internal
-steps are `done`, `blocked`, or `superseded` and checks pass, reset
-`next_step_plan` to `status: none`, `selected: null`, `confirmed: false`, and
-`steps: []` before returning to the user.
+After each step, main returns through the backend checkpoint: reread state,
+verify the write and council entry, pool options, review unfinished steps, and
+continue only to the earliest pending step if it remains valid. Clear
+`next_step_plan` only after all internal steps are terminal and checks pass.
 
 Core Relevance Scan: after every substantive user update and after every
 completed internal step, check whether the update makes any core or method/task
@@ -196,9 +178,10 @@ sequence and run one step at a time. If none are needed, return to the user with
 - Package/tool fallback, custom estimators, dropped diagnostics, changed outputs,
   report-like artifacts, or stronger claim wording are material drift; pause for
   approval.
-- After execution, return through `[> Framing]`, `[OK Confirmed] Ran`,
-  `[! Boundary] Status`, optional `[+ Consultant Options]`, and
-  `[? Next Steps]`.
+- After each execution step, run Return-To-Main before continuing. After a
+  confirmed non-report execution chain finishes, return through `[> Framing]`,
+  `[OK Confirmed] Ran`, `[! Boundary] Status`, optional
+  `[+ Consultant Options]`, and `[? Next Steps]`.
 
 Hooks, when available, may audit this structure from
 `hooks/start_stop_contract.md`. Without hooks, main still follows the same
@@ -216,15 +199,26 @@ entry.
 Final reports are static HTML under `outputs/reports/`.
 
 - `final_html` uses `subskills/report_writer/assets/final_report_template.html`
-  and completed artifacts from `artifact_index`.
+  and completed artifacts from `artifact_index`. Recommend it only when there
+  is enough completed evidence, normally report-relevant artifacts plus a usable
+  claim or design boundary.
 - `planning_html` uses
   `subskills/report_writer/assets/planning_report_template.html` only before
-  empirical analysis has run, and must state that no data analysis or empirical
+  empirical analysis has run. Recommend it only when there is enough design or
+  framing information, and it must state that no data analysis or empirical
   estimates were completed.
 
-Do not route report drafting while report-relevant pending actions, active
-discovery, missing assets, stale claim boundaries, missing artifacts, or blocked
-report state remain unresolved.
+If the user requests a report before the report structure is settled, route
+`report_writer.feedback_only` first. Report writer updates `report_assembly`
+with report type, included actions or artifacts, required mentions/assets,
+parked or not-run items, outline, and readiness feedback. Main then reads
+`report_assembly` and the chamber entry and asks the user to confirm the report
+structure before routing `report_writer.execution_authorized`.
+
+Do not route `report_writer.execution_authorized` immediately after other
+execution steps in the same internal chain; after non-report execution, report
+drafting is selected from the next user-facing menu after the report structure
+has been checked or confirmed.
 
 ## Light Mathematical Teaching
 
@@ -266,7 +260,9 @@ Runtime labels:
 
 Use `[+ Consultant Options]` for suggestions and `[? Next Steps]` for the actual
 decision. Final HTML reports use headings, tables, and callouts rather than chat
-labels unless requested.
+labels unless requested. After any routed subskill closeout, including a clean
+report closeout with no technical chamber options, still end with concrete
+`[? Next Steps]` choices such as review, revise, continue, or stop.
 
 ## Project State
 
@@ -276,20 +272,12 @@ given causal-project information. Initialize it from
 sparse.
 
 Main owns `project_summary`, `next_step_plan`, `pending_actions`, and
-user-facing text. Routed subskills are independent one-step subagents:
-`domain_expert` writes `domain_records`, `data_analyst` writes `data_facts`,
-`method_lead` writes `method_records`, `causal_gatekeeper` writes
-`causal_gatekeeper`, `causal_discovery` writes `discovery_sidecar`, numbered
-method/task specialists write `method_task_results`, and `report_writer` writes
-`report_assembly`. Execution-capable subskills may write `artifact_index`
-entries for artifacts they create or inspect under the routed scope. Every
-routed subskill also writes one current council opinion.
-They do not write `project_summary`, `next_step_plan`, `pending_actions`,
-user-facing text, or another owner's section.
-Main rereads the live YAML after every routed step, scans all current chamber
-options into `pending_actions`, and decides what becomes an active plan update,
-blocker, or user-facing choice; it also checks whether newly written artifact or
-report state changes the next move.
+user-facing text. Routed subskills are independent one-step subagents that write
+only their owner/result section plus one current council opinion; execution-
+capable subskills may also index artifacts they create or inspect under the
+routed scope. Main rereads the live YAML after every routed step and decides
+what becomes an active plan update, pending action, blocker, or user-facing
+choice.
 
 If main reads older YAML, compact it before continuing: old ids become `id`,
 owner fields become `agent_called`, instruction/label/why text becomes

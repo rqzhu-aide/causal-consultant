@@ -16,8 +16,8 @@ Each project turn:
 1. Read `outputs/project_state.yaml`.
 2. Compact any old-style fields into the lean live shape before continuing.
 3. Update `project_summary` and `pending_actions`. Create or update
-   `next_step_plan` only when a routed/internal step must run before the next
-   user-facing response, or when a user-confirmed execution step is selected.
+   `next_step_plan` only when routed/internal steps must run before the next
+   user-facing response, or when user-confirmed execution steps are selected.
 4. Run the Core Relevance Scan.
 5. Route only the earliest planned internal step whose `status` is `pending`.
 6. After every routed step, run the Return-To-Main Checkpoint.
@@ -58,8 +58,8 @@ Each planned step uses only:
   refs: []
 ```
 
-For the selected `execution_authorized` step only, include an `execution` object
-inside that step:
+For every `execution_authorized` step, include an `execution` object inside that
+step. Only one pending step is active at a time:
 
 ```yaml
 - id: run_taxa_audit
@@ -122,7 +122,7 @@ Main infers the expected live-YAML write from `agent_called`.
 | `causal_gatekeeper` | direct write to `causal_gatekeeper` and one current `council_chamber` entry |
 | `causal_discovery` | direct write to `discovery_sidecar`, `artifact_index` for created discovery artifacts, and one current `council_chamber` entry |
 | numbered method/task specialist | direct write to `method_task_results`, `artifact_index` for execution artifacts, and one current `council_chamber` entry |
-| `report_writer` | direct write to `report_assembly`, `artifact_index` for created report artifacts, and one current `council_chamber` entry |
+| `report_writer` | direct write to `report_assembly`, `artifact_index` for created report artifacts or newly indexed routed report artifacts inspected for report relevance, and one current `council_chamber` entry |
 
 Main owns `project_summary`, `next_step_plan`, `pending_actions`,
 and user-facing synthesis. Only main selects, confirms, blocks, parks, or
@@ -167,27 +167,31 @@ current `council_chamber` entries and pools every valid `options[]` item.
 
 Pooling rules:
 
-- ignore empty, malformed, duplicate, completed, superseded, or stale options;
+- ignore empty, malformed, duplicate, already-routed, or stale options;
 - merge by `id` into `pending_actions`, updating an existing pending action
   rather than creating a duplicate;
+- if an item already exists in `pending_actions`, preserve its current status
+  unless main intentionally changes that status;
 - preserve only the lean action fields: `id`, `agent_called`, `mode`,
   `action_goal`, and `refs`;
 - if an option lacks an `id` but is useful, create a short stable id from the
   action goal before adding it to `pending_actions`;
 - do not promote options that would violate mode permissions, execution gates,
-  report gates, or owner boundaries;
+  report execution confirmation, or owner boundaries;
 - keep lower-priority useful options in `pending_actions` rather than dropping
   them merely because they will not be shown this turn.
 
-When speaking to the user, main ranks pooled pending actions by urgency,
-blocker/repair value, information gain, user relevance, and report/execution
-readiness. Present the top 3-4 meaningful actions and keep the rest open,
-parked, or superseded.
+When speaking to the user, main ranks pending actions by current relevance:
+urgency, blocker/repair value, information gain, user relevance, and
+report/execution readiness. Present the top 3-4 meaningful actions and keep the
+rest in `pending_actions`.
 
 ## Pending Actions
 
-`pending_actions` is the single backlog for useful but not immediate work. Its
-items use the lean action shape plus `status`:
+`pending_actions` is the single backlog for useful future choices. It is not
+history. Completed work belongs in owner/result sections, `council_chamber`,
+`artifact_index`, `method_task_results`, `report_assembly`, and the transcript,
+not in `pending_actions`. Items use the lean action shape plus `status`:
 
 ```yaml
 - id: null
@@ -199,7 +203,13 @@ items use the lean action shape plus `status`:
 ```
 
 When promoting a council option, use the Council Option Pooling rules. Do not
-preserve old routing fields.
+preserve old routing fields. Use `status: open`, `status: parked`, or
+`status: rejected` in `pending_actions`. `open` is available, `parked` was
+offered or deferred before, and `rejected` was declined by the user. Main ranks
+`open` and `parked` by current relevance rather than status priority; `rejected`
+remains visible as context. When the user or main selects an action into
+`next_step_plan`, remove that action from `pending_actions`; if it later
+completes, do not re-add it as completed history.
 
 ## Return-To-Main Checkpoint
 
@@ -221,10 +231,17 @@ After each routed step, main must:
 9. If an unfinished step is no longer the right work, mark it `superseded` and
    add a replacement pending step when needed. Do not delete unfinished steps
    during the internal chain.
-10. If any pending step remains, route the earliest pending step.
+10. If any pending step remains, route the earliest pending step when it remains
+    valid. A confirmed non-report execution chain may continue to the next
+    non-report execution step after Return-To-Main. Do not route
+    `report_writer.execution_authorized` immediately after another execution in
+    the same internal chain; keep or create that report action in
+    `pending_actions` for the next user-facing menu.
 11. If all planned steps are terminal, run the Pre-User Response Check, reset
    `next_step_plan` to `status: none`, `selected: null`, `confirmed: false`,
-   and `steps: []`, and send the user-facing response.
+   and `steps: []`, and send the user-facing response with concrete
+   `[? Next Steps]`. If no technical chamber options remain, main may still
+   offer ordinary user-facing choices such as review, revise, continue, or stop.
 
 If the expected write, artifact record, or council entry is missing, main blocks
 or repairs the step before continuing. A `superseded` step is terminal when it
@@ -296,8 +313,10 @@ internally. Package fallback, custom estimators, dropped diagnostics, changed
 result plan, report-like artifacts, or stronger claim wording are material drift
 and require return to main.
 
-After execution, main returns with `[> Framing]`, `[OK Confirmed]`,
-`[! Boundary]`, optional `[+ Consultant Options]`, and `[? Next Steps]`.
+After each execution step, main runs Return-To-Main before continuing. After a
+confirmed non-report execution chain finishes, main returns with `[> Framing]`,
+`[OK Confirmed]`, `[! Boundary]`, optional `[+ Consultant Options]`, and
+`[? Next Steps]`.
 
 ## Report And Artifact Handling
 
@@ -311,6 +330,23 @@ Completed work is remembered through:
 `report_writer` is routed only for readiness, planning, drafting, revision, QA,
 or delivery closeout. It does not validate causal claims, choose methods, rerun
 analysis, or invent missing assets.
+
+Do not recommend `final_html` unless there is enough completed evidence,
+normally report-relevant artifacts in `artifact_index` plus a usable claim or
+design boundary. Do not recommend `planning_html` unless there is enough design
+or framing information and the report will clearly say no empirical analysis or
+estimates were completed.
+
+When the user requests a report and the report structure has not been checked,
+route `report_writer.feedback_only` first. Main then reads `report_assembly` and
+the chamber entry, asks the user to confirm report type, included actions or
+artifacts, major limitations, and output scope, and only then routes
+`report_writer.execution_authorized`.
+
+`report_writer.execution_authorized` is not part of the same internal execution
+chain immediately after non-report execution; main offers it from
+`pending_actions` after the user-facing closeout and report-structure
+confirmation.
 
 ## Old-State Realignment
 

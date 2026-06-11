@@ -36,8 +36,9 @@ guidance only; they are not payload fields or live YAML fields.
 
 ## Mode Contract
 
-- `feedback_only`: check readiness, missing assets, narrative gaps,
-  owner-review needs, and next report choice. Do not draft or create artifacts.
+- `feedback_only`: check report structure/readiness, missing assets, narrative
+  gaps, owner-review needs, visible limitations, and next report choice. Update
+  `report_assembly` and chamber only; do not draft or create artifacts.
 - `bounded_inspection`: inspect only routed report plans, drafts, templates,
   figures, tables, manifests, notes, source files, or artifact paths in `refs`.
 - `execution_authorized`: create or revise only the exact confirmed report
@@ -69,8 +70,11 @@ Write only:
 - `report_assembly.outline`
 - `report_assembly.final_report_path`
 - `report_assembly.qa_status`
-- `artifact_index` entries for report plans, report notes, QA artifacts, or
-  final/revised report artifacts created or inspected under the routed scope
+- `artifact_index` entries for report artifacts created under
+  `execution_authorized`, or for routed existing report plans, report notes, QA
+  artifacts, final/revised reports, or report assets inspected under
+  `bounded_inspection` when they are not already indexed and become
+  report-relevant
 - one current `council_chamber` entry
 
 Use `report_assembly` for report readiness, plan, draft/revision, QA, and
@@ -78,6 +82,11 @@ delivery closeout state. Suggested `report_assembly.status` values include
 `not_requested`, `readiness_reviewed`, `plan_created`, `draft_created`,
 `artifact_revised`, `qa_passed`, `needs_assets`, `needs_narrative`,
 `needs_owner_review`, and `blocked`.
+
+Use `blocked` only for true report-writer impossibility, such as incompatible
+report type/template or no coherent report scope. Missing, pending, omitted, or
+user-deferred items should usually be recorded as `required_assets`,
+`parked_or_not_run`, `needs_assets`, `needs_narrative`, or visible limitations.
 
 After writing report state, follow
 `../../references/council_chamber_contract.md`: create or update one current
@@ -87,7 +96,7 @@ entry keyed by `id: report_writer.<action_id>`, then stop.
 
 | Lane | Question Answered | Required Output Emphasis | Forbidden Drift | Stop Condition |
 | --- | --- | --- | --- | --- |
-| report readiness | Is the requested report ready to plan, draft, revise, or QA? | Missing assets, unresolved actions, owner-review needs, template fit, and smallest next report move. | Do not draft, create assets, or resolve owner claims. | Write report readiness state and one council entry. |
+| report readiness | What report structure is possible for the requested report? | Report type, included evidence, missing assets, omitted or parked items, owner-review needs, template fit, limitations, and smallest next report move. | Do not draft, create assets, or resolve owner claims. | Write report readiness/structure state and one council entry. |
 | report plan | What structure and asset plan should main record or offer? | Report type, template, included actions, outline, required mentions/assets, parked items, owner review. | Do not create final HTML or invent missing results. | Write report plan state; create plan artifacts only if authorized. |
 | draft or revision | Can the exact routed report deliverable be created or revised? | Static HTML/report path, artifact entry, report assembly state, limitations, and QA needs. | Do not include unselected artifacts, rerun analysis, validate claims, or strengthen wording. | Write report state, artifact entries when created, and one council entry. |
 | QA review | Does the routed draft/report satisfy report-ready QA? | Broken links/tables, missing sources/assets, unsupported claims, template mismatch, claim boundary, owner-review gaps. | Do not rewrite unless authorized for revision. | Write QA state, repair/review options in council, and stop. |

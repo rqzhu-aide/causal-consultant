@@ -24,29 +24,31 @@ revision of that exact deliverable.
 
 Main owns runtime pacing, Return Gate summaries, `pending_actions`,
 `next_step_plan`, and all user-facing delivery. Report writer writes
-`report_assembly`, report-created `artifact_index` entries, and one chamber
-opinion.
+`report_assembly`, `artifact_index` entries for created report artifacts or
+newly indexed routed report artifacts, and one chamber opinion.
 
 ## Activation Timing
 
 Default activation:
 
-- no report request or confirmed report scope: write `no_action` or `blocked`
-  report state;
+- no report request or confirmed report scope: leave `report_assembly.status` as
+  `not_requested` and write a concise chamber note;
 - planning/exploration plateau plus user chooses a planning report: plan or
   draft `planning_html` from staged state with no empirical results;
-- user requests a report or report was part of a confirmed work unit: create a
-  report plan before drafting unless a current plan already exists;
-- post-execution Return Gate plus user chooses report: assemble from
-  `report_assembly`, selected artifacts, manifests, analysis notes, source paths,
-  owner evidence, and council opinions;
+- user requests a report before report structure is settled: run
+  `feedback_only`, update `report_assembly`, and write chamber feedback so main
+  can ask for report-structure confirmation;
+- post-execution Return Gate plus user chooses report: check structure from
+  `report_assembly`, selected artifacts, manifests, analysis notes, source
+  paths, owner evidence, and council opinions before HTML drafting;
 - existing report needs QA/revision: inspect only that routed artifact and write
   QA feedback or an authorized revision.
 
-The final report starts only after included actions are complete or explicitly
-parked for the report, `report_assembly.status: ready`, and required report
-assets, claim boundaries, source paths, and artifact paths are present or
-explicitly limited.
+Final report execution starts after main confirms the report structure from
+report-writer feedback: report type, included actions or artifacts, major
+limitations, omitted or parked items, and output scope. Required assets, claim
+boundaries, source paths, and artifact paths should be present or explicitly
+limited in `report_assembly`.
 
 ## Report Plan Creation
 
@@ -178,10 +180,12 @@ For multiple included actions, synthesize them into one coherent report. Explain
 whether they answer the same question, separate subquestions, sensitivity checks,
 or parked alternatives.
 
-Do not draft a polished empirical report if unresolved pending actions, missing
-required assets, unresolved discovery reviewer requests, unsupported causal
-wording, or missing source paths would make the report misleading. Return
-`blocked`, `needs_assets`, `needs_narrative`, or `needs_owner_review`.
+Draft from the confirmed scope. Disclose omitted, parked, missing, or limitation
+items when the user confirms proceeding. Use `needs_assets`,
+`needs_narrative`, or `needs_owner_review` when the report can proceed only with
+visible gaps or bounded repair. Use `blocked` only when the requested report
+scope is incoherent, such as incompatible report type/template or no usable
+evidence basis for any honest deliverable.
 
 ## QA
 
@@ -201,7 +205,7 @@ limitations are explicitly recorded.
 
 ## Return To Main
 
-Write report plan/final paths in `artifact_index`, update `report_assembly`,
-ensure one chamber entry using the shared council contract, and stop. Main
-rereads YAML, promotes useful council options into `pending_actions`, and speaks
-to the user.
+Write created report paths, or newly indexed routed report artifacts, in
+`artifact_index`; update `report_assembly`; ensure one chamber entry using the
+shared council contract; and stop. Main rereads YAML, promotes useful council
+options into `pending_actions`, and speaks to the user.

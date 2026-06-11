@@ -19,7 +19,7 @@ Mirror `report_assembly` here before final HTML drafting. Empirical final report
 | Report type | final_html / planning_html | pending / ready / missing |
 | Template path | `subskills/report_writer/assets/final_report_template.html` / `subskills/report_writer/assets/planning_report_template.html` | pending / ready / mismatch |
 | Included actions |  | pending / ready / missing |
-| Pending before report |  | none / pending / parked / blocked |
+| Omitted or parked before report |  | none / pending / parked / disclosed |
 | Parked or not-run items to disclose |  | none / ready / missing |
 | Required mentions |  | pending / ready / missing |
 | HTML outline |  | pending / ready / missing |
@@ -64,7 +64,7 @@ Use this table to preserve the staged consultation record. Do not let the final 
 | Analysis unit folder and manifest |  |  | main / data_analyst | completed / qualified / missing / stale / blocked | reproducibility |
 | Dependency/package decisions |  |  | main / data_analyst / method_task | completed / qualified / missing / stale / blocked | reproducibility |
 | Material deviations |  |  | main / owner reviewer | completed / qualified / missing / stale / blocked | main text / reproducibility |
-| Pending actions |  |  | main | resolved / declined / blocked / parked_for_report / missing | main text / appendix / omitted |
+| Pending actions |  |  | main | included / declined / parked_for_report / disclosed / omitted | main text / appendix / omitted |
 | Consultant alternatives |  |  | main / method_lead | resolved / declined / blocked / parked_for_report / missing | main text / appendix / omitted |
 | Results and diagnostics |  |  | data_analyst / method_task | completed / qualified / missing / stale / blocked | main text / appendix |
 | Interpretation and next steps |  |  | main / domain_expert / method_lead | completed / qualified / missing / stale / blocked | main text |
@@ -191,7 +191,7 @@ Every major evidence section should have prose, not only tables.
 | Analysis unit folder and manifest | any executed analysis included in report | pending / ready / missing / not applicable | Use `outputs/analyses/NNN_unit_id/manifest.json`. |
 | Final HTML report path | any final report | pending / ready / missing | Use `outputs/reports/final_report_*.html`. |
 | Report asset plan | substantive analysis report | pending / ready / missing / not applicable | Required visuals/tables, citations, and narrative cues resolved. |
-| Causal structure sketch | causal/timing/adjustment logic is load-bearing | not_required / ready / missing / blocked / omitted_by_user | Must come from causal_gatekeeper; missing/blocked blocks polished causal or adjusted reports. |
+| Causal structure sketch | causal/timing/adjustment logic is load-bearing | not_required / ready / missing / blocked / omitted_by_user | Must come from causal_gatekeeper; missing/blocked status needs owner review, visible limitation, or a confirmed terse report scope. |
 | Citation ledger | named methods, software, data docs, or domain precedent used | pending / ready / missing / not applicable |  |
 | Narrative section checks | substantive final report | pending / ready / missing / terse_by_user_request | Major evidence sections cannot be table-only. |
 | HTML report QA | final HTML report produced | pending / passed / needs revision / not applicable | Check duplicate title, wrapper/container, tables, links, source script/artifact links, and visible claim boundary. |
@@ -218,6 +218,6 @@ Every major evidence section should have prose, not only tables.
 
 [One question main should ask before drafting or expanding optional report work.]
 
-## Final HTML Delivery
+## Report Closeout Facts
 
-[Record the final `outputs/reports/final_report_*.html` path, HTML QA status, included actions, and the one user-facing delivery sentence main should use.]
+[Record the final `outputs/reports/final_report_*.html` path, HTML QA status, included actions, artifact ids, and limitations main should mention in the normal closeout.]

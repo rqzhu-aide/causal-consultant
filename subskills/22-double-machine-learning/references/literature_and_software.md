@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible DML, orthogonal ML, and nuisance-learning tools. Keep the main team focused on target model, cross-fitting, support, leakage, and inference validity before software.
+Use this file to choose credible DML, orthogonal ML, and nuisance-learning tools. Package/software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared contract. Keep the main team focused on target model, cross-fitting, support, leakage, and inference validity before software.
 
 ## Core Literature
 
@@ -28,10 +28,10 @@ Use this file to choose credible DML, orthogonal ML, and nuisance-learning tools
 
 | Package | Language | Best Use | Pros | Caveats |
 |---|---|---|---|---|
-| [`DoubleML`](https://docs.doubleml.org/) | R/Python | PLR, PLIV, IRM, IIVM, cross-fitting, orthogonal scores | Strong DML implementation and diagnostics | Target model assumptions must match the causal question |
-| [`EconML`](https://www.pywhy.org/EconML/) | Python | LinearDML, DML, CausalForestDML, DRLearner, OrthogonalForest, policy tools | Broad sklearn-compatible orthogonal ML ecosystem | Many estimators; easy to choose one with wrong target |
-| [`grf`](https://grf-labs.github.io/grf/) | R | Causal forests, local linear forests, ATE/CATE, best linear projection | Strong forest inference and heterogeneity diagnostics | Needs support and honesty; CATE target belongs to `20` |
-| [`hdm`](https://cran.r-project.org/package=hdm) | R | Double selection/post-lasso treatment effects | Transparent sparse linear high-dimensional controls | Relies on sparsity and linear target structure |
+| [`DoubleML`](https://docs.doubleml.org/stable/) | R/Python | PLR, PLIV, IRM, IIVM, cross-fitting, orthogonal scores | Strong DML implementation and diagnostics | Target model assumptions must match the causal question |
+| [`EconML`](https://www.pywhy.org/EconML/spec/estimation/dml.html) | Python | LinearDML, DML, CausalForestDML, DRLearner, OrthogonalForest, policy tools | Broad sklearn-compatible orthogonal ML ecosystem | Many estimators; easy to choose one with wrong target |
+| [`grf`](https://grf-labs.github.io/grf/reference/causal_forest.html) | R | Causal forests, local linear forests, ATE/CATE, best linear projection | Strong forest inference and heterogeneity diagnostics | Needs support and honesty; CATE target belongs to `10` |
+| [`hdm`](https://stat.ethz.ch/CRAN/web/packages/hdm/hdm.pdf) | R | Double selection/post-lasso treatment effects | Transparent sparse linear high-dimensional controls | Relies on sparsity and linear target structure |
 | [`glmnet`](https://glmnet.stanford.edu/) | R/Python | Sparse nuisance models and baselines | Stable high-dimensional regularization | Nuisance learner only, not DML by itself |
 | [`ranger`](https://cran.r-project.org/package=ranger), [`xgboost`](https://xgboost.readthedocs.io/), [`lightgbm`](https://lightgbm.readthedocs.io/) | R/Python | Flexible nuisance learners | Strong predictive plugins | Need cross-fitting, tuning discipline, and support checks |
 | [`SuperLearner`](https://cran.r-project.org/package=SuperLearner) / [`sl3`](https://tlverse.org/sl3/) | R | Ensemble nuisance learning | Good targeted-learning integration | Not DML by itself |
@@ -44,17 +44,17 @@ Use this file to choose credible DML, orthogonal ML, and nuisance-learning tools
 - Need a scalar ATE with high-dimensional controls: start with `DoubleML` PLR/IRM or EconML LinearDML/DRLearner.
 - Need CATE/heterogeneity: use `grf` or EconML CausalForestDML with `10-heterogeneous-effects`.
 - Need sparse linear controls: use post-double-selection via `hdm`.
-- Need ML as a plugin inside AIPW/TMLE: ask main to route `21-doubly-robust-estimation`.
+- Need ML as a plugin inside AIPW/TMLE: recommend `21-doubly-robust-estimation` review.
 - Need IV with high-dimensional controls: use DML IV only with `05-instrumental-variables` support.
 - Need quick robust reporting: run repeated splits, simple benchmarks, and learner sensitivity before trusting one DML estimate.
 - Need high-stakes inference: prefer mature packages with explicit standard errors and document all split/tuning decisions.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [DoubleML docs](https://docs.doubleml.org/stable/), [DoubleMLData](https://docs.doubleml.org/stable/api/generated/doubleml.data.DoubleMLData.html), [DoubleMLPLR](https://docs.doubleml.org/stable/api/generated/doubleml.plm.DoubleMLPLR.html)
+Docs checked: 2026-06-09
+Primary docs: [DoubleML docs](https://docs.doubleml.org/stable/), [DoubleMLPLR](https://docs.doubleml.org/stable/api/generated/doubleml.plm.DoubleMLPLR.html), [EconML DML](https://www.pywhy.org/EconML/spec/estimation/dml.html), [EconML CausalForestDML](https://www.pywhy.org/EconML/_autosummary/econml.dml.CausalForestDML.html), [grf causal_forest](https://grf-labs.github.io/grf/reference/causal_forest.html), [hdm manual](https://stat.ethz.ch/CRAN/web/packages/hdm/hdm.pdf).
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. DML depends on sample splitting and learner choices; preserve all split/tuning decisions. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. DML depends on sample splitting and learner choices; preserve all split/tuning decisions. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```python
 # Tiny sketch, not a complete script.
@@ -68,4 +68,4 @@ dml = DoubleMLPLR(dml_data, ml_l=learner_y, ml_m=learner_a,
 dml.fit()
 ```
 
-Artifact outputs to preserve: DML estimate table path, learner/split sensitivity diagnostic path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: DML estimate table path, learner/split sensitivity diagnostic path, nuisance-performance table path, fold manifest path, benchmark comparison path, and source code path.

@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible dose-response estimands, methods, and packages. Keep dose support, intervention meaning, and positivity ahead of software.
+Use this file to choose credible dose-response estimands, methods, and packages. Package/software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared contract. Keep dose support, intervention meaning, and positivity ahead of software.
 
 ## Core Literature
 
@@ -27,14 +27,14 @@ Use this file to choose credible dose-response estimands, methods, and packages.
 
 | Package | Language | Best Use | Pros | Caveats |
 |---|---|---|---|---|
-| [`CausalGPS`](https://cran.r-project.org/package=CausalGPS) | R | Generalized propensity score workflows for continuous exposures | Purpose-built for continuous treatment weighting/matching and diagnostics | GPS models can be fragile; support and balance need careful review |
+| [`CausalGPS`](https://cran.r-universe.dev/CausalGPS/doc/manual.html) | R | Generalized propensity score workflows for continuous exposures | Purpose-built for continuous treatment weighting/matching and diagnostics | GPS models can be fragile; support and balance need careful review |
 | [`WeightIt`](https://ngreifer.github.io/WeightIt/) | R | Continuous and multi-category treatment weighting | Mature weighting interface, works with `cobalt` diagnostics | Weight instability and continuous balance diagnostics can be hard |
 | [`cobalt`](https://ngreifer.github.io/cobalt/) | R | Balance diagnostics after weighting/matching | Essential reporting support for dose balance | Diagnostics only; not an estimator |
-| [`lmtp`](https://github.com/nt-williams/lmtp) | R | Longitudinal modified treatment policies and shift-style interventions | Good for feasible intervention rules and time-varying treatments | Target differs from fixed-dose curves; requires careful data setup |
-| [`tmle3shift`](https://github.com/tlverse/tmle3shift) | R | Stochastic shift interventions with targeted learning | Strong targeted-learning workflow for shift effects | tlverse setup is more advanced |
+| [`lmtp`](https://cran.r-universe.dev/lmtp/doc/manual.html) | R | Longitudinal modified treatment policies and shift-style interventions | Good for feasible intervention rules and time-varying treatments | Target differs from fixed-dose curves; requires careful data setup |
+| [`tmle3shift`](https://tlverse.org/tmle3shift/) | R | Stochastic shift interventions with targeted learning | Strong targeted-learning workflow for shift effects | tlverse setup is more advanced |
 | [`gfoRmula`](https://cran.r-project.org/package=gfoRmula) | R | Parametric g-formula for sustained or time-varying dose strategies | Practical for longitudinal dose interventions | Model-heavy; requires long-format histories |
-| [`EconML`](https://www.pywhy.org/EconML/spec/estimation/dml.html) | Python | Continuous-treatment DML, `LinearDML`, `CausalForestDML`, flexible nuisance models | Strong Python ML integration | Often estimates marginal/conditional effects, not full GPS curve diagnostics |
-| [`DoubleML`](https://docs.doubleml.org/stable/) | R/Python | Orthogonal nuisance estimation for continuous treatment models | Useful DML infrastructure | Need target-specific setup for dose-response curves |
+| [`EconML`](https://econml.azurewebsites.net/spec/estimation/dml.html) | Python | Continuous-treatment DML, `LinearDML`, `CausalForestDML`, flexible nuisance models | Strong Python ML integration | Often estimates marginal/conditional effects, not full GPS curve diagnostics |
+| [`DoubleML`](https://docs.doubleml.org/) | R/Python | Orthogonal nuisance estimation for continuous treatment models | Useful DML infrastructure | Need target-specific setup for dose-response curves |
 | Custom splines/GAMs/TMLE | R/Python | Supported dose contrasts or descriptive curves | Transparent and adaptable | Easy to overinterpret extrapolated or model-driven curves |
 
 ## Practical Selection Rules
@@ -43,15 +43,15 @@ Use this file to choose credible dose-response estimands, methods, and packages.
 - Need a smooth curve: use splines/GAM/flexible outcome models, but report unsupported ranges and functional-form sensitivity.
 - Need observational continuous exposure: consider GPS/WeightIt/CausalGPS plus balance diagnostics.
 - Need feasible dose shifts: prefer `lmtp` or `tmle3shift` instead of setting everyone to unsupported dose values.
-- Need time-varying dose: ask main to route `02-longitudinal-gmethods` and consider `gfoRmula`, `lmtp`, or `ltmle`.
+- Need time-varying dose: recommend `02-longitudinal-gmethods` review and consider `gfoRmula`, `lmtp`, or `ltmle`.
 - Need Python-only ML support: EconML/DoubleML can support nuisance and marginal effect estimation, but still require custom dose-target reporting.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [CausalGPS `estimate_gps`](https://nsaph-software.github.io/CausalGPS/reference/estimate_gps.html), [CausalGPS reference](https://nsaph-software.github.io/CausalGPS/reference/index.html), [lmtp manual](https://cran.r-universe.dev/lmtp/doc/manual.html)
+Docs checked: 2026-06-09
+Primary docs: [CausalGPS manual](https://cran.r-universe.dev/CausalGPS/doc/manual.html), [CausalGPS `estimate_gps`](https://www.rdocumentation.org/packages/CausalGPS/versions/0.5.1/topics/estimate_gps), [lmtp manual](https://cran.r-universe.dev/lmtp/doc/manual.html), [tmle3shift](https://tlverse.org/tmle3shift/), [WeightIt](https://ngreifer.github.io/WeightIt/), [cobalt](https://ngreifer.github.io/cobalt/), [EconML DML](https://econml.azurewebsites.net/spec/estimation/dml.html), [DoubleML](https://docs.doubleml.org/).
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. CausalGPS is a developing package, so re-check examples and argument names before production use. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. CausalGPS is a developing package, so re-check examples and argument names before production use. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -64,4 +64,4 @@ gps <- estimate_gps(.data = analysis_data,
 # Build weights/matching/pseudo-population, then estimate an exposure-response curve.
 ```
 
-Artifact outputs to preserve: dose-response estimate path, support/balance curve path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: dose-response estimate path, support/balance curve path, manifest path, and source code path.

@@ -1,163 +1,63 @@
-# Causal consultant project state.
-# Keep sections sparse. Add detail only when it changes the next useful action.
-
-# Main-owned.
 project_summary:
-  current_phase: null
-  current_gate_status: null
-  user_goal: null
-  user_provided_info: []
+  phase: null
+  goal: null
+  question: null
+  boundary: null
+  materials: []
+  last_decision: null
 
-# Main-owned. Core subskills may read this section and suggest handoffs; main records, updates, resolves, or clears them.
-team_synthesis:
-  current_status: null
-  next_suggested_action: null
-  # Items: direction, status, next_prompt, why_it_matters.
-  exploration_threads: []
-  open_questions: []
+next_step_plan:
+  status: none
+  selected: null
+  confirmed: false
+  steps: []
 
-# domain_expert-owned.
-domain_information:
-  notes: []
-  open_questions: []
+pending_actions: []
 
-# data_analyst-owned.
+council_chamber: []
+
 data_facts:
-  sources: []
-  observation_structure:
-    row_unit: null
-    candidate_analysis_unit: null
-    id_fields: []
-    time_fields: []
-    grouping_or_dependence: []
-  variable_candidates: []
-  timing_map:
-    time_zero_candidates: []
-    exposure_windows: []
-    baseline_windows: []
-    followup_windows: []
-    outcome_windows: []
-    unresolved_timing_issues: []
-  claim_data_consistency:
-    checked_claims: []
-    contradictions: []
-    unresolved_claims: []
-  data_quality:
-    missingness: []
-    support_or_overlap: []
-    selection_or_censoring: []
-    measurement_or_coding_issues: []
-    privacy_or_access_limits: []
-  processing_paths: []
-  artifacts: []
-  open_questions: []
+  status: null
+  items: []
+  questions: []
 
-# method_lead-owned.
-method_alignments:
-  method_ideas: []
-  causal_question_options: []
-  candidate_frameworks: []
-  estimand_options: []
-  data_shaping_needs: []
-  diagnostics_sensitivity: []
-  implementation_tools: []
-  open_questions: []
+domain_records:
+  status: null
+  items: []
+  questions: []
 
-# causal_gatekeeper-owned.
-causal_validity:
-  current_assessment:
-    status: null
-    summary: null
-  method_data_alignment: []
-  dag_and_timing:
-    summary: null
-    artifact_path: null
-    causal_structure_sketch:
-      # status: not_required | ready | missing | blocked | omitted_by_user.
-      # markdown should be an inline text/Markdown arrow sketch, not a file artifact.
-      status: not_required
-      markdown: null
-      report_placement: null
-      omission_reason: null
-    timing_constraints: []
-    role_constraints: []
-    adjustment_implications: []
-    report_use: null
-  statistical_claims: []
-  suggested_modifications: []
+method_records:
+  status: null
+  items: []
+  questions: []
+
+method_task_results: []
+
+causal_gatekeeper:
+  status: null
+  items: []
   blockers: []
-  alarms: []
-  open_questions: []
+  supported_alternatives: []
+  claim_strengthening_ideas: []
 
-# Main-owned. Lifecycle state for the optional causal discovery sidecar.
-# Active or paused sidecars must be routed, returned, parked, closed, or
-# blocked before unrelated analysis/report work continues.
 discovery_sidecar:
   status: inactive
   purpose: null
-  return_to_phase: null
-  graph_target: null
-  affects_main_framework: false
+  packets: []
   artifact_paths: []
   reviewer_requests: []
-  next_action: null
+  report_relevance: []
 
-# Main-owned. Filled records from activated method/task subskills or sidecars.
-specialist_outputs: []
-
-# Main-owned. One compact record for each immediate execution-authorized unit.
-# Each item is both the Execution Authorization Packet before execution and
-# the hook-readable closeout record after execution. It is not a backlog.
-# Items: unit_id, record_status, analysis_dir, manifest_path,
-# confirmed_scope, claim_boundary,
-# causal_structure_sketch_status, intended_tool_lanes, fallback_policy,
-# allowed_outputs, report_asset_plan, dependency_status, deviation_status,
-# deviation_items, permission_status, source_code_path, analysis_note_path,
-# unit_artifacts, external_artifacts, closeout_status, queue_reconciliation,
-# report_status, next_action.
-# analysis_dir: outputs/analyses/NNN_unit_id/.
-# unit_artifacts: source, analysis_note, figures, tables, data, manifest,
-# and large external artifact paths with short report roles.
-# report_asset_plan: required_visuals_or_tables, citation_source_needs,
-# narrative_cues, omission_reasons.
-# closeout_status: incomplete | complete | blocked.
-# queue_reconciliation: remaining_user_intents, remaining_consultant_ideas,
-# next_choices_to_offer, recommended_choice, report_ready, reconciliation_note.
-# next_choices_to_offer uses the same staged-menu discipline as user-facing
-# `[+ Method Options]` or `[+ Next Steps]` blocks; it remains plural. After a
-# completed analysis, include an HTML report choice for completed work so far,
-# with unresolved work explicitly parked or listed as not run if selected.
-execution_records: []
-
-# Main-owned. User-requested work that should not be forgotten but is not
-# immediate execution permission. Items: intent_id, user_request, intent_type,
-# status, why_it_matters, needed_before_action, next_prompt, resolution.
-pending_user_intents: []
-
-# Main-owned. Final-report assembly state across completed analysis units.
-# It keeps report intent durable without letting analysis code create final reports.
-# status: not_requested | requested | planning | needs_assets | ready_for_writer
-# | drafting | owner_review | delivered | blocked.
-# included_execution_units reference completed execution_records by unit_id.
-# pending_before_report lists user intents or consultant ideas that must be run,
-# declined, blocked, or parked before report_writer drafts final HTML.
-# html_outline is a compact section plan for outputs/reports/final_report_*.html.
 report_assembly:
   status: not_requested
-  user_request: null
-  report_type: final_html
-  included_execution_units: []
-  pending_before_report: []
-  parked_for_report: []
+  report_type: null
+  template_path: null
+  included_actions: []
   required_mentions: []
-  html_outline: []
   required_assets: []
+  parked_or_not_run: []
+  outline: []
   final_report_path: null
   qa_status: null
-  next_action: null
 
-# Main-owned. Compact index for project artifacts, including report plans,
-# final HTML reports, report assets, code artifacts, discovery artifacts, and diagnostics.
-# Items: artifact_type, path, description, owner, status, optional unit_id,
-# optional report_role.
 artifact_index: []

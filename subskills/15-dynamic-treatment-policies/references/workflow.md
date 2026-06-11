@@ -1,7 +1,7 @@
-﻿# Dynamic Treatment Policies Workflow
+# Dynamic Treatment Policies Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for dynamic regimes, adaptive strategies, sequential policies, SMART analyses, or longitudinal policy-value report support.
 
@@ -16,7 +16,7 @@ Record the smallest useful target:
 - **Value target**: final outcome, cumulative outcome, survival, utility, cost, harm, or regret.
 - **Deliverable**: regime comparison, learned policy, value estimate, SMART report, exploratory decision support, or deployment-style artifact.
 
-If there is only one decision point, use `11-point-treatment-rules`. If the user wants fixed sustained treatment effects, use `02-longitudinal-gmethods` first.
+If there is only one decision point, recommend `11-point-treatment-rules` review. If the user wants fixed sustained treatment effects, recommend `02-longitudinal-gmethods` review first.
 
 ## 2. Check Design Fit
 
@@ -25,8 +25,8 @@ Dynamic policies inherit longitudinal identification assumptions.
 - Sequential randomized trial/SMART: strong support for regime comparison and learning if randomization probabilities and histories are known.
 - Observational longitudinal data: requires sequential exchangeability, positivity, consistency, and censoring/missingness assumptions.
 - Logged policy data: off-policy evaluation may be possible if propensities and available actions are known.
-- Time-varying confounding affected by prior treatment: ask main to route `02-longitudinal-gmethods`.
-- Survival outcome: ask main to route `23-survival-competing-risks`.
+- Time-varying confounding affected by prior treatment: recommend `02-longitudinal-gmethods` review.
+- Survival outcome: recommend `23-survival-competing-risks` review.
 
 ## 3. Choose A Method Lane
 
@@ -40,9 +40,9 @@ Dynamic policies inherit longitudinal identification assumptions.
 | Logged sequential decisions | Off-policy evaluation, fitted Q evaluation, doubly robust OPE | Uses logged actions and propensities | RL-style OPE is not causal without design assumptions |
 | Python-only prototype | Custom sklearn/statsmodels/fitted-Q scaffold | Flexible prototyping | R has more mature DTR causal tooling |
 
-## 4. Ask For Focused Data Work
+## 4. Recommend Focused Evidence
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - long-format data with id/time/action/covariate/censoring/outcome;
 - action availability and support by history;
@@ -64,14 +64,19 @@ Minimum diagnostic set:
 - sensitivity to state variables, action definitions, time grid, and learner class;
 - comparison with simpler interpretable regimes and standard care.
 
-## 6. Reviewer Interaction
+## 6. Connected Reviewer Relevance
+
+Preserve reviewer relevance in the `method_task_results` item rather than assigning work directly.
 
 - `domain_expert`: validates adaptive strategy meaning, safety, ethical constraints, and practical deployment.
 - `data_analyst`: prepares long-format histories, support checks, action logs, weights, and value artifacts.
 - `method_lead`: decides longitudinal identification, target estimand, policy class, and claim boundary.
+- `causal_gatekeeper`: checks whether adaptive-policy wording exceeds sequential support, censoring handling, validation, or base-route validity.
 - `report_writer`: integrates policy target, strategy descriptions, diagnostics, and caveats.
 
-## 7. Report Language
+## 7. Report-Support Fields
+
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item.
 
 Use:
 

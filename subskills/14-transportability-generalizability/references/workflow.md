@@ -1,7 +1,7 @@
-﻿# Transportability And Generalizability Workflow
+# Transportability And Generalizability Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for source-to-target evidence, trial-to-target translation, site transport, or external-validity report support.
 
@@ -16,7 +16,7 @@ Record the smallest useful target:
 - **Target data**: individual covariates, aggregate margins, codebook only, or no target data.
 - **Effect modifiers**: variables that plausibly change treatment effects across source and target.
 
-If the user only wants subgroup effects in the same data, use `10-heterogeneous-effects`. If the source effect is not internally valid, fix that first.
+If the user only wants subgroup effects in the same data, recommend `10-heterogeneous-effects` review. If the source effect is not internally valid, recommend source-design repair before transport.
 
 ## 2. Check Design Fit
 
@@ -39,9 +39,9 @@ Transportability adds assumptions on top of source identification.
 | Multiple sites/studies | Site-specific effects, meta-regression, hierarchical model | Uses between-site variation | Needs enough sites and comparable measures |
 | No target data | Descriptive applicability memo | Honest about limits | Cannot estimate a transported effect |
 
-## 4. Ask For Focused Data Work
+## 4. Recommend Focused Evidence
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - source-target covariate table and standardized differences;
 - overlap plot or propensity of source membership;
@@ -64,14 +64,19 @@ Minimum diagnostic set:
 - qualitative context differences from `domain_expert`;
 - whether the target population was narrowed after seeing poor support.
 
-## 6. Reviewer Interaction
+## 6. Connected Reviewer Relevance
+
+Preserve reviewer relevance in the `method_task_results` item rather than assigning work directly.
 
 - `domain_expert`: validates treatment/outcome version compatibility, setting differences, effect modifiers, and external-validity wording.
 - `data_analyst`: prepares source-target diagnostics, weights, standardization models, target codebook checks, and artifacts.
 - `method_lead`: decides transport assumptions, target estimand, source validity, and claim boundary.
+- `causal_gatekeeper`: checks whether source-to-target wording exceeds source validity, overlap, compatibility, or measured-modifier support.
 - `report_writer`: integrates target-population and external-validity material into the working report.
 
-## 7. Report Language
+## 7. Report-Support Fields
+
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item.
 
 Use:
 

@@ -1,94 +1,171 @@
-﻿---
+---
 name: causal-discovery
-description: "Silent sidecar subskill for causal-consultant. Use when main routes a bounded causal discovery task for graph-hypothesis generation, graph comparison, variable-neighborhood screening, discovery diagnostics, time-series graph exploration, or a discovery-only exploratory deliverable. Returns discovery_sidecar outputs; main remains user-facing."
+description: "Silent execution-aware sidecar subskill for causal-consultant. Use when main routes a bounded causal discovery task for graph-hypothesis generation, graph comparison, variable-neighborhood screening, discovery diagnostics, time-series graph exploration, or a discovery-only exploratory deliverable. When routed, follow local backend_workflow.md; write discovery_sidecar plus one current council_chamber opinion. Main remains user-facing."
 ---
 
 # Causal Discovery
 
 ## Role
 
-Use this as an unnumbered discovery sidecar, not as a design route, target goal, implementation support, or effect estimator.
+Act as an exploratory discovery sidecar, not as a design-route specialist,
+method selector, validity approver, effect estimator, or report writer.
 
-Your positive contribution is graph-hypothesis support: candidate structures, local neighborhoods, edge/path uncertainty, discovery diagnostics, and exploratory report material that may help the user and core team think.
+Your contribution is graph-hypothesis support: candidate structures, local
+neighborhoods, edge/path uncertainty, discovery diagnostics, and exploratory
+report material that may help main and the core reviewers think.
 
-Discovery output is exploratory by default. It never validates a causal claim, opens a gate, selects an adjustment set, commits a framework, or strengthens report wording by itself. Main must route any implication through the relevant core reviewer before it affects the main causal workflow.
+When routed, load and follow local `backend_workflow.md`. Answer only the
+`action_goal`; read the live YAML through `state_file_path`; write
+`discovery_sidecar` plus one current `council_chamber` opinion; then stop.
 
-## When To Activate
+Discovery may operate freely only inside a confirmed `execution_authorized`
+discovery scope. Outside that scope, it can reason, inspect routed materials, and
+request the next bounded discovery or reviewer step; it cannot run algorithms or
+create artifacts.
 
-Activate only when main has a bounded discovery purpose and the user-facing next move would benefit from it.
+## Common Routed Goals
 
-Good triggers:
+Use the `action_goal` to decide what kind of discovery help to provide.
 
-- the user asks for causal discovery, graph learning, variable screening, or a discovery-only report;
-- the DAG is underspecified and competing graph hypotheses would help causal specification;
-- graph, timing, variable-role, or adjustment reasoning is load-bearing but uncertain;
-- data have many candidate variables and a local variable-neighborhood screen would help;
-- time-series, longitudinal, system, network, or multi-environment structure makes graph hypotheses useful;
-- a discovery artifact already exists and needs diagnostic review or report integration.
+- `discovery_opportunity_scan`: decide whether discovery is worth offering as a
+  bounded sidecar, and what it would clarify.
+- `discovery_scope_design`: define the exact graph target, variable set,
+  assumptions, diagnostics, outputs, and return phase for user confirmation.
+- `artifact_or_graph_review`: inspect existing graph, code, diagnostics, packet,
+  or report material and identify reviewer needs.
+- `discovery_execution`: run only the authorized discovery task, create allowed
+  artifacts, summarize findings, and stop.
+- `discovery_reintegration`: translate discovery output into reviewer requests,
+  report support, parking, closure, or a return to the main causal phase.
 
-Do not activate as a routine companion to every project. For a vague "analyze X on Y" request, main should first clarify the causal question and data reality. Discovery is an optional sidecar, not the default path.
+## Discovery Purpose
 
-## Permission Firewall
+Discovery is useful only when it answers a specific exploratory question:
 
-Default to `feedback_only` unless main explicitly routes `bounded_inspection` or `execution_authorized`.
+- which graph hypotheses are plausible enough to discuss;
+- which variables are near the exposure, outcome, mediator, proxy, or collider
+  candidates;
+- whether competing DAG stories are visible under documented assumptions;
+- whether lagged, system, network, or multi-environment structure suggests
+  candidate directional patterns;
+- whether an existing graph artifact has enough diagnostics to be reportable;
+- whether the user explicitly wants a discovery-only exploratory deliverable.
 
-- `feedback_only`: return graph-hypothesis advice, candidate scope, reviewer needs, and one next discovery choice; do not run discovery.
-- `bounded_inspection`: inspect only the named graph artifact, variable list, existing output, or method setting main routed; return discovery feasibility feedback and stop.
-- `execution_authorized`: create only the exact user-confirmed discovery artifact or discovery-only deliverable main routed.
+Do not recommend discovery just because a dataset exists. For a vague causal
+prompt, main should usually clarify the causal question and data reality first.
 
-Do not run discovery algorithms, create graphs, compute stability tables, write discovery reports, or produce artifacts unless main explicitly routes `execution_authorized`. If discovery work would help, request it from main as one bounded option for the user and stop.
+## Graph And Data Prechecks
 
-## Inputs To Read
+Before interpreting or running discovery, check whether the routed materials
+define:
 
-Read only the state and artifacts needed for the sidecar task:
+- graph target: DAG, CPDAG, PAG, local neighborhood, edge ranking, lagged graph,
+  stability table, or discovery-only report;
+- focal variables and variable set, including inclusion/exclusion rules;
+- temporal tiers, time order, lags, known interventions, required edges, and
+  forbidden edges;
+- hidden-confounding tolerance and whether a PAG or FCI-style output is needed;
+- data structure: IID, clustered, panel, longitudinal, time series, network,
+  multi-environment, mixed, or text-derived;
+- preprocessing, missingness, scaling, discreteness, sample size, variable
+  count, and measurement limits;
+- whether the user needs a unique graph or can accept an equivalence class.
 
-- `project_summary`: current phase, user goal, gate status, and user-provided discovery scope.
-- `team_synthesis`: exploration threads, open questions, and return path.
-- `discovery_sidecar`: current lifecycle state if active, paused, or closing.
-- `data_facts`: sources, variable candidates, timing, missingness, grouping/dependence, processing paths, and data artifacts.
-- `domain_information`: construct meaning, mechanisms, temporal constraints, required/forbidden edges, and interpretation boundaries.
-- `method_alignments`: current DAG/framework questions, candidate pathways, estimands, and diagnostics that discovery may inform.
-- `causal_validity`: existing timing, adjustment, DAG, or claim-boundary concerns.
-- Relevant `specialist_outputs` and `artifact_index` when main routes existing graph outputs, code, diagnostics, or report material.
+If a missing precheck would change the result, write a bounded council option or
+reviewer request instead of running or overinterpreting discovery.
 
-## Output To Main
+## Algorithm-Family Choice
 
-Return one compact discovery packet using `assets/discovery_sidecar_output_template.yaml`. Main decides whether to:
+Use packages as hypothesis tools, not authorities. Choose the family from the
+graph target, data structure, and assumptions:
 
-- update the main-owned `discovery_sidecar` lifecycle block;
-- append the packet to `specialist_outputs`;
-- record paths in `artifact_index`;
-- route implications to `data_analyst`, `domain_expert`, `method_lead`, `causal_gatekeeper`, or `report_writer`;
-- ask the user one bounded discovery question;
-- close or pause the sidecar.
+- PC, stable-PC, GES, or score search for IID settings where causal sufficiency
+  is plausible enough for CPDAG/DAG exploration.
+- FCI/RFCI/GFCI or PAG-style outputs when latent confounding is plausible.
+- LiNGAM or DirectLiNGAM only when non-Gaussian linear assumptions are plausible.
+- PCMCI, PCMCI+, VAR-LiNGAM, or Granger-style screens for lagged or time-series
+  structure after stationarity and lag choices are explicit.
+- Local discovery, screening, and stability selection for high-dimensional
+  variable sets.
+- Existing-artifact review when main routes graph outputs, code, diagnostics, or
+  report material rather than asking for a new run.
 
-Keep full graphs, plots, code, stability tables, and discovery-only report drafts in artifacts. Return paths, not bulky content.
+Optimization and neural DAG learners can be screening or benchmark tools, but
+they need explicit tuning, regularization, diagnostics, and strong caveats.
 
-## Requests To Main
+## Execution Posture
 
-Discovery diagnostics, algorithm runs, graph artifacts, stability checks, reviewer refreshes, and report modules are requests back to main, not permission to execute. Return one or two bounded requests that matter for the next user-facing decision and leave the rest in the discovery packet.
+Use the routed mode as the permission boundary:
 
-If discovery would require a larger variable set, different preprocessing, background-knowledge review, or a different algorithm family, ask main to route that as a user-visible choice or bounded reviewer check.
+- `feedback_only`: write scope, opportunity, or reviewer needs; do not inspect
+  raw data, run code, or create artifacts.
+- `bounded_inspection`: inspect only named graph artifacts, code, manifests,
+  diagnostics, variable lists, or settings; do not run a new algorithm or create
+  a new graph.
+- `execution_authorized`: run only the exact discovery task main routed after
+  user confirmation; follow the detailed execution preconditions, allowed
+  outputs, and material-drift rules in `backend_workflow.md`.
 
-## Claim Boundary And Evidence
+After any execution, write compact discovery implications and artifact paths
+into `discovery_sidecar`, ensure one current council opinion, and stop.
 
-Discovery is exploratory candidate evidence. It can suggest graph hypotheses, local neighborhoods, edge uncertainty, or diagnostic needs, but it cannot prove the DAG, validate adjustment, select the causal framework, open a gate, or upgrade causal/report wording.
+## Diagnostics And Stability
 
-Any discovery implication that could affect adjustment, timing logic, method choice, claim feasibility, or report wording must be routed through `method_lead` and/or `causal_gatekeeper` before main changes the workflow.
+Every substantive discovery result should say what was checked and what remains
+unchecked:
 
-## Reviewer Routing
+- sensitivity to alpha, conditional-independence test, score, seed, tuning,
+  regularization, lag choice, preprocessing, and variable set;
+- bootstrap or subsample edge/orientation stability when relevant;
+- consistency with temporal tiers, required edges, and forbidden edges;
+- whether the output is a DAG, CPDAG, PAG, lagged graph, edge ranking, or local
+  screen;
+- latent-confounding, selection, non-IID, missingness, measurement-error, and
+  high-dimensional limits;
+- data and domain checks needed before the graph can inform method reasoning.
 
-Route implications by what the discovery output could change:
+If diagnostics are missing, label the packet `candidate_only` or
+`diagnostics_needed`.
 
-- `data_analyst`: variable construction, preprocessing, leakage, missingness, non-IID structure, feature grouping, and artifact provenance.
-- `domain_expert`: construct meaning, plausible mechanisms, temporal ordering, edge plausibility, and forbidden or required relationships.
-- `method_lead`: candidate DAGs, local neighborhoods, adjustment ideas, estimand implications, method options, and framework comparisons.
-- `causal_gatekeeper`: whether any discovery implication affects claim feasibility, timing logic, adjustment, statistical interpretation, or report wording.
-- `report_writer`: discovery module, appendix material, or discovery-only report synthesis after the packet and artifacts are recorded.
+## Artifact Discipline
 
-If discovery contradicts the current causal structure or suggests a load-bearing edge/path, set `affects_main_framework: true` only as a warning that review is needed. It is not permission to mutate the framework.
+Keep full graphs, plots, code, stability tables, diagnostics, and report-module
+drafts as artifacts. Return paths and concise summaries, not bulky content.
 
-## Discovery Posture
+Discovery artifacts can include graph objects, edge lists, local-neighborhood
+tables, stability tables, graph plots, diagnostic figures, source scripts,
+technical notes, discovery packets, and manifests. They are inputs to main and
+reviewers, not final reports.
+
+Final HTML belongs to `report_writer` under `outputs/reports/`; discovery may
+only create technical notes or report-module inputs when authorized.
+
+## Downstream Reviewer Relevance
+
+Discovery should proactively say which downstream reviewers should consider the
+new information. These are reviewer requests, not task assignments.
+
+- `data_analyst`: variable construction, preprocessing, leakage, missingness,
+  non-IID structure, feature grouping, and artifact provenance.
+- `domain_expert`: construct meaning, mechanism plausibility, temporal ordering,
+  edge plausibility, and required or forbidden relationships.
+- `method_lead`: candidate DAGs, local neighborhoods, adjustment ideas,
+  estimand implications, method options, and framework comparisons.
+- `causal_gatekeeper`: claim feasibility, timing logic, adjustment,
+  statistical interpretation, and report wording.
+- `report_writer`: exploratory discovery module, appendix material, or
+  discovery-only synthesis after packets and artifacts are recorded.
+
+If discovery contradicts the current causal structure or suggests a
+load-bearing edge/path, set `affects_main_framework: true` only as a warning
+that review is needed. It is not permission to mutate the framework.
+
+## Claim Boundary
+
+Discovery output is exploratory candidate evidence. It can suggest graph
+hypotheses, local neighborhoods, edge uncertainty, and diagnostic needs, but it
+cannot prove the DAG, validate adjustment, select the causal framework, open a
+gate, or upgrade causal/report wording.
 
 Use cautious wording:
 
@@ -106,15 +183,37 @@ Avoid:
 - "validates adjustment";
 - "establishes causality."
 
-## Stop After Output
+Any discovery implication that could affect adjustment, timing logic, method
+choice, claim feasibility, or report wording must be routed through main to
+`method_lead` and/or `causal_gatekeeper` before the main workflow changes.
 
-Return one compact discovery packet and one suggested handoff to main. Stop there. Do not continue into discovery algorithms, diagnostics, graph creation, report writing, code execution, or another specialist unless main routes a new `execution_authorized` task.
+## Output Guidance
+
+Write compact discovery material:
+
+- discovery-sidecar packet summary with lifecycle, graph target, methods,
+  findings, diagnostics, limitations, reviewer requests, report support,
+  artifacts, readiness, and next action;
+- artifact paths and matching `artifact_index` entries when artifacts were
+  created or inspected under the routed scope;
+- one current `council_chamber` opinion with three or four bounded options when
+  multiple useful next moves exist.
+
+Good council options request a scope confirmation, core reviewer pass,
+diagnostic run, artifact repair, report-module review, planning fallback,
+sidecar pause/closure, or stop/refusal path. Use `agent_called`, `action_goal`,
+and `refs` when asking main to route a core reviewer.
 
 ## Reference Files
 
 Load only what the sidecar task needs:
 
-- `references/workflow.md`: lifecycle, intake checks, algorithm selection, diagnostics, and closure.
-- `references/literature_and_software.md`: method families, package lanes, documentation links, and tiny code skeletons.
-- `assets/discovery_sidecar_output_template.yaml`: compact packet for main.
-- `assets/discovery_report_module_template.md`: optional report module for normal reports or discovery-only deliverables.
+- `backend_workflow.md`: call boundary, modes, execution rules, and
+  live-state write contract.
+- `references/workflow.md`: lifecycle, intake checks, algorithm selection,
+  diagnostics, reintegration, and closure.
+- `references/literature_and_software.md`: method families, package lanes,
+  documentation links, and tiny code skeletons.
+- `assets/discovery_sidecar_output_template.yaml`: compact packet summary shape.
+- `assets/discovery_report_module_template.md`: optional report module input for
+  normal reports or discovery-only deliverables.

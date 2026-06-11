@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible doubly robust, one-step, and targeted-learning tools. Keep the main team focused on design validity, nuisance functions, positivity, and influence-function diagnostics before software.
+Use this file to choose credible doubly robust, one-step, and targeted-learning tools. Package/software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared contract. Keep the main team focused on design validity, nuisance functions, positivity, and influence-function diagnostics before software.
 
 ## Core Literature
 
@@ -25,17 +25,17 @@ Use this file to choose credible doubly robust, one-step, and targeted-learning 
 
 | Package | Language | Best Use | Pros | Caveats |
 |---|---|---|---|---|
-| [`AIPW`](https://cran.r-project.org/package=AIPW) | R | AIPW for ATE/ATT-style treatment effects with Super Learner options | Direct AIPW workflow | Check package target and variance details for the project |
-| [`tmle`](https://cran.r-project.org/package=tmle) | R | Classic point-treatment TMLE | Mature, well documented, simple targets | Older interface; less modular than tlverse |
-| [`drtmle`](https://cran.r-project.org/package=drtmle) | R | Doubly robust TMLE-style estimation with flexible nuisance support | Strong DR/TMLE focus | Requires careful nuisance libraries and diagnostics |
-| [`tmle3`](https://tlverse.org/tmle3/) + [`sl3`](https://tlverse.org/sl3/) | R | Modular targeted-learning workflows | Modern tlverse architecture and learner pipelines | Steeper learning curve |
-| [`SuperLearner`](https://cran.r-project.org/package=SuperLearner) | R | Ensemble nuisance estimation | Strong R ecosystem and cross-validation | Nuisance plugin, not an estimator by itself |
-| [`ltmle`](https://cran.r-project.org/package=ltmle) | R | Longitudinal TMLE with time-varying treatment/censoring | Purpose-built longitudinal support | Requires careful node ordering |
+| [`AIPW`](https://yqzhong7.github.io/AIPW/reference/aipw_wrapper.html) | R | AIPW for ATE/ATT-style treatment effects with Super Learner options | Direct AIPW workflow | Check package target and variance details for the project |
+| [`tmle`](https://search.r-project.org/CRAN/refmans/tmle/html/00Index.html) | R | Classic point-treatment TMLE | Mature, well documented, simple targets | Older interface; less modular than tlverse |
+| [`drtmle`](https://search.r-project.org/CRAN/refmans/drtmle/html/drtmle.html) | R | Doubly robust TMLE-style estimation with flexible nuisance support | Strong DR/TMLE focus | Requires careful nuisance libraries and diagnostics |
+| [`tmle3`](https://tlverse.r-universe.dev/tmle3/doc/manual.html) + [`sl3`](https://tlverse.org/sl3/) | R | Modular targeted-learning workflows | Modern tlverse architecture and learner pipelines | Steeper learning curve |
+| [`SuperLearner`](https://search.r-project.org/CRAN/refmans/SuperLearner/html/SuperLearner.html) | R | Ensemble nuisance estimation | Strong R ecosystem and cross-validation | Nuisance plugin, not an estimator by itself |
+| [`ltmle`](https://search.r-project.org/CRAN/refmans/ltmle/html/00Index.html) | R | Longitudinal TMLE with time-varying treatment/censoring | Purpose-built longitudinal support | Requires careful node ordering |
 | [`lmtp`](https://github.com/nt-williams/lmtp) | R | Longitudinal modified treatment policies | Realistic interventions and Super Learner support | Target must be a clear modified policy |
 | [`grf`](https://grf-labs.github.io/grf/) | R | DR scores, ATE/CATE, causal forests | Strong heterogeneity and average-effect tools | Causal forest target/reporting differs from classic TMLE |
 | [`EconML`](https://www.pywhy.org/EconML/) | Python | DRLearner, LinearDRLearner, causal forests, orthogonal learners | Flexible sklearn-compatible nuisance models | Often overlaps with DML; validate target and inference |
 | [`DoubleML`](https://docs.doubleml.org/) | R/Python | IRM/PLR and orthogonal scores | Cross-fitting and formal DML workflow | More DML than classic TMLE; target model assumptions matter |
-| [`zepid`](https://zepid.readthedocs.io/) | Python | Epidemiologic AIPW/TMLE-style workflows | Practical Python causal epi toolkit | Smaller ecosystem than R targeted learning |
+| [`zepid`](https://zepid.readthedocs.io/en/latest/Time-Fixed%20Exposure.html) | Python | Epidemiologic AIPW/TMLE-style workflows | Practical Python causal epi toolkit | Smaller ecosystem than R targeted learning |
 | [`DoWhy`](https://www.pywhy.org/dowhy/) | Python | Identification plus estimator/refuter discipline | Good causal workflow wrapper | Estimator and diagnostics still require statistical review |
 
 ## Practical Selection Rules
@@ -44,16 +44,16 @@ Use this file to choose credible doubly robust, one-step, and targeted-learning 
 - Need bounded risk/mean target with Super Learner: use TMLE.
 - Need modern modular R targeted learning: use `tmle3`/`sl3`.
 - Need longitudinal treatment/censoring: use `ltmle` or `lmtp` with `02-longitudinal-gmethods`.
-- Need high-dimensional orthogonal ML: ask main to route `22-double-machine-learning`.
+- Need high-dimensional orthogonal ML: recommend `22-double-machine-learning` review.
 - Need heterogeneity or policy scores: DR scores can feed `10-heterogeneous-effects` or `11-point-treatment-rules`, but those modules define the target.
 - Need Python first pass: use EconML, DoubleML, zepid, or custom AIPW, with explicit diagnostics.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [tmle3 manual](https://ictml-project.r-universe.dev/tmle3/doc/manual.html), [drtmle CRAN manual](https://cran.r-project.org/web/packages/drtmle/drtmle.pdf), [AIPW reference](https://yqzhong7.github.io/AIPW/reference/AIPW.html)
+Docs checked: 2026-06-09
+Primary docs: [AIPW wrapper](https://yqzhong7.github.io/AIPW/reference/aipw_wrapper.html), [drtmle](https://search.r-project.org/CRAN/refmans/drtmle/html/drtmle.html), [tmle3 manual](https://tlverse.r-universe.dev/tmle3/doc/manual.html), [tmle index](https://search.r-project.org/CRAN/refmans/tmle/html/00Index.html), [ltmle index](https://search.r-project.org/CRAN/refmans/ltmle/html/00Index.html), [SuperLearner](https://search.r-project.org/CRAN/refmans/SuperLearner/html/SuperLearner.html), [zEpid time-fixed exposure](https://zepid.readthedocs.io/en/latest/Time-Fixed%20Exposure.html).
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. TMLE/AIPW APIs can be package-specific; keep the code minimal and re-check examples. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. TMLE/AIPW APIs can be package-specific; keep the code minimal and re-check examples. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -65,4 +65,4 @@ dr_fit <- drtmle(W = covariate_matrix, A = treatment, Y = outcome,
 # Preserve nuisance-model diagnostics and influence-function/SE output.
 ```
 
-Artifact outputs to preserve: DR/TMLE estimate table path, nuisance/positivity diagnostic path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: DR/TMLE estimate table path, nuisance/positivity diagnostic path, influence-curve diagnostic path, manifest path, and source code path.

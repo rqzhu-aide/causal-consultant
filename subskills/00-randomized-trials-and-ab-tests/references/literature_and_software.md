@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this reference when choosing experiment estimators, diagnostics, packages, or report language.
+Use this reference when choosing experiment estimators, diagnostics, packages, or report language. Package and software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared method/task contract.
 
 ## Core Ideas
 
@@ -35,7 +35,7 @@ Use this reference when choosing experiment estimators, diagnostics, packages, o
 | Blocked or clustered experiments | `randomizr`, `estimatr`, `clubSandwich`, `fixest` | `statsmodels` cluster covariance | few clusters need caution |
 | Randomization inference | `ri2`, `randomizationInference`, custom randomization code | `scipy.stats.permutation_test`, custom resampling | requires known assignment mechanism |
 | Online A/B testing | custom SRM/CUPED code, `estimatr`, `fixest` | `statsmodels`, `scipy`, custom SRM/CUPED | triggered analyses change interpretation |
-| Noncompliance/CACE | `estimatr::iv_robust`, IV packages | `statsmodels` IV support or other IV tooling | ask main to route `05-instrumental-variables` for IV assumptions |
+| Noncompliance/CACE | `estimatr::iv_robust`, IV packages | `statsmodels` IV support or other IV tooling | recommend `05-instrumental-variables` review for IV assumptions |
 | Report tables | `broom`, `modelsummary`, `gt` | `pandas`, `statsmodels` summaries | formatting does not validate design |
 | Heterogeneity or uplift | `grf`, `causalToolbox`, ML packages | `EconML`, `causalml`, `scikit-uplift` | target-goal support, not primary design |
 
@@ -46,14 +46,14 @@ Use this reference when choosing experiment estimators, diagnostics, packages, o
 - Use cluster-aware or block-aware uncertainty when assignment or dependence requires it.
 - Use randomization inference when assignment is known and asymptotic assumptions are weak.
 - Treat unplanned subgroup, outcome, or time-window findings as exploratory without prespecification or validation.
-- ask main to route other method subskills when the user goal is CACE, spillovers, heterogeneity, policy learning, transport, survival, DR, or DML.
+- Recommend connected method/task review when the user goal is CACE, spillovers, heterogeneity, policy learning, transport, survival, DR, or DML.
 
 ## Tiny Code Skeletons
 
 Docs checked: 2026-05-31
 Primary docs: [estimatr `difference_in_means`](https://declaredesign.org/r/estimatr/reference/difference_in_means.html), [SciPy `permutation_test`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.permutation_test.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -66,4 +66,4 @@ srm_table <- table(analysis_data$A)
 attrition_table <- with(analysis_data, table(A, observed_outcome = !is.na(Y)))
 ```
 
-Artifact outputs to preserve: ITT table path, SRM/attrition diagnostic path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: ITT table path, SRM/attrition diagnostic path, source code path.

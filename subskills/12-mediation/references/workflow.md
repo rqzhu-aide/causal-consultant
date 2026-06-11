@@ -1,7 +1,7 @@
-﻿# Mediation Workflow
+# Mediation Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for causal mediation, mechanism, pathway, direct/indirect effect, or mediation report support.
 
@@ -17,7 +17,7 @@ Record the smallest useful target:
 - **Scale**: risk difference, mean difference, risk ratio, odds ratio, hazard, RMST, or other scale.
 - **Use**: mechanism explanation, intervention design, report section, hypothesis generation, or sensitivity memo.
 
-If the mediator is really a baseline subgroup, use `10-heterogeneous-effects`. If the user wants a future adaptive strategy, ask main to route `15-dynamic-treatment-policies`.
+If the mediator is really a baseline subgroup, recommend `10-heterogeneous-effects` review. If the user wants a future adaptive strategy, recommend `15-dynamic-treatment-policies` review.
 
 ## 2. Check Design Fit
 
@@ -27,8 +27,8 @@ Mediation adds assumptions beyond the total effect design.
 - Observational exposure: requires exposure-outcome, exposure-mediator, and mediator-outcome confounding control.
 - Time-varying mediator/confounder: often needs g-methods or interventional effects rather than simple natural effects.
 - Multiple mediators: natural path decompositions can require strong ordering/dependence assumptions; interventional effects may be more defensible.
-- Survival/competing risk outcome: ask main to route `23-survival-competing-risks`; product-of-coefficients intuition often fails.
-- IV/RD/DiD total effect designs: mediation may be possible only with extra structure; ask `method_lead` before decomposing.
+- Survival/competing risk outcome: recommend `23-survival-competing-risks` review; product-of-coefficients intuition often fails.
+- IV/RD/DiD total effect designs: mediation may be possible only with extra structure; recommend `method_lead` review before decomposing.
 
 ## 3. Choose An Estimand Lane
 
@@ -42,9 +42,9 @@ Mediation adds assumptions beyond the total effect design.
 | Weak timing or cross-sectional data | Descriptive pathway model | Honest about limits | Do not call it causal mediation |
 | Python-only simple model | `statsmodels` mediation or custom g-computation | Useful template when R is unavailable | Less comprehensive mediation ecosystem than R |
 
-## 4. Ask For Focused Data Work
+## 4. Recommend Focused Evidence
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - timing table for exposure, mediator, outcome, and covariates;
 - mediator missingness and measurement quality;
@@ -67,14 +67,19 @@ Minimum diagnostic set:
 - sensitivity to unmeasured mediator-outcome confounding is included or explicitly deferred;
 - "proportion mediated" is avoided when unstable or misleading.
 
-## 6. Reviewer Interaction
+## 6. Connected Reviewer Relevance
+
+Preserve reviewer relevance in the `method_task_results` item rather than assigning work directly.
 
 - `domain_expert`: validates mechanism, mediator construct, intervention meaning, and pathway wording.
 - `data_analyst`: prepares timing tables, mediator construction, missingness, covariate maps, model inputs, and sensitivity artifacts.
 - `method_lead`: chooses estimand, identifies assumptions, and sets claim boundary.
+- `causal_gatekeeper`: checks DAG/timing, mediator-outcome confounding, post-treatment adjustment, and pathway claim strength.
 - `report_writer`: integrates mediation materials into the working report when substantive.
 
-## 7. Report Language
+## 7. Report-Support Fields
+
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item.
 
 Use:
 

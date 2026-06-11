@@ -1,38 +1,34 @@
 # Portable Start/Stop Hook Contract
 
-This file defines optional structural hooks for runtimes that support them. The
-skill must still work without hooks; hooks only enforce the workflow skeleton.
-
-Hooks do not perform causal reasoning, select methods, inspect data, write
-reports, or change project state. They read durable state and the proposed
-action or response, then return a guard status.
+This optional contract audits workflow structure. The skill must still work
+without hooks. Hooks read durable state and the proposed action or response; they
+do not mutate state, select methods, inspect data, write reports, or perform
+causal reasoning.
 
 ## Hook Results
 
 - `pass`: continue.
-- `warn`: continue, but inject the warning into agent context.
+- `warn`: continue, but surface the warning to the agent.
 - `repair_required`: do not send the user-facing response until the agent fixes
-  the response or missing closeout state.
-- `block`: stop the attempted execution, report, or final wrap-up until main
+  the response or state.
+- `block`: stop attempted execution, report delivery, or final wrap-up until main
   asks the user or repairs state.
 
 ## Shared State Inputs
 
+Read the live state from `outputs/project_state.yaml` when it exists. Subskill
+routing, execution, and report work require this file.
+
 Read these sections when available:
 
-- `execution_records`
-- `pending_user_intents`
-- `report_assembly`
-- `method_alignments.method_ideas`
-- `team_synthesis.exploration_threads`
+- `project_summary`
+- `next_step_plan`
+- `pending_actions`
+- `council_chamber`
+- `domain_records`
 - `discovery_sidecar`
-- `causal_validity`
+- `report_assembly`
 - `artifact_index`
-
-Treat `execution_records` as the source of truth for the immediate authorized
-execution unit and the post-execution closeout. It is not a backlog.
-Treat `report_assembly` as the source of truth for final HTML report intent,
-included analysis units, report structure, and final report path.
 
 ## `start_hook`
 
@@ -42,10 +38,8 @@ Return:
 
 ```yaml
 hook: start_hook
-allowed_mode: first_turn | planning | specialist_feedback | execution | closeout | report | repair
-active_execution_unit: null
-closeout_required: false
-report_ready: false
+allowed_mode: first_turn | planning | review_step | execution | return_gate | report | repair
+active_plan_step: null
 pending_work_summary: null
 hard_stop: null
 warnings: []
@@ -53,32 +47,39 @@ warnings: []
 
 Checks:
 
-- If no durable state exists, allow only first-turn orientation, bounded
-  inspection, or one routed specialist stage.
-- If the latest `execution_records` item has `closeout_status: incomplete`,
-  set `allowed_mode: closeout` and `hard_stop: return_gate_required`.
-- If an execution unit is active, surface its allowed task, allowed outputs,
-  forbidden outputs, intended tools, fallback policy, analysis directory,
-  manifest path, and permission status.
-- If active `pending_user_intents`, worthwhile `method_ideas`, active
-  `exploration_threads`, or active/paused `discovery_sidecar` exist, summarize
-  items that should appear in the next-choice menu before report or final
-  wrap-up.
-- If `queue_reconciliation.report_ready` is false or missing after execution,
-  set report mode to blocked until the Return Gate is repaired or remaining
-  work is resolved, blocked, declined, or parked for report.
-- If a final report is requested, surface `report_assembly.status`,
-  included execution units, missing analysis folders/manifests, and whether
-  final HTML must be under `outputs/reports/`.
-- If a final report is requested, audit every unit in
-  `report_assembly.included_execution_units` for `analysis_dir`,
-  `manifest_path`, source path, analysis note path, `closeout_status:
-  complete`, and `queue_reconciliation.report_ready: true`.
+- If no live `outputs/project_state.yaml` exists, allow only user-facing
+  orientation or lead-owned planning. Any routed subskill step, execution, or
+  report work must return `repair_required` or `block` until main creates the
+  live YAML file.
+- If a subskill route is proposed, require `state_file_path:
+  outputs/project_state.yaml`, `agent_called`, `mode`, `action_goal`, and
+  `action_id` in the routed payload.
+- If `next_step_plan.steps` contains pending routed/internal steps, surface the
+  earliest pending step as `active_plan_step`. Main must resume from this first
+  pending step; later steps are not considered ready just because they are listed.
+- If `next_step_plan.steps` contains ordinary `lead` or `user_response` steps
+  that only ask the user a question or present a menu, warn that these should be
+  handled in the chat response and not kept as plan steps.
+- If a later step is marked `done` while an earlier routed/internal step is still
+  `pending`, warn that plan order is inconsistent and set `active_plan_step` to
+  the earliest pending step.
+- Treat `done`, `blocked`, and `superseded` as terminal step statuses. A
+  `superseded` step is not a failure if main has reviewed it and no earlier
+  pending step remains.
+- If an execution step is active, surface the selected step's `execution`:
+  scope, claim boundary, analysis directory, and expected outputs.
+- If execution has occurred but the produced-output closeout facts are missing,
+  set `allowed_mode: return_gate` and `hard_stop: return_gate_required`.
+- Summarize open `pending_actions` that should appear before report delivery or
+  final wrap-up.
+- If report work is requested, surface `report_assembly.status`, `report_type`,
+  `template_path`, `included_actions`, required assets, final path, and whether
+  final HTML belongs under `outputs/reports/`.
 
 ## `stop_hook`
 
-Run before a user-facing response is sent, or immediately after the response is
-generated when pre-send hooks are not available.
+Run before a user-facing response is sent, or immediately after response
+generation when pre-send hooks are unavailable.
 
 Return:
 
@@ -91,73 +92,95 @@ required_fix: null
 
 Critical failures:
 
-- Script, model, diagnostic, table, artifact, or report execution was attempted
-  without a confirmed `execution_records` packet: `block`.
+- A routed subskill call is attempted without live `outputs/project_state.yaml`
+  or without `state_file_path` in the routed payload: `block`.
+- A script, model, diagnostic, table, artifact, or report execution is attempted
+  without `next_step_plan.confirmed: true`, a matching active step whose
+  `mode` is `execution_authorized`, and a complete step-local execution object
+  with `analysis_dir`, `scope`, `claim_boundary`, and `expected_outputs`:
+  `block`.
+- A routed/internal plan step remains pending before the next user-facing step,
+  but the response speaks to the user as if the plan finished:
+  `repair_required`.
+- A blocked routed/internal step lacks a boundary, repair, or user-choice
+  explanation before the response speaks as if work can continue:
+  `repair_required`.
+- All routed/internal plan steps are terminal, but `next_step_plan` has not been
+  reset to `status: none`, `selected: null`, `confirmed: false`, and `steps: []`
+  before the user-facing response:
+  `repair_required`.
+- A step is marked `done` without the expected owner/result write inferred from
+  `agent_called`, plus matching current `council_chamber` entry
+  `id: <agent_called>.<action_id>`: `repair_required`.
+- A numbered method/task step is marked `done` without a matching
+  `method_task_results` item and matching council entry:
+  `repair_required`.
+- A numbered method/task `feedback_only` or `bounded_inspection` step creates
+  new analysis artifacts instead of writing specialist feedback only:
+  `repair_required`.
+- A `causal_discovery` step is marked `done` without a `discovery_sidecar` write
+  and matching current `council_chamber` opinion:
+  `repair_required`.
+- A downstream core review or report step uses discovery artifacts before
+  matching `artifact_index` entries exist for `discovery_sidecar` artifact
+  paths: `repair_required`.
+- A user-facing response is attempted from a later step while an earlier
+  routed/internal step is still pending, or while an earlier blocked step lacks
+  explanation:
+  `repair_required`.
 - Execution occurred and the response is not the full Return Gate shape:
   `repair_required`.
-- Execution closeout marks an analysis complete without `analysis_dir`,
-  `manifest_path`, source path, or analysis note path: `repair_required`.
-- The response offers or delivers a final HTML report while
-  `queue_reconciliation.report_ready` is false, missing, or inconsistent:
-  `block`.
-- The response offers or delivers a final HTML report while `report_assembly`
-  is missing, not `ready_for_writer`/`delivered`, or missing included execution
-  units: `block`.
-- The response offers or delivers a final HTML report while any included
-  execution unit lacks `analysis_dir`, `manifest_path`, source path, analysis
-  note path, `closeout_status: complete`, or `queue_reconciliation.report_ready:
-  true`: `block`.
-- A final report path is outside `outputs/reports/`, or an analysis-specific
-  report-like artifact is treated as the final report: `block`.
-- A missing package, replacement estimator, custom implementation, dropped
-  diagnostic, changed report asset, or changed output plan is treated as
-  non-material or continues silently: `block`.
-- The response wraps up or moves to final report while active pending user work,
-  worthwhile consultant ideas, or active/paused discovery remain unresolved:
+- Execution closeout marks an analysis complete without the selected step's
+  analysis directory and the actual produced outputs promised by
+  `execution.expected_outputs`, unless the run is explicitly blocked or partial:
   `repair_required`.
+- The response offers or delivers final HTML while `report_assembly` is missing,
+  blocked, inconsistent with the report type/template mapping, or points outside
+  `outputs/reports/`: `block`.
+- The response wraps up or moves to report delivery while open `pending_actions`
+  that affect the work remain unhandled: `repair_required`.
+- A substantive causal-project response omits `[> Framing]` before consultant
+  options or next steps: `repair_required`.
+- A missing package, replacement estimator, custom implementation, dropped
+  diagnostic, changed report asset, or changed output plan continues silently:
+  `block`.
 
 Return Gate shape required after execution:
 
 ```text
-[OK Confirmed] Ran: [completed unit]. Folder: [outputs/analyses/unit_id/]. Source: [script/notebook path]. Note: [analysis_note path]. Manifest: [manifest.json path].
+[> Framing] This step is complete, and the result should be interpreted within
+the confirmed claim boundary.
 
-[! Boundary] Status: [claim boundary]. [Dependency/deviation/packet-match/gatekeeper issue only as needed.]
+[OK Confirmed] Ran: [completed unit]. Folder: [analysis_dir]. Source: [source_path]. Note: [analysis_note_path]. Manifest: [manifest_path].
 
-[+ Method Options] or [+ Next Steps] choices:
+[! Boundary] Status: [claim boundary and any dependency/deviation/gatekeeper issue.]
+
+[+ Consultant Options]
+[Optional useful pending analysis, sensitivity, discovery, report asset, or planning idea.]
+
+[? Next Steps]
 1. [recommended next action]
-2. [HTML report option for completed work so far, with remaining items parked/listed as not run if needed]
-3. [pending user-requested branch, repair, worthwhile consultant idea, sensitivity, discovery sidecar, report asset step, or stop option]
-
-[? Question] Which option should we take next?
+2. [HTML report option when completed artifacts exist]
+3. [pending action, repair, stop, or alternative direction]
 ```
 
 Warnings:
 
-- User-facing runtime labels are not one of `[> Framing]`, `[= Data Reality]`,
-  `[+ Method Options]`, `[+ Next Steps]`, `[! Boundary]`, `[OK Confirmed]`,
-  `[? Question]`, or `[# Report]`.
-- An ordinary non-closeout response shows too many options instead of one or two choices.
-- A staged specialist response ends without either one explicit `[? Question]`
-  or a small `[+ Method Options]` / `[+ Next Steps]` menu.
-- The post-execution Return Gate does not include 2-3 next choices when pending
-  user work, worthwhile consultant ideas, repair choices, stop choices, or HTML
-  report options are available.
-- A completed analysis Return Gate omits an HTML report option for the completed
-  work, or offers report writing while `report_ready` is false without saying
-  remaining items must be parked, resolved, or listed as not run first.
-- The post-execution Return Gate omits active pending user work or unresolved
-  worthwhile consultant ideas from `Next choices`.
-- Report delivery omits `report_assembly.final_report_path`, included analysis
-  unit folders, or source/analysis-note links for included units.
-- Specialist feedback is summarized without a staged handoff or user choice.
+- Runtime labels are not one of `[> Framing]`, `[= Data Reality]`,
+  `[+ Consultant Options]`, `[? Next Steps]`, `[! Boundary]`, `[OK Confirmed]`,
+  or `[# Report]`.
+- A staged response needs a user decision but does not end with `[? Next Steps]`.
+- Consultant suggestions are shown without `[+ Consultant Options]`.
+- The menu omits open pending actions that should reasonably be surfaced.
+- A completed analysis response omits an HTML report option for completed work
+  when report artifacts could be created.
 
 ## Host Runtime Notes
 
 If the host only supports start and stop hooks, implement only this file. If the
-host also supports pre-execution, post-execution, pre-report, or pre-response
-hooks, map them to the same checks:
+host supports more hooks, map them to the same checks:
 
-- pre-execution: block execution without a confirmed packet.
+- pre-execution: block execution without a confirmed active plan.
 - post-execution: require closeout and Return Gate next.
-- pre-report: block unless report readiness clearing has passed.
+- pre-report: block unless report state and pending actions allow report work.
 - pre-response: run `stop_hook` before the message is shown.

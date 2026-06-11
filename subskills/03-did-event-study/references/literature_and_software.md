@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible DiD and event-study tools. Keep the main team focused on treatment timing, comparison group, estimand, parallel-trend assumptions, heterogeneity, and diagnostics before software.
+Use this file to choose credible DiD and event-study tools. Package and software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared method/task contract. Keep the main team focused on treatment timing, comparison group, estimand, parallel-trend assumptions, heterogeneity, and diagnostics before software.
 
 ## Core Literature
 
@@ -60,18 +60,18 @@ Use this file to choose credible DiD and event-study tools. Keep the main team f
 - Need staggered adoption: start with `did`, `fixest::sunab`, `didimputation`, `did2s`, or `did_multiplegt`; do not default to TWFE.
 - Need dynamic event-study plot: use estimators that separate cohort and event-time effects; define reference period and anticipation window before plotting.
 - Need repeated cross-sections: use `did` or `DRDID` modes that support repeated cross-section data; document composition assumptions.
-- Need weak comparison group or aggregate units: consider `synthdid` and ask main to route `06-synthetic-control-time-series`.
-- Need conditional parallel trends with many covariates: ask main to route `21-doubly-robust-estimation` or `22-double-machine-learning`; use DR-DiD or DoubleML DiD if the estimator matches the target.
+- Need weak comparison group or aggregate units: consider `synthdid` and recommend `06-synthetic-control-time-series` review.
+- Need conditional parallel trends with many covariates: recommend `21-doubly-robust-estimation` or `22-double-machine-learning` review; use DR-DiD or DoubleML DiD if the estimator matches the target.
 - Need robustness to parallel-trend violations: use `HonestDiD` or comparable sensitivity after event-study estimates are ready.
-- Need continuous treatment or intensity: ask main to route `13-dose-response-effects`; do not shoehorn into binary adoption without justification.
+- Need continuous treatment or intensity: recommend `13-dose-response-effects` review; do not shoehorn into binary adoption without justification.
 - Need simple report benchmark: include TWFE only as a labeled benchmark when modern estimators are the primary evidence.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
+Docs checked: 2026-06-09
 Primary docs: [did `att_gt`](https://bcallaway11.github.io/did/reference/att_gt.html), [fixest `sunab`](https://lrberge.github.io/fixest/reference/sunab.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -84,4 +84,4 @@ att <- att_gt(yname = "Y", tname = "time", idname = "id",
 event <- aggte(att, type = "dynamic")
 ```
 
-Artifact outputs to preserve: group-time/event-study table path, pre-trend/event plot path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: group-time/event-study table path, pre-trend/event plot path, source code path.

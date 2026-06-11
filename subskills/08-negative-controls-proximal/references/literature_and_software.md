@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible negative-control, empirical-calibration, and proximal causal inference tools. The central distinction is whether the evidence is diagnostic/calibration support or identification support.
+Use this file to choose credible negative-control, empirical-calibration, and proximal causal inference tools. Package and software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared method/task contract. The central distinction is whether the evidence is diagnostic/calibration support or identification support.
 
 ## Core Literature
 
@@ -39,7 +39,7 @@ Use this file to choose credible negative-control, empirical-calibration, and pr
 | [`CohortMethod`](https://ohdsi.github.io/CohortMethod/) | R | Generate comparable observational estimates and negative-control outputs in OHDSI workflows | Integrates with empirical calibration | Healthcare database ecosystem; not general-purpose |
 | [`NCOA`](https://dceg.cancer.gov/tools/analysis/ncoadjustment) | R | Negative control outcome adjustment for binary exposure/outcome cohort settings | Implements a specific NCO adjustment idea | Narrow setting; inspect assumptions carefully |
 | [`PCL`](https://rdrr.io/cran/PCL/f/) | R | Proximal causal learning functions including h/q bridge components | Directly named proximal package | Sparse/older documentation; validate before production |
-| [`pci2s`](https://arxiv.org/abs/2409.08924) | R/research | Regression-based proximal causal inference for right-censored time-to-event data | Useful when survival/censoring and proxies are central | Newer research implementation; ask main to route survival support |
+| [`pci2s`](https://arxiv.org/abs/2409.08924) | R/research | Regression-based proximal causal inference for right-censored time-to-event data | Useful when survival/censoring and proxies are central | Newer research implementation; recommend survival support |
 | [`adjustedCurves::surv_prox_aiptw`](https://www.rdocumentation.org/packages/adjustedCurves/versions/0.11.4/topics/surv_prox_aiptw) | R | Proximal AIPTW survival curves | Packaged proximal survival workflow | Specific binary group/survival setting and bridge assumptions |
 | [`ivreg`](https://zeileis.github.io/ivreg/) / [`fixest`](https://lrberge.github.io/fixest/) | R | Linear proximal bridge sketches, IV-style bridge equations, transparent sensitivity | Easy to audit and report | Only valid under chosen linear bridge/proxy assumptions |
 | [`linearmodels`](https://bashtage.github.io/linearmodels/) | Python | Linear IV-style proximal bridge sketches | Useful Python analog for transparent bridge estimation | Not a dedicated proximal package |
@@ -52,17 +52,17 @@ Use this file to choose credible negative-control, empirical-calibration, and pr
 - Need multiple negative controls in healthcare-style data: use `EmpiricalCalibration`, and pre-specify the control set when possible.
 - Need one negative control outcome for bias adjustment: consider NCO adjustment or control-outcome calibration only if shared-bias assumptions are strong.
 - Need unmeasured-confounding identification using proxies: use proximal methods only with credible treatment and outcome proxies and interpretable bridge assumptions.
-- Need survival outcomes: ask main to route `23-survival-competing-risks`; consider proximal survival tools only if censoring and bridge assumptions are explicit.
-- Need longitudinal treatment/confounding: ask main to route `02-longitudinal-gmethods`; simple point-treatment proximal templates are not enough.
+- Need survival outcomes: recommend `23-survival-competing-risks` review; consider proximal survival tools only if censoring and bridge assumptions are explicit.
+- Need longitudinal treatment/confounding: recommend `02-longitudinal-gmethods` review; simple point-treatment proximal templates are not enough.
 - Need flexible ML: use it after the causal/proxy structure is fixed; report learner sensitivity and bridge instability.
 - Need report-ready evidence: separate diagnostic, calibration, and identification language; never say a negative control proves absence of bias.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [EmpiricalCalibration reference](https://ohdsi.github.io/EmpiricalCalibration/reference/index.html), [PCL package files](https://rdrr.io/cran/PCL/f/), [adjustedCurves proximal survival reference](https://www.rdocumentation.org/packages/adjustedCurves/versions/0.11.4/topics/surv_prox_aiptw)
+Docs checked: 2026-06-09
+Primary docs: [EmpiricalCalibration reference](https://ohdsi.github.io/EmpiricalCalibration/reference/index.html), [CohortMethod multiple analyses](https://ohdsi.github.io/CohortMethod/articles/MultipleAnalyses.html), [NCOA package](https://dceg.cancer.gov/tools/analysis/ncoadjustment), [PCL package files](https://rdrr.io/cran/PCL/f/), [adjustedCurves proximal survival reference](https://www.rdocumentation.org/packages/adjustedCurves/versions/0.11.4/topics/surv_prox_aiptw)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Proximal APIs are research-stage and fragmented; check package docs carefully before using bridge-function code. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Proximal APIs are research-stage and fragmented; check package docs carefully before using bridge-function code. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -74,4 +74,4 @@ nce <- fit_effect(data = analysis_data, treatment = "negative_control_A")
 # If many controls exist, estimate an empirical null/calibration model from control estimates.
 ```
 
-Artifact outputs to preserve: primary/control contrast table path, calibration/falsification plot path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: primary/control contrast table path, calibration/falsification plot path, manifest path, and source code path.

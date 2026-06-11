@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible survival, competing-risk, and causal survival tools. Keep the main team focused on the causal target, time zero, event/censoring definitions, horizon support, and whether the model is an estimator, a diagnostic, or a nuisance/prediction plugin.
+Use this file to choose credible survival, competing-risk, and causal survival tools. Package/software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared contract. Keep the main team focused on the causal target, time zero, event/censoring definitions, horizon support, and whether the model is an estimator, a diagnostic, or a nuisance/prediction plugin.
 
 ## Core Survival Literature
 
@@ -44,22 +44,22 @@ Use this file to choose credible survival, competing-risk, and causal survival t
 
 | Package | Language | Best Use | Pros | Caveats |
 |---|---|---|---|---|
-| [`survival`](https://cran.r-project.org/package=survival) | R | Cox, AFT, Kaplan-Meier, counting-process data, delayed entry | Mature foundation package; strong diagnostics and formula support | Cox summaries need PH and careful causal interpretation |
+| [`survival`](https://rdrr.io/cran/survival/) | R | Cox, AFT, Kaplan-Meier, Aalen-Johansen, counting-process data, delayed entry | Mature foundation package; strong diagnostics and formula support | Cox summaries need PH and careful causal interpretation |
 | [`survminer`](https://cran.r-project.org/package=survminer) | R | Publication-ready survival plots | Easy KM/Cox visualization | Plotting support, not causal estimation |
-| [`survRM2`](https://cran.r-project.org/package=survRM2) | R | RMST contrasts | Clear absolute survival-time contrasts | Requires pre-specified tau and support |
-| [`adjustedCurves`](https://cran.r-project.org/package=adjustedCurves) | R | Adjusted survival and competing-risk curves | Supports multiple adjustment approaches and reportable curves | Design/adjustment validity still required |
-| [`cmprsk`](https://cran.r-project.org/package=cmprsk) | R | CIF estimation and Fine-Gray regression | Standard competing-risk implementation | Subdistribution hazard is not the same as cause-specific hazard |
-| [`riskRegression`](https://cran.r-project.org/package=riskRegression) | R | Absolute risk prediction, competing risks, model evaluation | Strong prediction/error metrics and CIF workflows | Mostly prediction/evaluation unless causal design supplies identification |
+| [`survRM2`](https://www.rdocumentation.org/packages/survRM2/versions/1.0-4/topics/rmst2) | R | RMST contrasts | Clear absolute survival-time contrasts | Requires pre-specified tau and support |
+| [`adjustedCurves`](https://search.r-project.org/CRAN/refmans/adjustedCurves/html/adjustedsurv.html) | R | Adjusted survival and competing-risk curves | Supports multiple adjustment approaches and reportable curves | Design/adjustment validity still required |
+| [`cmprsk`](https://search.r-project.org/CRAN/refmans/cmprsk/html/crr.html) | R | CIF estimation and Fine-Gray regression | Standard competing-risk implementation | Subdistribution hazard is not the same as cause-specific hazard |
+| [`riskRegression`](https://search.r-project.org/CRAN/refmans/riskRegression/html/CSC.html) | R | Absolute risk prediction, competing risks, model evaluation | Strong prediction/error metrics and CIF workflows | Mostly prediction/evaluation unless causal design supplies identification |
 | [`prodlim`](https://cran.r-project.org/package=prodlim) | R | KM/Aalen-Johansen and prediction support | Useful backend for curves and risk regression | Lower-level support package |
 | [`pec`](https://cran.r-project.org/package=pec) | R | Prediction error curves, Brier score, C-index | Good survival model evaluation | Prediction diagnostics only |
 | [`flexsurv`](https://cran.r-project.org/package=flexsurv) | R | Flexible parametric survival/AFT models | Interpretable parametric extrapolation and multi-parameter distributions | Parametric assumptions matter, especially extrapolation |
 | [`rstpm2`](https://cran.r-project.org/package=rstpm2) | R | Flexible parametric survival models | Smooth baseline hazards and absolute risk predictions | Requires modeling skill and diagnostics |
-| [`randomForestSRC`](https://cran.r-project.org/package=randomForestSRC) | R | Random survival forests and competing-risk forests | Mature survival/competing-risk forest implementation | Prediction/nuisance support unless causal target is separately identified |
-| [`ranger`](https://cran.r-project.org/package=ranger) | R | Fast survival forests | Scales well and integrates into ML pipelines | Less causal-specific reporting support |
+| [`randomForestSRC`](https://search.r-project.org/CRAN/refmans/randomForestSRC/html/rfsrc.html) | R | Random survival forests and competing-risk forests | Mature survival/competing-risk forest implementation | Prediction/nuisance support unless causal target is separately identified |
+| [`ranger`](https://search.r-project.org/CRAN/refmans/ranger/html/ranger.html) | R | Fast survival forests | Scales well and integrates into ML pipelines | Less causal-specific reporting support |
 | [`glmnet`](https://glmnet.stanford.edu/) | R/Python | Penalized Cox nuisance or prediction model | Stable high-dimensional baseline | Nuisance/prediction only by itself |
-| [`grf`](https://grf-labs.github.io/grf/reference/causal_survival_forest.html) | R | Causal survival forest for heterogeneous effects with censoring | Direct survival CATE support with forest diagnostics | Needs appropriate target, support, event counts, and `20` coordination |
-| [`lifelines`](https://lifelines.readthedocs.io/) | Python | KM, Cox, AFT, Aalen-Johansen, survival diagnostics | Friendly Python survival toolkit | Limited causal survival estimators |
-| [`scikit-survival`](https://scikit-survival.readthedocs.io/) | Python | Coxnet, random survival forest, boosting, Brier/AUC metrics | Strong sklearn-style prediction/nuisance tooling | Causal claims require external design/estimator logic |
+| [`grf`](https://grf-labs.github.io/grf/reference/causal_survival_forest.html) | R | Causal survival forest for heterogeneous effects with censoring | Direct survival CATE support with forest diagnostics | Needs appropriate target, support, event counts, and `10` coordination |
+| [`lifelines`](https://lifelines.readthedocs.io/en/latest/) | Python | KM, Cox, AFT, Aalen-Johansen, survival diagnostics | Friendly Python survival toolkit | Limited causal survival estimators |
+| [`scikit-survival`](https://scikit-survival.readthedocs.io/en/stable/) | Python | Coxnet, random survival forest, boosting, Brier/AUC metrics | Strong sklearn-style prediction/nuisance tooling | Causal claims require external design/estimator logic |
 | [`statsmodels` duration](https://www.statsmodels.org/stable/duration.html) | Python | Cox proportional hazards through PHReg | Familiar statsmodels ecosystem | More limited survival ecosystem than R |
 | [`pycox`](https://github.com/havakv/pycox) | Python | Neural survival prediction | Useful high-dimensional prediction/nuisance candidate | Prediction-oriented; inference and causal validity limited |
 | [`xgbse`](https://loft-br.github.io/xgboost-survival-embeddings/) | Python | XGBoost survival embeddings and calibrated curves | Practical gradient-boosted survival predictions | Prediction/nuisance support, not identification |
@@ -72,16 +72,16 @@ Use this file to choose credible survival, competing-risk, and causal survival t
 - Need competing-risk absolute risk: use CIF/Aalen-Johansen or riskRegression-style absolute risk workflows.
 - Need competing-risk regression: use Fine-Gray for subdistribution summaries or cause-specific Cox for etiologic process summaries; explain the distinction.
 - Need flexible nuisance models: use `survival`, `glmnet`, `randomForestSRC`, `ranger`, `scikit-survival`, `lifelines`, `pycox`, or `xgbse` inside DR/DML/g-method workflows with cross-fitting when needed.
-- Need survival heterogeneity: ask main to route `10-heterogeneous-effects`; consider `grf::causal_survival_forest` or survival-adapted meta-learners only when the target and censoring assumptions are explicit.
-- Need longitudinal treatment with survival outcome: ask main to route `02-longitudinal-gmethods`; survival module supplies event-time and censoring support only.
+- Need survival heterogeneity: recommend `10-heterogeneous-effects` review; consider `grf::causal_survival_forest` or survival-adapted meta-learners only when the target and censoring assumptions are explicit.
+- Need longitudinal treatment with survival outcome: recommend `02-longitudinal-gmethods` review; survival module supplies event-time and censoring support only.
 - Need high-stakes inference: prefer mature estimators with explicit uncertainty, pre-specified horizons, robust sensitivity checks, and simple benchmark analyses.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [survival `coxph`](https://www.rdocumentation.org/packages/survival/versions/3.8-3/topics/coxph), [survival `survfit`](https://www.rdocumentation.org/packages/survival/versions/3.8-3/topics/survfit), [lifelines `CoxPHFitter`](https://lifelines.readthedocs.io/en/latest/fitters/regression/CoxPHFitter.html), [cmprsk manual](https://cran.r-project.org/web/packages/cmprsk/cmprsk.pdf)
+Docs checked: 2026-06-09
+Primary docs: [survival package](https://rdrr.io/cran/survival/), [cmprsk crr](https://search.r-project.org/CRAN/refmans/cmprsk/html/crr.html), [riskRegression CSC](https://search.r-project.org/CRAN/refmans/riskRegression/html/CSC.html), [survRM2 rmst2](https://www.rdocumentation.org/packages/survRM2/versions/1.0-4/topics/rmst2), [adjustedCurves adjustedsurv](https://search.r-project.org/CRAN/refmans/adjustedCurves/html/adjustedsurv.html), [grf causal_survival_forest](https://grf-labs.github.io/grf/reference/causal_survival_forest.html), [randomForestSRC rfsrc](https://search.r-project.org/CRAN/refmans/randomForestSRC/html/rfsrc.html), [ranger](https://search.r-project.org/CRAN/refmans/ranger/html/ranger.html), [lifelines](https://lifelines.readthedocs.io/en/latest/), [scikit-survival](https://scikit-survival.readthedocs.io/en/stable/).
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -94,4 +94,4 @@ cox <- coxph(Surv(time, event) ~ A + X1 + X2,
 ph_diag <- cox.zph(cox)
 ```
 
-Artifact outputs to preserve: survival/RMST/hazard table path, KM/CIF/PH diagnostic plot path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: survival/RMST/risk/CIF/hazard table path, KM/CIF/PH diagnostic plot path, censoring/IPCW diagnostic path, at-risk table path, manifest path, and source code path.

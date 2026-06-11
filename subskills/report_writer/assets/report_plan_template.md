@@ -12,16 +12,18 @@ Use this as a private modular report plan. It is not a released report.
 
 ## Report Assembly State
 
-Mirror `report_assembly` here before final HTML drafting. The final report should combine completed analysis units rather than use only the latest analysis note.
+Mirror `report_assembly` here before final HTML drafting. Empirical final reports should combine completed report-relevant actions rather than use only the latest analysis note. Planning HTML reports may have no included actions, but must clearly state that no data analysis or empirical estimates are included.
 
 | Field | Planned content | Status |
 |---|---|---|
-| Included execution units |  | pending / ready / missing |
+| Report type | final_html / planning_html | pending / ready / missing |
+| Template path | `subskills/report_writer/assets/final_report_template.html` / `subskills/report_writer/assets/planning_report_template.html` | pending / ready / mismatch |
+| Included actions |  | pending / ready / missing |
 | Pending before report |  | none / pending / parked / blocked |
 | Parked or not-run items to disclose |  | none / ready / missing |
 | Required mentions |  | pending / ready / missing |
 | HTML outline |  | pending / ready / missing |
-| Required assets across units |  | pending / ready / missing |
+| Required assets across included actions |  | pending / ready / missing |
 | Final HTML path | `outputs/reports/final_report_*.html` | pending / ready / missing |
 
 ## Front Summary
@@ -42,7 +44,7 @@ Mirror `report_assembly` here before final HTML drafting. The final report shoul
 | Key takeaways | Put the main message near the front | main / report_writer | planned |
 | What not to claim | Protect against overinterpretation | causal_gatekeeper / report_writer | planned |
 | Assumptions needing care | Make qualified assumptions visible | method_lead / causal_gatekeeper | planned |
-| Unresolved diagnostics | Show what still affects trust | data_analyst / method_subskill / causal_gatekeeper | planned |
+| Unresolved diagnostics | Show what still affects trust | data_analyst / method_task / causal_gatekeeper | planned |
 | Next action | Make the follow-up decision obvious | main / report_writer | planned |
 
 ## Stage Evidence Ledger
@@ -60,11 +62,11 @@ Use this table to preserve the staged consultation record. Do not let the final 
 | Execution confirmation |  |  | main | completed / qualified / missing / stale / blocked | appendix / reproducibility |
 | Execution record |  |  | main | completed / qualified / missing / stale / blocked | reproducibility |
 | Analysis unit folder and manifest |  |  | main / data_analyst | completed / qualified / missing / stale / blocked | reproducibility |
-| Dependency/package decisions |  |  | main / data_analyst / method_subskill | completed / qualified / missing / stale / blocked | reproducibility |
+| Dependency/package decisions |  |  | main / data_analyst / method_task | completed / qualified / missing / stale / blocked | reproducibility |
 | Material deviations |  |  | main / owner reviewer | completed / qualified / missing / stale / blocked | main text / reproducibility |
-| Pending user intents |  |  | main | resolved / declined / blocked / parked_for_report / missing | main text / appendix / omitted |
+| Pending actions |  |  | main | resolved / declined / blocked / parked_for_report / missing | main text / appendix / omitted |
 | Consultant alternatives |  |  | main / method_lead | resolved / declined / blocked / parked_for_report / missing | main text / appendix / omitted |
-| Results and diagnostics |  |  | data_analyst / method_subskill | completed / qualified / missing / stale / blocked | main text / appendix |
+| Results and diagnostics |  |  | data_analyst / method_task | completed / qualified / missing / stale / blocked | main text / appendix |
 | Interpretation and next steps |  |  | main / domain_expert / method_lead | completed / qualified / missing / stale / blocked | main text |
 
 ## Core Components Included By Default
@@ -75,8 +77,8 @@ Use this table to preserve the staged consultation record. Do not let the final 
 | Original and refined causal question |  | main / method_lead | planned |  |
 | Data reality and provenance |  | data_analyst | planned |  |
 | Causal framework, estimand, and assumptions |  | method_lead / causal_gatekeeper | planned |  |
-| Results, figures, and tables |  | data_analyst / method_subskill | planned |  |
-| Diagnostics, sensitivity, and robustness |  | data_analyst / method_subskill / causal_gatekeeper | planned |  |
+| Results, figures, and tables |  | data_analyst / method_task | planned |  |
+| Diagnostics, sensitivity, and robustness |  | data_analyst / method_task / causal_gatekeeper | planned |  |
 | Interpretation, limitations, and next steps |  | main / domain_expert / method_lead | planned |  |
 | Reproducibility and artifact paths |  | data_analyst / report_writer | planned |  |
 
@@ -94,17 +96,17 @@ If fallback, substitution, approximation, dropped diagnostics, or changed output
 
 ## Optional Components To Offer
 
-Offer one or two at a time through main.
-The plan may track several candidates, but feedback to main should surface only one or two choices for the next user turn.
+Offer three or four meaningful next actions through main when multiple useful moves exist.
+The plan may track several candidates, but feedback to main should surface only the top three or four choices for the next user turn.
 
 | Optional component | Why it may help | Needed asset or owner | Status | User choice |
 |---|---|---|---|---|
 | Expanded DAG, timing diagram, or role table |  | causal_gatekeeper / method_lead / report_writer | candidate | pending |
 | Exploratory causal discovery module |  | causal_discovery / method_lead / causal_gatekeeper | candidate | pending |
-| Main result visual or table |  | data_analyst / method_subskill | candidate | pending |
-| Diagnostic visual or table |  | data_analyst / method_subskill | candidate | pending |
-| Sensitivity or robustness section |  | method_lead / method_subskill | candidate | pending |
-| Method module appendix |  | method_subskill | candidate | pending |
+| Main result visual or table |  | data_analyst / method_task | candidate | pending |
+| Diagnostic visual or table |  | data_analyst / method_task | candidate | pending |
+| Sensitivity or robustness section |  | method_lead / method_task | candidate | pending |
+| Method module appendix |  | method_task | candidate | pending |
 | Code and reproducibility appendix |  | data_analyst / report_writer | candidate | pending |
 | Executive summary |  | main / report_writer | candidate | pending |
 
@@ -114,28 +116,32 @@ Use this table before drafting any substantive model-based, diagnostic, explorat
 
 | Asset need | Required? | Owner or route | Status | Path or omission reason | Report placement |
 |---|---|---|---|---|---|
-| Main result visual or table | yes / no | data_analyst / method_subskill / report_writer | ready / missing / blocked / omitted |  | main text |
-| Key diagnostic visual or table | yes / no | data_analyst / method_subskill | ready / missing / blocked / omitted |  | main text / appendix |
-| Method-sensitive figure | yes / no | method_subskill / analysis code | ready / missing / blocked / omitted |  | main text / appendix |
+| Main result visual or table | yes / no | data_analyst / method_task / report_writer | ready / missing / blocked / omitted |  | main text |
+| Key diagnostic visual or table | yes / no | data_analyst / method_task | ready / missing / blocked / omitted |  | main text / appendix |
+| Method-sensitive figure | yes / no | method_task / analysis code | ready / missing / blocked / omitted |  | main text / appendix |
 | Inline causal-structure sketch | yes / no | causal_gatekeeper | not_required / ready / missing / blocked / omitted_by_user |  | main text / appendix / omitted |
 | Expanded DAG, timing, or role artifact | yes / no | method_lead / causal_gatekeeper / report_writer | ready / missing / blocked / omitted |  | main text / appendix |
-| Estimand or model formula cue | yes / no | method_lead / method_subskill / report_writer | ready / missing / blocked / omitted |  | main text / appendix |
-| Citation/source notes | yes / no | domain_expert / method_subskill / report_writer | ready / missing / blocked / omitted |  | references |
+| Estimand or model formula cue | yes / no | method_lead / method_task / report_writer | ready / missing / blocked / omitted |  | main text / appendix |
+| Citation/source notes | yes / no | domain_expert / method_task / report_writer | ready / missing / blocked / omitted |  | references |
 | Narrative cues | yes / no | report_writer / owner reviewers | ready / missing / blocked / omitted |  | all major evidence sections |
 
 ## Manuscript Argument Plan
 
 Use this before drafting the final HTML. Each major section should advance the causal argument rather than list artifacts.
 
-| Section | Section thesis | Reasoning needed | Formula needed? | Display item | Limitation to state | Status |
-|---|---|---|---|---|---|---|
-| Main answer |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
-| Causal estimand and analytical logic |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
-| Data reality |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
-| Method and assumptions |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
-| Results |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
-| Diagnostics and sensitivity |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
-| Interpretation and next steps |  |  | yes / no / omitted |  |  | ready / missing / terse_by_user_request |
+Use this table as the paragraph plan for the report. A polished report should explain why each section matters, what causal reasoning is being used, what evidence supports it, and what remains limited.
+
+| Section | Section thesis | Reasoning needed | Required equation or target | Required citations/source notes | Display item | Alternative or pitfall note | Limitation to state | Status |
+|---|---|---|---|---|---|---|---|---|
+| Main answer |  |  | yes / no / omitted |  |  |  |  | ready / missing / terse_by_user_request |
+| Causal estimand and mathematical target |  |  | yes / no / omitted |  |  |  |  | ready / missing / terse_by_user_request |
+| Data reality and provenance |  |  | yes / no / omitted |  |  |  |  | ready / missing / terse_by_user_request |
+| Method rationale, alternatives, and pitfalls |  |  | yes / no / omitted |  |  |  |  | ready / missing / terse_by_user_request |
+| Causal structure and assumptions |  |  | yes / no / omitted |  |  |  |  | ready / missing / terse_by_user_request |
+| Results and evidence |  |  | yes / no / omitted |  |  |  |  | ready / missing / terse_by_user_request |
+| Diagnostics and sensitivity |  |  | yes / no / omitted |  |  |  |  | ready / missing / terse_by_user_request |
+| Interpretation and next decisions |  |  | yes / no / omitted |  |  |  |  | ready / missing / terse_by_user_request |
+| Planning-only report note |  |  | yes / no / omitted |  |  |  |  | ready / missing / not_applicable |
 
 ## Planned Display Items
 
@@ -143,7 +149,7 @@ Use this before drafting the final HTML. Each major section should advance the c
 |---|---|---|---|---|---|---|---|---|---|
 | Main result table or figure | figure / table | main result |  |  |  |  |  | main text | planned |
 | Key diagnostic table or figure | figure / table | trust/robustness |  |  |  |  |  | main text / appendix | candidate |
-| Inline causal-structure sketch | inline sketch | claim boundary |  | causal_validity.dag_and_timing.causal_structure_sketch |  |  |  | main text / appendix | not_required / ready / missing / blocked / omitted_by_user |
+| Inline causal-structure sketch | inline sketch | claim boundary |  | causal_gatekeeper.causal_structure_sketch |  |  |  | main text / appendix | not_required / ready / missing / blocked / omitted_by_user |
 | Expanded DAG/timing/role artifact | figure / table | causal structure |  |  |  |  |  | main text / appendix | candidate |
 | Discovery graph or stability artifact | figure / table | exploratory |  |  |  |  |  | appendix | candidate |
 
@@ -185,7 +191,7 @@ Every major evidence section should have prose, not only tables.
 | Analysis unit folder and manifest | any executed analysis included in report | pending / ready / missing / not applicable | Use `outputs/analyses/NNN_unit_id/manifest.json`. |
 | Final HTML report path | any final report | pending / ready / missing | Use `outputs/reports/final_report_*.html`. |
 | Report asset plan | substantive analysis report | pending / ready / missing / not applicable | Required visuals/tables, citations, and narrative cues resolved. |
-| Causal structure sketch | causal/timing/adjustment logic is load-bearing | not_required / ready / missing / blocked / omitted_by_user | Must come from causal_validity; missing/blocked blocks polished causal or adjusted reports. |
+| Causal structure sketch | causal/timing/adjustment logic is load-bearing | not_required / ready / missing / blocked / omitted_by_user | Must come from causal_gatekeeper; missing/blocked blocks polished causal or adjusted reports. |
 | Citation ledger | named methods, software, data docs, or domain precedent used | pending / ready / missing / not applicable |  |
 | Narrative section checks | substantive final report | pending / ready / missing / terse_by_user_request | Major evidence sections cannot be table-only. |
 | HTML report QA | final HTML report produced | pending / passed / needs revision / not applicable | Check duplicate title, wrapper/container, tables, links, source script/artifact links, and visible claim boundary. |
@@ -214,4 +220,4 @@ Every major evidence section should have prose, not only tables.
 
 ## Final HTML Delivery
 
-[Record the final `outputs/reports/final_report_*.html` path, HTML QA status, included execution units, and the one user-facing delivery sentence main should use.]
+[Record the final `outputs/reports/final_report_*.html` path, HTML QA status, included actions, and the one user-facing delivery sentence main should use.]

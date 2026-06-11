@@ -1,7 +1,7 @@
-﻿# Negative Controls And Proximal Workflow
+# Negative Controls And Proximal Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this file when negative-control or proximal support needs more detail than `SKILL.md`. The main job is to keep bias diagnostics, empirical calibration, and proximal identification from being mixed together.
 
@@ -18,7 +18,7 @@ Record the specific concern:
 - confounding by indication or severity;
 - hidden time-varying confounding.
 
-Ask `domain_expert` what hidden process is plausible. A negative control or proxy is useful only if it relates to that process in a scientifically meaningful way.
+Recommend `domain_expert` review when the hidden process, control/proxy role, null restriction, or shared-bias rationale needs ordinary scientific interpretation. A negative control or proxy is useful only if it relates to that process in a scientifically meaningful way.
 
 ## 2. Classify Each Candidate Variable
 
@@ -60,7 +60,7 @@ Use when there are at least two meaningful proxy types:
 
 Then estimate a confounding bridge function. In simple linear settings this can look like an IV-style regression. In more complex settings it may require semiparametric, kernel, ML, or doubly robust bridge estimation.
 
-## 4. Request Minimal Evidence
+## 4. Recommend Minimal Evidence
 
 First-pass data checks:
 
@@ -71,7 +71,7 @@ First-pass data checks:
 - proxy relevance checks: proxy-treatment, proxy-outcome, and proxy-proxy relationships;
 - missingness and measurement quality of controls/proxies.
 
-For proximal work, ask whether the team can explain the treatment and outcome proxy roles in ordinary domain language. If not, keep it diagnostic/exploratory.
+For proximal work, recommend keeping the route diagnostic or exploratory unless the treatment and outcome proxy roles can be explained in ordinary domain language.
 
 ## 5. Choose Practical Tools
 
@@ -91,38 +91,42 @@ Proximal inference:
 - use `ivreg`, `fixest`, or `linearmodels` for transparent linear bridge sketches;
 - use `DoubleML`, `grf`, `SuperLearner`, `xgboost`, `sklearn`, or neural nets only as nuisance/bridge learners after the proxy roles are fixed.
 
-## 6. Coordinate With Core Skills
+## 6. Connected Reviewer Relevance
 
-Ask `domain_expert` for:
+Preserve reviewer relevance in the `method_task_results` item rather than assigning work directly.
 
-- whether controls/proxies are scientifically plausible;
-- whether treatment could affect the control outcome;
-- whether negative control exposure could affect the primary outcome;
-- whether proxies capture the suspected hidden process;
-- what null or non-null result would mean.
+- `domain_expert`:
+  - whether controls/proxies are scientifically plausible;
+  - whether treatment could affect the control outcome;
+  - whether negative control exposure could affect the primary outcome;
+  - whether proxies capture the suspected hidden process;
+  - what null or non-null result would mean.
 
-Ask `data_analyst` for:
+- `data_analyst`:
+  - timing, missingness, measurement quality, associations, and model outputs;
+  - standardized code to run the same model across primary/control outcomes;
+  - empirical calibration inputs if many controls exist.
 
-- timing, missingness, measurement quality, associations, and model outputs;
-- standardized code to run the same model across primary/control outcomes;
-- empirical calibration inputs if many controls exist.
+- `method_lead`:
+  - whether the negative control is diagnostic or identification support;
+  - bridge assumptions and causal wording;
+  - whether another design route should be revised if a falsification test fails.
 
-Ask `method_lead` for:
+- `causal_gatekeeper`:
+  - whether a null or non-null control result changes the claim boundary;
+  - whether proximal assumptions are sufficient for identification wording;
+  - whether a failed falsification should block, repair, or downgrade the claim.
 
-- whether the negative control is diagnostic or identification support;
-- bridge assumptions and causal wording;
-- whether another design route should be revised if a falsification test fails.
+## 7. Report-Support Fields
 
-## 7. Report Integration
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item:
 
-Recommended section structure:
-
-1. Hidden-bias concern.
-2. Candidate controls/proxies and domain rationale.
-3. Role classification: diagnostic, calibration, adjustment, or proximal identification.
-4. Models and assumptions.
-5. Results and sensitivity.
-6. Claim boundary.
+- hidden-bias concern;
+- candidate controls/proxies and domain rationale;
+- role classification: diagnostic, calibration, adjustment, or proximal identification;
+- models and assumptions;
+- results and sensitivity;
+- claim boundary.
 
 Use plain wording:
 

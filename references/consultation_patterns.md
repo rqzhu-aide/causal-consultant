@@ -1,621 +1,236 @@
 # Consultation Patterns
 
-Use this file for reusable phrasing and compact templates. Keep outputs conversational. In ordinary turns, offer one or two concepts, choices, or questions, then let the user respond.
+Use this file for reusable phrasing. It is not the workflow source of truth.
+Main should stay conversational, paced, and choice-oriented.
 
-Use bracketed ASCII symbol + text labels as signposts. Good labels are `[> Framing]`, `[= Data Reality]`, `[+ Method Options]`, `[+ Next Steps]`, `[! Boundary]`, `[OK Confirmed]`, `[? Question]`, and `[# Report]`. Keep the text label mandatory.
+Approved runtime labels:
 
-Use `[+ Method Options]` for analytical route menus: method/fallback paths, sensitivities, data-driven method paths, innovation/twist choices, and discovery-as-method-sidecar choices. Use `[+ Next Steps]` for workflow menus: repair, report, stop, dependency choice, source/codebook checks, report assets, domain clarification, or other non-method actions.
+- `[> Framing]`: causal question, target, estimand, or decision.
+- `[= Data Reality]`: data facts, role card, timing, support, or data limits.
+- `[+ Consultant Options]`: consultant-suggested analysis, planning, method,
+  diagnostic, sensitivity, discovery, report-asset, or interpretation options.
+- `[? Next Steps]`: the user decision, confirmation, clarification, or action
+  menu.
+- `[! Boundary]`: blocker, warning, refusal, claim limit, or material drift.
+- `[OK Confirmed]`: completed step, approved scope, saved output, or return
+  gate.
+- `[# Report]`: report plan, report QA, or HTML delivery.
 
-## Staged Choice Menu Pattern
+`[+ Consultant Options]` presents suggestions. `[? Next Steps]` asks what to do.
+Displayed choices do not authorize execution by themselves.
 
-Use after staged specialist feedback when main is giving the user options rather than asking one clarifying question. Pick the label by content.
+Every substantive causal-project reply should include `[> Framing]` before
+options or next steps. Use it even when the main content is data reality,
+boundary repair, report work, or execution closeout.
+
+## First Substantive Reply
 
 ```text
-[+ Method Options] The choices that matter most right now are:
-1. [recommended analytical route or method path]
-2. [alternative route, sensitivity, or data-driven method check]
+[> Framing] I can help with that. Right now, "[raw idea]" is a starting causal
+idea rather than an analysis-ready question.
 
-[? Question] Which path should we explore next?
+The first thing I would pin down is [timing / comparison / target population /
+outcome window / intervention level].
+
+Target sketch, if those slots are known: `[formula]`. Here [plain-language symbol
+definitions]. The missing slot is [missing slot].
+
+[? Next Steps]
+Should we first clarify [specific missing slot], or do you want to share the data
+so I can inspect what it can actually support?
 ```
 
-```text
-[+ Next Steps] The practical next choices are:
-1. [recommended repair, source check, report asset step, or stop/report option]
-2. [honest alternative]
+## Council Synthesis
 
-[? Question] Which step should we take?
+Use after one or more internal review steps have written council opinions.
+
+```text
+[> Framing] I reviewed the current council notes. The useful finding is:
+[one-sentence synthesis].
+
+[+ Consultant Options]
+1. [recommended pending action]
+2. [alternative pending action, if useful]
+3. [planning/report/repair option, only if genuinely useful]
+
+[? Next Steps]
+Which option should become the next step?
 ```
 
-## First Substantive Causal Reply Pattern
+If no real choice is needed, omit consultant options and ask one compact
+clarifying question in `[? Next Steps]`.
 
-Use after the activation message when the user says something like "I want to analyze X on Y." This is not a welcome banner. Do not repeat the activation wording or add a second generic greeting.
-
-1. Restate the raw idea.
-2. Explain the causal ambiguity in one sentence.
-3. Offer one separating question or a compact two-option map.
-4. Say what can be inspected now without pretending the causal target is settled.
-
-Example:
+## Data Reality And Role Card
 
 ```text
-[> Framing] I can help with that. Right now, "X on Y" is still a starting idea rather than a causal question.
+[> Framing] The immediate question is whether the available data can support the
+causal comparison as stated, or whether we need to reframe it.
 
-The first thing I would pin down is timing: does X clearly happen before Y, and what outcome window should count?
+[= Data Reality] The row appears to be [unit]. The exposure is
+[observed/proxy/missing], the outcome is [observed/proxy/missing], and timing is
+[clear/unclear/missing].
+
+Role card:
+- Unit: [unit]
+- Exposure or intervention: [variable and timing]
+- Outcome: [variable and window]
+- Comparison: [available / missing / implied]
+- Timing: [order and uncertainty]
+- Adjustment/design fields: [candidate fields and role caveats]
+- Blocker: [none / timing / support / missing outcome / role ambiguity]
+
+[? Next Steps]
+Should I turn this into a consultant option map, or first inspect [specific
+missing data fact]?
 ```
 
-## Option Map Template
+## Consultant Option Menu
 
-Use when the user does not yet know which causal framing they mean.
+Use when pending actions contain a real menu.
 
 ```text
-[> Framing] I see two useful ways to frame this:
+[> Framing] The current decision is which bounded step would most improve the
+causal analysis path.
 
-1. [Framing A]. This fits if [...]. It would require [...].
-2. [Framing B]. This fits if [...]. It would require [...].
+[+ Consultant Options]
+The choices that matter most right now are:
+1. [recommended action]
+2. [alternative action]
+3. [optional worthwhile action, only if it prevents losing something important]
+4. [optional fourth action, only if it is genuinely decision-relevant]
 
-[? Question] [one question].
+[? Next Steps]
+Which one should we act on next?
 ```
 
-## Data Reality Card
+If the user chooses one option, main moves it into `next_step_plan` only when it
+is routed/internal work or confirmed execution. Ordinary questions and menus
+stay in chat and `pending_actions`. If the user chooses multiple concrete
+options, main selects one immediate action and leaves the others open in
+`pending_actions`.
 
-Use after inspecting a file or data description.
+Broad approval such as "sounds good" confirms the direction; it does not approve
+every possible action or authorize execution.
+
+## Immediate Routed Step Confirmation
+
+Use when main needs the user to approve a specific immediate plan.
 
 ```text
-[= Data Reality] The row appears to be [unit], X is [observed/proxy/missing], Y is [observed/proxy/missing], and timing is [clear/unclear/missing].
+[> Framing] I have one immediate routed step proposed for the causal workflow.
 
-[? Question] Should I do [one bounded data question or inspection] next, or move to the method/fallback map with this role card?
+[OK Confirmed] Proposed routed step:
+
+- action_goal: [one selected action goal]
+- agent_called: [subskill or specialist]
+- mode: [feedback_only / bounded_inspection / execution_authorized]
+- refs: [key state sections, artifact ids, or file paths]
+- execution, if applicable: [analysis_dir, scope, claim_boundary, expected_outputs]
+
+[? Next Steps]
+Do you want me to route this exact step?
 ```
 
-## Domain Context Checkpoint Pattern
+For execution, include `execution.analysis_dir`, `execution.scope`,
+`execution.claim_boundary`, and the short `expected_outputs` list. The called
+subskill chooses tools and records actual outputs after execution.
 
-Use after the first real data scan or role card when `domain_expert` has completed a bounded context pass.
+## Boundary Or Repair
 
 ```text
-[> Framing] I also did a quick domain context check.
+[> Framing] The current causal path is blocked unless we repair or reframe one
+part of it.
 
-The useful clue is: [construct meaning / dataset precedent / endpoint convention / interpretation boundary].
+[! Boundary] I cannot proceed under the current plan because [missing gate /
+invalid claim / missing permission / drift / missing artifact].
 
-That matters because it changes [method option / variable role / wording limit / next data question].
-
-[+ Next Steps] The practical choices are:
-1. [apply this clue to the method/fallback map].
-2. [ask one domain clarification or source/codebook check].
-
-[? Question] Which step should we take?
+[? Next Steps]
+1. Repair [specific missing item].
+2. Reframe as [safe alternative].
+3. Stop or park this item.
 ```
 
-## Variable Role Card Pattern
+## Post-Execution Return Gate
 
-Use after bounded data inspection and before method/fallback choice or execution.
-
-```text
-[= Data Reality] Here is the role map I can see so far:
-
-- Unit/ID: [row unit and identifier].
-- Candidate exposure/status: [field and whether it is observed/proxy/missing].
-- Candidate outcome/proxy: [field and whether it matches the causal outcome].
-- Comparison: [available / unclear / missing].
-- Timing: [time zero, baseline, follow-up, outcome window].
-- Candidate adjustment or design fields: [covariates, modifiers, weights, clusters, survey fields].
-- Blocker: [missing or unusable role that changes the causal claim].
-
-[+ Method Options] That role map points to:
-1. [method/design path].
-2. [fallback/planning path or one missing-role check].
-
-[? Question] Which path should we explore next?
-```
-
-## Method Shaping Pattern
-
-Use when the data or goal could be reshaped toward a stronger method.
+Use immediately after execution. A results summary alone is not enough.
 
 ```text
-[+ Method Options] One useful twist is to reshape the data as [panel / person-time / baseline-follow-up / matched comparison / event time].
+[> Framing] This step is complete, but the result should be interpreted within
+the confirmed claim boundary.
 
-That could make [method pathway] plausible, but the key fact is whether [one required data condition] is available.
+[OK Confirmed] Ran: [completed unit]. Folder: [analysis_dir]. Source:
+[source_path]. Note: [analysis_note_path]. Manifest: [manifest_path].
 
-[? Question] Should I check that condition, or keep the current method path?
-```
+[! Boundary] Status: [claim boundary]. [Dependency/deviation/gatekeeper issue if
+needed.]
 
-## Method Idea Choice Pattern
+[+ Consultant Options]
+[Optional: pending analysis, sensitivity, discovery, report asset, or planning
+idea.]
 
-Use when `method_lead` has generated method ideas and the user should steer before work expands.
-
-```text
-[+ Method Options] I recorded the full option set, but these are the choices that matter most right now.
-
-One stays close to your original question: [direct method/fallback path].
-Another path is: [secondary method/fallback path].
-One useful twist is: [data twist / goal twist / implementation enhancement / diagnostic idea], because [domain/data/method hook].
-
-[? Question] Which one should we act on next? If you want more than one, I will start with one and keep the others pending.
-```
-
-## Method/Fallback Choice Gate Pattern
-
-Use after the variable-role card and before any scripts, models, result tables, workbooks, or reports.
-
-```text
-[+ Method Options] Based on that role map, I screened the method ideas and am showing the few that matter most now.
-
-1. [Path that preserves the original causal goal / design plan]. This would require [missing timing/data/design condition].
-2. [Supportable fallback or second method path]. This can use the current materials, but it should be described as [non-causal / planning / descriptive / qualified].
-3. Worth-considering twist, if one passes the screen: [data/goal/implementation/diagnostic idea], because [domain/data/method hook].
-
-My recommendation is [one path], because [short reason].
-
-[? Question] Which one should we act on next?
-```
-
-## Causal Structure Sketch Gate Pattern
-
-Use before causal, qualified-causal, adjusted/model-based, or reportable work from a causal question when the causal relationship, timing, or adjustment logic needs to be visible.
-
-```text
-[! Boundary] Before I run this as an analysis, I need the gatekeeper to make the causal structure explicit in a small text sketch.
-
-That sketch will show [exposure/intervention], [outcome], [key confounders or role risks], and any timing concern.
-
-[+ Next Steps] If the sketch is missing or blocked, the choices are:
-1. Pause for the missing design fact.
-2. Proceed only with weakened/non-causal wording.
-
-[? Question] Should I route the gatekeeper for that sketch now?
-```
-
-## Method Selection Handling Pattern
-
-Use after the user chooses one or more method ideas from a presented subset.
-
-```text
-[+ Method Options] I will treat [selected idea] as the next active work unit.
-
-I will keep [additional selected concrete idea(s)] as `pending_user_intents`. Unselected consultant ideas stay in `method_ideas` as `shown` or `unshown`, not deleted. After this unit finishes, I will bring back the next-choice menu before any final report.
-```
-
-If the user gave broad approval rather than choosing concrete items:
-
-```text
-[+ Method Options] I will treat that as agreement with the direction, not approval to run every option. I recommend starting with [selected idea] as the next scoped unit; the other consultant ideas stay in the method pool unless you choose, decline, block, supersede, or park them for report.
-```
-
-## Multi-Task Response Pattern
-
-Use whenever the user's response implies several analyses, diagnostics, sensitivities, outputs, or report actions.
-
-```text
-[+ Next Steps] I will keep all requested pieces in the plan, but only [selected item] is the next scoped step.
-
-Here are the work units I see:
-
-1. [Primary branch]: [why it is first / what it answers].
-2. [Secondary or sensitivity branch]: [what it adds].
-3. [Report or parked branch]: [why it should wait / what would trigger it].
-
-My recommendation is to specify [primary branch] first and keep the other requested item(s) pending.
-
-[? Question] Do you want me to draft the spec for that first branch?
-```
-
-## Causal Discovery Choice Pattern
-
-Use when graph hypotheses or variable-neighborhood screening could help, but discovery is not required.
-
-```text
-[> Framing] We could add a small causal-discovery sidecar here. It would look for graph hypotheses or variable neighborhoods, but it would not prove the DAG or validate the causal claim by itself.
-
-[+ Method Options] The choices are:
-1. Add that bounded exploratory graph view now.
-2. Stay with a design-led DAG and only use discovery later if the graph stays unclear.
-
-[? Question] Which path should we take?
-```
-
-## Discovery Opportunity Pattern
-
-Use after a role card or method option map when main decides whether to surface causal discovery.
-
-```text
-[+ Method Options] I checked whether a discovery sidecar would help here. Because [specific complexity cue], a bounded discovery step could [specific purpose, such as screen local neighborhoods or compare graph stories].
-
-It would stay exploratory: it would not validate adjustment, prove the DAG, or upgrade the causal claim.
-
-[? Question] Do you want to add the sidecar now or continue with the current method/fallback choice?
-```
-
-For simple data, do not add a user-facing discovery detour unless the user asks. If explanation is useful, say briefly: "I am not offering discovery here because the role card is simple enough for design-led review."
-
-## Causal Discovery Return Pattern
-
-Use after a discovery packet or when an active/paused discovery sidecar needs reintegration.
-
-```text
-[> Framing] The discovery sidecar found [exploratory finding].
-
-Before it affects the main analysis, we need to choose the handoff.
-
-[+ Next Steps] The practical choices are:
-1. Route [method/gatekeeper/data/domain review].
-2. Park it as exploratory for the report or return to [main phase].
-
-[? Question] Which step should we take?
-```
-
-## Causal Discovery Closure Pattern
-
-Use when discovery has no actionable implication, is too unstable, or the user chooses to stop the sidecar.
-
-```text
-[> Framing] I will close the discovery sidecar as exploratory and return to [main phase].
-
-Reason: [weak/unstable graph, no actionable implication, user parked it, or reviewer found no workflow change].
-```
-
-## Light Math Pattern
-
-Use when a small equation helps the user understand the choice.
-
-```text
-[> Framing] One way to write the target is:
-
-ATE = E[Y(1) - Y(0)]
-
-In plain language, that means the average difference in outcome if the same target population received the exposure versus did not. The data question is whether we can make that comparison credible.
-```
-
-## Forced Analysis Boundary Pattern
-
-Use when the user asks to skip clarification, avoid design review, "just run it," or produce a finished analysis before the project is review-ready.
-
-```text
-[! Boundary] I am sorry, but that is not how this skill works. As a causal consultant, I need to work with you to understand the design, data, timing, and goal before producing an analysis.
-
-[+ Next Steps] I can do one of two useful things now:
-1. Inspect the data reality so we know what is supportable.
-2. Refine the causal question and method path before any modeling.
-
-[? Question] Which step should we take?
-```
-
-## Forced Handoff Boundary Pattern
-
-Use when the user says "do your best," "use whatever information," "choose for me," or "give me a report" before role mapping and method/fallback choice are complete.
-
-```text
-[! Boundary] I can recommend the safest next path, but I cannot skip the consulting step that makes the analysis interpretable.
-
-[+ Next Steps] Before I run or write anything, I need to show you the variable roles and the method/fallback choice they imply. Then you can approve that path or redirect it.
-
-[? Question] Should I start with the variable-role card or the method/fallback choice once the role card is current?
-```
-
-## Recommendation Without Execution Pattern
-
-Use when main has a clear preferred next path but the user has not confirmed execution scope.
-
-```text
-[> Framing] My recommendation is [recommended path]. It is the safest choice because [one reason].
-
-That is a recommendation, not execution permission.
-
-[+ Next Steps] The choices are:
-1. [bounded next action].
-2. [alternative].
-
-[? Question] Which step should I scope?
-```
-
-## Descriptive Reframe Choice Pattern
-
-Use after data reality shows the causal claim is not ready or not supported, and the user may want a non-causal deliverable.
-
-```text
-[! Boundary] The data do not support the causal analysis as stated, so I should not turn this into a causal model.
-
-[+ Next Steps] The choices are:
-1. Keep working on the causal design.
-2. Scope a non-causal descriptive/planning deliverable with clear limits.
-
-[? Question] Which direction do you want?
-```
-
-## Reframed Plan, Not Execution Pattern
-
-Use when the user accepts a fallback or changed causal direction, but has not approved a concrete deliverable.
-
-```text
-[> Framing] That reframe is workable, but it is not yet permission to run a full analysis package.
-
-[+ Next Steps] The next useful choices are:
-1. A minimal descriptive table.
-2. A non-causal adjusted association panel with a short limitations note.
-
-[? Question] Which deliverable should I scope?
-```
-
-## Execution Scope Choice Pattern
-
-Use before scripts, models, adjusted associations, result tables, workbooks, or reports.
-
-```text
-[+ Next Steps] Before I run anything, here is the bounded scope I can do:
-
-1. [Small deliverable], which will create [specific output] and avoid causal effect language.
-2. [Larger deliverable], which will create [specific outputs] and include [diagnostic/limitations/report note].
-
-[? Question] Which one do you want me to run?
-```
-
-## Analysis Plus Report Split Pattern
-
-Use when the user asks for analysis and a report together.
-
-```text
-[+ Next Steps] I will keep the final report request in the plan, but first I need to run one scoped analysis unit at a time.
-
-The analysis unit will save its source, analysis note, figures, tables, and manifest under `outputs/analyses/[unit_id]/`. When the analyses and parked choices are resolved, report writer will combine the completed unit folders into `outputs/reports/final_report_*.html`.
-
-[? Question] Which analysis unit should I scope first?
-```
-
-## Execution Authorization Packet Pattern
-
-Use after the user chooses a method/fallback branch but before execution confirmation.
-
-```text
-[+ Next Steps] Before I run anything, here is the authorization packet for this one branch:
-
-- Branch: [primary / secondary / sensitivity / report].
-- Target: [causal / non-causal / planning] claim in plain language.
-- Variables: exposure [X], outcome [Y], comparison [C], covariates [Z].
-- Sample/design: [inclusions, exclusions, weights, clusters, survey handling].
-- Model or method: [model family or workflow].
-- Intended tools and fallback policy: [package/tool lanes; pause/install/fallback rule].
-- Diagnostics/outputs: [tables, plots, checks, files].
-- Report assets: [main result visual/table, key diagnostic visual/table, citation/source needs, narrative cues; omission reasons if any].
-- Output folder: `outputs/analyses/[unit_id]/`, with `source/`, figures/tables/data as needed, and `manifest.json`.
-- Causal structure sketch: [not required / ready / missing / blocked / omitted by user; one-line implication].
-- Allowed outputs: [source script, analysis note, embedded compact tables, external artifacts only if large/user-requested].
-- Forbidden outputs unless separately authorized: [final HTML report / workbook / extra diagnostics / unplanned compact CSVs].
-- Wording boundary: [what the result can and cannot say].
-- Assumptions not verified in data: [none / timing / baseline status / codebook fact].
-
-[? Question] If this packet is right, should I ask the gatekeeper to review the claim boundary before final execution confirmation?
-```
-
-## Confirmed Scope Pattern
-
-Use after the user chooses a specific bounded execution scope.
-
-```text
-[OK Confirmed] I will run only the authorized packet for [confirmed scope], save the unit under `outputs/analyses/[unit_id]/`, and keep the wording [causal / non-causal / planning-only] as agreed.
-```
-
-## Material Deviation Pause Pattern
-
-Use when execution would drift from the confirmed authorization packet.
-
-```text
-[! Boundary] I need to pause before continuing because execution would drift from the confirmed packet: [package/model/sample/variables/diagnostic/output/wording].
-
-[+ Next Steps] The choices are:
-1. Continue with [revised bounded approach] and label the limitation clearly.
-2. Pause and use [original intended package/data/provenance/check] before producing results.
-
-[? Question] Which path do you want?
-```
-
-## Missing Package Permission Pattern
-
-Use when the intended local package, function, or HTML report tool is unavailable.
-
-```text
-[! Boundary] I need your permission before changing the implementation. The planned tool [package/function] in the authorization packet is not available locally.
-
-[+ Next Steps] The choices are:
-1. Install or use [intended package/tool] and keep the planned method.
-2. Use [fallback approach] with a clear limitation that it changes [estimator/diagnostic/variance/HTML tool]. I will record that as an approved material deviation.
-
-[? Question] Which path do you want?
-```
-
-After fallback approval, confirm briefly that it will be recorded as `dependency_status: fallback_approved` and `deviation_status: approved_before_execution`.
-
-## Dependency Preflight Pattern
-
-Use before execution when package or HTML tool availability affects the planned method.
-
-```text
-[+ Next Steps] Before I run this authorized unit, I need to check the intended tool lane: [package/tool list].
-
-If one is missing, I will pause before installing anything or switching methods. That protects the agreed estimator, diagnostics, and report wording.
-```
-
-## Table And Artifact Scope Pattern
-
-Use before execution when outputs include result or diagnostic tables.
-
-```text
-[> Framing] For outputs, I will keep compact tables inside the analysis note or final report appendix and save only large reproducibility artifacts as separate files inside the analysis unit folder.
-
-That means [key estimates/diagnostics/balance table] will be embedded, while [bootstrap draws/per-unit predictions/long log] will be saved separately if needed.
-```
-
-## Report Asset Scope Pattern
-
-Use before execution or report drafting when the deliverable needs figures, citations, or narrative support.
-
-```text
-[# Report] For a polished report, I need the report assets to be explicit before drafting.
-
-For this unit, the key assets are: [main result visual/table], [diagnostic visual/table], [inline causal-structure sketch if causal/timing/adjustment logic matters], [citation/source notes], and [narrative cues].
-
-If any required data-dependent plot was not produced during analysis, I will ask before running a bounded report-asset generation step.
-```
-
-## Script Report Boundary Pattern
-
-Use when execution created a report-like file outside report writer.
-
-```text
-[! Boundary] The analysis code produced a report-like file that was not in the authorization packet, so I should not treat that as the final report.
-
-I will use it only as a technical input. The final report needs to be assembled through report writer so it includes the staged decision trace, source-script link, dependency notes, validity boundary, and report QA.
-```
-
-## Remaining Work Choice Pattern
-
-Use after closeout or before report writing when pending user intents or worthwhile consultant alternatives remain.
-
-```text
-[+ Next Steps] There are remaining items before report:
-1. [user-requested task or consultant-suggested idea]
-2. Park the remaining item(s) for the report with a short "not run" note.
-3. Mark the remaining item(s) unnecessary or blocked with a reason.
-
-[? Question] Do you want to try one now, park it for the report, or mark it unnecessary?
-```
-
-## Post-Execution Return Gate Pattern
-
-Use immediately after every execution-authorized script, model, table, diagnostic, or artifact-producing unit. This must happen before another branch, report, extra diagnostic, or final answer.
-
-Keep the visible message compact. The durable `execution_records` item carries the full closeout details.
-
-```text
-[OK Confirmed] Ran: [completed work unit]. Folder: [outputs/analyses/unit_id/]. Source: [script/notebook path]. Note: [analysis_note_*.md path]. Manifest: [manifest.json path].
-
-[! Boundary] Status: [claim boundary]. [Dependency/deviation/packet-match/gatekeeper issue only as needed.]
-
-[+ Method Options] or [+ Next Steps] choices:
+[? Next Steps]
 1. [recommended next action]
-2. [HTML report option]: create an HTML report from the completed analysis so far; if work remains, list it as not run or parked for report.
-3. [pending user-requested branch, repair, worthwhile consultant idea, sensitivity, discovery sidecar, report asset step, or stop option]
-
-[? Question] Which option should we take next?
+2. Create an HTML report from completed work so far.
+3. [pending action, repair, stop, or alternative direction]
 ```
 
-Use `[+ Method Options]` when the Return Gate menu is mainly analytical branches, method ideas, sensitivities, or discovery sidecars. Use `[+ Next Steps]` when it is mainly repair, dependency, report, stop, or report-asset work.
-Include an HTML report option after any completed analysis. When remaining user-requested work or worthwhile consultant ideas are unresolved, the report option is a user choice to park or list those items as not run before report writer starts; it is not silent permission to drop them.
-
-## Report Next-Step Pattern
-
-Use after a Post-Execution Return Gate when no report was already confirmed and the user chooses the HTML report option. If `queue_reconciliation.report_ready` is false, first ask whether to park, decline, block, or run the remaining items; only mark `report_assembly` as `ready_for_writer` after that decision is recorded.
+If required closeout facts are missing:
 
 ```text
-[# Report] I have the completed analysis unit folder(s), Return Gate state, and remaining work is resolved or parked.
+[> Framing] The execution cannot be cleanly closed out until the missing run
+record is repaired.
 
-[+ Next Steps] The report-ready choices are:
-1. Create the full HTML report now under `outputs/reports/`.
-2. Stop here with the analysis note.
-3. Revise one specific report asset or limitation before drafting.
+[! Boundary] The return gate is blocked because [missing folder / source / note /
+manifest / review].
 
-[? Question] Which report step should we take?
+[? Next Steps]
+1. Repair the missing closeout fact.
+2. Stop with the technical note only.
 ```
 
-## Specialist Work Request Pattern
+## Planning Or Report Choice
 
-Use when a specialist returns a request that would require inspection, diagnostics, artifacts, scripts, models, tables, or report work.
+Use at a natural planning plateau before empirical analysis:
 
 ```text
-[= Data Reality] The specialist found one useful next check: [bounded check].
+[> Framing] We are at a planning point: the causal question can be sharpened,
+but no empirical analysis has been run yet.
 
-[+ Next Steps] The choices are:
-1. Do that bounded check now.
-2. Keep refining [question/method/design].
-
-[? Question] Which direction do you want?
+[? Next Steps]
+1. If you have data, share it and I can inspect the data reality before analysis.
+2. Create a planning-focused HTML report from the causal design discussion so far.
+3. Keep exploring the causal question, method options, assumptions, or alternatives.
 ```
 
-## Specialist Feedback Handoff Pattern
-
-Use when a specialist was routed in feedback-only mode.
+Use after completed analysis when report work is a real option:
 
 ```text
-[> Framing] Here is the useful feedback: [one-sentence finding].
+[> Framing] The completed artifacts are enough to consider report assembly, but
+any open claim or asset gaps should be handled first.
 
-[+ Next Steps] The next choices are:
-1. [option A].
-2. [option B].
+[# Report] I can create a static HTML report from the completed work so far.
 
-[? Question] Which one should we take?
+[? Next Steps]
+1. Create the HTML report.
+2. Run or repair [specific remaining action] first.
+3. Stop with the analysis note.
 ```
 
-## Staged Core Handoff Pattern
+Planning reports must say no empirical analysis or estimates were completed.
+Empirical reports must use completed artifacts from `artifact_index`.
 
-Use when a core subskill completes one routed stage and returns next-stage options.
+## Final HTML Delivery
 
 ```text
-[OK Confirmed] The [role] completed [stage]. It found [one compact finding].
+[> Framing] The report deliverable is ready; the remaining decision is whether
+to revise, inspect, or stop.
 
-[+ Next Steps] The useful next choices are:
-1. [next-stage option A]
-2. [next-stage option B]
+[# Report] The HTML report is ready:
+[final_report_path]
 
-My recommendation is [one option], because [short reason].
+It includes [included actions/artifacts], the claim boundary, and any parked or
+not-run items.
 
-[? Question] Do you want to take that step, or choose the other path?
+[? Next Steps]
+Would you like to review a specific section, revise the report, or stop here?
 ```
-
-## Exploration Thread Pattern
-
-Use when a prior direction becomes relevant again after new information.
-
-```text
-[> Framing] This new information reopens one question we had set aside: [direction].
-
-It matters now because [new file / clearer timing / changed target / newly plausible method] could change the analysis path.
-```
-
-## Strong Refusal Response
-
-Use when the design clearly cannot support the requested causal target.
-
-```text
-[! Boundary] I cannot produce that causal analysis in this skill because the design cannot support the direction of the claim.
-
-[+ Next Steps] One acceptable reframe is: [descriptive association / planning analysis / revised causal question].
-
-[? Question] Do you want to use that reframe or pause here?
-```
-
-## Report Orientation
-
-Use only as a high-level orientation before routing `report_writer`. Detailed final HTML structure, QA, assets, citations, and owner review live in `subskills/report_writer/references/report_workflow.md`.
-
-The final HTML report should preserve the staged consultation and combine the completed analysis unit folders: causal framing, data reality and role card, method/fallback choice, causal-structure sketch when required, selected work-unit specs, validity boundaries, execution Return Gates, results, diagnostics, report assets, citations, limitations, reproducibility, artifact paths, and parked alternatives.
-
-## Report Component Choice Pattern
-
-Use when report writer has a report plan and main should keep the user in control of optional report work.
-
-```text
-[# Report] The core report can cover [main answer / causal question / data reality / method / results / limitations].
-
-One useful optional addition would be [expanded DAG/timing note / diagnostic plot / sensitivity section / code appendix / executive summary], because it would help the reader see [reason].
-
-[? Question] Do you want to include that, or keep the first draft simpler?
-```
-
-## Stage-Aware Report Handoff Pattern
-
-Use when report writer has enough evidence to draft or deliver a comprehensive report.
-
-```text
-[# Report] I will make this a stage-aware report, not just a results note.
-
-It will combine the completed analysis unit folder(s) into one final HTML report under `outputs/reports/`, including the causal framing, role map, method/fallback choice, selected work-unit spec, validity boundary, execution/dependency notes, results, diagnostics, and next steps. Compact tables will go inside the report; only large reproducibility artifacts will be linked separately.
-```
-
-## Report QA Revision Pattern
-
-Use when a draft or final HTML report is missing required report-ready items.
-
-```text
-[# Report] I need to revise the HTML report before calling it ready. It is missing [stage trace / source script link / dependency note / artifact index / required figure / causal structure sketch / citation ledger / narrative explanation / working links / clean HTML structure].
-
-I will fix the HTML report artifact first, then return the ready report path.
-```
-
-If the issue is dependency/deviation inconsistency, say that fallback/substitution is present but material-deviation status is missing or `none`, then revise it to approved before execution, accepted after execution, or unresolved based on the recorded user decision.

@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible matching, weighting, and balance tools. Keep the main team focused on estimand, support, measured covariate balance, and target-population meaning before software.
+Use this file to choose credible matching, weighting, and balance tools. Package/software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared contract. Keep the main team focused on estimand, support, measured covariate balance, and target-population meaning before software.
 
 ## Core Literature
 
@@ -27,19 +27,19 @@ Use this file to choose credible matching, weighting, and balance tools. Keep th
 
 | Package | Language | Best Use | Pros | Caveats |
 |---|---|---|---|---|
-| [`MatchIt`](https://kosukeimai.github.io/MatchIt/) | R | Nearest, optimal, full, exact, coarsened, subclassification matching | Strong design-stage matching interface and diagnostics workflow | Outcome inference and estimand shifts still need care |
-| [`WeightIt`](https://ngreifer.github.io/WeightIt/) | R | ATE/ATT/ATC/ATO weights, CBPS, entropy, overlap, multi-category treatments | Broad modern weighting interface | Needs weight, overlap, and balance diagnostics |
-| [`cobalt`](https://ngreifer.github.io/cobalt/) | R | Balance tables, love plots, distribution diagnostics | Excellent reporting artifacts across MatchIt/WeightIt/twang | Diagnostic only, not an estimator |
-| [`CBPS`](https://cran.r-project.org/package=CBPS) | R | Covariate balancing propensity scores | Directly targets balance | Can be unstable with sparse/high-dimensional covariates |
-| [`cobalt` + `survey`](https://cran.r-project.org/package=survey) | R | Weighted outcome models and robust design-weight handling | Mature survey/weighted-model infrastructure | Combining survey and causal weights needs explicit target |
-| [`optmatch`](https://cran.r-project.org/package=optmatch) | R | Optimal and full matching | Strong matching algorithms | Setup can be more specialized |
+| [`MatchIt`](https://kosukeimai.github.io/MatchIt/reference/matchit.html) | R | Nearest, optimal, full, exact, coarsened, subclassification, and cardinality matching | Strong design-stage matching interface and diagnostics workflow | Outcome inference and estimand shifts still need care |
+| [`WeightIt`](https://ngreifer.github.io/WeightIt/reference/weightit.html) | R | ATE/ATT/ATC/ATO weights, CBPS, entropy, overlap, multi-category treatments | Broad modern weighting interface | Needs weight, overlap, and balance diagnostics |
+| [`cobalt`](https://ngreifer.github.io/cobalt/reference/bal.tab.html) | R | Balance tables, love plots, distribution diagnostics | Excellent reporting artifacts across MatchIt/WeightIt/twang | Diagnostic only, not an estimator |
+| [`CBPS`](https://search.r-project.org/CRAN/refmans/CBPS/html/00Index.html) | R | Covariate balancing propensity scores | Directly targets balance | Can be unstable with sparse/high-dimensional covariates |
+| [`survey`](https://search.r-project.org/CRAN/refmans/survey/html/00Index.html) | R | Weighted outcome models and robust design-weight handling | Mature survey/weighted-model infrastructure | Combining survey and causal weights needs explicit target |
+| [`optmatch`](https://www.rdocumentation.org/packages/optmatch/versions/0.7-0/topics/fullmatch) | R | Optimal and full matching | Strong matching algorithms | Setup can be more specialized |
 | [`cem`](https://cran.r-project.org/package=cem) | R | Coarsened exact matching | Transparent strata and strong face validity | Coarsening choices can discard many units |
-| [`ebal`](https://cran.r-project.org/package=ebal) / [`sbw`](https://cran.r-project.org/package=sbw) | R | Entropy or stable balancing weights | Direct moment balance and stable weights | Target moments and variance need reporting |
+| [`ebal`](https://search.r-project.org/CRAN/refmans/WeightIt/html/method_ebal.html) / [`sbw`](https://cran.r-project.org/package=sbw) | R | Entropy or stable balancing weights | Direct moment balance and stable weights | Target moments and variance need reporting |
 | [`twang`](https://cran.r-project.org/package=twang) | R | Boosted propensity weighting | Useful nonlinear propensity estimation | Balance diagnostics, not AUC, decide success |
-| [`designmatch`](https://cran.r-project.org/package=designmatch) | R | Cardinality and optimal matching under constraints | Good when exact design constraints matter | More specialized optimization workflow |
+| [`designmatch`](https://cran.r-universe.dev/designmatch/doc/manual.html) | R | Cardinality and optimal matching under constraints | Good when exact design constraints matter | More specialized optimization workflow |
 | [`DoWhy`](https://www.pywhy.org/dowhy/) | Python | DAG identification plus propensity-score estimators/refuters | Clear causal workflow and refutation framing | Balance diagnostics may need custom code |
 | [`causalml`](https://github.com/uber/causalml) | Python | Propensity and uplift workflows | Practical Python examples | Not primarily a balance-reporting toolkit |
-| [`causallib`](https://github.com/IBM/causallib) | Python | IPW, matching, standardization estimators | Familiar sklearn-style tools | Smaller ecosystem than R balance packages |
+| [`causallib`](https://causallib.readthedocs.io/en/latest/) | Python | IPW, matching, standardization estimators | Familiar sklearn-style tools | Smaller ecosystem than R balance packages |
 | [`statsmodels`](https://www.statsmodels.org/) / [`scikit-learn`](https://scikit-learn.org/) | Python | Custom propensity models, weights, and diagnostics | Flexible and transparent | Must implement balance and variance carefully |
 
 ## Practical Selection Rules
@@ -50,15 +50,15 @@ Use this file to choose credible matching, weighting, and balance tools. Keep th
 - Need limited-overlap target: use overlap weights, trimming, or restricted support and state target shift.
 - Need exact domain comparability: exact/coarsened/cardinality matching before flexible weights.
 - Need high-dimensional propensity: ML can help, but choose by balance/support diagnostics, not classification AUC.
-- Need longitudinal treatment/censoring weights: ask main to route `02-longitudinal-gmethods`.
+- Need longitudinal treatment/censoring weights: recommend `02-longitudinal-gmethods` review.
 - Need final effect estimation with robustness: pass balance/weight artifacts to `21-doubly-robust-estimation`.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [MatchIt `matchit`](https://kosukeimai.github.io/MatchIt/reference/matchit.html), [WeightIt `weightit`](https://ngreifer.github.io/WeightIt/reference/weightit.html), [cobalt `bal.tab`](https://ngreifer.github.io/cobalt/reference/bal.tab.html)
+Docs checked: 2026-06-09
+Primary docs: [MatchIt `matchit`](https://kosukeimai.github.io/MatchIt/reference/matchit.html), [WeightIt `weightit`](https://ngreifer.github.io/WeightIt/reference/weightit.html), [cobalt `bal.tab`](https://ngreifer.github.io/cobalt/reference/bal.tab.html), [cobalt `love.plot`](https://search.r-project.org/CRAN/refmans/cobalt/help/love.plot.html), [CBPS index](https://search.r-project.org/CRAN/refmans/CBPS/html/00Index.html), [MatchIt cardinality matching](https://search.r-project.org/CRAN/refmans/MatchIt/html/method_cardinality.html), [designmatch manual](https://cran.r-universe.dev/designmatch/doc/manual.html), [causallib](https://causallib.readthedocs.io/en/latest/).
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -72,4 +72,4 @@ balance <- bal.tab(m)
 matched_data <- match.data(m)
 ```
 
-Artifact outputs to preserve: matched/weighted sample table path, balance/overlap plot path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: matched/weighted sample table path, balance/overlap plot path, weight/ESS table path, manifest path, and source code path.

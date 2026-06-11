@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible regression-discontinuity, regression-kink, local-randomization, geographic RD, and diagnostic tools. Keep the main team focused on the cutoff rule, local estimand, manipulation risk, bandwidth support, and reportable diagnostics.
+Use this file to choose credible regression-discontinuity, regression-kink, local-randomization, geographic RD, and diagnostic tools. Package and software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared method/task contract. Keep the main team focused on the cutoff rule, local estimand, manipulation risk, bandwidth support, and reportable diagnostics.
 
 ## Core Literature
 
@@ -44,7 +44,7 @@ Use this file to choose credible regression-discontinuity, regression-kink, loca
 | [`rdlocrand`](https://rdpackages.github.io/rdlocrand/) | R, Stata | Local randomization RD, window selection, randomization inference | Useful for discrete scores or very local windows | Requires defensible as-if random window |
 | [`rdmulti`](https://rdpackages.github.io/rdmulti/) | R, Stata | Multiple cutoffs or multiple scores | Coordinates RD evidence across cutoffs/scores | Interpretation may be cutoff-specific; pooling needs justification |
 | [`rdpower`](https://rdpackages.github.io/rdpower/) | R, Stata | Power and sample-size planning for RD | Useful before data collection or when feasibility is uncertain | Depends on design assumptions and variance inputs |
-| [`rdhte`](https://arxiv.org/abs/2507.01128) | R, Stata | Heterogeneous treatment effects in sharp RD | Emerging support for RD heterogeneity | Newer ecosystem; ask main to route `10-heterogeneous-effects` |
+| [`rdhte`](https://arxiv.org/abs/2507.01128) | R, Stata | Heterogeneous treatment effects in sharp RD | Emerging support for RD heterogeneity | Newer ecosystem; recommend `10-heterogeneous-effects` review |
 | [`CausalPy`](https://causalpy.readthedocs.io/en/latest/api/generated/causalpy.experiments.regression_discontinuity.RegressionDiscontinuity.html) | Python | Sharp RD with OLS, sklearn, or Bayesian/PyMC models | Convenient Python workflow and plots | Not a replacement for rdrobust-style RD inference in high-stakes reports |
 | [`statsmodels`](https://www.statsmodels.org/stable/index.html) | Python | Custom local-linear benchmarks, clustered/robust regressions, segmented checks | Flexible and mature for transparent regression analogs | Analyst must implement bandwidths, kernels, and RD diagnostics carefully |
 | [`fixest`](https://lrberge.github.io/fixest/) | R | Local linear/fuzzy RD regression analogs with fixed effects/clustering | Useful for custom sensitivity and transparent local regressions | Does not replace rdrobust bandwidth/RBC workflow |
@@ -54,22 +54,22 @@ Use this file to choose credible regression-discontinuity, regression-kink, loca
 ## Practical Selection Rules
 
 - Need a standard continuous-score sharp RD: start with `rdrobust`, `rdbwselect`, `rdplot`, and `rddensity`.
-- Need fuzzy compliance or encouragement at a cutoff: use `rdrobust` fuzzy support and ask main to route `05-instrumental-variables`.
+- Need fuzzy compliance or encouragement at a cutoff: use `rdrobust` fuzzy support and recommend `05-instrumental-variables` review.
 - Need a discrete running variable or a very narrow window: consider `rdlocrand` and report local-randomization assumptions.
 - Need multiple cutoffs or scores: use `rdmulti` and report cutoff-specific versus pooled interpretations.
 - Need an intensity slope change rather than a level jump: consider regression kink design, with stronger slope-change and smoothness checks.
 - Need geographic boundary RD: use geospatial preprocessing, boundary balance checks, and interference/spillover review.
-- Need a date cutoff: treat it cautiously; ask main to consider time-series, DiD, or synthetic-control modules if trends/shocks could drive the discontinuity.
-- Need broad generalization: ask main to route `14-transportability-generalizability`; RD alone is local.
+- Need a date cutoff: treat it cautiously; recommend time-series, DiD, or synthetic-control review if trends/shocks could drive the discontinuity.
+- Need broad generalization: recommend `14-transportability-generalizability` review; RD alone is local.
 - Need Python-only work: use Python `rdrobust` where available; otherwise use CausalPy or `statsmodels` as exploratory/benchmark tools and validate production inference carefully.
 - Need report-ready evidence: include the cutoff rule, local estimand, RD plot, treatment jump, density/manipulation test, covariate continuity, bandwidth sensitivity, local sample counts, and limitations.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [rdrobust GitHub/docs](https://github.com/rdpackages/rdrobust), [rdrobust package reference](https://www.rdocumentation.org/packages/rdrobust/versions/3.0.0), [rddensity reference](https://www.rdocumentation.org/packages/rddensity/versions/2.6/topics/rddensity)
+Docs checked: 2026-06-09
+Primary docs: [RD Packages index](https://rdpackages.github.io/), [rdrobust GitHub/docs](https://github.com/rdpackages/rdrobust), [rddensity docs](https://rdpackages.github.io/rddensity/), [rdlocrand docs](https://github.com/rdpackages/rdlocrand), [rdmulti docs](https://rdpackages.github.io/rdmulti/), [rdpower docs](https://rdpackages.github.io/rdpower/)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -82,4 +82,4 @@ density <- rddensity(X = rd_data$running, c = cutoff)
 rdplot(y = rd_data$Y, x = rd_data$running, c = cutoff)
 ```
 
-Artifact outputs to preserve: RD estimate/bandwidth table path, RD and density plot paths, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: RD estimate/bandwidth table path, RD and density plot paths, source code path.

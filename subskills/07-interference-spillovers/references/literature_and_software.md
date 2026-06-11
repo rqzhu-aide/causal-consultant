@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible interference, spillover, network exposure, partial interference, spatial spillover, and contamination tools. This area is still developing; the strongest workflow is usually a well-justified exposure mapping plus careful design, diagnostics, and uncertainty.
+Use this file to choose credible interference, spillover, network exposure, partial interference, spatial spillover, and contamination tools. Package and software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared method/task contract. This area is still developing; the strongest workflow is usually a well-justified exposure mapping plus careful design, diagnostics, and uncertainty.
 
 ## Core Literature
 
@@ -57,17 +57,17 @@ Use this file to choose credible interference, spillover, network exposure, part
 - Need network A/B or randomized assignment with observed graph: define exposure mapping, compute exposure probabilities, and use randomization/IPW logic; use graph cluster randomization when designing the experiment.
 - Need observational peer effects: start with the exposure map, homophily/confounding review, support table, and generalized propensity/outcome model; treat results as fragile unless the domain design is strong.
 - Need geographic spillovers: build distance or buffer exposures with `sf`/`geopandas`; consider `geocausal` or `SpatialEffect` when the data match their assumptions.
-- Need IV/noncompliance plus spillovers: ask main to route `05-instrumental-variables` and consider `latenetwork` or Vazquez-Bare style estimands.
-- Need DiD/RD/synthetic control with contamination: ask main to route the relevant design-route module and flag interference exposure-map work for main.
+- Need IV/noncompliance plus spillovers: recommend `05-instrumental-variables` review and consider `latenetwork` or Vazquez-Bare style estimands.
+- Need DiD/RD/synthetic control with contamination: recommend the relevant design-route review and preserve the interference exposure-map issue in the `method_task_results` item.
 - Need ML: use it for nuisance prediction, exposure-response flexibility, or diagnostics after the exposure mapping is fixed; do not let ML invent the spillover estimand.
 - Need report-ready evidence: include the exposure map, support, balance/overlap, dependence-aware uncertainty, sensitivity to alternative maps, and strict wording of direct versus indirect effects.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [igraph `graph_from_data_frame`](https://r.igraph.org/reference/graph_from_data_frame.html), [NetworkX `from_pandas_edgelist`](https://networkx.org/documentation/stable/reference/generated/networkx.convert_matrix.from_pandas_edgelist.html), [geepack manual](https://hojsgaard.r-universe.dev/geepack/doc/manual.html)
+Docs checked: 2026-06-09
+Primary docs: [inferference CRAN docs](https://www.r-pkg.org/pkg/inferference), [interferenceCI docs](https://www.rdocumentation.org/packages/interferenceCI/versions/1.1), [latenetwork docs](https://www.rdocumentation.org/packages/latenetwork/versions/1.0.1), [geocausal manual](https://cran.r-universe.dev/geocausal/doc/manual.html), [networkinference PyPI](https://pypi.org/project/networkinference/), [igraph `graph_from_data_frame`](https://r.igraph.org/reference/graph_from_data_frame.html), [NetworkX `from_pandas_edgelist`](https://networkx.org/documentation/stable/reference/generated/networkx.convert_matrix.from_pandas_edgelist.html), [geepack manual](https://hojsgaard.r-universe.dev/geepack/doc/manual.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -83,4 +83,4 @@ gee_fit <- geeglm(Y ~ A + neighbor_A + X1 + X2,
                   id = cluster_id, data = analysis_data)
 ```
 
-Artifact outputs to preserve: exposure-map table path, network/support diagnostic plot path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: exposure-map table path, network/support diagnostic plot path, manifest path, and source code path.

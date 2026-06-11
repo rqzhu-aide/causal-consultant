@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible IV, weak-instrument, IV-DML, and Mendelian randomization tools. Keep the main team focused on identification assumptions and local interpretation before software.
+Use this file to choose credible IV, weak-instrument, IV-DML, and Mendelian randomization tools. Package and software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared method/task contract. Keep the main team focused on identification assumptions and local interpretation before software.
 
 ## Core Literature
 
@@ -69,7 +69,7 @@ Use this file to choose credible IV, weak-instrument, IV-DML, and Mendelian rand
 - Need transparent noncompliance analysis: report ITT/reduced form, then CACE/LATE with `estimatr::iv_robust`, `ivreg`, or `linearmodels` if assumptions hold.
 - Need many fixed effects: use `fixest` or `linearmodels`, but supplement weak-IV diagnostics.
 - Need weak-instrument robustness: use Anderson-Rubin/CLR-style intervals via `ivmodel`, `ivmodels`, or Stata `ivreg2`/`weakiv`.
-- Need high-dimensional controls or flexible nuisance learners: use `DoubleML` or `EconML`; ask main to route `22-double-machine-learning`.
+- Need high-dimensional controls or flexible nuisance learners: use `DoubleML` or `EconML`; recommend `22-double-machine-learning` review.
 - Need nonlinear outcome: decide whether a linear IV estimand is acceptable before using nonlinear/control-function methods.
 - Need MR summary-data analysis: use `TwoSampleMR` for extraction/harmonization and `MendelianRandomization` for method breadth; include pleiotropy and heterogeneity diagnostics.
 - Need MR with suspected pleiotropy: use MR-Egger, weighted median/mode, MR-PRESSO, multivariable MR, and domain review; do not treat sensitivity methods as automatic validation.
@@ -77,10 +77,10 @@ Use this file to choose credible IV, weak-instrument, IV-DML, and Mendelian rand
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [ivreg `ivreg`](https://zeileis.github.io/ivreg/reference/ivreg.html), [linearmodels `IV2SLS`](https://bashtage.github.io/linearmodels/iv/iv/linearmodels.iv.model.IV2SLS.html), [DoubleML PLIV](https://docs.doubleml.org/stable/api/generated/doubleml.plm.DoubleMLPLIV.html)
+Docs checked: 2026-06-09
+Primary docs: [ivreg `ivreg`](https://search.r-project.org/CRAN/refmans/ivreg/html/ivreg.html), [linearmodels `IV2SLS`](https://bashtage.github.io/linearmodels/iv/iv/linearmodels.iv.model.IV2SLS.html), [DoubleML PLIV](https://docs.doubleml.org/stable/api/generated/doubleml.plm.DoubleMLPLIV.html), [ivmodels](https://ivmodels.readthedocs.io/), [TwoSampleMR harmonization](https://mrcieu.github.io/TwoSampleMR/reference/harmonise_data.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -92,4 +92,4 @@ iv_fit <- ivreg(Y ~ A + X1 + X2 | Z + X1 + X2,
 iv_summary <- summary(iv_fit, diagnostics = TRUE)
 ```
 
-Artifact outputs to preserve: first-stage/reduced-form/IV table path, weak-IV diagnostic path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: first-stage/reduced-form/IV table path, weak-IV diagnostic path, source code path.

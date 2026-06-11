@@ -1,7 +1,7 @@
-﻿# Survival And Competing-Risk Workflow
+# Survival And Competing-Risk Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for time-to-event outcomes, censoring, competing risks, RMST, survival CATE, or survival models used as nuisance/prediction plugins.
 
@@ -43,9 +43,11 @@ Before fitting a survival model:
 | Flexible nuisance/prediction support | Coxnet, random survival forest, boosting, neural survival model | Useful regression analog for outcome/censoring models | Prediction quality is not causal validity |
 | Survival heterogeneity | Causal survival forest or survival-adapted CATE workflow | Targets survival/RMST CATE | Needs events, support, and heterogeneity module |
 | Time-varying treatment/exposure | Longitudinal g-method with survival support | Handles treatment histories and time-varying confounding | Needs `02-longitudinal-gmethods` |
-| Policy rule with survival outcome | Policy value/risk/RMST score plus held-out evaluation | Converts survival target into decision support | Needs `21` or `25` and decision constraints |
+| Policy rule with survival outcome | Policy value/risk/RMST score plus held-out evaluation | Converts survival target into decision support | Needs `11-point-treatment-rules` or `15-dynamic-treatment-policies` and decision constraints |
 
-## 4. Coordinate With Other Subskills
+## 4. Connected Reviewer Relevance
+
+Preserve reviewer relevance in the `method_task_results` item rather than assigning work directly.
 
 - `00-randomized-trials-and-ab-tests`: randomized assignment, noncompliance, stratified/clustered trials, ITT/CACE survival summaries.
 - `01-single-time-observational-exposure`: target-trial emulation, baseline treatment, adjustment, weights, and survival outcome construction.
@@ -56,10 +58,14 @@ Before fitting a survival model:
 - `20-matching-weighting-balance`: propensity weights/matching and balance before weighted survival curves or weighted Cox.
 - `21-doubly-robust-estimation`: AIPW, TMLE, one-step, or IPCW/DR survival targets.
 - `22-double-machine-learning`: cross-fitted survival/censoring nuisance models and orthogonal survival-style support.
+- `data_analyst`: event-time construction, censoring status, competing-event codes, follow-up support, delayed entry, recurrent rows, and artifact provenance.
+- `domain_expert`: endpoint meaning, composite/recurrent-event conventions, competing-event interpretation, censoring reasons, and meaningful horizons.
+- `causal_gatekeeper`: checks time zero, immortal time, censoring assumptions, competing-risk handling, and survival claim wording.
+- `report_writer`: survival tables, KM/CIF/RMST/risk visuals, at-risk tables, censoring diagnostics, and cautious survival wording.
 
-## 5. Ask For Focused Data Work
+## 5. Recommend Focused Evidence
 
-Ask for one or two checks at a time:
+Recommend one or two checks at a time:
 
 - event, censoring, and competing-risk counts by group;
 - Kaplan-Meier and censoring Kaplan-Meier curves;
@@ -84,7 +90,9 @@ Minimum diagnostic set:
 - comparison between primary scale and at least one simpler descriptive survival summary;
 - limitations on censoring, support, sparse events, and causal identification.
 
-## 7. Report Language
+## 7. Report-Support Fields
+
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item.
 
 Prefer:
 
@@ -103,9 +111,9 @@ Avoid:
 - "CATE" when the output is only predicted risk;
 - "causal survival forest proves heterogeneity" without support, honesty, and validation diagnostics.
 
-## 8. Report Packet Template
+## 8. Method Task Result Cues
 
-For the report writer, return:
+For downstream report use, preserve compact cues under `method_task_results[].report_support` or `implementation_support_details`:
 
 - `section_title`: concise survival section title.
 - `target`: risk, survival probability, RMST, CIF, hazard, CATE, policy value, or nuisance support.

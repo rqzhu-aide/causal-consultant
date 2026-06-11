@@ -1,7 +1,7 @@
-﻿# Single-Time Observational Exposure Workflow
+# Single-Time Observational Exposure Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for a baseline or one-time observational exposure comparison.
 
@@ -18,11 +18,11 @@ Record the smallest useful target trial:
 - estimand: ATE, ATT, ATC, overlap effect, risk difference, risk ratio, mean difference, survival contrast, or another target;
 - analysis set: full target sample, treated sample, matched sample, weighted population, trimmed support region, complete-case set, or imputed set.
 
-If this cannot be stated, keep work exploratory and ask for the missing design facts before selecting a polished estimator.
+If this cannot be stated, keep work exploratory and recommend collecting the missing design facts before selecting a polished estimator.
 
 ## 2. Generate A Small View Menu
 
-Offer 2-3 distinct views when observational data can be analyzed in several honest ways:
+Offer 3-4 distinct views when observational data can be analyzed in several honest ways:
 
 | View | Use When | Watch |
 |---|---|---|
@@ -60,9 +60,9 @@ Minimum checks before causal estimation:
 | Unmeasured confounding concern | sensitivity analysis, negative controls, proximal methods, or IV if credible | bounds or probes causal fragility |
 | Time-to-event outcome | survival/competing-risks support | preserves time scale and censoring logic |
 
-## 5. Ask For Focused Data Work
+## 5. Recommend Focused Data Work
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - target-trial emulation table with unresolved gaps;
 - variable timing map for exposure, confounders, mediators, colliders, selection, and outcomes;
@@ -72,9 +72,9 @@ Ask for one or two concrete checks at a time:
 - balance table before and after adjustment, matching, weighting, or trimming;
 - first-pass estimate plus diagnostics, labeled exploratory until design checks pass.
 
-## 6. Coordinate With Other Subskills
+## 6. Connected Reviewer Relevance
 
-Use this route with:
+Preserve connected reviewer relevance in the `method_task_results` item:
 
 - matching/weighting support for propensity scores, balance, weights, overlap, and trimming;
 - doubly robust or DML support for AIPW, TMLE, orthogonal scores, cross-fitting, and flexible nuisance modeling;

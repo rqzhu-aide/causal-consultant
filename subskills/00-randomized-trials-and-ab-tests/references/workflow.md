@@ -1,7 +1,7 @@
 ﻿# Randomized Trials And A/B Tests Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for randomized trials, A/B tests, encouragement designs, or experiment diagnostics.
 
@@ -43,9 +43,9 @@ Minimum checks before analysis:
 | Many outcomes, arms, windows, or subgroups | multiplicity-aware and exploratory labeling | avoid winner's curse language |
 | Online A/B testing | SRM, exposure/triggering audit, CUPED/ANCOVA when eligible | triggered analyses can change target |
 
-## 4. Ask For Focused Data Work
+## 4. Recommend Focused Data Work
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - assignment counts and SRM by arm;
 - eligible-assigned-analyzed flow table;

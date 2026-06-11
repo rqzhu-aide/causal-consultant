@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible method families and packages. Keep the main team focused on decision target, identification, support, and evaluation before software.
+Use this file to choose credible method families and packages. Package/software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared contract. Keep the main team focused on decision target, identification, support, and evaluation before software.
 
 ## Core Literature
 
@@ -36,13 +36,13 @@ Use this file to choose credible method families and packages. Keep the main tea
 |---|---|---|---|---|
 | [`policytree`](https://grf-labs.github.io/policytree/reference/index.html) | R | Interpretable binary or multi-action policy trees from reward/DR score matrices | Exact tree search, easy report graphics, fits EWM/policy-learning logic | Needs good reward scores; shallow trees may underfit |
 | [`grf`](https://grf-labs.github.io/grf/articles/policy_learning.html) | R | Causal forests and doubly robust scores feeding policy trees or rankings | Strong CATE/nuisance ecosystem, policy-tree vignette | CATE is not automatically a rule; check overlap and held-out value |
-| [`econml.policy`](https://www.pywhy.org/EconML/_autosummary/econml.policy.DRPolicyTree.html) | Python | DR policy trees/forests with sklearn-style nuisance learners | Flexible Python workflow, direct `predict` recommendations | Requires careful treatment coding, nuisance choices, and evaluation |
-| [`causalml`](https://github.com/uber/causalml) | Python | Uplift, CATE, targeting, campaign optimization, meta-learners | Practical examples and diagnostics, good product/marketing fit | APIs include experimental parts; formal causal claims still need design review |
-| [`scikit-uplift`](https://www.uplift-modeling.com/en/latest/index.html) | Python | Fast uplift baselines, AUUC/Qini, sklearn-style ranking | Simple and familiar for product/marketing teams | Primarily uplift/ranking; weaker for formal policy-value inference |
+| [`econml.policy`](https://econml.azurewebsites.net/_autosummary/econml.policy.DRPolicyTree.html) | Python | DR policy trees/forests with sklearn-style nuisance learners | Flexible Python workflow, direct `predict` recommendations | Requires careful treatment coding, nuisance choices, and evaluation |
+| [`causalml`](https://causalml.readthedocs.io/) | Python | Uplift, CATE, targeting, campaign optimization, meta-learners | Practical examples and diagnostics, good product/marketing fit | APIs include experimental parts; formal causal claims still need design review |
+| [`scikit-uplift`](https://www.uplift-modeling.com/en/v0.1.1/api/metrics.html) | Python | Fast uplift baselines, AUUC/Qini, sklearn-style ranking | Simple and familiar for product/marketing teams | Primarily uplift/ranking; weaker for formal policy-value inference |
 | [`evalITR`](https://michaellli.github.io/evalITR/index.html) | R | Experimental evaluation of ITRs using PAPE, PAPEp, PAPDp, AUPEC | Good for randomized trials and budget comparisons | Evaluation package, not a full rule learner |
-| [`personalized`](https://stat.ethz.ch/CRAN/web/packages/personalized/personalized.pdf) | R | Clinical/biostatistical subgroup and personalized medicine rules | Rich subgroup/benefit-score tooling and validation | More clinical/subgroup oriented than general policy optimization |
+| [`personalized`](https://www.jstatsoft.org/article/view/v098i05) | R | Clinical/biostatistical subgroup and personalized medicine rules | Rich subgroup/benefit-score tooling and validation | More clinical/subgroup oriented than general policy optimization |
 | [`DynTxRegime`](https://cran-e.com/package/DynTxRegime) | R | Single-stage or dynamic optimal treatment regimes | Q-learning, weighted learning, value-search methods | Dynamic use belongs to `15-dynamic-treatment-policies`; interface is specialized |
-| [`polle`](https://www.rdocumentation.org/packages/polle/versions/1.6.2) | R | Policy learning/evaluation, finite-stage policies, multi-action examples | Unifies OWL, residual weighted learning, DR Q-learning, policy-tree learning | More advanced setup; for repeated stages route to dynamic-policy support |
+| [`polle`](https://rdrr.io/cran/polle/) | R | Policy learning/evaluation, finite-stage policies, multi-action examples | Unifies OWL, residual weighted learning, DR Q-learning, policy-tree learning | More advanced setup; for repeated stages recommend dynamic-policy support |
 | [`tmle3mopttx`](https://github.com/tlverse/tmle3mopttx) | R | Targeted learning for optimal categorical treatment rules and resource constraints | CV-TMLE style evaluation, realistic rules, variable importance | Steep tlverse workflow; needs careful nuisance setup |
 | [`glmnet`](https://glmnet.stanford.edu/) | R | Penalized outcome, propensity, or benefit-score nuisance models | Strong default for high-dimensional sparse covariate adjustment | Not a policy method by itself |
 | [`xgboost`](https://xgboost.readthedocs.io/) / [`ranger`](https://cran.r-project.org/package=ranger) / [`SuperLearner`](https://cran.r-project.org/package=SuperLearner) | R | Flexible nuisance or uplift/ranking components | Useful plugins inside DR, DML, TMLE, or meta-learner workflows | Require cross-fitting/held-out evaluation; do not fix identification |
@@ -52,16 +52,16 @@ Use this file to choose credible method families and packages. Keep the main tea
 - Need an interpretable deployable rule: start with `policytree` in R or `DRPolicyTree` in EconML.
 - Need formal evaluation of an existing ITR in a randomized experiment: use `evalITR` and report PAPE/AUPEC-style metrics.
 - Need product-style uplift ranking: consider `scikit-uplift` or `causalml`, but keep causal language tied to randomization/logging/propensity support.
-- Need observational policy learning: prefer doubly robust/orthogonal approaches and ask main to route `21-doubly-robust-estimation` or `22-double-machine-learning`.
-- Need survival outcome: keep this target module active, but ask main to route `23-survival-competing-risks` for censoring and estimand support.
+- Need observational policy learning: prefer doubly robust/orthogonal approaches and recommend `21-doubly-robust-estimation` or `22-double-machine-learning` review.
+- Need survival outcome: keep this target module active, but recommend `23-survival-competing-risks` review for censoring and estimand support.
 - Need high-stakes deployment: prefer interpretable rules, prospective validation, external validation, and explicit harm/fairness constraints.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [policytree `policy_tree`](https://grf-labs.github.io/policytree/reference/policy_tree.html), [EconML `DRPolicyTree`](https://www.pywhy.org/EconML/_autosummary/econml.policy.DRPolicyTree.html)
+Docs checked: 2026-06-09
+Primary docs: [policytree reference](https://grf-labs.github.io/policytree/reference/index.html), [EconML `DRPolicyTree`](https://econml.azurewebsites.net/_autosummary/econml.policy.DRPolicyTree.html), [evalITR](https://michaellli.github.io/evalITR/index.html), [tmle3mopttx workshop](https://tlverse.org/tlverse-workshops/optimal-individualized-treatment-regimes.html), [polle docs](https://rdrr.io/cran/polle/), [CausalML docs](https://causalml.readthedocs.io/), [scikit-uplift metrics](https://www.uplift-modeling.com/en/v0.1.1/api/metrics.html).
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -72,4 +72,4 @@ tree <- policy_tree(X = baseline_features, Gamma = welfare_scores, depth = 2)
 policy_assignments <- predict(tree, baseline_features)
 ```
 
-Artifact outputs to preserve: policy/value table path, rule diagram or validation plot path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: policy/value table path, rule diagram or validation plot path, manifest path, and source code path.

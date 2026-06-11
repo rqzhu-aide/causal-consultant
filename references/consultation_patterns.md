@@ -114,21 +114,20 @@ every possible action or authorize execution.
 
 ## Immediate Routed Step Confirmation
 
-Use when main needs the user to approve a specific immediate plan.
+Use when main needs the user to approve a specific immediate internal step.
 
 ```text
-[> Framing] I have one immediate routed step proposed for the causal workflow.
+[> Framing] I have one immediate step proposed for the causal workflow.
 
-[OK Confirmed] Proposed routed step:
+[OK Confirmed] Proposed step:
 
-- action_goal: [one selected action goal]
-- agent_called: [subskill or specialist]
-- mode: [feedback_only / bounded_inspection / execution_authorized]
-- refs: [key state sections, artifact ids, or file paths]
-- execution, if applicable: [analysis_dir, scope, claim_boundary, expected_outputs]
+- Goal: [plain-language action goal]
+- Scope: [what will be reviewed, inspected, or run]
+- Materials: [key state sections, artifact ids, or file paths]
+- If execution is involved: [analysis folder, claim boundary, expected outputs]
 
 [? Next Steps]
-Do you want me to route this exact step?
+Do you want me to run this exact step?
 ```
 
 For execution, include `execution.analysis_dir`, `execution.scope`,
@@ -152,26 +151,29 @@ invalid claim / missing permission / drift / missing artifact].
 
 ## Post-Execution Return Gate
 
-Use immediately after execution. A results summary alone is not enough.
+Use after a single execution step or a completed non-report execution chain. A
+results summary alone is not enough.
 
 ```text
-[> Framing] This step is complete, but the result should be interpreted within
-the confirmed claim boundary.
+[> Framing] The confirmed execution work is complete, but the results should be
+interpreted within the confirmed claim boundary.
 
-[OK Confirmed] Ran: [completed unit]. Folder: [analysis_dir]. Source:
-[source_path]. Note: [analysis_note_path]. Manifest: [manifest_path].
+[OK Confirmed] Ran: [completed unit or execution chain]. Outputs:
+[analysis folders, source paths, notes, manifests, and key artifacts].
 
 [! Boundary] Status: [claim boundary]. [Dependency/deviation/gatekeeper issue if
-needed.]
+needed.] Remaining review or report-readiness issue: [none / specific issue].
 
 [+ Consultant Options]
-[Optional: pending analysis, sensitivity, discovery, report asset, or planning
-idea.]
+[Optional: priority pending analysis, review, sensitivity, discovery,
+report-asset, report, or planning idea.]
 
 [? Next Steps]
 1. [recommended next action]
-2. Create an HTML report from completed work so far.
+2. [priority pending action from the user request or council options]
 3. [pending action, repair, stop, or alternative direction]
+4. [HTML report option, only when completed artifacts exist and a report
+structure check can define the scope]
 ```
 
 If required closeout facts are missing:
@@ -198,7 +200,7 @@ but no empirical analysis has been run yet.
 
 [? Next Steps]
 1. If you have data, share it and I can inspect the data reality before analysis.
-2. Create a planning-focused HTML report from the causal design discussion so far.
+2. Check whether the current design discussion is enough for a planning-focused HTML report.
 3. Keep exploring the causal question, method options, assumptions, or alternatives.
 ```
 
@@ -206,12 +208,13 @@ Use after completed analysis when report work is a real option:
 
 ```text
 [> Framing] The completed artifacts are enough to consider report assembly, but
-any open claim or asset gaps should be handled first.
+the report structure should be checked before drafting final HTML.
 
-[# Report] I can create a static HTML report from the completed work so far.
+[# Report] I can check the report structure, included artifacts, limitations,
+and required assets before we confirm HTML drafting.
 
 [? Next Steps]
-1. Create the HTML report.
+1. Check the report structure and readiness.
 2. Run or repair [specific remaining action] first.
 3. Stop with the analysis note.
 ```
@@ -219,18 +222,23 @@ any open claim or asset gaps should be handled first.
 Planning reports must say no empirical analysis or estimates were completed.
 Empirical reports must use completed artifacts from `artifact_index`.
 
-## Final HTML Delivery
+## Report Structure Confirmation
+
+Use after the report-structure check has updated `report_assembly`.
 
 ```text
-[> Framing] The report deliverable is ready; the remaining decision is whether
-to revise, inspect, or stop.
+[> Framing] The report structure is now checked. The decision is whether this is
+the report you want me to draft.
 
-[# Report] The HTML report is ready:
-[final_report_path]
-
-It includes [included actions/artifacts], the claim boundary, and any parked or
-not-run items.
+[# Report] Proposed report:
+- type: [final_html / planning_html]
+- included evidence: [actions, artifacts, or state sections]
+- visible limitations: [claim boundary, missing assets, parked/not-run items]
+- output: [static HTML under outputs/reports/]
 
 [? Next Steps]
-Would you like to review a specific section, revise the report, or stop here?
+1. Confirm this report structure and draft the HTML.
+2. Revise the report structure first: [specific change].
+3. Run or repair [specific action] before drafting.
+4. Stop with the current notes/artifacts.
 ```

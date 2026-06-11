@@ -1,10 +1,10 @@
 {
   "package": "causal-consultant",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "license": "MIT",
   "created_for": "interactive causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Lean lead routing wording cleanup: action_id comes from next_step_plan.steps[].id, routed work enters next_step_plan, and ordinary user-facing choices stay in chat or pending_actions.",
+  "last_updated_focus": "Report request workflow and artifact indexing wording cleanup: user-requested reports use report_writer feedback before execution, and report_writer artifact indexing distinguishes created artifacts from newly indexed routed report artifacts.",
   "core_subskills": [
     "domain_expert",
     "data_analyst",

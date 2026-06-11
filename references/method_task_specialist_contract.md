@@ -145,8 +145,8 @@ separate durable section.
 
 Use `references/council_chamber_contract.md` for option shape and policy.
 Options can name the core reviewer, report writer, discovery sidecar, numbered
-specialist, or lead action that would help next. Use `refs` for result fields,
-artifact ids, or owner-section pointers.
+specialist that would help next, or describe a user-facing question for main to
+ask. Use `refs` for result fields, artifact ids, or owner-section pointers.
 
 ## Mathematical Cue Contract
 

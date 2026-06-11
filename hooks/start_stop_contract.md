@@ -70,8 +70,11 @@ Checks:
   scope, claim boundary, analysis directory, and expected outputs.
 - If execution has occurred but the produced-output closeout facts are missing,
   set `allowed_mode: return_gate` and `hard_stop: return_gate_required`.
-- Summarize open `pending_actions` that should appear before report delivery or
-  final wrap-up.
+- Confirmed non-report execution chains may continue step by step after
+  Return-To-Main verification. Do not allow a direct transition from non-report
+  execution to `report_writer.execution_authorized` in the same internal chain.
+- Summarize relevant `pending_actions` that should appear before report delivery
+  or final wrap-up.
 - If report work is requested, surface `report_assembly.status`, `report_type`,
   `template_path`, `included_actions`, required assets, final path, and whether
   final HTML belongs under `outputs/reports/`.
@@ -109,6 +112,9 @@ Critical failures:
   reset to `status: none`, `selected: null`, `confirmed: false`, and `steps: []`
   before the user-facing response:
   `repair_required`.
+- `pending_actions` contains an item with `status: completed` instead of
+  removing it from the backlog:
+  `repair_required`.
 - A step is marked `done` without the expected owner/result write inferred from
   `agent_called`, plus matching current `council_chamber` entry
   `id: <agent_called>.<action_id>`: `repair_required`.
@@ -134,11 +140,13 @@ Critical failures:
   analysis directory and the actual produced outputs promised by
   `execution.expected_outputs`, unless the run is explicitly blocked or partial:
   `repair_required`.
+- A non-report execution is followed directly by
+  `report_writer.execution_authorized` in the same internal chain, before a
+  user-facing closeout and report choice:
+  `block`.
 - The response offers or delivers final HTML while `report_assembly` is missing,
   blocked, inconsistent with the report type/template mapping, or points outside
   `outputs/reports/`: `block`.
-- The response wraps up or moves to report delivery while open `pending_actions`
-  that affect the work remain unhandled: `repair_required`.
 - A substantive causal-project response omits `[> Framing]` before consultant
   options or next steps: `repair_required`.
 - A missing package, replacement estimator, custom implementation, dropped
@@ -148,20 +156,21 @@ Critical failures:
 Return Gate shape required after execution:
 
 ```text
-[> Framing] This step is complete, and the result should be interpreted within
-the confirmed claim boundary.
+[> Framing] The confirmed execution work is complete, and the result should be
+interpreted within the confirmed claim boundary.
 
-[OK Confirmed] Ran: [completed unit]. Folder: [analysis_dir]. Source: [source_path]. Note: [analysis_note_path]. Manifest: [manifest_path].
+[OK Confirmed] Ran: [completed unit or execution chain]. Outputs: [analysis folders, source paths, notes, manifests, and key artifacts].
 
-[! Boundary] Status: [claim boundary and any dependency/deviation/gatekeeper issue.]
+[! Boundary] Status: [claim boundary and any dependency/deviation/gatekeeper issue.] Remaining review or report-readiness issue: [none / specific issue].
 
 [+ Consultant Options]
-[Optional useful pending analysis, sensitivity, discovery, report asset, or planning idea.]
+[Optional useful pending analysis, review, sensitivity, discovery, report asset, report, or planning idea.]
 
 [? Next Steps]
 1. [recommended next action]
-2. [HTML report option when completed artifacts exist]
+2. [priority pending action from the user request or council options]
 3. [pending action, repair, stop, or alternative direction]
+4. [HTML report option only when completed artifacts exist and a report structure check can define the scope]
 ```
 
 Warnings:
@@ -171,16 +180,19 @@ Warnings:
   or `[# Report]`.
 - A staged response needs a user decision but does not end with `[? Next Steps]`.
 - Consultant suggestions are shown without `[+ Consultant Options]`.
-- The menu omits open pending actions that should reasonably be surfaced.
-- A completed analysis response omits an HTML report option for completed work
-  when report artifacts could be created.
+- The menu omits relevant pending actions that should reasonably be surfaced.
+- A completed execution-chain response omits an important pending action
+  from the user request, or omits an HTML report option when completed artifacts
+  exist and a report structure check can define the scope.
 
 ## Host Runtime Notes
 
 If the host only supports start and stop hooks, implement only this file. If the
 host supports more hooks, map them to the same checks:
 
-- pre-execution: block execution without a confirmed active plan.
+- pre-execution: block execution without a confirmed active plan; allow
+  confirmed non-report execution chains step by step.
 - post-execution: require closeout and Return Gate next.
-- pre-report: block unless report state and pending actions allow report work.
+- pre-report: block direct non-report execution to report drafting without a
+  user-facing closeout and report choice.
 - pre-response: run `stop_hook` before the message is shown.

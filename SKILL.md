@@ -240,6 +240,11 @@ meaningful next actions by default, then let the user respond. Use one choice
 only when there is genuinely one defensible path, a hard blocker, or a clean
 stop/closeout. Do not invent weak filler options.
 
+Whenever `[+ Consultant Options]` is shown, each option must include either
+`Consultant read:` and `Tradeoff:` lines, or an equivalent compact
+rationale/tradeoff sentence. Do not show bare action-only options except for a
+pure mechanical confirmation.
+
 Every substantive causal-project reply must include `[> Framing]`. Use it to
 state the current causal question, decision point, claim boundary, completed
 step, or why the next move matters. `[+ Consultant Options]` and

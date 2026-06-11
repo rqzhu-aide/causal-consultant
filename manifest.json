@@ -1,10 +1,10 @@
 {
   "package": "causal-consultant",
-  "version": "3.4.2",
+  "version": "3.4.3",
   "license": "MIT",
   "created_for": "interactive causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Report request workflow and artifact indexing wording cleanup: user-requested reports use report_writer feedback before execution, and report_writer artifact indexing distinguishes created artifacts from newly indexed routed report artifacts.",
+  "last_updated_focus": "Consultant option rendering cleanup: user-facing [+ Consultant Options] now show compact rationale and tradeoffs while keeping chamber and pending-action YAML lean.",
   "core_subskills": [
     "domain_expert",
     "data_analyst",

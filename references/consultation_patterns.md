@@ -49,9 +49,17 @@ Use after one or more internal review steps have written council opinions.
 [one-sentence synthesis].
 
 [+ Consultant Options]
-1. [recommended pending action]
-2. [alternative pending action, if useful]
-3. [planning/report/repair option, only if genuinely useful]
+1. [action]
+   Consultant read: [why this is useful now, grounded in data/domain/causal evidence].
+   Tradeoff: [main limitation, claim boundary, or what this will not resolve].
+
+2. [action]
+   Consultant read: [why this is a credible alternative or fallback].
+   Tradeoff: [cost, uncertainty, data need, or interpretation risk].
+
+3. [action, only if genuinely useful]
+   Consultant read: [what decision this would clarify or unlock].
+   Tradeoff: [why it is lower priority or more limited].
 
 [? Next Steps]
 Which option should become the next step?
@@ -93,11 +101,22 @@ Use when pending actions contain a real menu.
 causal analysis path.
 
 [+ Consultant Options]
-The choices that matter most right now are:
 1. [recommended action]
+   Consultant read: [why this is the strongest next move given the current data,
+   domain practice, method route, or claim boundary].
+   Tradeoff: [what remains unresolved or what caution applies].
+
 2. [alternative action]
-3. [optional worthwhile action, only if it prevents losing something important]
-4. [optional fourth action, only if it is genuinely decision-relevant]
+   Consultant read: [why this is worth considering instead].
+   Tradeoff: [what it costs, delays, weakens, or does not answer].
+
+3. [optional worthwhile action]
+   Consultant read: [what this would clarify, repair, or unlock].
+   Tradeoff: [why it is not the first choice, if relevant].
+
+4. [optional fourth action, only if genuinely decision-relevant]
+   Consultant read: [short rationale].
+   Tradeoff: [short limitation].
 
 [? Next Steps]
 Which one should we act on next?

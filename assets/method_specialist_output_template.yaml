@@ -1,58 +1,63 @@
 ---
-# Compact durable record from an activated method/task subskill.
-# Main appends filled copies to project YAML > specialist_outputs.
+# Private structure guide for one target_goal or implementation_support
+# numbered-specialist method_task_results item. Full artifacts stay separately
+# in artifact_index.
 # Design-route specialists can use assets/design_route_specialist_output_template.yaml.
 
+id: null
+action_id: null
+action_goal: null
 specialist_id: null
-module_type: null          # design_route | target_goal | implementation_support
-status: null               # candidate | activated | fit_supported | needs_data_check | adapted | blocked | deferred
+module_type: null          # target_goal | implementation_support
+mode: null                 # feedback_only | bounded_inspection | execution_authorized
+status: null               # candidate | activated | fit_supported | needs_data_check | adapted | blocked | deferred | completed
 activation_reason: null
 inputs_reviewed: []
 provenance_summary: null
 
 method_idea:
-  idea_type: null          # direct_fit | data_twist | goal_twist | implementation_enhancement
+  idea_type: null          # goal_twist | estimand_twist | data_shape_twist | diagnostic_twist | implementation_probe | report_asset | planning_upgrade
   original_user_need: null
-  data_or_goal_twist: null
+  twist_or_adaptation: null
   why_this_helps: null
-  difference_from_user_request_or_data_reality: null
+  evidence_hook: null
+  current_support_level: unclear  # currently_supported | needs_data_check | needs_domain_review | needs_gatekeeper_review | needs_specialist_probe | planning_only | blocked | unclear
+  required_next_check: null
+  claim_boundary: null
 
 fit_summary:
   fit: unclear             # direct | adapted | exploratory | blocked | not_applicable | unclear
   reason: null
 
-type_specific:
-  design_route:
-    causal_comparison: null
-    design_route: null
-    identification_status: null
-    exposure_or_assignment: null
-    analysis_unit: null
-    time_zero_or_index: null
-    required_timing: []
-    assignment_or_exposure_logic: null
-    comparison_group_logic: null
-    data_shape_required: null
-    key_identification_assumptions: []
-    invalidating_conditions: []
-    estimands_supported: []
-    data_or_goal_twists_reviewed: []
-  target_goal:
-    target_goal: null
-    estimand_targets: []
-    target_population: null
-    effect_scale: null
-    decision_or_interpretation_goal: null
-    design_route_needed: null
-    reporting_boundary: null
-  implementation_support:
-    implementation_role: null
-    estimator_or_model_family: []
-    required_data_shape: null
-    diagnostic_outputs: []
-    reproducibility_outputs: []
-    package_or_code_options: []
+technical_summary: []
+alternatives_if_not_fit: []
 
+target_goal_details:
+  target_goal: null
+  estimand_targets: []
+  target_population: null
+  effect_scale: null
+  decision_or_interpretation_goal: null
+  design_route_needed: null
+  reporting_boundary: null
+
+implementation_support_details:
+  implementation_role: null
+  estimator_or_model_family: []
+  required_data_shape: null
+  diagnostic_outputs: []
+  reproducibility_outputs: []
+  package_or_code_options: []
+
+method_implications:
+  candidate_methods: []
+  estimands: []
+  data_shaping_needs: []
+  diagnostics: []
+  implementation_notes: []
+  report_relevance: []
+
+estimand_cues: []
 diagnostics_needed: []
 diagnostics_reviewed: []
 sensitivity_or_robustness: []
@@ -64,29 +69,24 @@ statistical_evidence:
   inference_or_validation_route: []
   method_specific_limits: []
 
-requests:
-  domain_expert: []
+report_support:
+  required_visual_assets: []
+  required_tables: []
+  formula_cues: []
+  display_items: []
+  citation_source_needs: []
+  narrative_cues: []
+  omission_reasons: []
+
+artifact_ids: []
+reviewer_relevance:
   data_analyst: []
+  domain_expert: []
   method_lead: []
   causal_gatekeeper: []
-  user: []
-  other_subskills: []
-
-alternatives_if_not_fit: []
-report_support:
-  required_visual_assets: []      # e.g., overlap plot, love/SMD plot, event-study plot, RD cutoff plot
-  required_tables: []             # compact report-critical tables
-  formula_cues: []                # static estimand/model formulas plus symbol notes when useful
-  display_items: []               # figure/table/sketch role, question answered, interpretation, limitation, placement
-  citation_source_needs: []       # method/software/domain/data sources that should be inspected or cited
-  narrative_cues: []              # setup, reasoning, interpretation, limitation, and "what not to claim" points
-  omission_reasons: []            # required assets that are impossible, blocked, or intentionally omitted
-artifact_paths: []
-readiness: unknown
-
-method_lead_recheck:
-  required: false
-  reason: null
+  report_writer: []
+  causal_discovery: []
+  likely_method_task_subskills: []
 
 blocking_signal:
   blocks_current_phase: false
@@ -94,3 +94,7 @@ blocking_signal:
   reason: null
 
 recommended_next_action: null
+routing_review:
+  status: unreviewed       # unreviewed | promoted | no_action | superseded
+  promoted_to: []          # main may fill after recording/routing
+  note: null

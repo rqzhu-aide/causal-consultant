@@ -3,17 +3,32 @@
 
 This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
-Use this reference when main routes a bounded discovery sidecar. Keep the sidecar exploratory, artifact-based, and reviewer-routed.
+Use this reference when main routes a bounded discovery sidecar. Keep the
+sidecar exploratory, artifact-based, and reviewer-routed.
+
+The local `backend_workflow.md` is the call-boundary contract. This reference
+only explains discovery lifecycle, diagnostics, reintegration, and closure.
 
 ## Lifecycle
 
 1. Enter with a bounded purpose: graph exploration, graph comparison, local variable-neighborhood screening, discovery diagnostics, time-series graph exploration, or discovery-only deliverable.
 2. Confirm the return path: `project_exploration`, `causal_specification`, or `report_production`.
 3. Precheck data and assumptions before algorithms: variable set, timing tiers, hidden-confounding tolerance, missingness, data type, non-IID structure, preprocessing, and background knowledge.
-4. Produce only the scoped artifact or plan: graph object, edge list, local neighborhood, stability table, diagnostics memo, or report-support packet.
-5. Return a compact packet to main with a recommended reintegration status. Main closes, pauses, parks, returns, or routes implications.
+4. Produce only the scoped artifact or plan: graph object, edge list, local
+   neighborhood, stability table, diagnostics memo, or report-support packet.
+5. Write compact packet summaries, artifact paths, reviewer requests, and
+   reintegration status into `discovery_sidecar`. Write matching artifact_index
+   entries for created or inspected discovery artifacts. Main closes, pauses,
+   parks, returns, or routes implications after Return-To-Main.
 
 Set `affects_main_framework: true` only when reviewer review is needed before the main workflow continues. Discovery does not update gates, adjustment sets, selected frameworks, or claim wording directly.
+
+In `execution_authorized`, save only outputs implied by the active step's
+`execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs`
+inside `execution.analysis_dir`. Write graph, diagnostic, discovery packet,
+source, note, figure, table, and manifest paths into
+`discovery_sidecar.artifact_paths`, and write matching global `artifact_index`
+entries.
 
 ## Reintegration Gate
 
@@ -40,7 +55,9 @@ Recommend discovery as an optional sidecar when it can answer a specific explora
 
 Do not recommend discovery only because a dataset exists. It is most useful when the graph is underspecified, variable structure is high-dimensional, temporal/system structure matters, or the user wants graph exploration rather than effect estimation.
 
-Main normally considers these triggers in the Discovery Opportunity Check after a variable-role card and during `method_lead.method_option_map`; the sidecar does not self-activate.
+Main normally considers these triggers in the Discovery Opportunity Check after
+a variable-role card and during `method_lead.method_option_map`; the sidecar
+does not self-activate.
 
 ## Intake Checks
 
@@ -54,7 +71,8 @@ Before fitting or interpreting discovery algorithms, record or request:
 - missingness, scaling, discreteness, sample size, variable count, and preprocessing risks;
 - whether the user needs a unique graph or can accept an equivalence class.
 
-If these are missing and material, return one user question or one reviewer request instead of running algorithms.
+If these are missing and material, write one council option or one reviewer
+request instead of running algorithms.
 
 ## Algorithm-Family Selection
 
@@ -84,9 +102,21 @@ For substantive discovery artifacts, include the diagnostics that match the meth
 
 If diagnostics are not done, label the packet `candidate_only` or `diagnostics_needed`.
 
+## Material Drift
+
+Stop and write a repair or blocked council option instead of silently
+substituting when any of these occur:
+
+- missing package or unusable package version;
+- changed algorithm family or graph target;
+- changed variable set, focal variables, background knowledge, or temporal tier;
+- omitted diagnostics or stability checks that were part of the confirmed scope;
+- changed output plan or need for artifacts outside the active execution scope;
+- report-like artifact request that belongs to report_writer.
+
 ## Report Support
 
-When discovery produces user-visible or durable material, return report support:
+When discovery produces user-visible or durable material, write report support:
 
 - suggested section title, usually "Exploratory Causal Discovery";
 - purpose and graph target;
@@ -112,7 +142,7 @@ Discovery artifacts can inform the team, but they do not change gates, framework
 
 ## Closure
 
-End the packet with one of these next actions:
+End the sidecar update with one of these next actions:
 
 - `ask_user`;
 - `refresh_data_analyst`;

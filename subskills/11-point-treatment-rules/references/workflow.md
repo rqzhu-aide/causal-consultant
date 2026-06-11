@@ -1,7 +1,7 @@
-﻿# Point Treatment Rules Workflow
+# Point Treatment Rules Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for a one-time policy, individualized treatment rule, targeting, or prioritization problem.
 
@@ -17,17 +17,17 @@ Record the smallest useful target before choosing software:
 - **Constraint**: budget, capacity, fairness, safety, legal/ethical rule, clinical guideline, or operational threshold.
 - **Deliverable**: candidate rule, ranking, value estimate, policy comparison, sensitivity memo, report section, or deployment-style artifact.
 
-If the user only wants "who benefits more", ask main to route `10-heterogeneous-effects` first. If the user wants repeated decisions over time, ask main to route `15-dynamic-treatment-policies`.
+If the user only wants "who benefits more", recommend `10-heterogeneous-effects` review first. If the user wants repeated decisions over time, recommend `15-dynamic-treatment-policies` review.
 
 ## 2. Check Design Fit
 
 The rule can be useful only inside a valid design route.
 
 - Randomized trial or A/B test: strongest for learning/evaluating ITRs, but still needs held-out or cross-fitted evaluation if the same data learn the rule.
-- Observational single-time exposure: possible with exchangeability, positivity, correct timing, and robust nuisance modeling; ask main to route `01-single-time-observational-exposure`, `20-matching-weighting-balance`, `21-doubly-robust-estimation`, or `22-double-machine-learning` support as needed.
-- Instrumental variables or encouragement: policy learning may target instrument-induced effects or complier-style decisions; ask `method_lead` before treating it as ordinary treatment assignment.
-- Longitudinal or repeated decisions: usually not this module; ask main to route `02-longitudinal-gmethods` and `15-dynamic-treatment-policies`.
-- Survival/time-to-event outcomes: keep the one-time decision target here, but ask main to route `23-survival-competing-risks` for censoring and time-scale support.
+- Observational single-time exposure: possible with exchangeability, positivity, correct timing, and robust nuisance modeling; recommend `01-single-time-observational-exposure`, `20-matching-weighting-balance`, `21-doubly-robust-estimation`, or `22-double-machine-learning` support as needed.
+- Instrumental variables or encouragement: policy learning may target instrument-induced effects or complier-style decisions; recommend `method_lead` review before treating it as ordinary treatment assignment.
+- Longitudinal or repeated decisions: usually not this module; recommend `02-longitudinal-gmethods` and `15-dynamic-treatment-policies` review.
+- Survival/time-to-event outcomes: keep the one-time decision target here, but recommend `23-survival-competing-risks` review for censoring and time-scale support.
 
 ## 3. Choose A Method Lane
 
@@ -42,9 +42,9 @@ The rule can be useful only inside a valid design route.
 | Formal targeted-learning optimal rule | `tmle3mopttx` / tlverse | CV-TMLE style value estimation and realistic rules | Steeper software workflow |
 | Clinical subgroup or personalized medicine | `personalized`, `DynTxRegime` for single-stage OTR, interpretable trees | Good clinical/biostatistics fit | Dynamic features belong to dynamic-policy module |
 
-## 4. Ask For Focused Data Work
+## 4. Recommend Focused Evidence
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - baseline feature list with leakage/post-action flags;
 - action counts and overlap by key domain strata;
@@ -65,16 +65,19 @@ Minimum diagnostic set:
 - check subgroup harms, fairness, cost, and implementation constraints;
 - record whether the rule is exploratory, candidate, validated in-sample/cross-fit, externally validated, or deployment-ready.
 
-## 6. Reviewer Interaction
+## 6. Connected Reviewer Relevance
 
-Use the team order and adaptive loop:
+Preserve reviewer relevance in the `method_task_results` item rather than assigning work directly:
 
 - `domain_expert`: validates treatment/action meaning, harms, constraints, fairness, domain standards, and whether the rule is interpretable in the scientific or operational setting.
 - `data_analyst`: prepares features, support checks, nuisance inputs, splits, policy-value artifacts, plots, tables, and reproducible code.
 - `method_lead`: decides whether the design identifies policy value, which target and estimand are valid, and what claim language is allowed.
+- `causal_gatekeeper`: checks whether rule/value wording overstates the base route, support, validation, deployment claim, or fairness/safety evidence.
 - `report_writer`: integrates the policy module into the working report when the module is substantive.
 
-## 7. Report Language
+## 7. Report-Support Fields
+
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in `method_task_results` item.
 
 Use cautious language unless the design and evaluation are strong:
 

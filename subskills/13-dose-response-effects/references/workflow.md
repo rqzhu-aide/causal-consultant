@@ -1,7 +1,7 @@
-﻿# Dose Response Workflow
+# Dose Response Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for continuous, ordinal, multi-level, intensity, threshold, stochastic shift, or modified treatment policy targets.
 
@@ -16,7 +16,7 @@ Record the smallest useful target:
 - **Effect scale**: mean, risk, hazard, RMST, count, utility, or other scale.
 - **Status**: causal target, exploratory design-learning, descriptive exposure-response, or report support.
 
-If the treatment is binary, ask main to route the relevant design-route module. If dose changes over time, ask main to route `02-longitudinal-gmethods` and maybe `15-dynamic-treatment-policies`.
+If the treatment is binary, recommend the relevant design-route review. If dose changes over time, recommend `02-longitudinal-gmethods` and possibly `15-dynamic-treatment-policies` review.
 
 ## 2. Check Design Fit
 
@@ -25,8 +25,8 @@ Dose-response inherits the main design route's assumptions and adds dose support
 - Randomized dose: good for fixed contrasts if randomization covers the dose range.
 - Observational dose: requires measured confounding control and positivity across the dose distribution.
 - Longitudinal dose accumulation: needs g-methods, time-varying confounding handling, or MTP/LMTP estimands.
-- Survival outcomes: ask main to route `23-survival-competing-risks`.
-- Interference/spillovers: dose exposure mapping may be the target; ask main to route `07-interference-spillovers`.
+- Survival outcomes: recommend `23-survival-competing-risks` review.
+- Interference/spillovers: dose exposure mapping may be the target; recommend `07-interference-spillovers` review.
 
 ## 3. Choose A Method Lane
 
@@ -39,9 +39,9 @@ Dose-response inherits the main design route's assumptions and adds dose support
 | Flexible nuisance adjustment | TMLE/DML/orthogonal continuous-treatment estimators | Can use ML plugins | Identification and positivity still dominate |
 | Time-varying dose strategy | `gfoRmula`, `lmtp`, `ltmle`, longitudinal g-methods | Handles evolving dose/confounders | Requires long-format histories |
 
-## 4. Ask For Focused Data Work
+## 4. Recommend Focused Evidence
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - dose histogram/density and range by key covariates;
 - dose support for proposed fixed contrasts or shifts;
@@ -63,14 +63,19 @@ Minimum diagnostic set:
 - unmeasured confounding sensitivity where feasible;
 - clear separation of descriptive curve from causal curve.
 
-## 6. Reviewer Interaction
+## 6. Connected Reviewer Relevance
+
+Preserve reviewer relevance in the `method_task_results` item rather than assigning work directly.
 
 - `domain_expert`: validates dose meaning, feasible intervention, thresholds, safety, and interpretation.
 - `data_analyst`: prepares dose distributions, support diagnostics, balance checks, plots, and reproducible code.
 - `method_lead`: decides target estimand, identification assumptions, positivity, and claim wording.
+- `causal_gatekeeper`: checks dose timing, support, positivity, extrapolation, and whether dose wording exceeds the base route.
 - `report_writer`: integrates dose-response results, unsupported ranges, and figure captions.
 
-## 7. Report Language
+## 7. Report-Support Fields
+
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item.
 
 Use:
 

@@ -1,7 +1,7 @@
-﻿# Synthetic Control And Time-Series Counterfactual Workflow
+# Synthetic Control And Time-Series Counterfactual Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for synthetic control, synthetic DiD, interrupted time series, Bayesian structural time series, matrix completion, or aggregate intervention analysis.
 
@@ -21,8 +21,8 @@ Record the smallest useful synthetic/time-series specification:
 
 Before fitting:
 
-- confirm treated unit and intervention date with `domain_expert`;
-- ask `data_analyst` for raw treated/donor/control trends;
+- recommend `domain_expert` review when treated-unit definition, intervention meaning, timing, anticipation, or concurrent shocks are unclear;
+- recommend `data_analyst` review for raw treated/donor/control trends, panel support, missing series, outcome scale, or denominator facts;
 - verify donors are untreated and not affected by spillovers;
 - check pre-period length and whether treated trend can be approximated by donors;
 - decide whether comparison is donor-weighted SCM, model-based time-series forecast, synthetic DiD, or DiD/event-study;
@@ -39,11 +39,16 @@ Before fitting:
 | Panel data where both DiD and SCM are plausible | Synthetic DiD | Blends unit/time weights with DiD robustness | Needs clear estimand and panel support |
 | No donor pool, one treated series | Interrupted time series | Simple level/slope change design | Highly vulnerable to concurrent shocks |
 | Control time series not affected by intervention | BSTS/CausalImpact or comparative ITS | Forecast counterfactual with covariates | Control series must be unaffected |
-| Many treated cohorts/policy rollout | DiD/event-study | Staggered adoption estimands | ask main to route `03-did-event-study` |
-| Spillover-prone donors | Interference/spillover review | Donor contamination breaks counterfactual | ask main to route `07-interference-spillovers` |
+| Many treated cohorts/policy rollout | DiD/event-study | Staggered adoption estimands | Recommend `03-did-event-study` review |
+| Spillover-prone donors | Interference/spillover review | Donor contamination breaks counterfactual | Recommend `07-interference-spillovers` review |
 
-## 4. Coordinate With Other Subskills
+## 4. Connected Reviewer Relevance
 
+- `domain_expert`: intervention meaning, treated-unit definition, donor comparability, anticipation, concurrent shocks, spillovers, and interpretation boundaries.
+- `data_analyst`: unit-time panel shape, donor/control trends, missing series, window construction, denominator/outcome scale, and artifact-ready data facts.
+- `method_lead`: aggregate estimand, lane choice, diagnostics, implementation implications, and connected specialist choices.
+- `causal_gatekeeper`: donor validity, treatment timing, concurrent shocks, spillovers, and counterfactual claim boundary.
+- `report_writer`: timing table, donor weights, pre-fit/gap/placebo/sensitivity displays, and aggregate-claim wording.
 - `03-did-event-study`: staggered adoption, group-time ATT, event-study diagnostics, synthetic DiD overlap.
 - `07-interference-spillovers`: donor contamination, geographic spillovers, market/network interference.
 - `14-transportability-generalizability`: treated-unit specificity and target-population generalization.
@@ -52,9 +57,9 @@ Before fitting:
 - `22-double-machine-learning`: matrix completion/ML prediction support, if used as implementation support.
 - `23-survival-competing-risks`: time-to-event/rate outcomes in aggregate panels.
 
-## 5. Ask For Focused Data Work
+## 5. Recommend Focused Data Work
 
-Ask for one or two checks at a time:
+Recommend one or two checks at a time:
 
 - treated and donor/control trend plot;
 - pre/post window table and intervention date verification;
@@ -111,9 +116,9 @@ Avoid:
 - "CausalImpact controls for everything";
 - "generalizes to all units" without transportability review.
 
-## 9. Report Packet Template
+## 9. Report-Support Fields
 
-For the report writer, return:
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item:
 
 - `section_title`: concise SCM/ITS/BSTS/synthetic DiD title.
 - `design_lane`: classic SCM, augmented SCM, generalized SCM, synthetic DiD, ITS, BSTS/CausalImpact, or exploratory.

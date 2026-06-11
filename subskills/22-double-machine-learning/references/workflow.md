@@ -1,7 +1,7 @@
-﻿# Double Machine Learning Workflow
+# Double Machine Learning Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for DML, orthogonal scores, cross-fitting, residualization, or high-dimensional nuisance learning.
 
@@ -36,12 +36,12 @@ Before fitting DML:
 | Heterogeneous effects | Causal forest, orthogonal forest, R-learner/DR-learner | CATE support with honesty/orthogonality | Needs `10-heterogeneous-effects` target and diagnostics |
 | Sparse high-dimensional linear controls | Double selection/post-lasso | Transparent sparse-control logic | Sparsity assumptions and linearity |
 | IV with high-dimensional controls | DML IV/PLIV | Orthogonal IV score | Needs `05-instrumental-variables` assumptions |
-| Policy learning or ranking | DR scores or orthogonal scores for policy module | Useful score input | Needs `21` or `25` target and held-out evaluation |
-| Survival/longitudinal nuisance | DML as nuisance plugin | Flexible prediction support | Needs `09`/`33` target and censoring logic |
+| Policy learning or ranking | DR scores or orthogonal scores for policy module | Useful score input | Needs `11-point-treatment-rules` target and held-out evaluation |
+| Survival/longitudinal nuisance | DML as nuisance plugin | Flexible prediction support | Needs `02-longitudinal-gmethods` or `23-survival-competing-risks` target and censoring logic |
 
-## 4. Ask For Focused Data Work
+## 4. Recommend Focused Evidence
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - feature matrix with timing/leakage flags;
 - fold plan with grouped splits and seed control;
@@ -52,7 +52,9 @@ Ask for one or two concrete checks at a time:
 - benchmark comparison with simpler models;
 - reproducible pipeline output and package versions.
 
-## 5. Coordinate With Other Subskills
+## 5. Connected Reviewer Relevance
+
+Preserve reviewer relevance in the `method_task_results` item rather than assigning work directly.
 
 - `21-doubly-robust-estimation`: AIPW/TMLE/DR target and influence-function reporting.
 - `20-matching-weighting-balance`: overlap, propensity, balance, and support checks.
@@ -61,6 +63,10 @@ Ask for one or two concrete checks at a time:
 - `02-longitudinal-gmethods`: time-varying histories and sequential assumptions.
 - `05-instrumental-variables`: IV-DML assumptions and first-stage diagnostics.
 - `23-survival-competing-risks`: censored outcomes and survival targets.
+- `data_analyst`: feature timing, leakage flags, fold/group structure, support diagnostics, and artifact provenance.
+- `domain_expert`: outcome scale, treatment meaning, feature meaning, cluster/site context, and plausible interaction structure.
+- `causal_gatekeeper`: checks whether DML output is being used to overstate identification, support, or claim strength.
+- `report_writer`: feature tables, split plans, nuisance diagnostics, learner sensitivity, DML estimate tables, and careful DML wording.
 
 ## 6. Diagnose Before Reporting
 
@@ -74,7 +80,9 @@ Minimum diagnostic set:
 - inference validity statement for the selected estimator;
 - explicit statement that DML does not solve unmeasured confounding or positivity failure.
 
-## 7. Report Language
+## 7. Report-Support Fields
+
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item.
 
 Use careful DML language:
 

@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible mediation estimands, methods, and packages. Keep timing, confounding, and estimand meaning ahead of software.
+Use this file to choose credible mediation estimands, methods, and packages. Package/software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared contract. Keep timing, confounding, and estimand meaning ahead of software.
 
 ## Core Literature
 
@@ -29,13 +29,13 @@ Use this file to choose credible mediation estimands, methods, and packages. Kee
 
 | Package | Language | Best Use | Pros | Caveats |
 |---|---|---|---|---|
-| [`mediation`](https://imai.fas.harvard.edu/software/mediation.html) | R | Standard single mediator natural direct/indirect effects and sensitivity analysis | Widely used, accessible, supports model-based and design-based workflows | Natural effect assumptions are strong; limited for exposure-induced mediator-outcome confounding |
+| [`mediation`](https://search.r-project.org/CRAN/refmans/mediation/html/00Index.html) | R | Standard single mediator natural direct/indirect effects and sensitivity analysis | Widely used, accessible, supports model-based and design-based workflows | Natural effect assumptions are strong; limited for exposure-induced mediator-outcome confounding |
 | [`regmedint`](https://search.r-project.org/CRAN/refmans/regmedint/html/regmedint.html) | R | Regression-based closed-form mediation with interactions | Clear interface for common epidemiologic models | Less flexible for complex longitudinal or multiple mediator settings |
-| [`medflex`](https://www.jstatsoft.org/v76/i11/) | R | Natural effect models and expanded data | Flexible path-specific/natural effect parameterization | Requires careful expanded-data setup |
+| [`medflex`](https://cran.r-universe.dev/medflex/doc/manual.html) | R | Natural effect models and expanded data | Flexible path-specific/natural effect parameterization | Requires careful expanded-data setup |
 | [`CMAverse`](https://bs1125.github.io/CMAverse/) | R | Broad causal mediation workflow, DAG plotting, estimation, and sensitivity | Useful hub for multiple approaches and reproducible reports | Many dependencies; estimand choice still requires expert review |
-| [`intmed`](https://cran-e.com/package/intmed) | R | Interventional effects for up to several mediators | Aligned with interventional mediation targets | Specialized and less general than custom g-computation |
+| [`intmed`](https://packages.oit.ncsu.edu/cran/web/packages/intmed/intmed.pdf) | R | Interventional effects for up to several mediators | Aligned with interventional mediation targets | Specialized and less general than custom g-computation |
 | [`statsmodels`](https://www.statsmodels.org/stable/generated/statsmodels.stats.mediation.Mediation.html) | Python | Simple model-based mediation templates | Convenient when the workflow must stay in Python | Narrower mediation ecosystem and fewer causal diagnostics |
-| [`DoWhy`](https://www.pywhy.org/dowhy/v0.12/dowhy.html) | Python | Graph-based identification/refutation support and explicit assumptions | Good for DAG-centered workflow and assumption tracking | Estimation coverage for mediation is less comprehensive than R mediation packages |
+| [`DoWhy`](https://petergtz.github.io/dowhy/main/user_guide/causal_tasks/estimating_causal_effects/effect_estimation_with_estimators.html) | Python | Graph-based identification/refutation support and explicit assumptions | Good for DAG-centered workflow and assumption tracking | Estimation coverage for mediation is less comprehensive than R mediation packages |
 | Custom g-computation/TMLE/DML | R/Python | Complex mediators, longitudinal data, flexible nuisance models | Can match the estimand when packages do not | Requires stronger coding, validation, and reviewer control |
 
 ## Practical Selection Rules
@@ -44,16 +44,16 @@ Use this file to choose credible mediation estimands, methods, and packages. Kee
 - Need exposure-mediator interaction in common outcome models: `regmedint` is often practical.
 - Need multiple mediators or interventional effects: consider `CMAverse`, `intmed`, or custom g-computation.
 - Need causal graph discipline and assumption refutation: use DoWhy as support, not as a substitute for estimand review.
-- Need survival/competing-risk mediation: ask main to route `23-survival-competing-risks`; ordinary product-of-coefficients logic is usually unsafe.
+- Need survival/competing-risk mediation: recommend `23-survival-competing-risks` review; ordinary product-of-coefficients logic is usually unsafe.
 - Need post-exposure confounders affected by treatment: avoid default natural effects unless `method_lead` justifies them; consider interventional/separable/g-method routes.
 - Need only descriptive pathway evidence: use regression/SEM/path summaries with descriptive wording and no causal mediation claim.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [mediation CRAN manual](https://cran.r-project.org/web/packages/mediation/mediation.pdf), [CMAverse `cmest`](https://bs1125.github.io/CMAverse/reference/cmest.html), [medflex CRAN manual](https://cran.r-project.org/web/packages/medflex/medflex.pdf)
+Docs checked: 2026-06-09
+Primary docs: [mediation CRAN index](https://search.r-project.org/CRAN/refmans/mediation/html/00Index.html), [CMAverse `cmest`](https://bs1125.github.io/CMAverse/reference/cmest), [regmedint docs](https://search.r-project.org/CRAN/refmans/regmedint/html/regmedint.html), [medflex manual](https://cran.r-universe.dev/medflex/doc/manual.html), [statsmodels `Mediation`](https://www.statsmodels.org/stable/generated/statsmodels.stats.mediation.Mediation.html), [DoWhy mediation estimators](https://petergtz.github.io/dowhy/main/user_guide/causal_tasks/estimating_causal_effects/effect_estimation_with_estimators.html).
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -65,4 +65,4 @@ y_fit <- lm(Y ~ A + M + X1 + X2, data = analysis_data)
 med <- mediate(m_fit, y_fit, treat = "A", mediator = "M", sims = 1000)
 ```
 
-Artifact outputs to preserve: direct/indirect effect table path, mediation sensitivity/assumption plot path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: direct/indirect effect table path, mediation sensitivity or assumption plot path, manifest path, and source code path.

@@ -1,7 +1,7 @@
 # Interactive Causal Consultant
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.2.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-3.4.1-blue.svg)]()
 [![Status](https://img.shields.io/badge/status-active%20development-orange.svg)]()
 
 An interactive causal inference consultant skill for moving from a rough causal question to a defensible analysis plan, diagnostic workflow, interpretation, and report.
@@ -12,7 +12,7 @@ It is designed to feel like working with a careful causal consulting team: it as
 
 ## How It Works
 
-The main consultant is the only user-facing voice. It paces the conversation, routes internal specialists when useful, and turns their feedback into one or two clear choices for the user.
+The main consultant is the only user-facing voice. It paces the conversation, routes internal specialists when useful, and normally turns their feedback into three or four meaningful next actions for the user.
 
 The internal team is:
 
@@ -21,8 +21,11 @@ The internal team is:
 - **`data_analyst`:** checks data reality: variables, timing, support, quality, provenance, and usable roles.
 - **`method_lead`:** compares method or fallback paths, uses the method catalog, and surfaces creative but grounded twists.
 - **`causal_gatekeeper`:** checks DAG/timing logic, causal claim strength, statistical validity, and wording boundaries.
+- **Numbered method/task specialists:** provide routed technical checks for design routes, target goals, and implementation support.
 - **`causal_discovery`:** optional exploratory sidecar for graph hypotheses, variable neighborhoods, or discovery diagnostics.
 - **`report_writer`:** silent deliverable specialist for final HTML reports, evidence organization, and report QA.
+
+Version 3.4.1 uses lean live YAML routing: main maintains `outputs/project_state.yaml`, routes by `agent_called + mode + action_goal`, maps routed `action_id` from `next_step_plan.steps[].id`, every routed subskill writes its standard owner/result section plus one shared-format council entry, and execution scopes use step-local `expected_outputs` for source, note, manifest, result artifacts, and subskill-specific outputs.
 
 ```text
 User <-> Main consultant
@@ -30,6 +33,7 @@ User <-> Main consultant
           -> data_analyst
           -> method_lead
           -> causal_gatekeeper
+          -> numbered method/task specialists
           -> optional causal_discovery
           -> report_writer
 ```

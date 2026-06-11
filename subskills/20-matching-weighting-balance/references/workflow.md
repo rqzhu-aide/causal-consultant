@@ -1,7 +1,7 @@
-﻿# Matching Weighting Balance Workflow
+# Matching Weighting Balance Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for matching, weighting, overlap, positivity, or balance-diagnostic support.
 
@@ -40,9 +40,9 @@ Do these before outcome modeling whenever possible:
 | Longitudinal MSM | Time-varying treatment/censoring weights | Handles time-varying confounding in `09` workflows | Weight tails and positivity over histories dominate |
 | Multi-arm treatment | Generalized propensity, multi-category weights, full matching | Handles more than two treatments | Pairwise balance and estimand clarity get harder |
 
-## 4. Ask For Focused Data Work
+## 4. Recommend Focused Evidence
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - adjustment-set timing/missingness table;
 - propensity score or balancing score overlap plot;
@@ -53,7 +53,9 @@ Ask for one or two concrete checks at a time:
 - sensitivity to caliper, trimming, method, and target estimand;
 - reproducible matched/weighted dataset with code and diagnostics.
 
-## 5. Coordinate With Other Subskills
+## 5. Connected Reviewer Relevance
+
+Preserve reviewer relevance in the `method_task_results` item rather than assigning work directly.
 
 - `01-single-time-observational-exposure`: primary design route for baseline observational treatment comparisons.
 - `02-longitudinal-gmethods`: time-varying treatment/censoring weights and MSM support.
@@ -61,6 +63,10 @@ Ask for one or two concrete checks at a time:
 - `21-doubly-robust-estimation`: AIPW/TMLE after propensity/balance support is reviewed.
 - `22-double-machine-learning`: flexible propensity/nuisance learners and cross-fitting when high dimensional.
 - `23-survival-competing-risks`: weighted survival or censoring-aware outcome support.
+- `data_analyst`: covariate timing, missingness, support, clusters, survey weights, and retained/discarded-unit artifacts.
+- `domain_expert`: adjustment-variable meaning, exact-match strata, target population, and residual imbalance interpretation.
+- `causal_gatekeeper`: checks whether balance evidence is being used to overstate causal identification or adjustment validity.
+- `report_writer`: balance tables, love plots, overlap plots, weight summaries, flow tables, and careful target-population wording.
 
 ## 6. Diagnose Before Reporting
 
@@ -74,7 +80,9 @@ Minimum diagnostic set:
 - sensitivity to method, caliper, trimming, and propensity learner;
 - explicit statement that balance only concerns measured covariates.
 
-## 7. Report Language
+## 7. Report-Support Fields
+
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item.
 
 Use careful implementation language:
 

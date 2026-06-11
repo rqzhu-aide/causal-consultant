@@ -1,7 +1,7 @@
-﻿# Instrumental Variables And Mendelian Randomization Workflow
+# Instrumental Variables And Mendelian Randomization Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for instruments, noncompliance, LATE/CACE, weak instruments, IV-DML, or Mendelian randomization.
 
@@ -22,8 +22,8 @@ Record the smallest useful IV specification:
 Before fitting IV:
 
 - confirm instrument timing precedes treatment/exposure and outcome;
-- ask `domain_expert` for plausible direct paths from instrument to outcome;
-- ask `data_analyst` for first-stage and reduced-form summaries;
+- recommend `domain_expert` review when plausible direct paths from instrument to outcome are unclear;
+- recommend `data_analyst` review for first-stage and reduced-form summaries;
 - define whether the IV target is local/complier-specific or a structural parameter;
 - decide whether covariates are pre-instrument, pre-treatment, or invalid post-instrument controls;
 - plan weak-instrument diagnostics before interpreting coefficient size;
@@ -38,13 +38,18 @@ Before fitting IV:
 | Continuous treatment/exposure with valid instrument | 2SLS or LIML | Standard linear IV target | Weak instruments, nonlinear meaning, many instruments |
 | Many instruments or weak instruments | LIML, Fuller, Anderson-Rubin/CLR/weak-robust inference | Reduces weak-IV fragility | Still needs instrument validity |
 | High-dimensional controls/nuisance | IV-DML/PLIV/IIVM | Orthogonal nuisance support | Requires IV assumptions and correct score model |
-| Fuzzy RD | Local Wald/2SLS at cutoff | Treatment discontinuity identifies local complier effect | Needs RD diagnostics from `11` |
+| Fuzzy RD | Local Wald/2SLS at cutoff | Treatment discontinuity identifies local complier effect | Needs RD diagnostics from `04-regression-discontinuity` |
 | Binary outcome or nonlinear model | Linear IV as risk-difference projection, or control-function/nonlinear IV if justified | Avoids pretending nonlinear IV is automatic | Marginal effects and target can be unclear |
 | Mendelian randomization summary data | IVW baseline with MR-Egger/median/mode/PRESSO sensitivity | Common GWAS-summary workflow | Pleiotropy, LD, ancestry, sample overlap |
 | Multivariable MR | MVMR | Separates correlated exposures if instruments support it | Conditional instrument strength and interpretation |
 
-## 4. Coordinate With Other Subskills
+## 4. Connected Reviewer Relevance
 
+- `domain_expert`: instrument mechanism, exclusion pathways, monotonicity plausibility, MR biological pathways, and interpretation limits.
+- `data_analyst`: instrument/treatment/outcome timing, first-stage and reduced-form summaries, compliance flow, genetic harmonization facts, and missingness by instrument.
+- `method_lead`: local estimand, IV lane, diagnostic requirements, implementation implications, and connected specialist choices.
+- `causal_gatekeeper`: relevance, independence, exclusion, monotonicity, weak-instrument, pleiotropy, and claim-boundary review.
+- `report_writer`: assumption table, first-stage/reduced-form/IV estimates, weak-IV or MR sensitivity displays, and local-claim wording.
 - `00-randomized-trials-and-ab-tests`: encouragement designs, ITT, assignment integrity, noncompliance.
 - `04-regression-discontinuity`: fuzzy RD and local Wald at cutoff.
 - `02-longitudinal-gmethods`: time-varying exposure/outcome histories with instruments.
@@ -54,9 +59,9 @@ Before fitting IV:
 - `23-survival-competing-risks`: survival outcomes or censoring with IV.
 - `08-negative-controls-proximal`: falsification, proxy, and unmeasured-confounding probes around exclusion.
 
-## 5. Ask For Focused Data Work
+## 5. Recommend Focused Data Work
 
-Ask for one or two checks at a time:
+Recommend one or two checks at a time:
 
 - first-stage table: instrument to treatment/exposure with partial F and partial R2;
 - reduced-form table: instrument to outcome;
@@ -113,9 +118,10 @@ Avoid:
 - "F > 10 settles instrument strength" in clustered/heteroskedastic/many-instrument settings;
 - "MR is randomized trial evidence" without genetic-IV caveats.
 
-## 9. Report Packet Template
+## 9. Report-Support Fields
 
-For the report writer, return:
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review,
+preserve compact report-support fields in the `method_task_results` item:
 
 - `section_title`: concise IV/MR section title.
 - `iv_lane`: encouragement, natural experiment, fuzzy RD, weak-IV, IV-DML, MR, or exploratory.

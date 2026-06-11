@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible dynamic treatment policy estimands, methods, and packages. Keep decision structure, support, and longitudinal identification ahead of software.
+Use this file to choose credible dynamic treatment policy estimands, methods, and packages. Package/software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared contract. Keep decision structure, support, and longitudinal identification ahead of software.
 
 ## Core Literature
 
@@ -28,14 +28,14 @@ Use this file to choose credible dynamic treatment policy estimands, methods, an
 
 | Package | Language | Best Use | Pros | Caveats |
 |---|---|---|---|---|
-| [`DynTxRegime`](https://cran.r-project.org/package=DynTxRegime) | R | Q-learning, weighted learning, value-search, single/multi-stage regimes | Classic DTR toolkit | Specialized API; model choices and support matter |
-| [`DTRreg`](https://cran.r-project.org/package=DTRreg) | R | Dynamic treatment regime regression and Q-learning style workflows | Practical DTR regression interface | Less general for complex longitudinal histories |
+| [`DynTxRegime`](https://search.r-project.org/CRAN/refmans/DynTxRegime/html/00Index.html) | R | Q-learning, weighted learning, value-search, single/multi-stage regimes | Classic DTR toolkit | Specialized API; model choices and support matter |
+| [`DTRreg`](https://search.r-project.org/CRAN/refmans/DTRreg/html/DTRreg.html) | R | Dynamic treatment regime regression and Q-learning style workflows | Practical DTR regression interface | Less general for complex longitudinal histories |
 | [`qLearn`](https://cran.r-project.org/package=qLearn) | R | Q-learning for dynamic regimes | Focused on Q-learning | Check package maintenance and assumptions |
 | [`polle`](https://www.rdocumentation.org/packages/polle/versions/1.6.2) | R | Policy learning/evaluation for finite-stage policies | Unifies OWL, RWL, DR Q-learning, policy-tree learning | Advanced setup; target must match finite-stage structure |
-| [`gfoRmula`](https://cran.r-project.org/package=gfoRmula) | R | Parametric g-formula for sustained or dynamic strategies | Strong for user-specified regime comparison | Model-heavy and long-format demanding |
-| [`ltmle`](https://cran.r-project.org/package=ltmle) | R | Longitudinal TMLE for static/dynamic interventions | Targeted-learning inference for longitudinal settings | Setup can be demanding |
-| [`lmtp`](https://github.com/nt-williams/lmtp) | R | Longitudinal modified treatment policies and feasible shifts | Good for realistic dynamic dose/action modifications | Target differs from fixed regimes |
-| [`simcausal`](https://cran.r-project.org/package=simcausal) | R | Simulating longitudinal data and dynamic interventions | Useful for design learning and examples | Simulation support, not an estimator by itself |
+| [`gfoRmula`](https://pmc.ncbi.nlm.nih.gov/articles/PMC7351102/) | R | Parametric g-formula for sustained or dynamic strategies | Strong for user-specified regime comparison | Model-heavy and long-format demanding |
+| [`ltmle`](https://search.r-project.org/CRAN/refmans/ltmle/html/00Index.html) | R | Longitudinal TMLE for static/dynamic interventions | Targeted-learning inference for longitudinal settings | Setup can be demanding |
+| [`lmtp`](https://cran.r-universe.dev/lmtp/doc/manual.html) | R | Longitudinal modified treatment policies and feasible shifts | Good for realistic dynamic dose/action modifications | Target differs from fixed regimes |
+| [`simcausal`](https://rdrr.io/cran/simcausal/man/simcausal.html) | R | Simulating longitudinal data and dynamic interventions | Useful for design learning and examples | Simulation support, not an estimator by itself |
 | Custom fitted-Q / OPE | Python | Prototype logged-policy evaluation or decision support | Flexible with sklearn/RL tooling | Must not replace causal identification or support diagnostics |
 
 ## Practical Selection Rules
@@ -44,15 +44,15 @@ Use this file to choose credible dynamic treatment policy estimands, methods, an
 - Need to learn an interpretable regime: consider `DynTxRegime`, `DTRreg`, Q-learning/A-learning, or policy-tree style workflows.
 - Need SMART analysis: prefer DTR-specific R packages and respect sequential randomization.
 - Need feasible time-varying modifications: consider LMTP rather than impossible "set everyone always to..." regimes.
-- Need observational dynamic policy: ask main to route `02-longitudinal-gmethods` first; sequential exchangeability and positivity dominate.
+- Need observational dynamic policy: recommend `02-longitudinal-gmethods` review first; sequential exchangeability and positivity dominate.
 - Need Python-only prototype: use custom fitted-Q/off-policy evaluation scaffolds only as exploratory or implementation support.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [DynTxRegime CRAN manual](https://cran.r-project.org/web/packages/DynTxRegime/DynTxRegime.pdf), [polle manual](https://andreasnordland.r-universe.dev/polle/polle.pdf), [lmtp manual](https://cran.r-universe.dev/lmtp/doc/manual.html)
+Docs checked: 2026-06-09
+Primary docs: [DynTxRegime index](https://search.r-project.org/CRAN/refmans/DynTxRegime/html/00Index.html), [DTRreg](https://search.r-project.org/CRAN/refmans/DTRreg/html/DTRreg.html), [polle](https://www.rdocumentation.org/packages/polle/versions/1.6.2), [gfoRmula paper/docs](https://pmc.ncbi.nlm.nih.gov/articles/PMC7351102/), [ltmle index](https://search.r-project.org/CRAN/refmans/ltmle/html/00Index.html), [lmtp manual](https://cran.r-universe.dev/lmtp/doc/manual.html), [simcausal](https://rdrr.io/cran/simcausal/man/simcausal.html).
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Dynamic-policy APIs differ across packages; re-check examples before executing. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Dynamic-policy APIs differ across packages; re-check examples before executing. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -63,4 +63,4 @@ history <- build_history(long_data, id = "id", time = "time",
 # Fit Q-learning, A-learning, policy learning, or LMTP strategy contrasts only after support checks.
 ```
 
-Artifact outputs to preserve: policy/value table path, history-support diagnostic path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: policy/value table path, history-support diagnostic path, manifest path, and source code path.

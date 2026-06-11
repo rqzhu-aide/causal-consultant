@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible synthetic-control, synthetic DiD, interrupted time-series, and Bayesian structural time-series tools. Keep the main team focused on treated-unit definition, donor/control validity, pre-period fit, intervention timing, and sensitivity evidence.
+Use this file to choose credible synthetic-control, synthetic DiD, interrupted time-series, and Bayesian structural time-series tools. Package and software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared method/task contract. Keep the main team focused on treated-unit definition, donor/control validity, pre-period fit, intervention timing, and sensitivity evidence.
 
 ## Core Literature
 
@@ -53,7 +53,7 @@ Use this file to choose credible synthetic-control, synthetic DiD, interrupted t
 - Need one treated aggregate unit and excellent pre-fit: start with `Synth` or `tidysynth`.
 - Need imperfect pre-fit but credible donor structure: use `augsynth`, with explicit extrapolation and model-dependence caveats.
 - Need multiple treated units or treatment timing variation with latent factors: use `gsynth`, `fect`, or matrix-completion methods.
-- Need DiD plus synthetic weighting: use `synthdid` and ask main to route `03-did-event-study`.
+- Need DiD plus synthetic weighting: use `synthdid` and recommend `03-did-event-study` review.
 - Need a product/marketing time-series intervention with unaffected control series: use `CausalImpact`/BSTS after checking controls and seasonality.
 - Need no donor pool: use interrupted time series with strong caveats, autocorrelation/seasonality handling, and alternative-date sensitivity.
 - Need Python only: use `pysyncon`, `statsmodels`, or Python CausalImpact-style ports, but validate against R/reference examples when high stakes.
@@ -61,10 +61,10 @@ Use this file to choose credible synthetic-control, synthetic DiD, interrupted t
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [Synth CRAN manual](https://cran.r-project.org/web/packages/Synth/Synth.pdf), [gsynth docs](https://yiqingxu.org/packages/gsynth/), [CausalImpact docs](https://google.github.io/CausalImpact/CausalImpact.html), [augsynth GitHub](https://github.com/ebenmichael/augsynth)
+Docs checked: 2026-06-09
+Primary docs: [Synth CRAN manual](https://cran.r-project.org/web/packages/Synth/Synth.pdf), [gsynth docs](https://yiqingxu.org/packages/gsynth/), [fect docs](https://yiqingxu.org/packages/fect/), [CausalImpact docs](https://google.github.io/CausalImpact/CausalImpact.html), [augsynth GitHub](https://github.com/ebenmichael/augsynth), [synthdid docs](https://synth-inference.github.io/synthdid/)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -81,4 +81,4 @@ prep <- dataprep(foo = panel_data, dependent = "Y",
 sc_fit <- synth(prep)
 ```
 
-Artifact outputs to preserve: donor-weight/gap table path, treated-versus-synthetic/placebo plot paths, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: donor-weight/gap table path, treated-versus-synthetic/placebo plot paths, manifest path, and source code path.

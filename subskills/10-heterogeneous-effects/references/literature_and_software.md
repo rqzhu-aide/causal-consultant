@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this file to choose credible method families and packages for heterogeneous treatment effects. Keep identification and support checks ahead of software.
+Use this file to choose credible method families and packages for heterogeneous treatment effects. Package and software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared method/task contract. Keep identification and support checks ahead of software.
 
 ## Core Literature
 
@@ -43,17 +43,17 @@ Use this file to choose credible method families and packages for heterogeneous 
 - Need flexible discovery: use `grf`, EconML `CausalForestDML`, or S/T/X/R/DR meta-learners, but call results exploratory until validated.
 - Need imbalanced treated/control groups: consider the X-learner lane, then compare against T-/R-/DR-learner or forest results for stability.
 - Need reportable group effects after ML nuisance adjustment: use DoubleML GATE or GRF grouped summaries.
-- Need policy or targeting: ask main to route `11-point-treatment-rules`; heterogeneity alone does not define costs, constraints, or assignment rules.
-- Need observational HTE: ask main to route the relevant design-route module and usually consider `20-matching-weighting-balance`, `21-doubly-robust-estimation`, or `22-double-machine-learning`.
-- Need survival/time-to-event HTE: ask main to route `23-survival-competing-risks`; ordinary CATE tooling may not handle censoring correctly.
+- Need policy or targeting: recommend `11-point-treatment-rules` review; heterogeneity alone does not define costs, constraints, or assignment rules.
+- Need observational HTE: recommend the relevant design-route review and usually consider `20-matching-weighting-balance`, `21-doubly-robust-estimation`, or `22-double-machine-learning`.
+- Need survival/time-to-event HTE: recommend `23-survival-competing-risks` review; ordinary CATE tooling may not handle censoring correctly.
 - Need many sparse groups: consider hierarchical/shrinkage models or group pooling before high-variance subgroup claims.
 
 ## Tiny Code Skeletons
 
-Docs checked: 2026-05-31
-Primary docs: [grf `causal_forest`](https://grf-labs.github.io/grf/reference/causal_forest.html), [EconML `CausalForestDML`](https://www.pywhy.org/EconML/_autosummary/econml.dml.CausalForestDML.html)
+Docs checked: 2026-06-09
+Primary docs: [grf `causal_forest`](https://grf-labs.github.io/grf/reference/causal_forest.html), [EconML `CausalForestDML`](https://econml.azurewebsites.net/_autosummary/econml.dml.CausalForestDML.html), [DoubleML heterogeneity guide](https://docs.doubleml.org/stable/guide/heterogeneity.html), [CausalML methodology](https://causalml.readthedocs.io/en/latest/methodology.html), [metalearners docs](https://metalearners.readthedocs.io/)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -65,4 +65,4 @@ ate <- average_treatment_effect(cf)
 cate <- predict(cf)$predictions
 ```
 
-Artifact outputs to preserve: ATE/GATE/CATE summary path, heterogeneity/validation plot path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: ATE/GATE/CATE summary path, heterogeneity/validation plot path, manifest path, and source code path.

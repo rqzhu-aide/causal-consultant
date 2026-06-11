@@ -1,7 +1,7 @@
-﻿# Heterogeneous Effects Workflow
+# Heterogeneous Effects Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for subgroup effects, CATE/GATE estimation, effect-modifier screening, or heterogeneity report support.
 
@@ -14,9 +14,9 @@ Record the smallest useful target:
 - **Modifier set**: prespecified subgroup, domain-defined strata, site/group, continuous baseline feature, learned partition, or high-dimensional covariate set.
 - **Timing**: modifiers must be baseline/pre-treatment unless a different target is explicitly justified.
 - **Status**: confirmatory, prespecified secondary, exploratory, hypothesis-generating, or report-only descriptive.
-- **Use**: scientific interpretation, equity/safety, mechanism clue, design refinement, report section, or handoff to policy-rule module.
+- **Use**: scientific interpretation, equity/safety, mechanism clue, design refinement, report section, or policy-rule review.
 
-If the user wants a decision rule or prioritization, ask main to route `11-point-treatment-rules`. If the modifier is a mediator or post-treatment pathway variable, ask main to route `12-mediation` or another valid post-treatment target before estimating.
+If the user wants a decision rule or prioritization, recommend `11-point-treatment-rules` review. If the modifier is a mediator or post-treatment pathway variable, recommend `12-mediation` or another valid post-treatment target before estimating.
 
 ## 2. Check Design Fit
 
@@ -24,10 +24,10 @@ Heterogeneity inherits the main design route's identification assumptions and ad
 
 - Randomized trial: good for prespecified subgroup/GATE and exploratory CATE, but multiplicity and low subgroup power remain serious.
 - Observational single-time exposure: require exchangeability, positivity, support within subgroups, and robust nuisance modeling.
-- Longitudinal treatment: ask main to route `02-longitudinal-gmethods`; effect modifiers may be baseline or history-dependent depending on the estimand.
+- Longitudinal treatment: recommend `02-longitudinal-gmethods` review; effect modifiers may be baseline or history-dependent depending on the estimand.
 - IV/LATE: heterogeneity may describe complier/local effects, not ordinary ATE heterogeneity without extra assumptions.
 - DiD/RD/synthetic control: heterogeneity can be possible but often requires design-specific interpretation, support, and diagnostics.
-- Survival outcomes: keep this target active, but ask main to route `23-survival-competing-risks` for censoring, time scale, and effect measure.
+- Survival outcomes: keep this target active, but recommend `23-survival-competing-risks` review for censoring, time scale, and effect measure.
 
 ## 3. Choose A Method Lane
 
@@ -41,9 +41,9 @@ Heterogeneity inherits the main design route's identification assumptions and ad
 | Reportable GATEs | DoubleML GATE, GRF BLP/GATE, interaction models | Easier inference than raw CATE maps | Groups must be meaningful and supported |
 | Policy implication | Heterogeneity plus `11-point-treatment-rules` | Converts effect variation into decision logic | CATE alone ignores costs, harms, and constraints |
 
-## 4. Ask For Focused Data Work
+## 4. Recommend Focused Evidence
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - subgroup counts, treatment rates, outcome rates, and missingness;
 - overlap/balance by subgroup or candidate effect modifier;
@@ -65,16 +65,21 @@ Minimum diagnostic set:
 - unmeasured confounding sensitivity for observational data;
 - effect-scale sensitivity when risk ratios/odds ratios/hazards could change conclusions.
 
-## 6. Reviewer Interaction
+## 6. Connected Reviewer Relevance
 
-- `domain_expert`: validates subgroup meaning, equity/safety relevance, mechanism plausibility, and wording.
-- `data_analyst`: prepares support checks, folds, CATE/GATE artifacts, plots, and reproducible code.
-- `method_lead`: decides whether the design identifies heterogeneity, which estimand is valid, and how strong the claim can be.
-- `report_writer`: integrates heterogeneity results into the working report when substantive.
+Preserve reviewer relevance in the `method_task_results` item rather than assigning work directly.
 
-## 7. Report Language
+- `domain_expert`: subgroup meaning, equity/safety relevance, mechanism plausibility, site/time interpretation, and wording.
+- `data_analyst`: support checks, modifier timing, folds, CATE/GATE artifacts, plots, and reproducible code paths.
+- `method_lead`: whether the base design identifies the heterogeneity target, which estimand is valid, and how strong the method claim can be.
+- `causal_gatekeeper`: whether subgroup/CATE wording overstates the base route, support, multiplicity, validation, or causal claim.
+- `report_writer`: subgroup/GATE/CATE visuals, validation notes, limitations, and careful report wording.
 
-Use:
+## 7. Report-Support Fields
+
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item.
+
+Suggested wording:
 
 - "prespecified subgroup analysis" when defined before seeing results;
 - "exploratory heterogeneity analysis" when discovered or heavily data-adaptive;

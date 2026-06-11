@@ -1,7 +1,7 @@
-﻿# Difference-In-Differences And Event-Study Workflow
+# Difference-In-Differences And Event-Study Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for DiD, staggered adoption, event studies, comparative interrupted time series, synthetic DiD, or conditional parallel-trend workflows.
 
@@ -23,8 +23,8 @@ Record the smallest useful DiD specification:
 Before fitting any DiD estimator:
 
 - confirm treatment timing and event-time coding;
-- ask `domain_expert` whether anticipation, spillovers, or concurrent shocks are plausible;
-- ask `data_analyst` for treatment timing maps and pre/post outcome plots;
+- recommend `domain_expert` review when anticipation, spillovers, or concurrent shocks are plausible;
+- recommend `data_analyst` review for treatment timing maps and pre/post outcome plots;
 - check whether pre-period support is long enough for design learning;
 - verify sample composition and measurement stability across time;
 - choose the comparison group and estimand before choosing software;
@@ -43,14 +43,15 @@ Before fitting any DiD estimator:
 | Conditional parallel trends with covariates | DR-DiD, Callaway-Sant'Anna with covariates, DoubleML DiD | Combines outcome and treatment/covariate adjustment | Covariates must be pre-treatment/time-ordered |
 | Dynamic effects central | Event-time estimates by cohort/group-time | Matches policy response over time | Avoid contaminated TWFE leads/lags |
 | Few treated units or aggregate policy | Synthetic control, synthetic DiD, randomization/placebo inference | Better suited for aggregate intervention settings | May belong partly to `06-synthetic-control-time-series` |
-| Continuous or dose treatment | Continuous DiD or dose-response module | Binary adoption DiD is not enough | ask main to route `13-dose-response-effects` |
-| Spillovers or contamination | Spillover/interference design | Controls may be indirectly treated | ask main to route `07-interference-spillovers` |
+| Continuous or dose treatment | Continuous DiD or dose-response module | Binary adoption DiD is not enough | recommend `13-dose-response-effects` review |
+| Spillovers or contamination | Spillover/interference design | Controls may be indirectly treated | recommend `07-interference-spillovers` review |
 
-## 4. Coordinate With Other Subskills
+## 4. Connected Reviewer Relevance
 
-- `01-domain-expert`: treatment meaning, anticipation, concurrent policy shocks, spillovers, and stable outcome definitions.
-- `02-data-analyst`: panel structure, timing map, balance/composition, event-time construction, plots, and code outputs.
-- `03-method-lead`: estimand, assumptions, comparison group, design fit, and wording boundary.
+- `domain_expert`: treatment meaning, anticipation, concurrent policy shocks, spillovers, and stable outcome definitions.
+- `data_analyst`: panel structure, timing map, balance/composition, event-time construction, and artifact-ready data facts.
+- `method_lead`: estimand, assumptions, comparison group, design fit, and method-choice implications.
+- `causal_gatekeeper`: parallel-trend boundary, no-anticipation and no-spillover logic, timing coherence, and causal claim wording.
 - `06-synthetic-control-time-series`: one/few treated units, donor pools, synthetic DiD, comparative interrupted time series.
 - `07-interference-spillovers`: treatment contamination, network or spatial spillovers, control exposure.
 - `10-heterogeneous-effects`: subgroup, cohort-specific, or effect-modification targets beyond standard group-time heterogeneity.
@@ -60,9 +61,9 @@ Before fitting any DiD estimator:
 - `21-doubly-robust-estimation`: DR-DiD and influence-function style reporting.
 - `22-double-machine-learning`: flexible nuisance models under conditional parallel trends.
 
-## 5. Ask For Focused Data Work
+## 5. Recommend Focused Data Work
 
-Ask for one or two checks at a time:
+Recommend one or two checks at a time:
 
 - unit/time uniqueness and panel balance;
 - adoption cohort and event-time variables;
@@ -115,9 +116,10 @@ Avoid:
 - "staggered TWFE estimate equals the average treatment effect" unless assumptions are justified;
 - "policy caused the outcome" when comparison group, timing, or composition is weak.
 
-## 9. Report Packet Template
+## 9. Report-Support Fields
 
-For the report writer, return:
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review,
+preserve compact report-support fields in the `method_task_results` item:
 
 - `section_title`: concise DiD or event-study section title.
 - `design_lane`: 2x2, staggered, event-study, repeated cross-section, synthetic DiD, DR-DiD, or exploratory.

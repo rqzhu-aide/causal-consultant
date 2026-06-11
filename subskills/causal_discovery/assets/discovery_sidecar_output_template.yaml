@@ -1,32 +1,40 @@
 ---
-# Compact durable packet from causal_discovery.
-# Main appends filled copies to project YAML > specialist_outputs only when useful.
+# Compact discovery packet shape for causal_discovery packet_summaries.
+# causal_discovery writes useful compact implications into discovery_sidecar and
+# council_chamber. Main promotes actions, records artifact_index entries, and
+# routes owner evidence only when useful.
+# Discovery findings are exploratory until relevant core reviewers reintegrate
+# them.
 
+packet_id: null
 specialist_id: causal-discovery
 module_type: discovery_sidecar
-status: null              # candidate | activated | diagnostics_reviewed | materials_ready | blocked | deferred
+status: null              # candidate | activated | executed | diagnostics_reviewed | materials_ready | blocked | deferred
 activation_reason: null
 inputs_reviewed: []
 provenance_summary: null
 
 sidecar_lifecycle:
-  status: null            # active | paused | closed
+  status: null            # active | paused | closed | parked | blocked
   purpose: null
   return_to_phase: null
   affects_main_framework: false
+  reintegration_status: null  # exploratory_only | reviewer_needed | user_choice_needed | parked_for_report | sidecar_closed
 
 discovery_target:
-  graph_target: null      # DAG | CPDAG | PAG | local_neighborhood | edge_ranking | stability_table | discovery_report
+  graph_target: null      # DAG | CPDAG | PAG | local_neighborhood | edge_ranking | stability_table | lagged_graph | discovery_report
   variable_set: []
   focal_variables: []
   graph_object_type: null
   background_knowledge_used: []
+  hidden_confounding_tolerance: null
 
 method_summary:
   algorithm_family: []
   package_or_tool: []
   assumptions_or_requirements: []
   settings_summary: null
+  execution_mode: null    # feedback_only | bounded_inspection | execution_authorized
 
 findings:
   candidate_edges_or_paths: []
@@ -39,14 +47,13 @@ diagnostics_reviewed: []
 sensitivity_or_robustness: []
 limitations: []
 
-requests:
-  domain_expert: []
-  data_analyst: []
-  method_lead: []
-  causal_gatekeeper: []
-  report_writer: []
-  user: []
-  other_subskills: []
+# Structured requests for main to route later. These are not assignments.
+reviewer_requests:
+  - agent_called: null    # data_analyst | domain_expert | method_lead | causal_gatekeeper | report_writer | lead
+    action_goal: null
+    reason: null
+    refs: []
+    decision_value: null
 
 report_support: []
 artifact_paths: []

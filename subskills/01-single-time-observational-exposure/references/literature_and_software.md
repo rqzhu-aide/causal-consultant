@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this reference when choosing observational point-exposure methods, diagnostics, packages, or report language.
+Use this reference when choosing observational point-exposure methods, diagnostics, packages, or report language. Package and software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared method/task contract.
 
 ## Core Ideas
 
@@ -51,16 +51,16 @@ Use this reference when choosing observational point-exposure methods, diagnosti
 - Need a careful first pass: target-trial table plus transparent adjustment or g-computation.
 - Need visible comparability: matching or weighting with balance and overlap diagnostics.
 - Need ATE but overlap is weak: consider overlap weights, trimming, or a narrower target.
-- Need flexible nuisance modeling: ask main to route `21-doubly-robust-estimation` or `22-double-machine-learning`.
-- Need hidden-confounding protection: ask main to consider sensitivity, `08-negative-controls-proximal`, or a stronger design route if credible.
-- Need survival, dose-response, heterogeneity, transportability, or policy decisions: ask main to route the specific target-goal or implementation-support subskill that matches the need.
+- Need flexible nuisance modeling: recommend that main route `21-doubly-robust-estimation` or `22-double-machine-learning`.
+- Need hidden-confounding protection: recommend sensitivity, `08-negative-controls-proximal`, or a stronger design route if credible.
+- Need survival, dose-response, heterogeneity, transportability, or policy decisions: recommend the specific target-goal or implementation-support subskill that matches the need.
 
 ## Tiny Code Skeletons
 
 Docs checked: 2026-05-31
 Primary docs: [WeightIt `weightit`](https://ngreifer.github.io/WeightIt/reference/weightit.html), [cobalt `bal.tab`](https://ngreifer.github.io/cobalt/reference/bal.tab.html), [MatchIt `matchit`](https://kosukeimai.github.io/MatchIt/reference/matchit.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -74,4 +74,4 @@ balance <- bal.tab(w)
 love.plot(w)
 ```
 
-Artifact outputs to preserve: weighted estimate path, balance/overlap plot path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: weighted estimate path, balance/overlap plot path, source code path.

@@ -1,6 +1,6 @@
 # Literature And Software Map
 
-Use this reference when choosing longitudinal g-methods, diagnostics, packages, or report language.
+Use this reference when choosing longitudinal g-methods, diagnostics, packages, or report language. Package and software details are reference-only; the specialist writes one `method_task_results` item, artifact_index entries only for execution-created artifacts, and one council entry through the shared method/task contract.
 
 ## Core Ideas
 
@@ -53,8 +53,8 @@ Use this reference when choosing longitudinal g-methods, diagnostics, packages, 
 - Need absolute risks under complex strategies: use parametric g-formula.
 - Need flexible nuisance and targeted inference: consider longitudinal TMLE or sequential DR.
 - Need realistic shifts rather than impossible static regimens: consider LMTP or stochastic intervention logic.
-- Need learned policies: ask main to route `15-dynamic-treatment-policies`.
-- Need time-to-event or competing-risk reporting: ask main to route `23-survival-competing-risks`.
+- Need learned policies: recommend that main route `15-dynamic-treatment-policies`.
+- Need time-to-event or competing-risk reporting: recommend that main route `23-survival-competing-risks`.
 - Need high-dimensional histories: use Super Learner, DML-style nuisance support, or TMLE/LMTP, while keeping time ordering and positivity central.
 
 ## Tiny Code Skeletons
@@ -62,7 +62,7 @@ Use this reference when choosing longitudinal g-methods, diagnostics, packages, 
 Docs checked: 2026-05-31
 Primary docs: [lmtp manual](https://cran.r-universe.dev/lmtp/doc/manual.html), [ltmle `ltmle`](https://www.rdocumentation.org/packages/ltmle/versions/1.3-0/topics/ltmle), [gfoRmula index](https://search.r-project.org/CRAN/refmans/gfoRmula/html/00Index.html)
 
-Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after causal validity is ready or qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. Save outputs inside the active `analysis_dir`, update the unit `manifest.json`, and mirror report-relevant source, table, figure, diagnostic, and large-artifact paths into `artifact_index`.
+Reference-only unless main explicitly routes `execution_authorized` after user-confirmed scope. Use only after the relevant gatekeeper status is ready or appropriately qualified. Verify installed package versions and current docs before running. Do not execute this skeleton from `feedback_only` or `bounded_inspection` mode. When execution is authorized, create only outputs implied by the active step's `execution.scope`, `execution.claim_boundary`, and `execution.expected_outputs` inside `execution.analysis_dir`; write `artifact_index` entries for produced source, note, manifest, result artifacts, and subskill-specific paths.
 
 ```r
 # Tiny sketch, not a complete script.
@@ -78,4 +78,4 @@ fit <- lmtp_sdr(data = wide_data,
                 shift = NULL, mtp = FALSE)
 ```
 
-Artifact outputs to preserve: strategy-effect table path, weight/positivity diagnostic path, source code path.
+Execution output examples for `result_artifacts` or `subskill_specific`: strategy-effect table path, weight/positivity diagnostic path, source code path.

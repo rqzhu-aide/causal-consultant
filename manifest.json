@@ -1,10 +1,10 @@
 {
   "package": "causal-consultant",
-  "version": "2.2.1",
+  "version": "3.4.1",
   "license": "MIT",
   "created_for": "interactive causal inference consultant skill",
   "top_level_skill": "SKILL.md",
-  "last_updated_focus": "Interactive causal-consultant release with main-led staged workflow, hook-readable execution records, per-analysis output folders, final HTML report assembly, and manuscript-style causal report guidance.",
+  "last_updated_focus": "Lean lead routing wording cleanup: action_id comes from next_step_plan.steps[].id, routed work enters next_step_plan, and ordinary user-facing choices stay in chat or pending_actions.",
   "core_subskills": [
     "domain_expert",
     "data_analyst",
@@ -44,5 +44,5 @@
       "23-survival-competing-risks"
     ]
   },
-  "notes": "Public package identity is causal-consultant. The main skill is the only user-facing voice. Core reviewers own their YAML sections, method specialists return specialist_outputs, causal_discovery is an exploratory unnumbered sidecar, and report_writer is a silent deliverable specialist."
+  "notes": "Public package identity is causal-consultant. The main skill is the only user-facing voice. The live YAML uses lean actions with agent_called, mode, action_goal, status, and refs. Every routed subskill writes its standard owner/result section plus one shared-format council entry; execution-capable subskills index artifacts they create or inspect under scope."
 }

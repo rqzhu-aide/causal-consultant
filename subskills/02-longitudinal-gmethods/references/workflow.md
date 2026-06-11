@@ -1,7 +1,7 @@
-﻿# Longitudinal G-Methods Workflow
+# Longitudinal G-Methods Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this reference when `SKILL.md` is not enough for time-varying treatment, treatment histories, sustained strategies, dynamic regimes, censoring, or time-varying confounding affected by prior treatment.
 
@@ -19,11 +19,11 @@ Record the smallest useful longitudinal design:
 - estimand: mean, risk, survival, RMST, cumulative incidence, contrast between strategies, regime value, or modified-policy effect;
 - model-input dataset: row structure and histories retained, summarized, lagged, or collapsed.
 
-If the user wants a learned or deployable adaptive rule, ask main to route `15-dynamic-treatment-policies`.
+If the user wants a learned or deployable adaptive rule, recommend that main route `15-dynamic-treatment-policies`.
 
 ## 2. Generate A Strategy Menu
 
-Offer 2-3 distinct views when more than one longitudinal target is credible:
+Offer 3-4 distinct views when more than one longitudinal target is credible:
 
 | View | Use When | Watch |
 |---|---|---|
@@ -31,7 +31,7 @@ Offer 2-3 distinct views when more than one longitudinal target is credible:
 | Dynamic regime | treatment depends on evolving history | policy target and validation may require `15-dynamic-treatment-policies` |
 | Cumulative/dose history | duration, intensity, thresholds, or trajectories matter | may require `13-dose-response-effects` |
 | Modified treatment policy | static regimes are unrealistic or unsupported | intervention shift must be well-defined |
-| Survival/censoring strategy | outcome is time to event or censoring is central | ask main to route `23-survival-competing-risks` |
+| Survival/censoring strategy | outcome is time to event or censoring is central | recommend `23-survival-competing-risks` review |
 | Collapse/reframe | histories are weak but baseline or cumulative summaries are usable | claim becomes single-time or summary-exposure, not longitudinal g-method evidence |
 
 Main should usually show only one or two views to the user at a time.
@@ -61,9 +61,9 @@ Minimum checks before estimation:
 | Dynamic policy target | pair with `15-dynamic-treatment-policies` | learned policies need honest evaluation |
 | Time-to-event or competing-risk outcome | pair with `23-survival-competing-risks` | hazard models may not answer risk questions |
 
-## 5. Ask For Focused Data Work
+## 5. Recommend Focused Evidence
 
-Ask for one or two concrete checks at a time:
+Recommend one or two concrete checks at a time:
 
 - long-format person-time data dictionary;
 - model-input audit showing retained, summarized, and collapsed histories;

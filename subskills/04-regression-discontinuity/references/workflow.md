@@ -1,7 +1,7 @@
 ﻿# Regression Discontinuity Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this file when RD support needs more detail than `SKILL.md`. Keep the workflow local, design-based, and focused on what the cutoff can actually identify.
 
@@ -16,7 +16,7 @@ Record:
 - outcome timing relative to assignment;
 - unit of analysis, cluster level, and sample inclusion rule.
 
-Ask `domain_expert` to confirm the institutional, scientific, clinical, product, or policy meaning of the cutoff. Ask whether units know the rule, can manipulate the running variable, or face incentives to sort around the threshold.
+Recommend `domain_expert` review when the institutional, scientific, clinical, product, or policy meaning of the cutoff is unclear. Preserve manipulation incentives, rule knowledge, and sorting risk as reviewer relevance rather than direct routing.
 
 ## 2. Identify The Local Estimand
 
@@ -28,9 +28,9 @@ RD generally supports a local effect at the cutoff:
 - local randomization RD: finite-sample treatment contrast inside a justified local window;
 - geographic RD: boundary-local effect with geographic comparability assumptions.
 
-If the user wants an ATE for a broad population, ask main to route `14-transportability-generalizability` or mark the broad claim unsupported until a separate extrapolation argument exists.
+If the user wants an ATE for a broad population, recommend `14-transportability-generalizability` review or mark the broad claim unsupported until a separate extrapolation argument exists.
 
-## 3. Request Minimal Data Evidence
+## 3. Recommend Minimal Data Evidence
 
 The first pass should be small and practical:
 
@@ -41,7 +41,7 @@ The first pass should be small and practical:
 - check predetermined covariate continuity;
 - identify heaping, rounding, missingness, duplicate scores, and boundary sample exclusions.
 
-For time cutoff designs, request plots before and after the date plus notes about seasonality, shocks, and concurrent interventions. For geographic RD, request maps or boundary-distance construction evidence.
+For time cutoff designs, recommend plots before and after the date plus notes about seasonality, shocks, and concurrent interventions. For geographic RD, recommend maps or boundary-distance construction evidence.
 
 ## 4. Choose The RD Lane
 
@@ -80,9 +80,9 @@ Add when relevant:
 - geographic balance/spillover diagnostics;
 - time-series diagnostics for date cutoffs.
 
-## 6. Coordinate With The Core Team
+## 6. Connected Reviewer Relevance
 
-Ask `domain_expert` for:
+`domain_expert` relevance:
 
 - assignment-rule meaning;
 - manipulation incentives;
@@ -90,25 +90,32 @@ Ask `domain_expert` for:
 - whether the local cutoff population is meaningful;
 - interpretation limits.
 
-Ask `data_analyst` for:
+`data_analyst` relevance:
 
 - running-variable construction and cutoff coding;
 - plots, tests, bandwidth support, sample counts;
 - data quality issues near the cutoff;
 - reproducible scripts and figures.
 
-Ask `method_lead` for:
+`method_lead` relevance:
 
 - local estimand and causal wording;
 - continuity/local-randomization assumptions;
 - related subskills;
 - diagnostics and sensitivity requirements.
 
+`causal_gatekeeper` relevance:
+
+- local claim boundary;
+- timing of running variable, treatment, and outcome;
+- manipulation and sorting implications;
+- whether continuity, local randomization, or fuzzy-RD assumptions support the intended wording.
+
 ## 7. Report Integration
 
 The report writer should include an RD section only if main has routed this module or its diagnostics materially affect the analysis. The section should not imply a broad causal effect unless the main team has separately justified transportability.
 
-Recommended section structure:
+Recommended report-support fields:
 
 1. Cutoff assignment rule and local estimand.
 2. Data, running variable, cutoff, and local sample.

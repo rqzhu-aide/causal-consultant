@@ -1,7 +1,7 @@
-﻿# Interference And Spillover Workflow
+# Interference And Spillover Workflow
 ## Permission Note
 
-This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, or report material as requests back to main unless main explicitly routed `execution_authorized` after user-confirmed scope.
+This reference does not authorize execution. Treat diagnostics, artifacts, plots, tables, code, report material, or connected-specialist needs as council/result recommendations unless main explicitly routed `execution_authorized` after user-confirmed scope.
 
 Use this file when interference support needs more detail than `SKILL.md`. The goal is to prevent the team from silently using a no-interference estimand when the scientific setting says units interact.
 
@@ -16,7 +16,7 @@ Record:
 - timing: when own treatment, neighbor exposure, mediator/outcome contagion, and outcome are measured;
 - whether the treatment can change the network or group membership itself.
 
-Ask `domain_expert` to explain the mechanism in ordinary scientific terms. Do not start with a package.
+Recommend `domain_expert` review when the spillover mechanism, exposure channel, network meaning, geography, market boundary, or timing needs ordinary scientific interpretation. Do not start with a package.
 
 ## 2. Choose An Exposure Mapping
 
@@ -31,7 +31,7 @@ An exposure mapping turns the full treatment vector into a smaller exposure vari
 - lagged exposure over one or more prior periods;
 - bipartite exposure, such as consumers exposed through treated sellers, clinicians, schools, or markets.
 
-Exposure mapping is a causal assumption. The report should state why it is meaningful and show sensitivity to plausible alternatives.
+Exposure mapping is a causal assumption. Preserve why the mapping is meaningful and which alternatives need sensitivity checks in the `method_task_results` item.
 
 ## 3. Pick The Estimand
 
@@ -68,17 +68,17 @@ Require a stronger design story:
 - missing or endogenous ties;
 - timing and feedback between outcomes and exposures.
 
-Use generalized propensity/exposure models, outcome regression, doubly robust ideas, sensitivity analysis, and cautious wording. If the network is likely endogenous, ask whether the goal should become descriptive or exploratory.
+Use generalized propensity/exposure models, outcome regression, doubly robust ideas, sensitivity analysis, and cautious wording. If the network is likely endogenous, recommend treating the goal as descriptive or exploratory unless a stronger design story is routed.
 
 ### Panel, DiD, RD, IV, Or Synthetic Settings
 
-- DiD with spillovers: define treated, untreated, spillover-exposed controls, and uncontaminated controls; ask main to route `03-did-event-study`.
-- RD near boundaries: geographic spillovers can violate local comparison; ask main to route `04-regression-discontinuity`.
-- IV with peers or encouragement: direct/spillover LATEs need special assumptions; ask main to route `05-instrumental-variables`.
-- Synthetic/time-series: spillovers/displacement can contaminate donor or control regions; ask main to route `06-synthetic-control-time-series`.
-- Longitudinal contagion: treatment may change outcomes that then affect peers; ask main to route `02-longitudinal-gmethods`.
+- DiD with spillovers: define treated, untreated, spillover-exposed controls, and uncontaminated controls; recommend `03-did-event-study` review.
+- RD near boundaries: geographic spillovers can violate local comparison; recommend `04-regression-discontinuity` review.
+- IV with peers or encouragement: direct/spillover LATEs need special assumptions; recommend `05-instrumental-variables` review.
+- Synthetic/time-series: spillovers/displacement can contaminate donor or control regions; recommend `06-synthetic-control-time-series` review.
+- Longitudinal contagion: treatment may change outcomes that then affect peers; recommend `02-longitudinal-gmethods` review.
 
-## 5. Request Minimal Evidence
+## 5. Recommend Minimal Evidence
 
 First-pass data checks:
 
@@ -91,7 +91,7 @@ First-pass data checks:
 - sensitivity table for alternative radii/lags/tie definitions;
 - plot of treatment saturation or geographic exposure.
 
-When data are not yet available, ask for the structure: clusters, network availability, treatment assignment process, and likely spillover radius.
+When data are not yet available, recommend one bounded structure check: clusters, network availability, treatment assignment process, or likely spillover radius.
 
 ## 6. Pick A Practical Implementation
 
@@ -105,17 +105,17 @@ Specialized tools are sparse, so implementation often combines:
 
 The method choice is less important than whether the exposure map, support, confounding control, and uncertainty method match the estimand.
 
-## 7. Report Integration
+## 7. Report-Support Fields
 
-The report writer should include a distinct interference/spillover subsection when this module materially affects the analysis. That subsection should include:
+For downstream `method_lead`, `causal_gatekeeper`, and `report_writer` review, preserve compact report-support fields in the `method_task_results` item when this route materially affects the analysis:
 
-1. why no-interference is doubtful;
-2. exposure mapping and timing;
-3. estimands;
-4. data support and diagnostics;
-5. estimator/model and uncertainty;
-6. sensitivity to alternative exposure maps;
-7. limits on claim strength.
+- why no-interference is doubtful;
+- exposure mapping and timing;
+- estimands;
+- data support and diagnostics;
+- estimator/model and uncertainty;
+- sensitivity to alternative exposure maps;
+- limits on claim strength.
 
 ## 8. Common Failure Modes
 

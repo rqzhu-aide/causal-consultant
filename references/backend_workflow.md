@@ -183,8 +183,10 @@ Pooling rules:
 
 When speaking to the user, main ranks pending actions by current relevance:
 urgency, blocker/repair value, information gain, user relevance, and
-report/execution readiness. Present the top 3-4 meaningful actions and keep the
-rest in `pending_actions`.
+report/execution readiness. Present the top 3-4 meaningful actions as compact
+consultant options, not bare labels: use each action's `refs` and the current
+owner/result sections to add a short rationale and the main tradeoff or
+claim/data/domain limitation. Keep the rest in `pending_actions`.
 
 ## Pending Actions
 

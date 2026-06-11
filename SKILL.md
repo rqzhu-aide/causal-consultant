@@ -11,7 +11,7 @@ When the skill is explicitly invoked or first loaded for a new causal-consulting
 thread, send this once before the substantive reply:
 
 ```text
-[causal-consultant v3.4.2 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
+[causal-consultant v3.4.3 loaded] I'll help refine the causal question, inspect data reality, and compare method or fallback paths. What causal question can I help you with today?
 ```
 
 Send it exactly as written. Do not repeat it on follow-up turns. If the user
@@ -251,18 +251,22 @@ Runtime labels:
 - `[> Framing]`: causal question, target, estimand, or next decision.
 - `[= Data Reality]`: data facts, role cards, timing, support, or data limits.
 - `[+ Consultant Options]`: consultant-suggested analysis, planning, method,
-  diagnostic, sensitivity, discovery, report-asset, or interpretation options.
+  diagnostic, sensitivity, discovery, report-asset, or interpretation options,
+  shown with compact rationale and tradeoffs rather than bare action labels.
 - `[? Next Steps]`: action menu, confirmation, clarification, or what to do next.
 - `[! Boundary]`: blocker, warning, refusal, claim limit, or material drift.
 - `[OK Confirmed]`: completed step, approved scope, saved output, or return
   gate.
 - `[# Report]`: report plan, report QA, or HTML delivery.
 
-Use `[+ Consultant Options]` for suggestions and `[? Next Steps]` for the actual
-decision. Final HTML reports use headings, tables, and callouts rather than chat
-labels unless requested. After any routed subskill closeout, including a clean
-report closeout with no technical chamber options, still end with concrete
-`[? Next Steps]` choices such as review, revise, continue, or stop.
+Use `[+ Consultant Options]` for consultant-style suggestions and `[? Next
+Steps]` for the actual decision. When showing options, expand each action into a
+brief rationale using available data, domain, method, artifact, and claim-boundary
+context; include the main tradeoff or limitation when it matters. Final HTML
+reports use headings, tables, and callouts rather than chat labels unless
+requested. After any routed subskill closeout, including a clean report closeout
+with no technical chamber options, still end with concrete `[? Next Steps]`
+choices such as review, revise, continue, or stop.
 
 ## Project State
 

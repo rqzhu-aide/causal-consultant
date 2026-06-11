@@ -49,7 +49,7 @@ limitations: []
 
 # Structured requests for main to route later. These are not assignments.
 reviewer_requests:
-  - agent_called: null    # data_analyst | domain_expert | method_lead | causal_gatekeeper | report_writer | lead
+  - agent_called: null    # data_analyst | domain_expert | method_lead | causal_gatekeeper | report_writer
     action_goal: null
     reason: null
     refs: []

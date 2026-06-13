@@ -1,0 +1,112 @@
+project_summary:
+  title: null
+  objective: null
+  materials: []
+  last_updated: null
+  phase: exploration
+
+  data_audit_complete: false
+  domain_knowledge_complete: false
+  causal_check_complete: false
+
+  exploration_complete: false
+  exploration_summary: null
+
+  analysis_output: non_exist
+
+  discovery_sidecar_output: non_exist
+
+  report_output: non_exist
+
+council_chamber:
+  data_audit:
+    last_updated: null
+    current_status: null
+    opinions: []
+  domain_expert:
+    last_updated: null
+    current_status: null
+    opinions: []
+  causal_check:
+    last_updated: null
+    current_status: null
+    opinions: []
+  causal_discovery:
+    last_updated: null
+    current_status: null
+    opinions: []
+  report_writer:
+    last_updated: null
+    current_status: null
+
+next_step_plan: []
+
+data_facts:
+  last_updated: null
+  data_checked: not_checked
+  data_sources: []
+  audit_scope: null
+  unit_of_observation: null
+  variables: []
+  structure_notes: []
+  timing_notes: []
+  dependency_notes: []
+  leakage_risks: []
+  missingness_notes: []
+  support_notes: []
+  validity_questions: []
+  exploratory_runs: []
+  artifact_refs: []
+
+domain_knowledge:
+  last_updated: null
+  domain_checked: not_checked
+  domain_scope: null
+  user_provided: null
+  data_facts: null
+  construct_notes: []
+  measurement_notes: []
+  population_setting_notes: []
+  domain_practice: null
+  source_limitations: []
+  practice_searches: []
+  references: []
+
+causal_facts:
+  last_updated: null
+  causal_checked: not_checked
+  analysis_readiness: not_ready
+  causal_question: null
+  exposure_or_intervention: null
+  outcome: null
+  estimand: null
+  assumptions: []
+  threats: []
+  support_status: null
+  recommended_checks: []
+  recommended_method_routes: []
+
+discovery_sidecar:
+  last_updated: null
+  status: not_started
+  goal: null
+  scope: null
+  method_summary: null
+  findings: []
+  diagnostics: []
+  limitations: []
+  artifact_refs: []
+  reviewer_requests: []
+
+report_assembly:
+  last_updated: null
+  current_format: null
+  report_goal: null
+  audience: null
+  target_section: null
+  planned_structure: []
+  key_points: []
+  wording_constraints: []
+  draft_notes: []
+
+artifact_records: []

@@ -1,0 +1,7 @@
+# Runtime state created when testing this plugin package from the repository root.
+project_state.yaml
+project_state_stop_check_hook_run.txt
+
+# Python bytecode.
+__pycache__/
+*.py[cod]

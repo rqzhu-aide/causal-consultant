@@ -1,0 +1,122 @@
+# Design: single_time_observational
+
+Use this file to plan or review a point-treatment observational analysis: baseline or one-time exposure, treated-versus-untreated comparisons, target-trial emulation, active-comparator designs, measured-confounding adjustment, matching, weighting, standardization, ATE/ATT/overlap targets, or observational report support.
+
+This design route is the accountable owner for whether analysis execution remains consistent with the observational study design. Support routes may add analytic tools, but they must stay inside this design scope.
+
+Work in this order: emulate the target trial, align time zero, define exposure and comparator, build the analysis set, audit covariate timing and support, choose an estimator lane, run required diagnostics, then set the claim boundary. Do not let a flexible model compensate for bad timing, missing confounding, or positivity failure.
+
+Find the `next_step_plan` entry with `id: analysis_execution` and `design: single_time_observational`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
+
+After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this design route owns any combined design/support `artifact_records` write, but only in approved deep execution.
+
+If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only, covering target-trial fit, data contract, estimand, required diagnostics, blockers, proposed outputs, and execution scope. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
+
+If `analysis_precheck: true`, `mode` should be `deep`: execute only within the approved task and available data/artifacts. If a support route is also named, work from the same `analysis_execution.task` and keep the support work inside the observational-design scope.
+
+## Use When
+
+Use when the project has, or may have:
+
+- baseline or one-time exposure/treatment chosen outside random assignment
+- an observational cohort, registry, claims, EHR, survey, app, product, or administrative dataset
+- a treated-versus-untreated, exposed-versus-unexposed, usual-care, active-comparator, or threshold contrast
+- a need for target-trial emulation, adjustment-set review, propensity scores, matching, weighting, standardization, sensitivity analysis, or measured-confounding claim boundaries
+
+Do not use when the exposure changes repeatedly over time in a way that creates treatment-confounder feedback; consider `longitudinal_gmethods`. Do not use when policy timing, cutoffs, instruments, donor pools, or interference are the source of identification.
+
+## Data Contract
+
+Before analysis, build or specify a target-trial-style dataset. Minimum facts:
+
+- eligibility criteria at time zero, without post-exposure or outcome-informed exclusions
+- time zero aligning eligibility, exposure assignment/start, baseline covariates, and follow-up start
+- exposure strategy or meaningful exposure definition, including versions, dose category, initiation, threshold, or policy rule
+- comparator strategy: untreated, lower exposure, usual care, active comparator, or alternative strategy
+- target population and whether the estimand is ATE, ATT, ATC, overlap, matched-sample, restricted-support, or descriptive
+- outcome definition, follow-up window, latency, censoring, competing events, and measurement timing
+- pre-exposure confounders, risk factors, stratifiers, and variables that must not be adjusted for
+- missingness, selection, complete-case rules, censoring, loss to follow-up, and analysis-set flow
+- site/provider/time/source variables that may encode confounding, measurement, or support differences
+- support/positivity evidence for each exposure option across key covariate regions
+
+Represent one row per eligible unit at time zero unless the outcome support requires survival, repeated outcomes, clusters, or longitudinal histories. Keep exposure, comparator, baseline covariates, post-exposure variables, censoring, and outcomes as separate roles.
+
+Facts that usually must be inspected, not merely assumed: time zero, exposure timing, baseline covariate timing, analysis exclusions, outcome window, missing outcomes, support/overlap, and whether key confounders exist.
+
+## Design-Specific Twists
+
+- `direct_fit`: a target-trial emulation is coherent, time zero is clear, confounders are measured before exposure, and support exists for the requested target population.
+- `data_shape_twist`: reshape to one row per eligible unit, create time-zero fields, separate post-exposure variables, build analysis-set flow, restrict to common support, or encode active-comparator versions.
+- `estimand_twist`: convert a generic ATE request into ATT, overlap, restricted-support, active-comparator, or descriptive target when support or treatment choice demands it.
+- `diagnostic_twist`: prioritize timing/role maps, support/positivity, baseline balance, missingness/selection, negative controls, sensitivity analysis, or target-population shift.
+- `implementation_twist`: use regression adjustment, standardization, g-computation, matching, weighting, trimming, AIPW, TMLE, DML, or sensitivity methods only after the design facts are coherent.
+- `fallback_twist`: if time zero, confounding, exposure meaning, or support fails, use descriptive association, design audit, sensitivity memo, or future-data plan instead of causal effect wording.
+
+## Required Diagnostics
+
+Perform the analytic diagnostics relevant to the observational design and chosen estimator lane:
+
+- Target-trial table: eligibility, time zero, exposure, comparator, outcome, follow-up, estimand, target population, analysis set.
+- Variable role and timing map: exposure, baseline confounders, risk factors, mediators, colliders, post-exposure variables, censoring, outcomes, selection variables.
+- Analysis-flow diagnostic: eligible -> exposed/comparator -> analysis set -> outcome observed, with exclusion and missingness reasons.
+- Exposure/comparator support: counts and positivity by key covariates, sites, providers, time periods, clusters, and domain groups.
+- Missingness/selection/censoring: profile by exposure and outcome status; assess whether complete-case or censoring choices change the target.
+- Balance and overlap: before/after adjustment, matching, weighting, trimming, or restriction; include SMDs, distributions, weight tails, and effective sample size when relevant.
+- Sensitivity and falsification: unmeasured-confounding sensitivity, negative controls, proximal/proxy feasibility, or IV feasibility when hidden confounding is load-bearing.
+- Estimator benchmark: compare primary estimator against simpler adjusted, weighted, or standardized estimates when execution is approved.
+- Support-route diagnostics: if a support file is active, run only the observational diagnostics needed by that support task, such as subgroup overlap, dose support, mediator timing, outcome scale, or statistical-validity checks.
+
+## Boundaries
+
+Block or weaken causal wording when:
+
+- time zero is undefined or eligibility, exposure, covariates, and follow-up are misaligned
+- exposure follows symptoms, prognosis, early outcome risk, or decisions driven by impending outcome
+- key confounders are missing, post-exposure, outcome-derived, or badly measured
+- positivity fails, matching discards the target, weights explode, or sparse cells force extrapolation
+- selection, censoring, complete-case restriction, missing outcomes, or loss to follow-up differs by exposure and changes the target
+- exposure/comparator versions are vague, mixed, or not interpretable as the claimed strategy
+- post-treatment adjustment, per-protocol restriction, or selected subgroups are used without explicit estimand boundaries
+- estimator choice, trimming, subgrouping, or reporting was chosen after seeing preferred outcomes without exploratory labeling
+
+Never rescue these failures by adding more covariates, a richer propensity model, or machine learning. Name the fallback, repair, or weaker claim.
+
+## Packages
+
+Choose the estimator lane before choosing software. Package lanes are reference cues, not execution permission. Verify current docs before running code.
+
+- Transparent first pass: regression adjustment, standardization, or g-computation; R `fixest`, `marginaleffects`, `stdReg`, `survey`; Python `statsmodels`, `zepid`, custom sklearn/statsmodels workflows.
+- Matching and weighting: R `MatchIt`, `WeightIt`, `cobalt`, `optmatch`, `designmatch`, `CBPS`, `ebal`; Python `causalml`, `DoWhy`, `zepid`, custom propensity/balance code.
+- Doubly robust and targeted learning: R `AIPW`, `tmle`, `drtmle`, `tmle3`, `sl3`, `SuperLearner`; Python `zepid`, `EconML`, `DoubleML`, custom AIPW/TMLE templates.
+- Sensitivity and falsification: R `sensemakr`, `EValue`, `tipr`, `rbounds`, `causalsens`; negative-control/proximal work may require custom code or `EmpiricalCalibration`.
+- High-dimensional nuisance support: R/Python `DoubleML`; Python `EconML`; R `hdm`, `grf`; nuisance learners such as `glmnet`, `ranger`, `xgboost`, `lightgbm`, `SuperLearner`, `sl3`, or sklearn tools.
+
+Key literature anchors: target-trial emulation, Rubin/Holland potential outcomes, exchangeability/positivity/consistency, Hernan and Robins causal inference framework, propensity-score design, overlap weights, doubly robust estimation, targeted learning, and sensitivity analysis for unmeasured confounding.
+
+## Connections With Supports
+
+- Recommend `statistical-validity` for most serious observational plans: support, balance, weights, sensitivity, DR/TMLE/DML, negative controls, and richer diagnostics often decide whether execution is ready.
+- Use `heterogeneous-effects` when the question is about subgroup, CATE, site/time, equity, safety, or effect-modifier variation.
+- Use `dose-response` when exposure is continuous, ordinal, cumulative, duration-based, threshold-based, or shift-like.
+- Use `mediation` when the user wants pathway interpretation or asks whether to adjust for an intermediate variable.
+- Use `non-continuous-outcomes` for binary, count, ordinal, survival, recurrent-event, competing-risk, or censoring-sensitive outcomes.
+- Use `policy-making-and-transportability` when the estimate will guide action, targeting, deployment, or movement to another population.
+
+## Artifact Records Write
+
+In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include observational-design specifics in the entry summary or in a note/manifest inside the output location, such as:
+
+- `design_id: single_time_observational`
+- `fit_status`: `direct`, `adapted`, `planning_only`, `blocked`, or `limited`
+- `data_contract`: target trial slots, time zero, exposure/comparator, outcome window, adjustment set, support, and inspected-vs-described status
+- `analysis_plan`: target population, estimand, estimator lane, and diagnostic sequence
+- `estimand_cues`: ATE, ATT, overlap, active-comparator, restricted-support, descriptive fallback, or sensitivity-only
+- `twists`: data-shape, estimand, diagnostic, implementation, or fallback twists that would make the route honest
+- `diagnostics_needed` and `diagnostics_reviewed`
+- `boundaries`: invalidating traps, claim limits, measured-only assumptions, and support/selection cautions
+- `packages`: package lanes only if relevant to the next decision
+- `blocker_reason`: why the observational design did not work, if status is `blocked`
+- `recommended_next_step`: one smallest useful data check, diagnostic, support clarification for `causal_check`, report asset, planning memo, or stop/refusal path
+
+Do not update `project_summary` or `next_step_plan`; `team_lead` updates aggregate workflow fields after the route finishes.

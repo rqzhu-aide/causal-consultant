@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \".claude/project_state_stop_check.js\"",
+            "timeout": 10,
+            "statusMessage": "project_state_stop_check: checking project_state.yaml structure and state flags"
+          }
+        ]
+      }
+    ]
+  }
+}

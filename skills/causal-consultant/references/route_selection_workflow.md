@@ -4,7 +4,7 @@
 
 Use this reference only to build the ordered `next_step_plan` for the current turn.
 
-The router initializes `project_state.yaml` if missing, reads `route_index.yaml`, writes the complete assignment list, loads planned non-`team_lead` references first, then loads `team_lead` exactly once as the final planned reference. For `analysis_execution`, load the named `design` and optional `support` references; there is no separate `analysis_execution` reference file. `team_lead` owns synthesis plus the final user-facing answer.
+The router runs `scripts/init_project_state.py --project-root <project root>` to initialize `project_state.yaml` if needed, reads `route_index.yaml`, writes the complete assignment list, loads planned non-`team_lead` references first, then loads `team_lead` exactly once as the final planned reference. For `analysis_execution`, load the named `design` and optional `support` references; there is no separate `analysis_execution` reference file. `team_lead` owns synthesis plus the final user-facing answer.
 
 Use this vocabulary consistently:
 
@@ -18,7 +18,7 @@ Use this vocabulary consistently:
 Read these before planning:
 
 1. The current user message.
-2. `project_state.yaml`; if it is missing, create it first from `assets/project_state_template.yaml`.
+2. `project_state.yaml`, initialized first through `scripts/init_project_state.py --project-root <project root>` if needed.
 3. `references/route_index.yaml`.
 
 Do not load `references/method_route_catalog.yaml` from the router. Only `causal_check` loads the detailed method catalog when method recommendation is needed.
@@ -50,7 +50,10 @@ next_step_plan:
     task: "review route work, update aggregate state if needed, and respond"
 ```
 
-Use `report_precheck` only on `report_writer` entries.
+Use `report_precheck` only on `report_writer` entries. Use
+`analysis_precheck` only on `analysis_execution` entries. Core routes such as
+`data_audit`, `domain_expert`, `causal_check`, and `causal_discovery` use only
+`mode: shallow | deep`; they do not have precheck fields.
 
 Analysis execution plus team lead:
 
@@ -88,7 +91,7 @@ Do not write detailed route payloads in `next_step_plan`. The planned route writ
 
 Apply these rules in order.
 
-1. If `project_state.yaml` was just initialized or cannot be read as YAML, plan only `team_lead`.
+1. If `project_state.yaml` cannot be read as YAML, plan only `team_lead`.
 2. If the user requests Markdown-to-HTML report conversion and the state already has `project_summary.report_output: exist`, `report_assembly.current_format: md`, `council_chamber.report_writer.current_status: produced`, and an actual `.md` report file from prior `report_writer` work in a recorded report output location, plan `report_writer` with `report_precheck: true` and `mode: deep`.
 3. Preserve an existing pending `report_writer` or `analysis_execution` entry only when the user approves it, continues it, gives no new substantive route material, or otherwise does not change that gated request. If the user provides new data, clarification, domain facts, causal facts, discovery material, or a changed report/analysis task, route the new material under the rules below.
 4. If the user approves or continues a prior core recommendation, route to the referenced core route.
@@ -112,7 +115,10 @@ For cross-turn core approvals:
 - Treat short approvals such as "yes", "do that", "run it", "go ahead", or "use that option" as referring to the most recent actionable core-route recommendation in `council_chamber` or `discovery_sidecar.reviewer_requests`.
 - Route only when the prior item clearly names or implies one core route: `data_audit`, `domain_expert`, `causal_check`, `causal_discovery`, or `report_writer`.
 - Use the prior recommendation text as `request` context and write a compact `task` that states what the route should inspect, update, or review.
-- Use `shallow` by default. Use `deep` only when the prior recommendation or current user message explicitly asks for deep work, extensive search, actual data inspection, bounded discovery execution, or approved report writing/revision/conversion.
+- Use `shallow` by default for core routes. Use `deep` when the current routed
+  task itself calls for fuller source review, actual data/artifact inspection,
+  bounded discovery work, or approved report writing/revision/conversion. Do
+  not add a precheck field to core routes.
 - If the approval could refer to multiple routes and the user did not identify one, plan only `team_lead` to summarize the options and ask the user to choose.
 - If the prior item points to `report_writer`, keep the report gate rules: new report writing, report-scope setup, revision, outline, safer-wording, limitations, or reviewer-facing work uses `report_precheck: false`; approved Markdown-to-HTML conversion may use `report_precheck: true` when an actual `.md` report file from prior `report_writer` work exists.
 - If the prior item points to method execution rather than a core route, follow the analysis execution rules instead of creating a core-route entry.
@@ -148,14 +154,14 @@ Exploration can become complete only when `data_facts.data_checked`, `domain_kno
 
 Use:
 
-- `shallow`: compact check, intake, readiness/precheck, scope planning, or bounded recommendation from current state.
+- `shallow`: compact check, intake, readiness review, scope planning, or bounded recommendation from current state.
 - `deep`: fuller review, source-grounded domain work, detailed analysis preparation, approved report-writing, approved conversion, or approved method execution.
 
 Only shallow `data_audit` may create durable output, and only when actual data or files exist and a useful audit artifact is created. All other shallow work is feedback, readiness review, planning, or drafting state only; it must not create output folders or `artifact_records`.
 
 Route-specific mode rules:
 
-- `data_audit`: `shallow` audits structure, timing, leakage, dependencies, missingness, support, and validity. Shallow data audit may create durable audit artifacts only when actual data or files exist. Use `deep` only when actual data are available and exploratory causal-preparation analysis may be run.
+- `data_audit`: `shallow` audits structure, timing, leakage, dependencies, missingness, support, and validity. Shallow data audit may create durable audit artifacts only when actual data or files exist. Use `deep` only when actual data are available and the routed task calls for exploratory causal-preparation analysis.
 - `causal_discovery`: `shallow` scopes graph questions, reviews existing graph artifacts, frames local neighborhoods, or assesses discovery opportunities; it must not create new output folders or `artifact_records`. Use `deep` only when actual data or named discovery artifacts are available and the task supports bounded discovery execution or artifact inspection.
 - `causal_check`: use `shallow` before data are available to frame the question, estimand, claim boundary, and missing facts. Use `deep` after `data_audit` inspected actual data and the next substantive turn needs integrated causal assessment or design/support recommendations.
 - `domain_expert`: use `deep` for extensive domain-practice search or detailed source-grounded review; otherwise use `shallow`.

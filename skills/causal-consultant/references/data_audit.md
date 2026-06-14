@@ -57,13 +57,9 @@ In `deep` mode, when data are available and it is safe to run analysis, also con
 
 ## Return Format
 
-Prepare internal notes under the following sections when useful:
-
-- Critical issues.
-- Non-critical warnings.
-- Questions that must be answered before valid analysis.
-- Recommended next steps.
-- Exploratory results and artifact paths, if analysis was run.
+Prepare concise internal notes when useful on critical issues, non-critical
+warnings, required questions, recommended next steps, and exploratory results or
+artifact paths if analysis ran.
 
 ## Special Emphasis
 
@@ -72,6 +68,13 @@ For biomedical, survival, longitudinal, reinforcement-learning, personalized-med
 ## State Updates
 
 Update `project_state.yaml` fields under `data_facts` when supported by the user's request:
+
+Keep `data_facts` compact. Use it as live decision memory, not a full data
+dictionary. In `variables`, record only key variable groups, causal roles,
+timing-critical fields, and blockers. Do not list every column or write long
+per-variable notes. If a full variable inventory, missingness table, support
+table, or profiling detail is useful, create or reference an audit artifact and
+summarize only the decision-relevant points in YAML.
 
 - `last_updated`: set to the local run time in `HH:MM:SS` format whenever this reference is run.
 - `data_checked`: set to `passing`, `limited`, `imagined`, or `blocked` after checking whether the data facts are sufficient for the requested analysis; leave as `not_checked` only if no data audit work occurred.
@@ -89,39 +92,38 @@ Update `project_state.yaml` fields under `data_facts` when supported by the user
 - `exploratory_runs`
 - `artifact_refs`
 
-Refresh only `council_chamber.data_audit` for data-audit opinions. Use `current_status` to summarize what the data audit could verify.
+## Council Chamber Write Contract
 
-Write 2-4 items under `opinions`. These are scoped data-audit judgments for the current problem, not durable facts and not final user-facing prose. Prefer this compact shape:
+Refresh only `council_chamber.data_audit`.
 
-```yaml
-council_chamber:
-  data_audit:
-    last_updated: "HH:MM:SS"
-    current_status: "Brief status of what could be verified or only imagined."
-    opinions:
-      - dimension: immediately_valid_analysis_options
-        opinion: "What can be analyzed now from the available data facts, if anything."
-      - dimension: complex_analysis_options
-        opinion: "What richer analysis might become possible if key data conditions hold."
-      - dimension: enabling_data_manipulation
-        opinion: "What reshaping, joining, coding, timing alignment, or feature construction could enable better models."
-      - dimension: risks_and_pitfalls
-        opinion: "Main data risks such as leakage, missingness, weak support, timing ambiguity, dependence, or invalid comparisons."
-```
+Set:
 
-Use only dimensions that are relevant. Keep each opinion short, decision-facing, and grounded in either verified data, inspected exploratory output, user-described facts, or clearly marked imagined structure.
+- `last_updated`: local update time in `HH:MM:SS` format.
+- `current_status`: one short sentence on what the data audit could verify.
+- `opinions`: 1-3 compact opinion entries.
 
-When data audit finishes, check the other core review fields before finalizing `opinions`:
+Keep opinions short, decision-facing, grounded in `data_facts` or current
+uncertainty, and free of schema labels. Focus on data support, blockers, useful
+reshaping, analysis options, or needed review.
 
-- If `domain_knowledge.domain_checked` is not `passing` or `limited`, include a strong opinion recommending `domain_expert` review of construct meaning, measurement, population, endpoint, common practice, or domain-specific risks.
-- If `causal_facts.causal_checked` is not `passing` or `limited`, include a strong opinion recommending `causal_check` review of the causal question, estimand, timing, assumptions, claim strength, and method direction.
-- If both are missing, use two short opinions or one combined opinion, whichever is clearer. Do not let peer-review suggestions crowd out urgent data blockers.
+When data audit finishes, be aware of the other core reviewers before finalizing
+`opinions`. Recommend another member only when that review would be immediately
+useful for the next decision and the current state gives that member something
+concrete to inspect, clarify, or decide. Recommend other members such as
+`domain_expert` or `causal_check` when they would help immediately. If the
+missing ingredient is user-provided material, name that material need plainly.
+Do not let team-review suggestions crowd out urgent data blockers.
 
 Use `data_checked: passing` only when the available data description or inspected data supports the requested analysis inputs well enough to proceed: source, unit, exposure/treatment, outcome, timing, key variables, and major leakage/missingness blockers are resolved or explicitly bounded. Use `limited` when some useful planning or bounded review is possible but important data facts are missing. Use `imagined` only when no actual data or verified data description is available and the audit records a hypothetical structure for planning; never treat `imagined` as analysis-ready. Use `blocked` when data structure, timing, leakage, missingness, or unavailable files prevent valid analysis execution.
 
 ## Analysis Outputs
 
 `data_audit` is the only route where shallow mode may create a durable artifact, and only when actual data or inspectable files exist and a useful audit output is created.
+
+Use artifacts for exhaustive data detail: full column inventories, profiling
+tables, missingness tables, support diagnostics, reshape notes, and generated
+audit reports. `data_facts` should hold only the compact interpretation and
+artifact references.
 
 When any script, notebook, table, figure, or exploratory analysis output is actually created:
 

@@ -27,6 +27,9 @@ Interpret `mode` as:
 - `shallow`: perform a compact causal-claim screen using existing context.
 - `deep`: perform a fuller causal critique covering estimand, timing, assumptions, threats, support status, and recommended checks.
 
+Even in `deep` mode, keep causal-check state compact. The goal is live
+decision memory, not a report-length causal narrative.
+
 Record blocked or completed work in `causal_facts.causal_checked`, `council_chamber.causal_check.current_status`, and relevant causal-fact notes.
 
 ## Checklist
@@ -45,14 +48,9 @@ Check the following items when relevant:
 
 ## Return Format
 
-Prepare internal notes under the following sections when useful:
-
-- Supported causal claim.
-- Unsupported or overclaimed parts.
-- Key assumptions.
-- Main threats to validity.
-- Recommended checks or design changes.
-- Safer wording.
+Prepare concise internal notes when useful on claim support, overclaim, key
+assumptions and threats, recommended checks or design changes, and safer
+wording.
 
 ## Special Emphasis
 
@@ -114,6 +112,11 @@ When recommending `descriptive_association`, set `analysis_readiness: limited` a
 
 Update `project_state.yaml` fields under `causal_facts` when supported by the user's request:
 
+Keep `assumptions` and `threats` as concise decision bullets. Name the
+assumption or threat, why it matters in one short clause, and the needed check
+or claim boundary when relevant. Do not paste long causal essays, full DAG
+narratives, or report-style limitations sections into YAML.
+
 - `last_updated`: set to the local run time in `HH:MM:SS` format whenever this reference is run.
 - `causal_checked`: set to `passing`, `limited`, or `blocked` after checking whether the causal formulation and claim boundary are sufficient for the requested analysis; leave as `not_checked` only if no causal check work occurred.
 - `analysis_readiness`: set to `ready`, `limited`, `not_ready`, or `blocked` when the task involves analysis planning, execution, or method selection.
@@ -121,28 +124,41 @@ Update `project_state.yaml` fields under `causal_facts` when supported by the us
 - `exposure_or_intervention`
 - `outcome`
 - `estimand`
-- `assumptions`
-- `threats`
+- `assumptions`: compact bullets for assumptions that most affect the current
+  claim or analysis path.
+- `threats`: compact bullets for the main validity threats, not a full
+  limitations narrative.
 - `support_status`
 - `recommended_checks`
 - `recommended_method_routes`
 
-Refresh only `council_chamber.causal_check` for causal opinions. Use `current_status` to summarize claim support or uncertainty.
+## Council Chamber Write Contract
 
-Write 2-4 items under `opinions`. These are scoped causal-check judgments for the current problem, not durable method catalog entries and not final user-facing prose. When analysis planning or execution was requested, include one opinion about `analysis_readiness` and one about the recommended design/support direction, why no method reaches the limited threshold, or why `descriptive_association` is being offered as a non-causal fallback. Prefer dimensions such as:
+Refresh only `council_chamber.causal_check`.
 
-- `claim_support`: whether the current claim can be causal, associational, predictive, exploratory, or blocked.
-- `identification_or_method_direction`: the design or support direction that appears plausible, or why no loadable design/support recommendation is mature yet.
-- `assumption_risks`: assumptions, threats, or missing facts that most affect the claim.
-- `next_causal_check`: the next causal clarification, diagnostic, method-route recommendation, or boundary revision.
+Set:
 
-Keep each opinion short, decision-facing, and grounded in the current `causal_facts`, data/domain state, or clearly stated uncertainty.
+- `last_updated`: local update time in `HH:MM:SS` format.
+- `current_status`: one short sentence on claim support or uncertainty.
+- `opinions`: 1-3 compact opinion entries.
 
-When causal check finishes, check the other core review fields before finalizing `opinions`:
+Keep opinions short, decision-facing, grounded in `causal_facts`, data/domain
+state, or current uncertainty, and free of schema labels. Focus on claim
+support, analysis readiness, method direction, assumptions/threats, or next
+causal check. When analysis planning or execution was requested, include one
+opinion about `analysis_readiness` and one about the recommended design/support
+direction, why no method reaches the limited threshold, or why
+`descriptive_association` is being offered as a non-causal fallback.
 
-- If `data_facts.data_checked` is not `passing` or `limited`, include a strong opinion recommending `data_audit` review of actual data, variable timing, leakage, missingness, support, dependence, and validity before analysis execution. Treat `imagined` data audit as not yet reviewed for execution readiness.
-- If `domain_knowledge.domain_checked` is not `passing` or `limited`, include a strong opinion recommending `domain_expert` review of construct meaning, measurement conventions, endpoint interpretation, population/setting, common practice, or domain-specific risks.
-- If both are missing, use two short opinions or one combined opinion, whichever is clearer. Do not let peer-review suggestions crowd out a critical causal boundary, blocked claim, or method-readiness judgment.
+When causal check finishes, be aware of the other core reviewers before
+finalizing `opinions`. Recommend another member only when that review would be
+immediately useful for the next decision and the current state gives that member
+something concrete to inspect, clarify, or decide. Recommend other members such
+as `data_audit` or `domain_expert` when they would help immediately. If the
+missing ingredient is user-provided material, name that material need plainly
+instead of implying a teammate can already review it. Do not let team-review
+suggestions crowd out a critical causal boundary, blocked claim, or
+method-readiness judgment.
 
 Use `causal_checked: passing` only when the causal question, exposure/treatment, comparator, outcome, time zero, target population, estimand, main assumptions, and claim boundary are clear enough to support the requested analysis. Use `limited` when some useful causal framing or planning is possible but the causal formulation is incomplete, or when the only mature executable path is `descriptive_association` with non-causal wording. Use `blocked` when the requested causal claim or execution path is unsupported, overclaimed, unidentified, or outside the skill boundary and no acceptable fallback is available.
 

@@ -131,11 +131,21 @@ Update `project_state.yaml` fields under `report_assembly` when supported by the
 - `wording_constraints`
 - `draft_notes`
 
-Refresh only `council_chamber.report_writer.last_updated` and `council_chamber.report_writer.current_status`.
+## Council Chamber Write Contract
 
-Use `current_status` only as the report-writer outcome handoff. Set it to `produced` when report text, a report draft, a Markdown `.md` report, an HTML conversion, or a report artifact was created. Set it to `blocked: <short reason>` when report writing could not proceed.
+Refresh only `council_chamber.report_writer`.
 
-Do not write `opinions` for `report_writer`; report writer is a handoff route, not a consulting-opinion route.
+Set:
+
+- `last_updated`: local update time in `HH:MM:SS` format.
+- `current_status`: report handoff status only.
+
+Do not write `opinions` for `report_writer`. Use `produced` when report text, a
+report draft, a Markdown `.md` report, an HTML conversion, or a report artifact
+was created. Use `blocked: <short reason>` only when report work could not
+proceed.
+
+Report writer is a handoff route, not a consulting-opinion route.
 
 Do not mark reporting as available. `team_lead` updates report output state after the route finishes; created report files are tracked in `artifact_records`.
 

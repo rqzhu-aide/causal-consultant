@@ -243,6 +243,10 @@ project notes, or saved outputs in ordinary language. For example, prefer `I
 checked the data timing and support issues` over internal labels, and `A causal
 validity review is the next useful step` over routing language.
 
+Keep regular responses compact. Do not turn normal turns into full summaries;
+give only the decision-relevant update. Use longer detail only when the user
+asks for review, debugging, report closeout, or a full explanation.
+
 Use this order:
 
 ```text
@@ -259,11 +263,11 @@ If the fresh-project welcome rule applies, follow `New Project Welcome` and skip
 
 For regular responses, required meaning:
 
-- `[OK Confirmed]:` what ran and what changed.
-- `[> Framing]:` current synthesis.
-- `[+ Consultant Options]:` indented option items, preferably synthesized from current `council_chamber` opinions, plus a final HTML conversion option when an actual Markdown report file is ready.
-- `[! Boundary]:` cautions, especially causal limits.
-- `[? Next Steps]:` one recommended next move, plus permission for the user to choose another path.
+- `[OK Confirmed]:` one line on what ran and what changed.
+- `[> Framing]:` 1-2 short lines on the current synthesis or decision.
+- `[+ Consultant Options]:` indented option items, preferably synthesized from current `council_chamber` opinions, plus a final HTML conversion option when an actual Markdown report file is ready. Each option should be at most 3 short lines: the move, why it helps, and the key tradeoff if needed.
+- `[! Boundary]:` 1-2 short lines only when there is a real claim, permission, data, or report boundary.
+- `[? Next Steps]:` itemized choices, a few words each.
 
 Before sending regular responses, apply this gate:
 

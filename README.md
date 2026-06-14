@@ -84,92 +84,31 @@ process.
 
 ## Install And Activate
 
-Clone the repository first:
+Install by copying the GitHub folder `skills/causal-consultant` into your
+personal or project-local skill folder.
 
-PowerShell:
-
-```powershell
-git clone --depth 1 https://github.com/rqzhu-aide/causal-consultant.git
-Set-Location causal-consultant
-```
-
-macOS/Linux shell:
-
-```sh
-git clone --depth 1 https://github.com/rqzhu-aide/causal-consultant.git
-cd causal-consultant
-```
-
-Install the canonical skill folder:
+Codex personal install:
 
 ```text
-skills/causal-consultant/
+Copy the folder `skills/causal-consultant` from https://github.com/rqzhu-aide/causal-consultant into `~/.codex/skills/causal-consultant`.
 ```
 
-### Codex Personal Install
+Claude Code personal install:
 
-PowerShell:
-
-```powershell
-$skillsDir = Join-Path $HOME ".codex\skills"
-$dst = Join-Path $skillsDir "causal-consultant"
-New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
-if (Test-Path $dst) { Remove-Item -Recurse -Force $dst }
-Copy-Item -Recurse -Force ".\skills\causal-consultant" $dst
+```text
+Copy the folder `skills/causal-consultant` from https://github.com/rqzhu-aide/causal-consultant into `~/.claude/skills/causal-consultant`.
 ```
 
-macOS/Linux shell:
+Codex or other agent project-local install:
 
-```sh
-mkdir -p "$HOME/.codex/skills"
-rm -rf "$HOME/.codex/skills/causal-consultant"
-cp -R skills/causal-consultant "$HOME/.codex/skills/causal-consultant"
+```text
+Copy the folder `skills/causal-consultant` from https://github.com/rqzhu-aide/causal-consultant into `.agents/skills/causal-consultant`.
 ```
 
-### Claude Code Personal Install
+Alternative project-local install:
 
-PowerShell:
-
-```powershell
-$skillsDir = Join-Path $HOME ".claude\skills"
-$dst = Join-Path $skillsDir "causal-consultant"
-New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
-if (Test-Path $dst) { Remove-Item -Recurse -Force $dst }
-Copy-Item -Recurse -Force ".\skills\causal-consultant" $dst
-```
-
-macOS/Linux shell:
-
-```sh
-mkdir -p "$HOME/.claude/skills"
-rm -rf "$HOME/.claude/skills/causal-consultant"
-cp -R skills/causal-consultant "$HOME/.claude/skills/causal-consultant"
-```
-
-### Other Agent Skill Folder
-
-For agents that scan a project-local skill folder, copy the same canonical skill
-folder into the agent's skill directory, such as `.agents/skills` or
-`.agent/skills`.
-
-PowerShell:
-
-```powershell
-$targetRepo = "C:\path\to\target-repo"
-$skillsDir = Join-Path $targetRepo ".agents\skills"
-$dst = Join-Path $skillsDir "causal-consultant"
-New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
-if (Test-Path $dst) { Remove-Item -Recurse -Force $dst }
-Copy-Item -Recurse -Force ".\skills\causal-consultant" $dst
-```
-
-macOS/Linux shell:
-
-```sh
-target_repo="/path/to/target-repo"
-mkdir -p "$target_repo/.agents/skills"
-rm -rf "$target_repo/.agents/skills/causal-consultant"
-cp -R skills/causal-consultant "$target_repo/.agents/skills/causal-consultant"
+```text
+Copy the folder `skills/causal-consultant` from https://github.com/rqzhu-aide/causal-consultant into `.agent/skills/causal-consultant`.
 ```
 
 Start using it by asking your agent: `Use the causal-consultant skill to help
@@ -185,46 +124,44 @@ Project-level hooks are optional stability checks. They are not part of the
 personal skill install. If you want them, copy the hook files into each local
 project where you want the checks to run.
 
-Codex project hook, PowerShell:
+Codex project hook, PowerShell. Navigate to your project working directory, then
+run:
 
 ```powershell
-$targetRepo = "C:\path\to\target-repo"
-$dst = Join-Path $targetRepo ".codex"
-New-Item -ItemType Directory -Force -Path $dst | Out-Null
-Copy-Item -Force ".\project-hooks\.codex\hooks.json" (Join-Path $dst "hooks.json")
-Copy-Item -Force ".\project-hooks\.codex\project_state_stop_check.js" (Join-Path $dst "project_state_stop_check.js")
+New-Item -ItemType Directory -Force -Path ".codex" | Out-Null
+Invoke-WebRequest "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.codex/hooks.json" -OutFile ".codex\hooks.json"
+Invoke-WebRequest "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.codex/project_state_stop_check.js" -OutFile ".codex\project_state_stop_check.js"
 ```
 
-Codex project hook, macOS/Linux shell:
+Codex project hook, macOS/Linux shell. Navigate to your project working
+directory, then run:
 
 ```sh
-target_repo="/path/to/target-repo"
-mkdir -p "$target_repo/.codex"
-cp project-hooks/.codex/hooks.json "$target_repo/.codex/hooks.json"
-cp project-hooks/.codex/project_state_stop_check.js "$target_repo/.codex/project_state_stop_check.js"
+mkdir -p .codex
+curl -L "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.codex/hooks.json" -o .codex/hooks.json
+curl -L "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.codex/project_state_stop_check.js" -o .codex/project_state_stop_check.js
 ```
 
-Claude Code project hook, PowerShell:
+Codex may require you to trust or approve the project hook in Codex settings
+before it runs.
+
+Claude Code project hook, PowerShell. Navigate to your project working
+directory, then run:
 
 ```powershell
-$targetRepo = "C:\path\to\target-repo"
-$dst = Join-Path $targetRepo ".claude"
-New-Item -ItemType Directory -Force -Path $dst | Out-Null
-Copy-Item -Force ".\project-hooks\.claude\settings.json" (Join-Path $dst "settings.json")
-Copy-Item -Force ".\project-hooks\.claude\project_state_stop_check.js" (Join-Path $dst "project_state_stop_check.js")
+New-Item -ItemType Directory -Force -Path ".claude" | Out-Null
+Invoke-WebRequest "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.claude/settings.json" -OutFile ".claude\settings.json"
+Invoke-WebRequest "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.claude/project_state_stop_check.js" -OutFile ".claude\project_state_stop_check.js"
 ```
 
-Claude Code project hook, macOS/Linux shell:
+Claude Code project hook, macOS/Linux shell. Navigate to your project working
+directory, then run:
 
 ```sh
-target_repo="/path/to/target-repo"
-mkdir -p "$target_repo/.claude"
-cp project-hooks/.claude/settings.json "$target_repo/.claude/settings.json"
-cp project-hooks/.claude/project_state_stop_check.js "$target_repo/.claude/project_state_stop_check.js"
+mkdir -p .claude
+curl -L "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.claude/settings.json" -o .claude/settings.json
+curl -L "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.claude/project_state_stop_check.js" -o .claude/project_state_stop_check.js
 ```
-
-Codex or Claude Code may ask you to trust or approve project hooks before they
-run.
 
 ## License
 

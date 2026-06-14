@@ -33,7 +33,7 @@ synthesis. Before sending the welcome, write `project_state.yaml`, set
 `null`, and reply with only:
 
 ```text
-[Causal-Consultant v4.1.0 Loaded] This is a new project. Causal analysis team ready.
+[Causal-Consultant v4.2.0 Loaded] This is a new project. Causal analysis team ready.
 ```
 
 Do not send the welcome until the timestamp has been written.

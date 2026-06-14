@@ -12,6 +12,9 @@ Use this vocabulary consistently:
 - `report scope`: the shallow precheck package that proposes what a report would cover before approval.
 - `approved report task`: the deep assignment after the user approves the report scope.
 - `report output`: the created Markdown, HTML, section draft, reviewer response, or other report artifact.
+- `finished artifacts`: completed items in `artifact_records` and their existing
+  output files that can be used, cited, converted, omitted, or disclosed in the
+  report scope.
 
 ## Plan Entry
 
@@ -63,7 +66,10 @@ When the Markdown report file exists and conversion is requested:
 - Use `assets/report_html_layout_template.html` as the layout shell.
 - Convert the approved Markdown report into `{{REPORT_BODY_HTML}}`; do not rewrite the scientific content except for minimal wording needed to preserve headings, tables, figures, links, callouts, and source references.
 - Fill metadata placeholders from `project_state.yaml` when available.
-- Save the HTML output under one meaningful project subfolder directly under `output/`, such as `output/html_report`.
+- Save pooled or final HTML output directly under `output/`, such as
+  `output/report.html`, `output/final_report.html`, or
+  `output/<project_slug>_report.html`. Do not save pooled or final HTML inside
+  an analysis-specific artifact folder.
 - Set `report_assembly.current_format: html`.
 - Append one `artifact_records` entry with `route: report_writer`, `location`, `created_at`, and a short `summary`.
 - Set `council_chamber.report_writer.current_status` to `produced`.
@@ -83,8 +89,16 @@ If the report-writer entry has `report_precheck: false`:
 - Treat the assignment as `mode: shallow`.
 - Prepare an approval-ready report scope for `team_lead`.
 - Use `assets/report_template_planning.md` when `project_summary.analysis_output: non_exist`; use `assets/report_template_analysis.md` when `project_summary.analysis_output: exist`.
-- Write a compact `report_assembly.planned_structure` list that names the envisioned sections and what each section would do. Keep each entry short and approval-oriented, not drafted prose.
-- Update `report_assembly` with the requested report goal, audience, target section, planned structure, key points, draft notes, and wording constraints when available.
+- Inspect `artifact_records`, `project_summary`, `report_assembly`,
+  route-owned summaries, and existing report-relevant output files before
+  proposing the report scope.
+- Write a compact `report_assembly.planned_structure` list that names the
+  envisioned sections and what each section would do. Keep each entry short and
+  approval-oriented, not drafted prose.
+- Update `report_assembly` with the requested report goal, audience, target
+  section, planned structure, key points, draft notes, wording constraints, and
+  a compact inventory of finished artifacts that the proposed report would use,
+  omit, or disclose.
 - Set `council_chamber.report_writer.current_status` to `blocked: waiting for report precheck approval`.
 
 If the report-writer entry has `report_precheck: true`, treat the assignment as `mode: deep` and proceed with the approved report task within the available context and claim boundary.
@@ -131,6 +145,11 @@ Update `project_state.yaml` fields under `report_assembly` when supported by the
 - `wording_constraints`
 - `draft_notes`
 
+In report precheck, `draft_notes` should include a compact finished-artifact
+inventory: what artifacts exist, what each contributes to the proposed report,
+and which expected report pieces are missing, omitted, or only suitable as
+limitations.
+
 ## Council Chamber Write Contract
 
 Refresh only `council_chamber.report_writer`.
@@ -153,10 +172,23 @@ Do not mark reporting as available. `team_lead` updates report output state afte
 
 When any report text, report draft, Markdown `.md` report, HTML conversion, or report artifact is actually created:
 
-1. Save the output under one meaningful project subfolder directly under `output/`, such as `output/results_section_draft`, `output/reviewer_response_draft`, or `output/html_report`. Do not use route-specific nested folders or timestamp-only folder names. For Markdown report output, create an actual `.md` file in that folder.
+1. Save pooled or final Markdown reports directly under `output/`, such as
+   `output/report.md`, `output/final_report.md`, or
+   `output/<project_slug>_report.md`. Save pooled or final HTML reports
+   directly under `output/`, such as `output/report.html`,
+   `output/final_report.html`, or `output/<project_slug>_report.html`. Do not
+   save pooled or final reports inside an analysis-specific artifact folder.
+   Section drafts, reviewer responses, and narrow report assets may use
+   meaningful report-specific folders under `output/`.
 2. Set `report_assembly.current_format` to `md` or `html`.
 3. Record a compact item in `report_assembly.draft_notes` with the run time, report scope, key points or source context, summary, limitations, and output location.
 4. Append one `artifact_records` entry with `route: report_writer`, `location`, `created_at`, and a short `summary` of work, findings, limitations, or suggested additional work.
 5. Set `council_chamber.report_writer.current_status` to `produced`.
 
 Do not create `artifact_records` entries for purely verbal report-scope setup that did not create a new output location.
+
+An analysis-specific note or analysis report may live in an analysis artifact
+folder only when it is part of the analysis output and recorded as
+`route: analysis_execution`. A pooled report produced by `report_writer` should
+be recorded as `route: report_writer` and saved outside analysis-specific
+artifact folders.

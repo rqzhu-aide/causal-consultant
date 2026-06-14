@@ -1,6 +1,6 @@
 {
   "name": "causal-consultant-skillkit",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "A minimal causal analysis consulting-team skill with internal routing for data audit, domain expertise, causal discovery, causal checking, and report writing.",
   "author": {
     "name": "Causal Consultant Skillkit Contributors"

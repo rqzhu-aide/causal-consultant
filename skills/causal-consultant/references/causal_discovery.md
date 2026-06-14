@@ -55,7 +55,8 @@ Before interpreting or running discovery, check whether the available state or r
 6. Preprocessing, missingness, scaling, discreteness, sample size, variable count, measurement limits, and leakage risks.
 7. Whether the user needs a unique graph or can accept an equivalence class, local neighborhood, ranked edge list, or exploratory feature group.
 
-If a missing precheck would materially change the result, write a blocker or reviewer request instead of running or overinterpreting discovery.
+If a missing prerequisite review would materially change the result, write a
+blocker or reviewer request instead of running or overinterpreting discovery.
 
 ## Method Lanes
 
@@ -105,38 +106,19 @@ Do not update `project_summary` or `next_step_plan`; `team_lead` updates aggrega
 
 ## Council Chamber Write Contract
 
-Refresh only `council_chamber.causal_discovery` for discovery opinions.
+Refresh only `council_chamber.causal_discovery`.
 
-Use:
+Set:
 
 - `last_updated`: local update time in `HH:MM:SS` format.
-- `current_status`: brief status of what discovery could scope, review, create, or why it was blocked.
-- `opinions`: 2-4 short plain-string entries.
+- `current_status`: one short sentence on what discovery could scope, review,
+  create, or why it was blocked.
+- `opinions`: 1-3 compact opinion entries.
 
-Do not use `dimension:` fields or schema-like labels inside each opinion.
-
-When writing opinions, consider:
-
-- what was created and why it may be useful for causal analysis
-- what additional methods or analyses could be considered
-- potential issues, pitfalls, and overinterpretation risks
-- which other reviewers should inspect the discovery implication
-
-Example:
-
-```yaml
-council_chamber:
-  causal_discovery:
-    last_updated: "14:22:10"
-    current_status: "A bounded local-neighborhood discovery artifact was created from the available variable set."
-    opinions:
-      - "A local neighborhood table may help causal_check compare plausible adjustment stories."
-      - "A sensitivity run with FCI/PAG could be considered if latent confounding is a serious concern."
-      - "The graph is unstable across preprocessing choices, so it should not be treated as a confirmed DAG."
-      - "domain_expert should review whether the candidate directions match domain timing and mechanism."
-```
-
-Keep each opinion explicitly exploratory and point back to a reviewer when the implication could affect causal analysis.
+Keep opinions short, decision-facing, grounded in `discovery_sidecar` or current
+uncertainty, and free of schema labels. Focus on what was scoped, reviewed, or
+created; exploratory limits; diagnostics; and which reviewer should inspect the
+implication before it affects adjustment, methods, claims, or report wording.
 
 ## Artifacts
 

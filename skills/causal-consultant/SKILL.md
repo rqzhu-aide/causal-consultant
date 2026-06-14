@@ -10,7 +10,7 @@ This file is only the router. It initializes state, prepares `next_step_plan`, a
 ## Turn Protocol
 
 1. Resolve the project root. If unclear, use the current working directory.
-2. If `project_state.yaml` is missing, create it by copying `assets/project_state_template.yaml` into the project root.
+2. Run `scripts/init_project_state.py --project-root <project root>` to initialize `project_state.yaml` if needed.
 3. Read `project_state.yaml`.
 4. Read `references/route_index.yaml`.
 5. Read `references/route_selection_workflow.md`.

@@ -1,7 +1,7 @@
 # Interactive Causal Consultant
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-4.2.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-4.2.2-blue.svg)]()
 [![Status](https://img.shields.io/badge/status-active%20development-orange.svg)]()
 
 An interactive causal inference consultant skill for moving from a rough causal
@@ -43,7 +43,7 @@ The internal team is:
   response, mediation, transportability, non-continuous outcomes, and
   statistical validity.
 
-Version 4.2.1 uses a compact route-reference architecture: one state file at
+Version 4.2.2 uses a compact route-reference architecture: one state file at
 `project_state.yaml`, one planned route before `team_lead`, shallow/deep gates
 for report or analysis approval, and compact route-owned YAML sections for
 durable findings and created outputs.
@@ -82,40 +82,46 @@ requests like "do your best" or "give me a report" are treated as invitations to
 recommend the safest next move, not permission to skip the causal consulting
 process.
 
-## Install And Activate
+## Activation
 
-Install by copying the GitHub folder `skills/causal-consultant` into your
-personal or project-local skill folder.
-
-Codex personal install:
-
-```text
-Copy the folder `skills/causal-consultant` from https://github.com/rqzhu-aide/causal-consultant into `~/.codex/skills/causal-consultant`.
-```
-
-Claude Code personal install:
-
-```text
-Copy the folder `skills/causal-consultant` from https://github.com/rqzhu-aide/causal-consultant into `~/.claude/skills/causal-consultant`.
-```
-
-Codex or other agent project-local install:
-
-```text
-Copy the folder `skills/causal-consultant` from https://github.com/rqzhu-aide/causal-consultant into `.agents/skills/causal-consultant`.
-```
-
-Alternative project-local install:
-
-```text
-Copy the folder `skills/causal-consultant` from https://github.com/rqzhu-aide/causal-consultant into `.agent/skills/causal-consultant`.
-```
+This skill is intentionally interactive and can slow down ordinary one-off
+causal or statistical questions. It should be loaded only when you explicitly
+want the persistent causal-consultant workflow.
 
 Start using it by asking your agent: `Use the causal-consultant skill to help
 me think through this causal question.` Or use the direct command:
 
 ```
 /causal-consultant
+```
+
+## Install
+
+Install by copying this GitHub repository folder into your personal or
+project-local skill folder.
+
+Codex personal install:
+
+```text
+Copy the folder from https://github.com/rqzhu-aide/causal-consultant into `~/.codex/skills/causal-consultant`.
+```
+
+Claude Code personal install:
+
+```text
+Copy the folder from https://github.com/rqzhu-aide/causal-consultant into `~/.claude/skills/causal-consultant`.
+```
+
+Codex or other agent project-local install:
+
+```text
+Copy the folder from https://github.com/rqzhu-aide/causal-consultant into `.agents/skills/causal-consultant`.
+```
+
+Alternative project-local install:
+
+```text
+Copy the folder from https://github.com/rqzhu-aide/causal-consultant into `.agent/skills/causal-consultant`.
 ```
 
 ### Optional Project Hooks

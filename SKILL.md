@@ -1,6 +1,6 @@
 ---
 name: causal-consultant
-description: Causal analysis consulting team for statistical, biomedical, causal-inference, and manuscript tasks. Use for requests that need project intake, semantic routing among data audit, domain expertise, causal discovery, causal checking, report writing, methods/results interpretation, reviewer-response support, or persistent project state tracking.
+description: Explicit-use interactive causal consulting team. Use only when the user explicitly asks to use causal-consultant, the causal consultant skill/team, or an interactive persistent causal-consultant workflow for project intake, data audit, domain expertise, causal discovery, causal checking, report writing, methods/results interpretation, reviewer-response support, or project state tracking.
 ---
 
 # Causal Consultant Router

@@ -31,6 +31,26 @@ method_routes_catalog:
   use: "Method recommendation catalog. Do not load from main."
 
 shared_references:
+  - id: report_routing_workflow
+    path: references/report_routing_workflow.md
+    loaded_by: router_when_report_needed
+    use: "Conditional report routing, report approval, and Markdown-to-HTML conversion rules."
+  - id: analysis_routing_workflow
+    path: references/analysis_routing_workflow.md
+    loaded_by: router_when_analysis_execution_needed
+    use: "Conditional analysis execution routing, readiness, and design/support selection rules."
+  - id: team_lead_report_flow
+    path: references/team_lead_report_flow.md
+    loaded_by: team_lead_when_report_needed
+    use: "Conditional report precheck, report approval, and HTML conversion option handling."
+  - id: team_lead_analysis_flow
+    path: references/team_lead_analysis_flow.md
+    loaded_by: team_lead_when_analysis_needed
+    use: "Conditional analysis precheck, approval, and execution closeout handling."
+  - id: artifact_output_policy
+    path: references/artifact_output_policy.md
+    loaded_by: team_lead_when_artifacts_needed
+    use: "Conditional artifact_records and aggregate output status policy."
   - id: design_support_workflow
     path: references/design_support_workflow.md
     loaded_by: design_references

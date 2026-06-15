@@ -99,11 +99,12 @@ If the report-writer entry has `report_precheck: false`:
   section, planned structure, key points, draft notes, wording constraints, and
   a compact inventory of finished artifacts that the proposed report would use,
   omit, or disclose.
-- Set `council_chamber.report_writer.current_status` to `blocked: waiting for report precheck approval`.
+- Set `council_chamber.report_writer.current_status` to
+  `scope_ready: waiting for report precheck approval`.
 
 If the report-writer entry has `report_precheck: true`, treat the assignment as `mode: deep` and proceed with the approved report task within the available context and claim boundary.
 
-Approval and the approved report task must happen in separate turns. Do not create approved report output in the same turn that `team_lead` asks for or records approval.
+Create approved report output only when the active `report_writer` entry has `report_precheck: true` and `mode: deep`.
 
 ## Rules
 
@@ -159,10 +160,11 @@ Set:
 - `last_updated`: local update time in `HH:MM:SS` format.
 - `current_status`: report handoff status only.
 
-Do not write `opinions` for `report_writer`. Use `produced` when report text, a
-report draft, a Markdown `.md` report, an HTML conversion, or a report artifact
-was created. Use `blocked: <short reason>` only when report work could not
-proceed.
+Do not write `opinions` for `report_writer`. Use `scope_ready: <short note>`
+when report scope/readiness was prepared but no report output was created. Use
+`produced` when report text, a report draft, a Markdown `.md` report, an HTML
+conversion, or a report artifact was created. Use `blocked: <short reason>` only
+when report work could not proceed.
 
 Report writer is a handoff route, not a consulting-opinion route.
 

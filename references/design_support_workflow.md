@@ -22,7 +22,8 @@ Rules:
 - Missing `analysis_precheck` means `false`.
 - `analysis_precheck: false` means `mode: shallow` and preview only.
 - `analysis_precheck: true` means `mode: deep` and approved execution only.
-- Approval and execution must happen in separate turns.
+- Execute only when the active `analysis_execution` entry has
+  `analysis_precheck: true` and `mode: deep`.
 
 ## Shallow Preview
 

@@ -45,7 +45,10 @@ When `next_step_plan` contains a `report_writer` entry:
 
 Do not clear a pending `report_writer` entry merely because `team_lead` ran.
 Preserve it while report creation remains possible and either report-scope
-approval or the approved report task is still outstanding.
+approval or the approved report task is still outstanding. If
+`council_chamber.report_writer.current_status` starts with `scope_ready:`,
+preserve the shallow `report_writer` entry with `report_precheck: false` and
+remove only the completed `team_lead` entry.
 
 ## HTML Conversion Option
 

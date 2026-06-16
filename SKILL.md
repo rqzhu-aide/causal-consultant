@@ -16,6 +16,10 @@ checks, and final user-facing responses belong to `references/team_lead.md`.
 3. Read `project_state.yaml`.
 4. Read `references/route_index.yaml`.
 5. Read `references/route_selection_workflow.md`.
+   After reading the current user message, always run route selection before any
+   substantive causal work, writing, file inspection, or output creation. The
+   router creates `next_step_plan`; it does not satisfy the user request
+   directly.
 6. Follow `references/route_selection_workflow.md` for route selection. Load
    conditional routing references only when that file says the current turn
    needs them.

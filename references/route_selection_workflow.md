@@ -5,6 +5,10 @@
 Use this compact reference only to build the ordered `next_step_plan` for the
 current turn. Keep route selection silent unless there is a blocker.
 
+Route selection is mandatory for every substantive turn. Do not answer, analyze,
+draft, inspect files, or create outputs directly from the user request; first
+write `next_step_plan`, then load and run the planned route reference.
+
 The router initializes `project_state.yaml`, reads `route_index.yaml`, writes
 the complete assignment list, loads planned non-`team_lead` references first,
 then loads `team_lead` exactly once as the final planned reference.

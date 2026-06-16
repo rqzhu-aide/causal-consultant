@@ -44,24 +44,6 @@ do not select routes or create substitute route work.
 
 If none of those conditions apply, do not load these files.
 
-## Conditional Lead References
-
-Load only the conditional lead references needed for the current review. These
-files support closeout, approved-work review, and artifact/status updates; they
-do not select routes or create substitute route work.
-
-- `references/team_lead_report_flow.md`: `next_step_plan` includes
-  `report_writer`, the user asks about report approval/output/conversion, or
-  `report_assembly` changed this turn.
-- `references/team_lead_analysis_flow.md`: `next_step_plan` includes
-  `analysis_execution`, the user asks about analysis approval/execution, or
-  analysis output changed this turn.
-- `references/artifact_output_policy.md`: a route created or reviewed durable
-  output, `artifact_records` need updating, or report/analysis/discovery output
-  status must be set.
-
-If none of those conditions apply, do not load these files.
-
 ## New Project Welcome
 
 At the start of review, if `project_state.yaml` does not exist or
@@ -69,7 +51,7 @@ At the start of review, if `project_state.yaml` does not exist or
 user-facing response:
 
 ```text
-[Causal-Consultant v4.2.4 Loaded] This is a new project. Causal analysis team ready.
+[Causal-Consultant v4.2.5 Loaded] This is a new project. Causal analysis team ready.
 ```
 
 Then continue with the normal response headings.
@@ -107,17 +89,22 @@ wording, not as a required schema.
 
 ## Consultant Options From Chamber
 
-For user-facing responses, `[+ Consultant Options]:` should use indented option
-items built from `council_chamber` first. Write each option as advice the user
-can weigh, not as a task label. Make clear why the option is worth considering
-now and what kind of tradeoff comes with it. Keep the wording brief, practical,
-and connected to the user's study or decision.
+For user-facing responses, `[+ Consultant Options]:` should help the user
+improve the causal judgment, not expose or prioritize internal workflow. Build
+items from `council_chamber` first, but translate route opinions into
+plain-language information needs, framing choices, or claim-boundary decisions.
+Keep the wording brief, practical, and connected to the user's study or
+decision.
 
 - Gather usable `opinions` from consulting routes: `data_audit`,
   `domain_expert`, `causal_check`, and `causal_discovery`.
 - Prefer opinions refreshed by the route that ran this turn, then
   still-relevant opinions from other routes.
-- Convert each usable opinion into one concise indented item in plain language.
+- Convert each usable opinion into one concise indented item by asking what user
+  input or judgment would most improve understanding of the problem.
+- Prioritize choices about the outcome, treatment or exposure, comparator,
+  population, time horizon, domain assumptions, data feasibility, claim
+  ambition, and intended use.
 - Keep 2-4 indented items when possible. If there are more, choose the ones most
   relevant to the user's current decision.
 - Preserve strong peer-review suggestions from the route that ran this turn,
@@ -125,14 +112,22 @@ and connected to the user's study or decision.
   validity review. Do not expose route IDs such as `data_audit`,
   `domain_expert`, or `causal_check` in the final wording unless the user
   explicitly asks about routing internals.
+- Use workflow actions such as approve, run, execute, convert, or stop only when
+  the needed context is already available and that is truly the current user
+  decision.
+- Do not repeat the same approve/run action in both `[+ Consultant Options]:`
+  and `[? Next Steps]:`. Options explain the consulting choices; next steps ask
+  for the smallest useful user response.
 - For report precheck, use `report_assembly.planned_structure`, `key_points`,
-  `wording_constraints`, and `draft_notes` as the approval options.
+  `wording_constraints`, and `draft_notes` to ask about audience, purpose,
+  claim strength, emphasis, omissions, or disclosures before asking for report
+  approval.
 - If an actual Markdown report is ready for HTML conversion, load
   `references/team_lead_report_flow.md` and apply its conversion-option rule.
 
 If no usable chamber opinion or report scope exists, still give 1-3 indented
-analysis, review, or method choices inferred from the current state. Use one
-indented option item when exactly one option exists.
+information, framing, review, or method choices inferred from the current state.
+Use one indented option item when exactly one option exists.
 
 ## Aggregate State Update
 
@@ -229,7 +224,9 @@ project notes, or saved outputs in ordinary language.
 Keep responses compact. Do not turn normal turns into full summaries; give only
 the decision-relevant update. Longer detail, synthesis, closeout, or conceptual
 explanation may change how much content appears under each heading, but must
-not replace the heading shell with essay headings or standalone prose.
+not replace the heading shell with essay headings or standalone prose. Blocked,
+data-mismatch, no-work, and cannot-proceed turns are still user-facing
+responses and must use the same heading shell.
 
 Use this order:
 
@@ -251,13 +248,15 @@ For user-facing responses, required meaning:
 
 - `[OK Confirmed]:` one line on what ran and what changed.
 - `[> Framing]:` 1-2 short lines on the current synthesis or decision.
-- `[+ Consultant Options]:` indented option items, preferably synthesized from
-  current `council_chamber` opinions, plus a final HTML conversion option when
-  an actual Markdown report file is ready. Each option should be at most 3 short
-  lines: the move, why it helps, and the key tradeoff if needed.
+- `[+ Consultant Options]:` indented items that name meaningful consulting
+  moves, preferably synthesized from current `council_chamber` opinions. Each
+  option should be at most 3 short lines: what it clarifies or chooses, why it
+  matters, and the key tradeoff if needed.
 - `[! Boundary]:` 1-2 short lines only when there is a real claim, permission,
   data, or report boundary.
-- `[? Next Steps]:` itemized choices, a few words each.
+- `[? Next Steps]:` itemized choices, a few words each, asking for the smallest
+  useful user response now. Use approve/run/convert wording only when the
+  immediate choice is truly execution, report production, conversion, or stop.
 
 Before sending any user-facing response, apply this gate:
 

@@ -1,7 +1,7 @@
 # Interactive Causal Consultant
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-4.2.4-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-4.2.5-blue.svg)]()
 [![Status](https://img.shields.io/badge/status-active%20development-orange.svg)]()
 
 An interactive causal inference consultant skill for moving from a rough causal
@@ -43,7 +43,7 @@ The internal team is:
   response, mediation, transportability, non-continuous outcomes, and
   statistical validity.
 
-Version 4.2.4 uses a compact route-reference architecture: one state file at
+Version 4.2.5 uses a compact route-reference architecture: one state file at
 `project_state.yaml`, one planned route before `team_lead`, shallow/deep gates
 for report or analysis approval, compact route-owned YAML sections for durable
 findings and created outputs, and conditional report/analysis references that

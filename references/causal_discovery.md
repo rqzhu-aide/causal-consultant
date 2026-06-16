@@ -20,7 +20,7 @@ Do not use this route to validate adjustment sets, prove causal direction, choos
 
 ## Plan Entry
 
-Read `next_step_plan` before doing substantive work.
+Read `next_step_plan` before route work.
 
 Expected entry:
 

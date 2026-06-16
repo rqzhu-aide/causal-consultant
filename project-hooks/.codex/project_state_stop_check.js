@@ -328,7 +328,7 @@ function main() {
   if (!fs.existsSync(projectStatePath)) {
     emit({
       systemMessage:
-        "project_state.yaml does not exist; causal-consultant performance will not be ensured.",
+        "project_state.yaml is missing. Initialize live causal-consultant state before continuing causal-consultant work.",
       suppressOutput: true,
     });
     return;
@@ -343,7 +343,7 @@ function main() {
   emit({
     decision: "block",
     reason: `project_state.yaml structure or state check failed: ${truncate(error)}`,
-    systemMessage: "project_state.yaml needs structure or state-flag repair.",
+    systemMessage: "Repair project_state.yaml structure or state flags before continuing causal-consultant work.",
   });
 }
 

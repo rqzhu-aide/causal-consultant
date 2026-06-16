@@ -38,6 +38,7 @@ Preserve pending `analysis_execution` entries while approval or execution is
 still outstanding.
 
 After `team_lead` finishes a turn, remove completed non-report and completed
-analysis work entries and remove the `team_lead` entry itself. Preserve pending
-entries that should still work later, especially `report_writer` and
-`analysis_execution`.
+analysis work entries and remove the `team_lead` entry itself by running
+`scripts/state_next_step_plan.py --state project_state.yaml preserve-gated` when
+a pending shallow report or analysis scope should remain, or
+`scripts/state_next_step_plan.py --state project_state.yaml clear` otherwise.

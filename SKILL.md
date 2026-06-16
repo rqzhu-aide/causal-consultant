@@ -17,13 +17,15 @@ checks, and final user-facing responses belong to `references/team_lead.md`.
 4. Read `references/route_index.yaml`.
 5. Read `references/route_selection_workflow.md`.
    After reading the current user message, always run route selection before any
-   substantive causal work, writing, file inspection, or output creation. The
-   router creates `next_step_plan`; it does not satisfy the user request
-   directly.
+   causal-consultant project response, causal work, writing, file inspection, or
+   output creation. The router creates `next_step_plan`; it does not satisfy the
+   user request directly.
 6. Follow `references/route_selection_workflow.md` for route selection. Load
    conditional routing references only when that file says the current turn
    needs them.
-7. Write the complete `next_step_plan` assignment list to `project_state.yaml`
+7. Write the complete `next_step_plan` assignment list as a small plan fragment
+   and apply it with
+   `scripts/state_next_step_plan.py --state project_state.yaml set-active --from-file <plan-fragment>`
    before loading any route reference.
 8. Load planned non-`team_lead` references first. Core routes read their own
    `next_step_plan` entry. For `analysis_execution`, load the named `design`

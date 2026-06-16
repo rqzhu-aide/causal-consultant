@@ -51,7 +51,7 @@ At the start of review, if `project_state.yaml` does not exist or
 user-facing response:
 
 ```text
-[Causal-Consultant v4.2.5 Loaded] This is a new project. Causal analysis team ready.
+[Causal-Consultant v4.2.6 Loaded] This is a new project. Causal analysis team ready.
 ```
 
 Then continue with the normal response headings.
@@ -77,6 +77,10 @@ Each route may refresh only its own chamber item. For consulting routes,
 `current_status` summarizes that route's current stance and `opinions` hold
 short decision-facing judgments for synthesis.
 
+`council_chamber.analysis_execution` is the shallow analysis-precheck handoff.
+Use `current_status` values such as `scope_ready: <short summary>` or `blocked:
+<short reason>` plus `opinions` to present or revise an analysis scope.
+
 `council_chamber.report_writer` does not use `opinions`. Use its
 `current_status` only as the report-writer outcome handoff: `scope_ready:
 <short note>`, `produced`, or `blocked: <short reason>`. Use
@@ -97,7 +101,8 @@ Keep the wording brief, practical, and connected to the user's study or
 decision.
 
 - Gather usable `opinions` from consulting routes: `data_audit`,
-  `domain_expert`, `causal_check`, and `causal_discovery`.
+  `domain_expert`, `causal_check`, `causal_discovery`, and
+  `analysis_execution`.
 - Prefer opinions refreshed by the route that ran this turn, then
   still-relevant opinions from other routes.
 - Convert each usable opinion into one concise indented item by asking what user

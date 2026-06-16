@@ -27,7 +27,15 @@ Rules:
 
 ## Shallow Preview
 
-When `analysis_precheck` is `false`, do not run analysis, create output folders, append `artifact_records`, or set `project_summary.analysis_output: exist`. Prepare compact readiness notes covering:
+When `analysis_precheck` is `false`, do not run analysis, create output
+folders, append `artifact_records`, or set `project_summary.analysis_output:
+exist`. Write the shallow scope handoff only in
+`council_chamber.analysis_execution`.
+
+Set `council_chamber.analysis_execution.last_updated` to the current local time.
+Set `current_status` to `scope_ready: <short summary>` when the scope can be
+presented for approval, or `blocked: <short reason>` when it cannot responsibly
+be proposed. Keep `opinions` compact and cover:
 
 - design fit and blockers
 - support-route role, if any
@@ -36,6 +44,9 @@ When `analysis_precheck` is `false`, do not run analysis, create output folders,
 - required diagnostics
 - planned outputs that would be created only after approval
 - execution boundary and limitations
+
+Do not store shallow analysis scope in `discovery_sidecar`, `report_assembly`,
+fake or pending `artifact_records`, output folders, or `project_summary`.
 
 ## Deep Execution
 

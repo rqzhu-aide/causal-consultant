@@ -35,6 +35,10 @@ council_chamber:
     last_updated: null
     current_status: null
     opinions: []
+  analysis_execution:
+    last_updated: null
+    current_status: null
+    opinions: []
   report_writer:
     last_updated: null
     current_status: null

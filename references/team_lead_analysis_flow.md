@@ -15,13 +15,17 @@ When `next_step_plan` contains an `analysis_execution` entry:
 
 1. If `analysis_precheck` is missing, treat it as `false` and use
    `mode: shallow`.
-2. If `analysis_precheck: false` and the user has not approved the pending
+2. Review the active `analysis_execution` entry plus
+   `council_chamber.analysis_execution.current_status` and `opinions`.
+3. If `analysis_precheck: false` and the user has not approved the pending
    scope, enforce `mode: shallow`, confirm that no output folder,
    `artifact_records`, or analysis output was created, summarize the proposed
    analysis scope compactly inside the normal user-facing headings, and ask the
    user to confirm the causal target, revise the scope, or approve execution
-   only if the scope is already right.
-3. If `analysis_precheck: true`, enforce `mode: deep`, review the
+   only if the scope is already right. If the analysis handoff is missing, do
+   not imply hidden scope was shown; use only the visible plan entry and ask one
+   compact clarification.
+4. If `analysis_precheck: true`, enforce `mode: deep`, review the
    `analysis_execution` `artifact_records` output record from this turn, update
    aggregate output state if artifacts or analysis results were created, and
    clear the entry only after execution is complete or blocked. After analysis

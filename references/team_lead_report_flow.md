@@ -18,11 +18,6 @@ approved; `true` means approved report work may proceed in the active route, or
 direct Markdown-to-HTML conversion was requested for an existing Markdown
 report.
 
-Report writer supports Markdown and HTML files only. If the user asks for PPT,
-DOCX, PDF, slides, a letter, an email, a memo, or another format, describe the
-deliverable as Markdown written in that requested style or structure, with HTML
-as the polished option only when the existing Markdown-to-HTML path applies.
-
 Markdown-to-HTML conversion does not need a separate report precheck when
 `project_summary.report_output: exist`, `report_assembly.current_format: md`,
 `council_chamber.report_writer.current_status: produced`, and an actual `.md`
@@ -55,8 +50,7 @@ Preserve it while report creation remains possible and either report-scope
 approval or the approved report task is still outstanding. If
 `council_chamber.report_writer.current_status` starts with `scope_ready:`,
 preserve the shallow `report_writer` entry with `report_precheck: false` and
-remove only the completed `team_lead` entry by running
-`scripts/state_next_step_plan.py --state project_state.yaml preserve-gated`.
+remove only the completed `team_lead` entry.
 
 ## HTML Conversion Option
 

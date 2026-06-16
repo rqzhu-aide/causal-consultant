@@ -6,7 +6,7 @@ Do not produce a standalone user-facing answer. Provide internal findings for `t
 
 ## Plan Entry
 
-Read `next_step_plan` before route work.
+Read `next_step_plan` before doing substantive work.
 
 Expected entry:
 

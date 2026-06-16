@@ -10,10 +10,8 @@ limitations language, or pending `report_writer` work.
   what a report would cover before approval.
 - `approved report task`: the deep `report_writer` assignment after the user
   approves the report scope.
-- `report output`: created Markdown or HTML. Section drafts, reviewer
-  responses, letters, emails, memos, and slide-style outlines are written as
-  Markdown unless they are converted to HTML through the existing conversion
-  path.
+- `report output`: created Markdown, HTML, section draft, reviewer response, or
+  other report artifact.
 
 ## Routing Rules: No Existing Report Writer Work
 
@@ -23,10 +21,6 @@ limitations language, or pending `report_writer` work.
   results reporting, manuscript/report text, reviewer-facing material, report
   polishing, rewriting, safer causal wording, limitations language, or
   claim-boundary wording.
-- Requests for PPT, DOCX, PDF, slides, letters, emails, memos, or other
-  non-Markdown/non-HTML forms still start as shallow report scope work, but the
-  created file format is Markdown by default. Treat the requested form as style,
-  audience, and structure guidance, not as permission to create that file type.
 - Plan `report_writer` with `report_precheck: false` and `mode: shallow`.
 
 ## Routing Rules: Existing Report Writer Work

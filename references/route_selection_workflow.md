@@ -5,16 +5,13 @@
 Use this compact reference only to build the ordered `next_step_plan` for the
 current turn. Keep route selection silent unless there is a blocker.
 
-Route selection is mandatory for every causal-consultant project response. Do
-not answer, analyze, draft, inspect files, or create outputs directly from the
-user request; first write the `next_step_plan` fragment, apply it with
-`scripts/state_next_step_plan.py --state project_state.yaml set-active --from-file <plan-fragment>`,
-then load and run the planned route reference.
+Route selection is mandatory for every substantive turn. Do not answer, analyze,
+draft, inspect files, or create outputs directly from the user request; first
+write `next_step_plan`, then load and run the planned route reference.
 
-The router initializes `project_state.yaml`, reads `route_index.yaml`, applies
-the complete assignment list through the plan helper, loads planned
-non-`team_lead` references first, then loads `team_lead` exactly once as the
-final planned reference.
+The router initializes `project_state.yaml`, reads `route_index.yaml`, writes
+the complete assignment list, loads planned non-`team_lead` references first,
+then loads `team_lead` exactly once as the final planned reference.
 
 ## Inputs
 
@@ -43,9 +40,8 @@ If neither condition applies, do not load these files.
 
 ## Allowed Plan Shapes
 
-Always write `next_step_plan` as a YAML list fragment and apply it through the
-plan helper before loading any planned route reference. Use only these plan
-shapes.
+Always write `next_step_plan` as a YAML list before loading any planned route
+reference. Use only these plan shapes.
 
 Team-lead-only:
 
@@ -131,8 +127,8 @@ Apply these rules in order.
 6. During exploration, choose exactly one core route that can make the most
    useful state update.
 7. Use only `team_lead` when no route can make a meaningful state update or the
-   turn is meta, setup, boundary-only, approval-only, synthesis-only,
-   outside-scope, or no-action.
+   turn is meta, setup, boundary-only, approval-only, synthesis-only, or
+   no-action.
 
 For cross-turn core approvals:
 

@@ -1,16 +1,12 @@
-# Design Execution Contract
+# Shared Design/Support Workflow
 
 Use this reference from design routes only. Support routes do not load this file.
 
 The selected design route owns the combined design/support work for `analysis_execution`. Support routes provide analytic guidance inside the selected design scope. The design route is responsible for any final `artifact_records` write, but only during approved deep execution.
 
-## Plan Lookup
+## Gate
 
-Each design route must use its own design id, usually the filename stem such as
-`randomized_assignment`, `single_time_observational`, or
-`difference_in_differences`.
-
-Find the matching `next_step_plan` entry:
+Read the matching `next_step_plan` entry:
 
 ```yaml
 - id: analysis_execution
@@ -20,10 +16,6 @@ Find the matching `next_step_plan` entry:
   mode: shallow | deep
   analysis_precheck: false | true
 ```
-
-Use that entry's `task`, `mode`, `analysis_precheck`, and optional `support`.
-If no matching `analysis_execution` entry exists, do not proceed with
-design-route work.
 
 Rules:
 

@@ -18,7 +18,7 @@ Do not mix them:
 
 ## Plan Entry
 
-Read `next_step_plan` before route work.
+Read `next_step_plan` before doing substantive work.
 
 Expected entry:
 

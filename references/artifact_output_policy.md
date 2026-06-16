@@ -41,8 +41,8 @@ When `analysis_precheck: false`, do not accept or create `analysis_execution`
 `artifact_records`. Shallow analysis precheck is readiness feedback only.
 
 When approved `report_writer` work with `report_precheck: true` creates report
-text, a report draft, a reviewer response, a written section, a Markdown
-report, or an HTML conversion, set:
+text, a report draft, a reviewer response, a written section, an HTML
+conversion, or a report artifact, set:
 
 ```yaml
 project_summary:

@@ -27,24 +27,6 @@ preserve one pending shallow report or analysis scope, or
 `scripts/state_next_step_plan.py --state project_state.yaml clear` when no
 pending gated scope should remain. Cleanup must not become route construction.
 
-## Conditional Lead References
-
-Load only the conditional lead references needed for the current review. These
-files support closeout, approved-work review, and artifact/status updates; they
-do not select routes or create substitute route work.
-
-- `references/team_lead_report_flow.md`: `next_step_plan` includes
-  `report_writer`, the user asks about report approval/output/conversion, or
-  `report_assembly` changed this turn.
-- `references/team_lead_analysis_flow.md`: `next_step_plan` includes
-  `analysis_execution`, the user asks about analysis approval/execution, or
-  analysis output changed this turn.
-- `references/artifact_output_policy.md`: a route created or reviewed durable
-  output, `artifact_records` need updating, or report/analysis/discovery output
-  status must be set.
-
-If none of those conditions apply, do not load these files.
-
 ## New Project Welcome
 
 At the start of review, if `project_state.yaml` does not exist or

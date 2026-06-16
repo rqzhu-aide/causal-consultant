@@ -6,13 +6,7 @@ This design route is the accountable owner for whether analysis execution remain
 
 Work in this order: define the instrument source, treatment/exposure moved by the instrument, timing, relevance, independence, exclusion, monotonicity/complier logic, measurement level, inference route, then claim boundary. Do not let first-stage strength or software hide a weak exclusion story.
 
-Find the `next_step_plan` entry with `id: analysis_execution` and `design: instrumental_variables`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
-
-After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this design route owns any combined design/support `artifact_records` write, but only in approved deep execution.
-
-If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only, covering instrument validity, data contract, local estimand, required diagnostics, blockers, proposed outputs, and execution scope. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
-
-If `analysis_precheck: true`, `mode` should be `deep`: execute only within the approved task and available data/artifacts. If a support route is also named, work from the same `analysis_execution.task` and keep the support work inside the IV design scope.
+Runtime contract: follow `references/design_execution_contract.md` using design id `instrumental_variables`. Keep any named support route inside this IV design scope.
 
 ## Use When
 
@@ -110,7 +104,7 @@ Key literature anchors: LATE/CACE, Wald estimands, 2SLS, weak instruments, monot
 
 ## Artifact Records Write
 
-In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include IV specifics in the entry summary or in a note/manifest inside the output location, such as:
+In approved deep execution, append one compact `artifact_records` entry according to `references/design_execution_contract.md`. Include IV specifics in the entry summary or in a note/manifest inside the output location, such as:
 
 - `design_id: instrumental_variables`
 - `fit_status`: `direct`, `adapted`, `planning_only`, `blocked`, or `limited`

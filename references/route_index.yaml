@@ -51,8 +51,8 @@ shared_references:
     path: references/artifact_output_policy.md
     loaded_by: team_lead_when_artifacts_needed
     use: "Conditional artifact_records and aggregate output status policy."
-  - id: design_support_workflow
-    path: references/design_support_workflow.md
+  - id: design_execution_contract
+    path: references/design_execution_contract.md
     loaded_by: design_references
     use: "Shared analysis_execution gate and approved deep-output artifact_records contract for design routes. Support routes do not load it."
 

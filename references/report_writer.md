@@ -11,14 +11,16 @@ Use this vocabulary consistently:
 - `analysis plan` or `study plan`: the causal/statistical work plan; report_writer may describe it but does not own it.
 - `report scope`: the shallow precheck package that proposes what a report would cover before approval.
 - `approved report task`: the deep assignment after the user approves the report scope.
-- `report output`: the created Markdown, HTML, section draft, reviewer response, or other report artifact.
+- `report output`: created Markdown or HTML only. Section drafts, reviewer
+  responses, letters, emails, memos, and slide-style outlines are written as
+  Markdown unless converted to HTML through the existing conversion path.
 - `finished artifacts`: completed items in `artifact_records` and their existing
   output files that can be used, cited, converted, omitted, or disclosed in the
   report scope.
 
 ## Plan Entry
 
-Read `next_step_plan` before doing substantive work.
+Read `next_step_plan` before route work.
 
 Expected entry:
 
@@ -41,6 +43,12 @@ Interpret `mode` as:
 - `deep`: draft, revise, or complete the approved report task within available context and claim boundary.
 
 Record blocked or completed work in `report_assembly`, `council_chamber.report_writer.current_status`, and relevant report notes.
+
+Supported created file formats are only Markdown `.md` and HTML `.html`.
+Requests for PPT, DOCX, PDF, slides, letters, emails, memos, or other forms
+should be treated as writing style, audience, target-section, and structure
+choices inside a Markdown report scope. Do not promise or create those file
+types from `report_writer`.
 
 ## Report Templates
 
@@ -137,7 +145,9 @@ Use clear academic prose. Avoid unnecessary adjectives, vague intensifiers, and 
 Update `project_state.yaml` fields under `report_assembly` when supported by the user's request:
 
 - `last_updated`: set to the local run time in `HH:MM:SS` format whenever this reference is run.
-- `current_format`: set to `md` when the current report output is Markdown, `html` when the current report output is HTML, or keep `null` when no report output exists.
+- `current_format`: set only to `md` when the current report output is Markdown,
+  `html` when the current report output is HTML, or keep `null` when no report
+  output exists.
 - `report_goal`
 - `target_section`
 - `audience`
@@ -162,9 +172,8 @@ Set:
 
 Do not write `opinions` for `report_writer`. Use `scope_ready: <short note>`
 when report scope/readiness was prepared but no report output was created. Use
-`produced` when report text, a report draft, a Markdown `.md` report, an HTML
-conversion, or a report artifact was created. Use `blocked: <short reason>` only
-when report work could not proceed.
+`produced` when report text, a Markdown `.md` report, or an HTML conversion was
+created. Use `blocked: <short reason>` only when report work could not proceed.
 
 Report writer is a handoff route, not a consulting-opinion route.
 
@@ -172,7 +181,7 @@ Do not mark reporting as available. `team_lead` updates report output state afte
 
 ## Report Outputs
 
-When any report text, report draft, Markdown `.md` report, HTML conversion, or report artifact is actually created:
+When any report text, report draft, Markdown `.md` report, or HTML conversion is actually created:
 
 1. Save pooled or final Markdown reports directly under `output/`, such as
    `output/report.md`, `output/final_report.md`, or

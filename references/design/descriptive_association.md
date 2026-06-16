@@ -4,15 +4,7 @@ Use this file only for approved non-causal descriptive or association analysis. 
 
 Do not use this route to strengthen causal wording, choose adjustment sets for causal interpretation, or imply that observed associations estimate effects.
 
-## Assignment
-
-Find the `next_step_plan` entry with `id: analysis_execution` and `design: descriptive_association`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
-
-After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this route owns any combined design/support `artifact_records` write, but only in approved deep execution.
-
-If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
-
-If `analysis_precheck: true`, `mode` should be `deep`: execute only the approved non-causal task using available data/artifacts. If a support route is also named, keep support work inside the descriptive/association scope.
+Runtime contract: follow `references/design_execution_contract.md` using design id `descriptive_association`. Keep any named support route inside this descriptive/association scope.
 
 ## Use When
 
@@ -85,7 +77,7 @@ Use package choice after the data shape and approved lane are clear.
 
 ## State Write
 
-In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include descriptive-association specifics in the entry summary or in a note/manifest inside the output location, such as:
+In approved deep execution, append one compact `artifact_records` entry according to `references/design_execution_contract.md`. Include descriptive-association specifics in the entry summary or in a note/manifest inside the output location, such as:
 
 - variables and outcomes summarized
 - association lane and multiplicity control

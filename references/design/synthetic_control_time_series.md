@@ -6,13 +6,7 @@ This design route is the accountable owner for whether analysis execution remain
 
 Work in this order: define treated unit(s), intervention timing, donor/control pool, outcome scale, pre-period evidence, estimand, inference route, time-series diagnostics, then claim boundary. Do not let a forecast model hide donor contamination, poor pre-fit, or concurrent shocks.
 
-Find the `next_step_plan` entry with `id: analysis_execution` and `design: synthetic_control_time_series`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
-
-After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this design route owns any combined design/support `artifact_records` write, but only in approved deep execution.
-
-If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only, covering treated-unit fit, donor/control validity, time-series data contract, required diagnostics, blockers, proposed outputs, and execution scope. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
-
-If `analysis_precheck: true`, `mode` should be `deep`: execute only within the approved task and available data/artifacts. If a support route is also named, work from the same `analysis_execution.task` and keep the support work inside the synthetic/time-series design scope.
+Runtime contract: follow `references/design_execution_contract.md` using design id `synthetic_control_time_series`. Keep any named support route inside this synthetic/time-series design scope.
 
 ## Use When
 
@@ -107,7 +101,7 @@ Key literature anchors: synthetic control, augmented SCM, generalized SCM, synth
 
 ## Artifact Records Write
 
-In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include synthetic/time-series specifics in the entry summary or in a note/manifest inside the output location, such as:
+In approved deep execution, append one compact `artifact_records` entry according to `references/design_execution_contract.md`. Include synthetic/time-series specifics in the entry summary or in a note/manifest inside the output location, such as:
 
 - `design_id: synthetic_control_time_series`
 - `fit_status`: `direct`, `adapted`, `planning_only`, `blocked`, or `limited`

@@ -23,7 +23,8 @@ next review in plain language instead of pretending work ran.
 
 Post-turn cleanup is allowed: after synthesis, `team_lead` may clear completed
 plan entries, preserve pending gated report or analysis entries, and remove its
-own completed entry. Cleanup must not become route construction.
+own completed entry. If the only remaining entry is completed `team_lead`, set
+`next_step_plan: []`. Cleanup must not become route construction.
 
 ## Conditional Lead References
 
@@ -88,7 +89,7 @@ wording, not as a required schema.
 
 ## Consultant Options From Chamber
 
-For regular responses, `[+ Consultant Options]:` should use indented option
+For user-facing responses, `[+ Consultant Options]:` should use indented option
 items built from `council_chamber` first. Write each option as advice the user
 can weigh, not as a task label. Make clear why the option is worth considering
 now and what kind of tradeoff comes with it. Keep the wording brief, practical,
@@ -207,9 +208,10 @@ terms unless the user asks about internals or a state-file problem must be
 explained. Describe the work as reviews, checks, analysis plans, report work,
 project notes, or saved outputs in ordinary language.
 
-Keep regular responses compact. Do not turn normal turns into full summaries;
-give only the decision-relevant update. Use longer detail only when the user
-asks for review, debugging, report closeout, or a full explanation.
+Keep responses compact. Do not turn normal turns into full summaries; give only
+the decision-relevant update. Longer detail, synthesis, closeout, or conceptual
+explanation may change how much content appears under each heading, but must
+not replace the heading shell with essay headings or standalone prose.
 
 Use this order:
 
@@ -224,10 +226,10 @@ Use this order:
 Use `[OK Confirmed]:` only if substantive work happened this turn. Omit it for
 greetings, pure intake, or clarification-only turns.
 
-If the fresh-project welcome rule applies, put that line before the regular
-response and still follow the regular response gate.
+If the fresh-project welcome rule applies, put that line before the user-facing
+response and still follow the user-facing response gate.
 
-For regular responses, required meaning:
+For user-facing responses, required meaning:
 
 - `[OK Confirmed]:` one line on what ran and what changed.
 - `[> Framing]:` 1-2 short lines on the current synthesis or decision.
@@ -239,7 +241,7 @@ For regular responses, required meaning:
   data, or report boundary.
 - `[? Next Steps]:` itemized choices, a few words each.
 
-Before sending regular responses, apply this gate:
+Before sending any user-facing response, apply this gate:
 
 - No prose before the first heading, except the fresh-project welcome line.
 - If `[OK Confirmed]:` is omitted, start with `[> Framing]:`.
@@ -249,5 +251,5 @@ Before sending regular responses, apply this gate:
 - Under `[+ Consultant Options]:`, indent every option item.
 - Do not add a numbered question list or closing paragraph outside the headings.
 
-The new-project welcome is the only allowed line before the regular response
+The new-project welcome is the only allowed line before the user-facing response
 headings.

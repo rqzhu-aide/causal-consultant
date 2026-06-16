@@ -18,12 +18,21 @@ When `next_step_plan` contains an `analysis_execution` entry:
 2. If `analysis_precheck: false` and the user has not approved the pending
    scope, enforce `mode: shallow`, confirm that no output folder,
    `artifact_records`, or analysis output was created, summarize the proposed
-   analysis scope from route-owned readiness notes and the plan entry, and ask
-   the user to approve or revise it.
+   analysis scope compactly inside the normal user-facing headings, and ask the
+   user to confirm the causal target, revise the scope, or approve execution
+   only if the scope is already right.
 3. If `analysis_precheck: true`, enforce `mode: deep`, review the
    `analysis_execution` `artifact_records` output record from this turn, update
    aggregate output state if artifacts or analysis results were created, and
-   clear the entry only after execution is complete or blocked.
+   clear the entry only after execution is complete or blocked. After analysis
+   execution, `[+ Consultant Options]` should prioritize analysis-facing next
+   moves: next contrast, diagnostic, sensitivity check, heterogeneity question,
+   claim wording, or missing data/domain interpretation. `[? Next Steps]`
+   should ask for the smallest useful analytical choice now. Do not default to
+   report, formatting, or deliverable-production options unless the user
+   explicitly asked for that deliverable or report work is already pending. If
+   HTML conversion is relevant and must appear, make it the final item in
+   `[+ Consultant Options]`.
 
 Preserve pending `analysis_execution` entries while approval or execution is
 still outstanding.

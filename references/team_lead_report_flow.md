@@ -34,11 +34,13 @@ When `next_step_plan` contains a `report_writer` entry:
 3. If results-focused drafting is requested before
    `project_summary.analysis_output: exist`, keep `report_precheck: false`,
    explain that only a study-planning report, outline, safer wording, or
-   limitations work is available until analysis output exists, and ask whether
-   to approve that report scope instead.
+   limitations work is available until analysis output exists, and ask which
+   purpose, audience, or claim boundary should shape that scope.
 4. If `report_precheck: false` and the user has not approved the pending scope,
    enforce `mode: shallow`, summarize the proposed report scope and envisioned
-   structure from `report_assembly`, then ask the user to approve or revise it.
+   structure compactly inside the normal user-facing headings, then ask for the
+   audience, purpose, claim strength, artifact emphasis, omissions, or
+   disclosures that would matter before approval.
 5. If `report_precheck: true`, enforce `mode: deep`, review report-writer
    output, update aggregate output state if report output was created, and clear
    the entry only after the approved report task is complete or blocked.

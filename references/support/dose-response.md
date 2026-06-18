@@ -45,7 +45,7 @@ Context only. Relevant when treatment or exposure is continuous, ordinal, multi-
 
 ## Other Considerations
 
-- Recommend a `statistical-validity` support pass in returned notes, especially for dose support, sparse tails, positivity, balance across dose, threshold stability, continuous-treatment DML, TMLE shift estimators, flexible dose nuisance models, or high-dimensional dose adjustment.
+- Have the selected design route flag `statistical-validity` follow-up in its scope or execution notes, especially for dose support, sparse tails, positivity, balance across dose, threshold stability, continuous-treatment DML, TMLE shift estimators, flexible dose nuisance models, or high-dimensional dose adjustment.
 - Consider `heterogeneous-effects` if the dose-response curve may differ across baseline groups, sites, cohorts, or risk levels.
 - Consider `non-continuous-outcomes` when dose-response is evaluated on risk, rates, events, categories, or survival scales.
 - Consider `mediation` if dose affects intermediate biomarkers, adherence, behavior, or mechanisms that the user wants to interpret.
@@ -53,4 +53,4 @@ Context only. Relevant when treatment or exposure is continuous, ordinal, multi-
 
 ## Boundary Language
 
-Say "within the observed support range" when appropriate. Avoid implying effects for unsupported dose levels, impossible interventions, or post-hoc thresholds.
+Record "within the observed support range" as a wording constraint when appropriate. Avoid implying effects for unsupported dose levels, impossible interventions, or post-hoc thresholds.

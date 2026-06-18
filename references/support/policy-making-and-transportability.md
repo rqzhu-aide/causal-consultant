@@ -51,7 +51,7 @@ Context only. Relevant when the target concerns action choice, prioritization, t
 
 ## Other Considerations
 
-- Recommend a `statistical-validity` support pass in returned notes, especially for policy support, rule stability, source-target overlap, calibration, sensitivity to effect modifiers, DR scores, off-policy evaluation, cross-fitted value estimation, nuisance models, or source-target DR transport.
+- Have the selected design route flag `statistical-validity` follow-up in its scope or execution notes, especially for policy support, rule stability, source-target overlap, calibration, sensitivity to effect modifiers, DR scores, off-policy evaluation, cross-fitted value estimation, nuisance models, or source-target DR transport.
 - Consider `heterogeneous-effects` when policy or transport depends on effect modifiers, subgroup benefit, equity/safety strata, or site/time variation.
 - Consider `non-continuous-outcomes` when the decision depends on risk, rate, survival, RMST, competing events, utility, or categorical outcomes.
 - Consider `dose-response` if the decision is about dose choice, exposure intensity, dose cap, threshold, or feasible shift.

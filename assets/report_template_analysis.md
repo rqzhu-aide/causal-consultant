@@ -4,6 +4,10 @@ Use when `project_summary.analysis_output: exist`.
 
 This report is for results, interpretation, and decision support based on analysis outputs created inside the causal-consultant workflow. Do not include results that are not supported by `artifact_records`, route-owned durable sections, or created output files.
 
+Use this file as section scaffolding. `references/report_writer.md` owns what
+state to read, how to choose causal wording, how to use artifacts, and where the
+claim boundary belongs.
+
 ## Writing Logic
 
 Move through this argument:
@@ -16,7 +20,9 @@ Use claim-first section openings. Each section should start with its message, th
 
 ## From State To Report Prose
 
-Treat `project_state.yaml`, `artifact_records`, route-owned summaries, and `council_chamber` opinions as source notes, not as final prose.
+Use the source-reading and wording rules in `references/report_writer.md`.
+Treat `project_state.yaml`, `artifact_records`, route-owned summaries, and
+`council_chamber` feedback as source notes, not as final prose.
 
 When source notes are brief, expand them into manuscript-style paragraphs that explain:
 

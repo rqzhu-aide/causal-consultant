@@ -26,9 +26,10 @@ checks, and final user-facing responses belong to `references/team_lead.md`.
 7. Write the complete `next_step_plan` assignment list to `project_state.yaml`
    before loading any route reference.
 8. Load planned non-`team_lead` references first. Core routes read their own
-   `next_step_plan` entry. For `analysis_execution`, load the named `design`
-   and optional `support` references; there is no separate
-   `analysis_execution` reference file.
+   `next_step_plan` entry. For `analysis_execution.<design_id>`, parse
+   `<design_id>` from the route id, load that design reference, and load the
+   optional `support` reference; there is no separate `analysis_execution`
+   reference file.
 9. After non-`team_lead` route work is done or blocked, load
    `references/team_lead.md` exactly once as the final planned reference. Let
    `team_lead` load conditional report, analysis, or artifact support only when

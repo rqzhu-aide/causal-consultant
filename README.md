@@ -1,7 +1,7 @@
 # Interactive Causal Consultant
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-4.2.6-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-4.2.10-blue.svg)]()
 [![Status](https://img.shields.io/badge/status-active%20development-orange.svg)]()
 
 An interactive causal inference consultant skill for moving from a rough causal
@@ -18,8 +18,8 @@ pair to a model.
 ## How It Works
 
 `causal-consultant` is a routed skill. The top-level `SKILL.md` initializes
-`project_state.yaml`, writes a compact `next_step_plan`, loads the planned route
-reference, and then loads `team_lead` as the final manager.
+`project_state.yaml`, writes a compact current-turn `next_step_plan`, loads the
+planned route reference, and then loads `team_lead` as the final manager.
 
 The internal team is:
 
@@ -34,20 +34,20 @@ The internal team is:
   analysis readiness, and design/support route recommendations.
 - **`causal_discovery`:** optional graph-hypothesis, variable-neighborhood, and
   discovery-diagnostic sidecar.
-- **`report_writer`:** report-scope precheck, approved report work,
-  manuscript-style writing, reviewer-facing text, and Markdown-to-HTML
-  conversion.
+- **`report_writer`:** report scope review, approved report work,
+  HTML report drafting, manuscript-style writing, reviewer-facing text, and
+  safer wording.
 - **Design/support references:** focused analysis routes for randomized
   assignment, observational exposure, longitudinal g-methods, DiD, RD, IV,
   synthetic control, interference, descriptive association, heterogeneity, dose
   response, mediation, transportability, non-continuous outcomes, and
   statistical validity.
 
-Version 4.2.6 uses a compact route-reference architecture: one state file at
-`project_state.yaml`, one planned route before `team_lead`, shallow/deep gates
-for report or analysis approval, compact route-owned YAML sections for durable
-findings and created outputs, and conditional report/analysis references that
-load only when needed.
+Version 4.2.10 uses a compact route-reference architecture: one state file at
+`project_state.yaml`, one current-turn route before `team_lead`, chamber
+feedback for report and analysis scope handoff, compact route-owned YAML
+sections for durable findings and created outputs, and conditional
+report/analysis references that load only when needed.
 
 ```text
 User <-> causal-consultant router
@@ -73,7 +73,7 @@ Use it when you want to work interactively on:
 - checking DAG/timing, adjustment, post-treatment variables, claim wording, or
   statistical evidence;
 - producing a planning report, analysis report, manuscript-style section,
-  reviewer-facing response, or HTML version of a Markdown report.
+  reviewer-facing response, or polished HTML report.
 
 ## Interaction Style
 

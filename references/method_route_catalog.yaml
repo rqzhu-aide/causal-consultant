@@ -6,7 +6,7 @@
 selection_principles:
   - "Recommend one accountable analysis frame first. Causal design routes provide the identification frame; descriptive_association is the named non-causal fallback."
   - "Strongly prefer recommending one support route with the selected design. Use statistical-validity as the default support unless another support is more immediately relevant."
-  - "Do not recommend a support route alone. Pair support with a design or explain why design selection is not ready."
+  - "Do not recommend a support route alone. Pair support with a design or record why design selection is not ready."
   - "Prefer a more specific support only when it changes the target, outcome scale, validity review, mechanism question, dose question, policy use, or transport question."
   - "Use descriptive_association only as an explicit non-causal fallback, never as a shortcut around causal design selection."
   - "If several designs seem possible, recommend causal_check follow-up rather than forcing a method route."

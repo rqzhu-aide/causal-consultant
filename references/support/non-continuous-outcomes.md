@@ -46,7 +46,7 @@ Context only. Relevant when the outcome is binary, ordinal, categorical, count, 
 
 ## Other Considerations
 
-- Recommend a `statistical-validity` support pass in returned notes, especially for event counts, denominators, censoring, overdispersion, rare outcomes, category sparsity, scale sensitivity, missingness, survival nuisance, binary risk, or AIPW/TMLE/DML-style estimation.
+- Have the selected design route flag `statistical-validity` follow-up in its scope or execution notes, especially for event counts, denominators, censoring, overdispersion, rare outcomes, category sparsity, scale sensitivity, missingness, survival nuisance, binary risk, or AIPW/TMLE/DML-style estimation.
 - Consider grouping, collapsing, thresholding, or transforming outcomes only when the new scale matches the decision or domain meaning, not merely to simplify modeling.
 - Consider `heterogeneous-effects` if outcome-scale conclusions differ across subgroups, sites, cohorts, risk levels, or event-count strata.
 - Consider `dose-response` if the outcome is non-continuous and the exposure has intensity, duration, cumulative dose, or threshold structure.

@@ -1,75 +1,49 @@
 # Team Lead Report Flow
 
 Load this reference only when the plan includes `report_writer`, the user asks
-about report approval/output/conversion, `report_assembly` changed this turn, or
-an HTML conversion option may be relevant. This file does not select report
-routes; it only helps `team_lead` review an existing report route and close out
-report state.
+about report approval/output, or `report_assembly` changed this turn. This file
+does not select report routes; it only helps `team_lead` review report handoff
+and close out report state.
 
-## Report Precheck
+## Report Handoff Review
 
-`report_precheck` is allowed only on a `next_step_plan` entry where
-`id: report_writer`.
+When `next_step_plan` contains a `report_writer` entry, review:
 
-Use `report scope` for the shallow precheck package, `approved report task` for
-deep report work, and `study plan` or `analysis plan` only for
-causal/statistical work. `report_precheck: false` means the report scope is not
-approved; `true` means approved report work may proceed in the active route, or
-direct Markdown-to-HTML conversion was requested for an existing Markdown
-report.
+- `report_assembly.planned_structure`
+- `report_assembly.key_points`
+- `report_assembly.draft_notes`
+- `report_assembly.wording_constraints`
+- `report_assembly.current_format`
+- `council_chamber.report_writer.current_status`
+- `council_chamber.report_writer.summary`
+- `council_chamber.report_writer.questions_for_user`
+- `council_chamber.report_writer.feedback_to_route`
+- any `report_writer` `artifact_records` created this turn
 
-Markdown-to-HTML conversion does not need a separate report precheck when
-`project_summary.report_output: exist`, `report_assembly.current_format: md`,
-`council_chamber.report_writer.current_status: produced`, and an actual `.md`
-report file from prior `report_writer` work exists in a recorded report output
-location.
+If results-focused drafting is requested before
+`project_summary.analysis_output: exist`, explain that only a planning report or
+bounded claim-boundary wording is available until analysis output exists, and ask
+which purpose, audience, or claim boundary should shape that scope.
 
-When `next_step_plan` contains a `report_writer` entry:
+If `current_status: requested`, the route did not complete its report handoff;
+explain the boundary under the normal headings using only visible state.
 
-1. If `report_precheck` is missing, treat it as `false` and use
-   `mode: shallow`.
-2. Review `report_assembly.planned_structure`, `key_points`, `draft_notes`,
-   `wording_constraints`, `current_format`, and any report-writer readiness
-   note from this turn.
-3. If results-focused drafting is requested before
-   `project_summary.analysis_output: exist`, keep `report_precheck: false`,
-   explain that only a study-planning report, outline, safer wording, or
-   limitations work is available until analysis output exists, and ask which
-   purpose, audience, or claim boundary should shape that scope.
-4. If `report_precheck: false` and the user has not approved the pending scope,
-   enforce `mode: shallow`, summarize the proposed report scope and envisioned
-   structure compactly inside the normal user-facing headings, then ask for the
-   audience, purpose, claim strength, artifact emphasis, omissions, or
-   disclosures that would matter before approval.
-5. If `report_precheck: true`, enforce `mode: deep`, review report-writer
-   output, update aggregate output state if report output was created, and clear
-   the entry only after the approved report task is complete or blocked.
+If `current_status: ready`, no report output should have been created.
+Summarize the proposed report scope and envisioned structure compactly inside
+the normal user-facing headings, using `questions_for_user` for the approval,
+scope, audience, purpose, claim-strength, artifact-emphasis, omission, or
+disclosure choice that matters before output creation.
 
-Do not clear a pending `report_writer` entry merely because `team_lead` ran.
-Preserve it while report creation remains possible and either report-scope
-approval or the approved report task is still outstanding. If
-`council_chamber.report_writer.current_status` starts with `scope_ready:`,
-preserve the shallow `report_writer` entry with `report_precheck: false` and
-remove only the completed `team_lead` entry.
+If `current_status: done`, review report-writer output, update aggregate
+report status from visible report output or artifact records, and summarize the
+output briefly. Trust `report_writer` to distinguish refinements that were safe
+to incorporate from material redesigns that needed another scope handoff.
 
-## HTML Conversion Option
+If `current_status: blocked`, explain the blocker under the normal headings and
+ask for the smallest useful clarification, scope revision, missing asset, or
+fallback choice.
 
-When preparing `[+ Consultant Options]:`, check whether an actual Markdown `.md`
-report file is ready for HTML conversion.
-
-Offer HTML conversion as the final consultant option only when all of these are
-true:
-
-- `project_summary.report_output: exist`
-- `report_assembly.current_format: md`
-- `council_chamber.report_writer.current_status: produced`
-- an actual `.md` report file from prior `report_writer` work exists in a
-  recorded report output location
-
-Use wording like: `Convert the completed Markdown report into a polished HTML
-report.`
-
-Do not make HTML conversion the recommended next step unless the user
-specifically asks for it. Do not offer it when `report_assembly.current_format:
-html`, when no report output exists, when no actual `.md` report file exists, or
-when `council_chamber.report_writer.current_status` starts with `blocked:`.
+After `team_lead` finishes a turn, clear the completed current-turn
+`next_step_plan`. Ready report scope remains available through
+`report_assembly` and `council_chamber.report_writer`, not by preserving a plan
+entry.

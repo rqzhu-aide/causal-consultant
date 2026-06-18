@@ -26,9 +26,9 @@ Route-specific fields may be included when useful, such as `design` and
 
 ## Aggregate Output Flags
 
-When approved `analysis_execution` work with `analysis_precheck: true` creates
-any analysis result, table, figure, model output, diagnostic output, written
-result note, or artifact intended as analysis output, set:
+When `analysis_execution` creates any analysis result, table, figure, model
+output, diagnostic output, written result note, or artifact intended as
+analysis output, set:
 
 ```yaml
 project_summary:
@@ -37,12 +37,12 @@ project_summary:
 
 Record the output location in `artifact_records`; do not list every file.
 
-When `analysis_precheck: false`, do not accept or create `analysis_execution`
-`artifact_records`. Shallow analysis precheck is readiness feedback only.
+When `analysis_execution` only prepares scope/readiness feedback, do not accept
+or create `artifact_records`. Scope feedback lives in
+`council_chamber.analysis_execution.<design_id>`.
 
-When approved `report_writer` work with `report_precheck: true` creates report
-text, a report draft, a reviewer response, a written section, an HTML
-conversion, or a report artifact, set:
+When `report_writer` creates or revises an HTML report or bounded report-scoped
+output, set:
 
 ```yaml
 project_summary:
@@ -52,13 +52,13 @@ project_summary:
 Keep the durable summary in `report_assembly.draft_notes`, the format in
 `report_assembly.current_format`, and any output location in `artifact_records`.
 
-Data-audit artifacts may be recorded in `artifact_records` in shallow or deep
-mode when actual data or files exist and a useful audit output was created.
-Causal-discovery sidecar artifacts may be recorded only when deep mode creates
-an output. Neither should set `project_summary.analysis_output: exist` unless
-the artifact is intended as analysis output for reporting. `domain_expert`
-should record source checks and domain practice in `domain_knowledge`, not
-create output folders or `artifact_records` entries.
+Data-audit artifacts may be recorded in `artifact_records` when actual data or
+files exist and a useful audit output was created. Causal-discovery sidecar
+artifacts may be recorded only when bounded discovery work creates an output.
+Neither should set `project_summary.analysis_output: exist` unless the artifact
+is intended as analysis output for reporting. `domain_expert` should record
+source checks and domain practice in `domain_knowledge`, not create output
+folders or `artifact_records` entries.
 
 When `causal_discovery` creates graph objects, edge tables, local-neighborhood
 tables, stability tables, plots, source files, manifests, or technical notes,

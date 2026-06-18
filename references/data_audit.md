@@ -1,137 +1,135 @@
 # Route: data_audit
 
-Use this reference to inspect whether an analysis request has well-defined and valid data inputs.
-
-Do not produce a standalone user-facing answer. Provide internal findings for `team_lead` to synthesize.
+Use this route to audit whether the project has well-defined, valid data inputs
+for causal framing, analysis planning, or execution. Do not produce a standalone
+user-facing answer; provide internal findings for `team_lead` to synthesize.
 
 ## Plan Entry
 
-Read `next_step_plan` before doing substantive work.
+Read `next_step_plan` before route work.
 
 Expected entry:
 
 ```yaml
 next_step_plan:
   - id: data_audit
-    request: what the user asked or approved
-    task: concrete data-audit assignment
-    mode: shallow | deep
 ```
 
-If no `next_step_plan` entry has `id: data_audit`, do not proceed with data audit work.
+If no `next_step_plan` entry has `id: data_audit`, do not proceed with data
+audit work.
 
-Use this entry's `request`, `task`, and `mode` as the assignment. Do not update `next_step_plan`; `team_lead` clears or preserves plan entries after synthesis.
+Use the current user message, live state, and any inspectable files as the
+assignment. Do not update `next_step_plan` or `project_summary`; `team_lead`
+handles aggregate cleanup after synthesis.
 
-Interpret `mode` as:
+## Causal Data Audit Scope
 
-- `shallow`: audit data structure, timing, leakage, dependencies, missingness, support, and validity from the user's stated facts, available metadata, and any inspectable files.
-- `deep`: perform the shallow audit, then run exploratory analysis for causal preparation when actual data are available, such as descriptive summaries, associations, correlations, exposure/outcome support checks, missingness patterns, simple propensity-score or treatment-model diagnostics, and other preparation diagnostics requested by the task.
+Audit data facts that could change the causal target, analysis route, claim
+boundary, or execution feasibility:
 
-Record blocked or completed work in `data_facts.data_checked`, `council_chamber.data_audit.current_status`, and relevant data-fact notes.
+- data source existence, inspectability, grain, and unit of observation;
+- exposure/treatment/intervention definition, timing, and support;
+- outcome definition, outcome timing, censoring, and event/support counts;
+- baseline covariates, post-treatment variables, mediators, colliders, and
+  variables measured after the outcome;
+- inclusion/exclusion criteria, selection, attrition, missingness, and missing
+  data patterns that could change the estimand;
+- repeated measures, clustering, household/site/provider dependence, panels,
+  matched sets, or network/spillover structure;
+- leakage risks from post-outcome variables, post-treatment variables,
+  preprocessing before splitting, duplicate subjects, or outcome-informed
+  feature construction;
+- support/positivity problems, sparse strata, unsupported subgroups, or extreme
+  treatment/exposure imbalance.
 
-## Checklist
+When actual data are available and fuller inspection is useful, summarize only
+decision-relevant findings in YAML and put full inventories, missingness tables,
+support diagnostics, profiling output, or reshape notes in audit artifacts.
 
-Check the following items when relevant:
+## Data Facts Updates
 
-1. Unit of observation.
-2. Outcome definition and outcome timing.
-3. Treatment, exposure, intervention, or decision variable definition and timing.
-4. Covariate timing relative to the outcome, treatment, exposure, or decision point.
-5. Inclusion and exclusion criteria.
-6. Missingness mechanism and missingness handling.
-7. Dependencies, including repeated measures, clustering, household/site/provider dependence, matched sets, longitudinal panels, or network/spillover structure.
-8. Support and positivity, including exposure/treatment counts, outcome counts/events, subgroup counts, and sparse or unsupported strata.
-9. Leakage risks, including post-outcome variables, post-treatment variables, duplicate subjects across splits, and preprocessing performed before splitting.
-10. Train/validation/test split or cross-validation scheme.
-11. Whether the requested analysis is supportable from the described data.
+Write durable data context only to `data_facts`. Keep it compact and
+causal-analysis oriented; it is live decision memory, not a data dictionary.
 
-In `deep` mode, when data are available and it is safe to run analysis, also consider:
+Update supported fields:
 
-- exposure/outcome summaries and cross-tabs
-- missingness tables and missingness-by-exposure/outcome summaries
-- basic correlations or associations among candidate variables
-- crude exposure-outcome associations clearly labeled as non-causal
-- propensity-score or treatment-model exploratory diagnostics when an observational treatment/exposure is present
-- balance, overlap, extreme-propensity, and effective-sample-size summaries when relevant
-- event/censoring/support summaries for survival or longitudinal tasks
+- `last_updated`: local update time in `HH:MM:SS` format.
+- `data_checked`: `passing`, `limited`, `imagined`, or `blocked`; leave
+  `not_checked` only if no data audit work occurred.
+- `data_sources`: data files, tables, or user-provided descriptions reviewed.
+- `audit_scope`: compact description of what was checked.
+- `unit_of_observation`: analysis grain and any mismatch with assignment,
+  exposure, or outcome grain.
+- `variables`: key variable groups, causal roles, timing-critical fields, and
+  blockers only.
+- `structure_notes`, `timing_notes`, `dependency_notes`, `leakage_risks`,
+  `missingness_notes`, `support_notes`, `validity_questions`: compact bullets
+  that affect claim support or analysis routing.
+- `exploratory_runs`, `artifact_refs`: only when actual audit output was
+  created.
 
-## Return Format
+Use `data_checked: passing` only when source, unit, exposure/treatment, outcome,
+timing, key variables, and major leakage/missingness/support blockers are
+resolved or explicitly bounded for the requested analysis. Use `limited` when
+some useful planning or bounded review is possible but important data facts are
+missing. Use `imagined` only when no actual data or verified data description is
+available and the route records a hypothetical structure for planning; never
+treat `imagined` as analysis-ready. Use `blocked` when data structure, timing,
+leakage, missingness, support, or unavailable files prevent valid execution.
 
-Prepare concise internal notes when useful on critical issues, non-critical
-warnings, required questions, recommended next steps, and exploratory results or
-artifact paths if analysis ran.
-
-## Special Emphasis
-
-For biomedical, survival, longitudinal, reinforcement-learning, personalized-medicine, or causal tasks, pay particular attention to time ordering. Variables measured after treatment assignment, after the decision point, or after the outcome should not be treated as baseline predictors unless the target estimand justifies it.
-
-## State Updates
-
-Update `project_state.yaml` fields under `data_facts` when supported by the user's request:
-
-Keep `data_facts` compact. Use it as live decision memory, not a full data
-dictionary. In `variables`, record only key variable groups, causal roles,
-timing-critical fields, and blockers. Do not list every column or write long
-per-variable notes. If a full variable inventory, missingness table, support
-table, or profiling detail is useful, create or reference an audit artifact and
-summarize only the decision-relevant points in YAML.
-
-- `last_updated`: set to the local run time in `HH:MM:SS` format whenever this reference is run.
-- `data_checked`: set to `passing`, `limited`, `imagined`, or `blocked` after checking whether the data facts are sufficient for the requested analysis; leave as `not_checked` only if no data audit work occurred.
-- `data_sources`
-- `audit_scope`
-- `unit_of_observation`
-- `variables`
-- `structure_notes`
-- `timing_notes`
-- `dependency_notes`
-- `leakage_risks`
-- `missingness_notes`
-- `support_notes`
-- `validity_questions`
-- `exploratory_runs`
-- `artifact_refs`
-
-## Council Chamber Write Contract
+## Council Chamber Updates
 
 Refresh only `council_chamber.data_audit`.
 
 Set:
 
 - `last_updated`: local update time in `HH:MM:SS` format.
-- `current_status`: one short sentence on what the data audit could verify.
-- `opinions`: 1-3 compact opinion entries.
+- `current_status`: one short sentence on what the audit could verify.
+- `summary`: compact synthesis of data support, blockers, or usable facts.
+- `questions_for_user`: 0-3 questions or choices that would improve the next
+  decision.
+- `feedback_to_route`: 0-3 route-facing suggestions, such as useful domain,
+  causal, discovery, or analysis follow-up.
 
-Keep opinions short, decision-facing, grounded in `data_facts` or current
-uncertainty, and free of schema labels. Focus on data support, blockers, useful
-reshaping, analysis options, or needed review.
+Keep chamber feedback short, decision-facing, grounded in `data_facts` or
+current uncertainty, and free of schema labels. Use it for data support,
+blockers, reshaping needs, timing concerns, leakage risks, support limitations,
+or immediately useful member follow-up. Recommend another member, such as
+`domain_expert` or `causal_check`, only when the current state gives that member
+something concrete to inspect, clarify, or decide. If the missing ingredient is
+user-provided material, name that material need plainly.
 
-When data audit finishes, be aware of the other core reviewers before finalizing
-`opinions`. Recommend another member only when that review would be immediately
-useful for the next decision and the current state gives that member something
-concrete to inspect, clarify, or decide. Recommend other members such as
-`domain_expert` or `causal_check` when they would help immediately. If the
-missing ingredient is user-provided material, name that material need plainly.
-Do not let team-review suggestions crowd out urgent data blockers.
+## Audit Outputs
 
-Use `data_checked: passing` only when the available data description or inspected data supports the requested analysis inputs well enough to proceed: source, unit, exposure/treatment, outcome, timing, key variables, and major leakage/missingness blockers are resolved or explicitly bounded. Use `limited` when some useful planning or bounded review is possible but important data facts are missing. Use `imagined` only when no actual data or verified data description is available and the audit records a hypothetical structure for planning; never treat `imagined` as analysis-ready. Use `blocked` when data structure, timing, leakage, missingness, or unavailable files prevent valid analysis execution.
+`data_audit` may create a durable audit artifact only when actual data or
+inspectable files exist and a useful audit output is created.
 
-## Analysis Outputs
+Use artifacts for exhaustive detail: full column inventories, profiling tables,
+missingness tables, support diagnostics, reshape notes, scripts, notebooks, or
+generated audit reports. `data_facts` should hold only compact interpretation
+and artifact references.
 
-`data_audit` is the only route where shallow mode may create a durable artifact, and only when actual data or inspectable files exist and a useful audit output is created.
+When any script, notebook, table, figure, or exploratory audit output is
+created:
 
-Use artifacts for exhaustive data detail: full column inventories, profiling
-tables, missingness tables, support diagnostics, reshape notes, and generated
-audit reports. `data_facts` should hold only the compact interpretation and
-artifact references.
+1. Save the output under one meaningful project subfolder directly under
+   `output/`, such as `output/data_audit_readiness` or
+   `output/missingness_overlap_audit`.
+2. Record a compact run item in `data_facts.exploratory_runs` with the run time,
+   work scope, input sources, diagnostics performed, result summary, and output
+   paths.
+3. Record output paths in `data_facts.artifact_refs`.
+4. Append one `artifact_records` entry with `route: data_audit`, `location`,
+   `created_at`, and a short summary.
 
-When any script, notebook, table, figure, or exploratory analysis output is actually created:
+Do not create `artifact_records` entries for verbal audits that did not create a
+new output location.
 
-1. Save the output under one meaningful project subfolder directly under `output/`, such as `output/data_audit_readiness` or `output/missingness_overlap_audit`. Do not use route-specific nested folders or timestamp-only folder names.
-2. Record a compact run item in `data_facts.exploratory_runs` with the run time, mode, input sources, diagnostics performed, result summary, and output paths.
-3. Record the output paths in `data_facts.artifact_refs`.
-4. Append one `artifact_records` entry with `route: data_audit`, `location`, `created_at`, and a short `summary` of work, findings, limitations, or suggested additional work.
+## Boundaries
 
-Do not create `artifact_records` entries for purely verbal audits that did not create a new output location.
+This route audits data readiness and may run bounded profiling or audit code
+when inspectable data exist. It does not choose the final causal method,
+validate a causal claim, or execute the approved causal analysis.
 
-Do not update `project_summary` or `next_step_plan`; `team_lead` updates aggregate workflow fields after the route finishes.
+Do not let generic profiling crowd out causal-data risks: unit, timing, leakage,
+support, missingness, dependencies, and variable roles are the priority.

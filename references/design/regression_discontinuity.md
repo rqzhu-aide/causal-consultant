@@ -6,13 +6,9 @@ This design route is the accountable owner for whether analysis execution remain
 
 Work in this order: verify the cutoff rule, define the running variable, check the treatment jump, establish local support, choose the RD lane, run manipulation/continuity diagnostics, choose estimator settings, then set the local claim boundary. Do not treat an analyst-created split as RD.
 
-Find the `next_step_plan` entry with `id: analysis_execution` and `design: regression_discontinuity`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
-
-After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this design route owns any combined design/support `artifact_records` write, but only in approved deep execution.
-
-If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only, covering cutoff fit, data contract, local estimand, required diagnostics, blockers, proposed outputs, and execution scope. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
-
-If `analysis_precheck: true`, `mode` should be `deep`: execute only within the approved task and available data/artifacts. If a support route is also named, work from the same `analysis_execution.task` and keep the support work inside the RD design scope.
+Runtime contract: follow `references/design_execution_contract.md` using design
+id `regression_discontinuity`. Keep any named support route inside this RD
+design scope.
 
 ## Use When
 
@@ -108,7 +104,7 @@ Key literature anchors: continuity-based RD, local polynomial RD, robust bias co
 
 ## Artifact Records Write
 
-In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include RD specifics in the entry summary or in a note/manifest inside the output location, such as:
+In approved execution, append one compact `artifact_records` entry according to `references/design_execution_contract.md`. Include RD specifics in the entry summary or in a note/manifest inside the output location, such as:
 
 - `design_id: regression_discontinuity`
 - `fit_status`: `direct`, `adapted`, `planning_only`, `blocked`, or `limited`

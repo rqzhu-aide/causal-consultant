@@ -4,6 +4,10 @@ Use when `project_summary.analysis_output: non_exist`.
 
 This report is for planning, framing, and decision support. It must not describe completed analysis results, estimates, diagnostics, or empirical findings that do not exist inside the causal-consultant workflow.
 
+Use this file as section scaffolding. `references/report_writer.md` owns what
+state to read, how to choose causal wording, how to use artifacts, and where the
+claim boundary belongs.
+
 ## Writing Logic
 
 Move through this argument:
@@ -16,7 +20,9 @@ Use claim-first section openings. Each section should start with the message it 
 
 ## From State To Report Prose
 
-Treat `project_state.yaml`, `artifact_records`, route-owned summaries, and `council_chamber` opinions as source notes, not as final prose.
+Use the source-reading and wording rules in `references/report_writer.md`.
+Treat `project_state.yaml`, `artifact_records`, route-owned summaries, and
+`council_chamber` feedback as source notes, not as final prose.
 
 When state entries are brief, expand them into manuscript-style paragraphs that explain:
 
@@ -143,7 +149,7 @@ The close should not introduce a new method, claim, or source. It should convert
 Summarize what the planning report used:
 
 - `project_state.yaml` sections reviewed
-- relevant `council_chamber` opinions
+- relevant `council_chamber` feedback
 - artifact records, if any
 - open questions that block analysis
 - reviewer routes that should inspect the next step

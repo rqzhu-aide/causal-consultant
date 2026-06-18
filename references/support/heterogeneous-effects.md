@@ -43,7 +43,7 @@ Context only. Relevant when the causal target asks whether effects differ across
 
 ## Other Considerations
 
-- Recommend a `statistical-validity` support pass in returned notes, especially for subgroup support, overlap, multiplicity, fold stability, model sensitivity, flexible CATE, causal forests, R-/DR-learners, orthogonal forests, high-dimensional modifiers, or DR scores.
+- Have the selected design route flag `statistical-validity` follow-up in its scope or execution notes, especially for subgroup support, overlap, multiplicity, fold stability, model sensitivity, flexible CATE, causal forests, R-/DR-learners, orthogonal forests, high-dimensional modifiers, or DR scores.
 - Consider simple subgroup or GATE summaries before flexible CATE when the modifier set is small or prespecified.
 - Consider `policy-making-and-transportability` if heterogeneity is meant to guide targeting, treatment rules, equity decisions, deployment, or source-target movement.
 - Consider `non-continuous-outcomes` when subgroup conclusions depend on risk, odds, hazards, RMST, event counts, or ordinal/category shifts.

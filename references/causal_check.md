@@ -1,138 +1,124 @@
 # Route: causal_check
 
-Use this reference to check whether a causal question, design, method, or conclusion is supported.
-
-Do not produce a standalone user-facing answer. Provide internal findings for `team_lead` to synthesize.
+Use this route to audit whether the causal question, design, method route, or
+conclusion is supported by the current project state. Do not produce a
+standalone user-facing answer; provide internal findings for `team_lead` to
+synthesize.
 
 ## Plan Entry
 
-Read `next_step_plan` before doing substantive work.
+Read `next_step_plan` before route work.
 
 Expected entry:
 
 ```yaml
 next_step_plan:
   - id: causal_check
-    request: what the user asked or approved
-    task: concrete causal-check assignment
-    mode: shallow | deep
 ```
 
-If no `next_step_plan` entry has `id: causal_check`, do not proceed with causal check work.
+If no `next_step_plan` entry has `id: causal_check`, do not proceed with causal
+check work.
 
-Use this entry's `request`, `task`, and `mode` as the assignment. Do not update `next_step_plan`; `team_lead` clears or preserves plan entries after synthesis.
+Use the current user message and live state as the assignment. Do not update
+`next_step_plan`, `project_summary`, or `artifact_records`; `team_lead` handles
+aggregate cleanup after synthesis.
 
-Interpret `mode` as:
+## Causal Statistical Audit Scope
 
-- `shallow`: perform a compact causal-claim screen using existing context.
-- `deep`: perform a fuller causal critique covering estimand, timing, assumptions, threats, support status, and recommended checks.
+Audit what the current design and data can support, not how confidently the
+result can be written. A polished causal sentence is still inappropriate if the
+design does not support it.
 
-Even in `deep` mode, keep causal-check state compact. The goal is live
-decision memory, not a report-length causal narrative.
+Focus on causal ingredients that could change the claim or analysis route:
 
-Record blocked or completed work in `causal_facts.causal_checked`, `council_chamber.causal_check.current_status`, and relevant causal-fact notes.
+- causal question, exposure/treatment, comparator, outcome, target population,
+  time zero, follow-up, and estimand;
+- whether treatment/exposure, covariates, mediators, outcomes, censoring, and
+  repeated measures are ordered correctly;
+- design-data fit: assignment or exposure process, confounding, selection,
+  measurement, missingness, support/positivity, interference, clustering,
+  leakage, and transportability;
+- whether assumptions are plausible enough for the intended claim;
+- whether sensitivity, falsification, negative-control, robustness, or
+  diagnostic checks would change interpretation;
+- whether the honest wording is causal, qualified causal, association-only,
+  descriptive, predictive, or exploratory.
 
-## Checklist
+Keep causal state compact. Store only decision-relevant assumptions, threats,
+claim boundaries, and route implications.
 
-Check the following items when relevant:
+## Readiness And Method Route Logic
 
-1. Whether the causal question is explicit.
-2. Treatment, exposure, intervention, outcome, population, time zero, and follow-up window.
-3. The estimand or target causal contrast.
-4. Temporal ordering of treatment, covariates, mediators, and outcomes.
-5. Confounding, selection, measurement, missingness, positivity, interference, and censoring threats.
-6. Whether the proposed design supports the intended claim.
-7. Whether assumptions are stated and plausible.
-8. Whether sensitivity, falsification, negative-control, or robustness checks are needed.
-9. Whether the final wording should be causal, associational, predictive, or exploratory.
+When the task requires method recommendation, analysis planning, or execution
+readiness, load `references/method_route_catalog.yaml` and use route IDs exactly
+as written in `route_index.yaml`.
 
-## Return Format
+Do not recommend a method route merely because the user named it. Match the
+route to the causal target, data structure, timing, estimand, identifying
+assumptions, and likely diagnostics.
 
-Prepare concise internal notes when useful on claim support, overclaim, key
-assumptions and threats, recommended checks or design changes, and safer
-wording.
+Use two readiness layers:
 
-## Special Emphasis
+- `causal_checked`: core causal-review status, `passing`, `limited`, or
+  `blocked`.
+- `analysis_readiness`: execution-readiness status, `ready`, `limited`,
+  `not_ready`, or `blocked`.
 
-Separate evidence strength from writing confidence. A polished causal sentence is still inappropriate if the design does not support it.
+Recommend at most one primary `design` route for the next analysis scope. Add
+one `support` route when it materially improves validity, diagnostics, or
+interpretation; use `statistical-validity` as the default support unless another
+support route is more immediately relevant. Do not recommend support-only
+execution.
 
-## Method Route Recommendation
+Presence in `recommended_method_routes` means the route is worth scope review,
+not that it is already approved or sufficient. Use `route_cautions` for
+non-obvious project-specific issues that could make the route wrong, narrower,
+or require special handling.
 
-When the task requires recommending a causal analysis method route, load `references/method_route_catalog.yaml`.
+Use `analysis_readiness: ready` only when a loadable causal design route is
+recommended. Use `limited` when a bounded causal route or explicit non-causal
+fallback is mature enough for scope review. Use `not_ready` when data, domain,
+or causal clarification could repair the path. Use `blocked` when no acceptable
+causal or non-causal fallback should proceed.
 
-Use the detailed method catalog to identify candidate method routes that fit the causal question, data structure, timing, estimand, and assumptions. Use catalog IDs exactly as written in `route_index.yaml`. Do not recommend a method route only because the user named it; check whether the current causal formulation supports it.
+Use `descriptive_association` only as an explicit non-causal fallback when
+causal identification is not supportable but association summaries are still
+useful. Pair it with no-causal-claim wording and `analysis_readiness: limited`.
 
-For analysis planning, execution requests, or method-selection tasks, always record both an overall analysis-readiness judgment and any method-route readiness judgments. Recommend one primary causal `design` route only when the method is at least promising enough to enter `analysis_execution` precheck. Recommend `descriptive_association` only as an explicit non-causal fallback when causal identification is not supportable but association-only analysis is still useful. Strongly consider one `support` route with the selected design; use `statistical-validity` as the default support unless another support is more immediately relevant. Recommend support routes only as analytic tools that the selected design route could use; do not recommend support-only execution.
+Do not write null, non-loadable, or support-only items into
+`recommended_method_routes`. If no route is mature enough for scope review,
+leave the list empty and explain the maturity issue in `support_status`,
+`recommended_checks`, and chamber feedback.
 
-Keep overall readiness separate from method-route readiness:
+## Causal Facts Updates
 
-- `causal_checked` is the core-review status: `passing`, `limited`, or `blocked`.
-- `analysis_readiness` is the main execution-readiness status: `ready`, `limited`, `not_ready`, or `blocked`.
-- `recommended_method_routes[].readiness` is method-specific and may use only `precheck_ready` or `limited`.
+Update `project_state.yaml` fields under `causal_facts` when supported by the
+request:
 
-Use `analysis_readiness: ready` when a causal design recommendation is mature enough for precheck. Use `analysis_readiness: limited` when only a bounded causal method, constrained analysis, or explicit non-causal fallback is mature enough for precheck. Use `analysis_readiness: not_ready` when more causal, data, or domain work is needed before recommending any method. Use `analysis_readiness: blocked` when analysis execution should not proceed.
-
-Do not put `not_ready`, `blocked`, or free-text readiness values in `recommended_method_routes[].readiness`. If no method reaches at least `limited`, leave `recommended_method_routes` empty or record only a non-causal `descriptive_association` fallback when appropriate; explain the reason in `support_status`, `recommended_checks`, and `council_chamber.causal_check.opinions`.
-
-Record method recommendations under `causal_facts.recommended_method_routes`. Keep each item concise:
-
-```yaml
-- id: "randomized_assignment"
-  category: "design"
-  reason: "Randomized assignment is the mature design frame for the requested analysis."
-  readiness: "precheck_ready"
-  next_step: "Prepare a shallow analysis_execution precheck for the randomized-assignment scope."
-```
-
-When recommending support, add it as a separate item:
-
-```yaml
-- id: "statistical-validity"
-  category: "support"
-  reason: "Validity diagnostics, overlap, robustness, and inference should accompany the selected design."
-  readiness: "precheck_ready"
-  next_step: "Use as the default support lens during analysis_execution precheck unless a more specific support is needed."
-```
-
-If analysis is not mature enough for a loadable design recommendation, do not put a null or blocked method into `recommended_method_routes`. Set `analysis_readiness: not_ready` or `analysis_readiness: blocked`, and use `support_status`, `recommended_checks`, and `council_chamber.causal_check.opinions` to explain the main maturity issue and the smallest next information needed.
-
-If the study can support only descriptive or association analysis and the user wants to proceed non-causally, recommend `descriptive_association` with careful fallback wording:
-
-```yaml
-- id: "descriptive_association"
-  category: "design"
-  reason: "Causal identification is not supportable from the current design, but non-causal association summaries can describe observed patterns."
-  readiness: "limited"
-  next_step: "Run an approved descriptive/association analysis with explicit no-causal-claim wording."
-```
-
-When recommending `descriptive_association`, set `analysis_readiness: limited` and set `causal_facts.support_status` to state that causal claims are not supported and only non-causal association analysis is mature. In `council_chamber.causal_check.opinions`, include a boundary opinion explaining why this is an absolute fallback rather than a causal design.
-
-## State Updates
-
-Update `project_state.yaml` fields under `causal_facts` when supported by the user's request:
-
-Keep `assumptions` and `threats` as concise decision bullets. Name the
-assumption or threat, why it matters in one short clause, and the needed check
-or claim boundary when relevant. Do not paste long causal essays, full DAG
-narratives, or report-style limitations sections into YAML.
-
-- `last_updated`: set to the local run time in `HH:MM:SS` format whenever this reference is run.
-- `causal_checked`: set to `passing`, `limited`, or `blocked` after checking whether the causal formulation and claim boundary are sufficient for the requested analysis; leave as `not_checked` only if no causal check work occurred.
-- `analysis_readiness`: set to `ready`, `limited`, `not_ready`, or `blocked` when the task involves analysis planning, execution, or method selection.
-- `causal_question`
-- `exposure_or_intervention`
-- `outcome`
-- `estimand`
+- `last_updated`: local update time in `HH:MM:SS` format.
+- `causal_checked`: `passing`, `limited`, or `blocked`; leave `not_checked`
+  only if no causal check work occurred.
+- `analysis_readiness`: `ready`, `limited`, `not_ready`, or `blocked` when the
+  task involves analysis planning, execution, or method selection.
+- `causal_question`, `exposure_or_intervention`, `outcome`, `estimand`.
 - `assumptions`: compact bullets for assumptions that most affect the current
   claim or analysis path.
-- `threats`: compact bullets for the main validity threats, not a full
-  limitations narrative.
-- `support_status`
-- `recommended_checks`
-- `recommended_method_routes`
+- `threats`: compact bullets for validity threats, not a full limitations
+  narrative.
+- `support_status`: concise claim/readiness boundary.
+- `recommended_checks`: checks that would change the claim or route.
+- `recommended_method_routes`: concise route items with `id`, `category`,
+  and `route_cautions`.
 
-## Council Chamber Write Contract
+Use `causal_checked: passing` only when the causal question, treatment/exposure,
+comparator, outcome, time zero, target population, estimand, main assumptions,
+and claim boundary are clear enough for the requested analysis. Use `limited`
+when useful framing or a constrained route is possible but incomplete. Use
+`blocked` when the requested claim or execution path is unsupported,
+overclaimed, unidentified, or outside the skill boundary and no acceptable
+fallback is available.
+
+## Council Chamber Updates
 
 Refresh only `council_chamber.causal_check`.
 
@@ -140,28 +126,30 @@ Set:
 
 - `last_updated`: local update time in `HH:MM:SS` format.
 - `current_status`: one short sentence on claim support or uncertainty.
-- `opinions`: 1-3 compact opinion entries.
+- `summary`: compact synthesis of claim support, analysis readiness, or main
+  causal boundary.
+- `questions_for_user`: 0-3 questions or choices that would improve the next
+  decision.
+- `feedback_to_route`: 0-3 route-facing suggestions, such as useful data,
+  domain, discovery, support, or analysis follow-up.
 
-Keep opinions short, decision-facing, grounded in `causal_facts`, data/domain
-state, or current uncertainty, and free of schema labels. Focus on claim
-support, analysis readiness, method direction, assumptions/threats, or next
-causal check. When analysis planning or execution was requested, include one
-opinion about `analysis_readiness` and one about the recommended design/support
-direction, why no method reaches the limited threshold, or why
-`descriptive_association` is being offered as a non-causal fallback.
+Keep chamber feedback short, decision-facing, grounded in `causal_facts`,
+data/domain state, or current uncertainty, and free of schema labels. When
+analysis planning or execution was requested, summarize the recommended
+design/support direction, why only a non-causal fallback is mature, or why no
+method reaches the limited threshold.
 
-When causal check finishes, be aware of the other core reviewers before
-finalizing `opinions`. Recommend another member only when that review would be
-immediately useful for the next decision and the current state gives that member
-something concrete to inspect, clarify, or decide. Recommend other members such
-as `data_audit` or `domain_expert` when they would help immediately. If the
-missing ingredient is user-provided material, name that material need plainly
-instead of implying a teammate can already review it. Do not let team-review
-suggestions crowd out a critical causal boundary, blocked claim, or
-method-readiness judgment.
+Recommend another member, such as `data_audit` or `domain_expert`, only when the
+current state gives that member something concrete to inspect, clarify, or
+decide. If the missing ingredient is user-provided material, name that material
+need plainly instead of implying a teammate can already review it.
 
-Use `causal_checked: passing` only when the causal question, exposure/treatment, comparator, outcome, time zero, target population, estimand, main assumptions, and claim boundary are clear enough to support the requested analysis. Use `limited` when some useful causal framing or planning is possible but the causal formulation is incomplete, or when the only mature executable path is `descriptive_association` with non-causal wording. Use `blocked` when the requested causal claim or execution path is unsupported, overclaimed, unidentified, or outside the skill boundary and no acceptable fallback is available.
+## Boundaries
 
-Use `analysis_readiness: ready` only when at least one recommended loadable causal design has `readiness: precheck_ready`. Use `analysis_readiness: limited` when at least one recommended method has `readiness: limited`, including `descriptive_association` as a non-causal fallback. Use `analysis_readiness: not_ready` when no method reaches the limited threshold but further data, domain, or causal checks could repair the path. Use `analysis_readiness: blocked` when no acceptable causal or non-causal fallback should proceed. If `causal_checked: blocked`, set `analysis_readiness: blocked` unless the only offered path is an explicitly non-causal `descriptive_association` fallback.
+This route validates causal formulation, claim support, assumptions, and method
+route readiness. It does not execute analysis, choose final report wording, or
+create outputs.
 
-Do not update `project_summary` or `next_step_plan`; `team_lead` updates aggregate workflow fields after the route finishes.
+Do not create output folders or `artifact_records` entries from `causal_check`
+work. Do not let team-review suggestions crowd out a critical causal boundary,
+blocked claim, or method-readiness judgment.

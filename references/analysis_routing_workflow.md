@@ -1,64 +1,66 @@
 # Analysis Routing Workflow
 
-Load this reference only for analysis execution requests, approval of a pending
-analysis scope, method design/support selection, or pending
-`analysis_execution` work.
+Load this reference only for analysis requests, approval or revision of an
+analysis scope, method design/support selection, or recent
+`analysis_execution` chamber feedback.
 
-## Routing Rules: No Existing Analysis Execution Work
+## Routing Role
 
-- If there is no remaining `analysis_execution` item in `next_step_plan`, an
-  analysis execution request starts as shallow scope/readiness work.
-- Plan `analysis_execution` with `analysis_precheck: false` and `mode: shallow`,
-  even when the user asks to run now.
+Use this file only after route selection has inferred an in-scope analysis
+intention. The router selects a valid `analysis_execution.<design_id>` route
+with optional support. The selected design route decides whether the current
+turn calls for scope preparation, revision, blocked feedback, or approved
+execution.
 
-## Routing Rules: Existing Analysis Execution Work
+Do not put scope status, mode, task text, or approval state in
+`next_step_plan`.
 
-- If there is a remaining shallow `analysis_execution` item in `next_step_plan`
-  and the user clearly approves that existing analysis scope, route
-  `analysis_execution` directly with `mode: deep` and
-  `analysis_precheck: true`.
-- If there is a remaining `analysis_execution` item but the user changes or adds
-  work instead of approving it, route the new work normally.
-- If the approval target is ambiguous, plan only `team_lead` to clarify.
-- Match method recommendations to `route_index.yaml` by exact `id`.
-- Select exactly one loadable design route and at most one loadable support
-  route. Strongly prefer one recommended support route; use
-  `statistical-validity` as the default support unless another recommended
-  support is more immediately relevant.
-- Do not create support-only execution plans; route to `causal_check` when a
-  support tool is requested without a settled design.
-- If a named method has not been recommended, plan `causal_check` to evaluate
-  fit.
+## Existing Analysis Feedback
 
-## Readiness Rules
+Read `council_chamber.analysis_execution` as a mapping of design ids to current
+analysis handoffs. For each relevant design slot, review `current_status`,
+`support`, `summary`, `questions_for_user`, and `feedback_to_route`.
 
-- Check `causal_facts.analysis_readiness` before method readiness.
+Status meanings: `requested` means scope review is unfinished or the slot is
+missing; `ready` means reviewed and waiting for user approval; `blocked` means
+clarification, repair, or fallback is needed; `done` means analysis output was
+created.
+
+Decision rules:
+
+- If the user continues or approves the most recent relevant `ready` slot,
+  route `analysis_execution.<design_id>` with that slot's `support` if valid.
+- If multiple `ready` slots exist, prefer the most recent relevant slot unless
+  the user points to another one.
+- If the user changes the causal model, contrast, data source, output, or claim
+  boundary, do not approve the old scope; route the new work normally.
+- If the relevant slot is missing, unknown, invalid, or method fit changed
+  without a clear design/support route, route `causal_check` or `team_lead`
+  instead of guessing.
+- If no current analysis route can reasonably match the user's intent, plan
+  only `team_lead`.
+
+## Route Recommendation Rules
+
+- Check `causal_facts.analysis_readiness` before route recommendations.
 - If analysis readiness is missing or `not_ready`, plan `causal_check`.
-- If analysis readiness is `blocked`, plan `team_lead` to explain that analysis
-  execution is blocked.
-- For causal design routes, create `analysis_execution` only when the design
-  recommendation has `readiness: precheck_ready` or `readiness: limited`.
-- If `support` is non-null, create `analysis_execution` only when the support
-  recommendation has the same support ID, `category: support`, and readiness
-  `precheck_ready` or `limited`.
-- If a recommendation has `id: null`, missing readiness, free-text readiness,
-  `readiness: not_ready`, or `readiness: blocked`, treat it as malformed; plan
-  `causal_check` or `team_lead`.
+- If analysis readiness is `blocked`, plan only `team_lead` for boundary
+  synthesis.
+- For causal design routes, create `analysis_execution.<design_id>` only when
+  `recommended_method_routes` includes one loadable item with that design id and
+  `category: design`.
+- If `support` is non-null, create `analysis_execution.<design_id>` only when
+  `recommended_method_routes` includes a loadable item with that support ID and
+  `category: support`.
+- Treat null IDs, non-loadable IDs, missing category, support-only
+  recommendations, or multiple competing design recommendations as malformed;
+  plan `causal_check` or `team_lead`.
 - If the recommendation has `id: descriptive_association`, create
-  `analysis_execution` only when `causal_facts.analysis_readiness: limited`,
-  method readiness is exactly `limited`, and the recommendation explicitly says
-  causal claims are not supported.
-- If the recommendation is not loadable, plan `team_lead` to explain that it can
-  be discussed but not executed as a method route yet.
-
-## Analysis Mode Rules
-
-- `analysis_precheck: false` requires `mode: shallow` and readiness/precheck
-  only; it must not create output folders, `artifact_records`, or analysis
-  output.
-- `analysis_precheck: true` requires `mode: deep` and approved execution only.
-- Clear approval of an existing pending shallow analysis scope can route
-  approved execution in the same user turn.
+  `analysis_execution.descriptive_association` only when
+  `causal_facts.analysis_readiness: limited` and route cautions or
+  `support_status` explicitly say causal claims are not supported.
+- If the recommendation is not loadable, plan only `team_lead` for boundary
+  synthesis.
 
 ## Plan Entry
 
@@ -66,16 +68,10 @@ Use this shape:
 
 ```yaml
 next_step_plan:
-  - id: analysis_execution
-    design: selected_design
+  - id: analysis_execution.<design_id>
     support: optional_support_or_null
-    task: "shared analysis assignment"
-    mode: shallow | deep
-    analysis_precheck: false | true
   - id: team_lead
-    task: "review analysis work, update aggregate state if needed, and respond"
 ```
 
-For clear approval of an existing pending shallow analysis scope already present
-in `project_state.yaml`, use the same shape with `mode: deep` and
-`analysis_precheck: true`.
+The selected design route reads the current user message and live state to
+decide whether to prepare/revise scope feedback or execute approved work.

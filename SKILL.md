@@ -12,7 +12,7 @@ checks, and final user-facing responses belong to `references/team_lead.md`.
 ## Turn Protocol
 
 1. Resolve the project root. If unclear, use the current working directory.
-2. Run `scripts/init_project_state.py --project-root <project root>` to initialize `project_state.yaml` if needed.
+2. Run `python scripts/init_project_state.py --project-root <project root>` to initialize `project_state.yaml` if needed. On Windows, if `python` is unavailable, use `py -3 scripts/init_project_state.py --project-root <project root>`.
 3. Read `project_state.yaml`.
 4. Read `references/route_index.yaml`.
 5. Read `references/route_selection_workflow.md`.

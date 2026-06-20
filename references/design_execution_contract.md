@@ -28,10 +28,13 @@ state, selected design id, and optional support id as the assignment.
 
 The design route decides what is responsible this turn:
 
+- A user command such as "run it" or "go ahead" is not enough by itself.
+  Execution requires an existing `current_status: ready` handoff for the same
+  design slot and the same analysis scope.
 - Missing, null, or `current_status: requested`: do scope review only; then set
   the slot to `ready` or `blocked`.
-- `current_status: ready` plus clear approval of the same scope: run the
-  approved analysis and set the slot to `done`.
+- Existing `current_status: ready` plus clear approval of the same scope: run
+  the approved analysis and set the slot to `done`.
 - `current_status: ready` plus a changed target, model, contrast, output, data
   source, or claim boundary: revise the scope instead of executing.
 - `current_status: blocked` plus user-provided repair, clarification, or revised
@@ -42,7 +45,7 @@ The design route decides what is responsible this turn:
 - Block when the requested analysis cannot responsibly be proposed or executed.
 
 New or changed analysis requests should become scope feedback first, not silent
-execution.
+execution, even when the user uses execution language.
 
 ## Scope Feedback
 

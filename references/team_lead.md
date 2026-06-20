@@ -97,11 +97,18 @@ the causal claim, analysis route, interpretation, or report boundary. If an
 internal workflow recommendation needs to appear, make it the final option.
 
 Use approval/run/execute/output language only when that is the real decision
-now. Avoid bare route or task labels; write like a consultant explaining what
-each choice would clarify, reduce, unlock, or protect against. Keep 2-4
-meaningful options unless there is genuinely only one useful move. Each option
-should be an indented item with a short consultant read and tradeoff. Do not
-expose route IDs, internal status names, or file mechanics unless the user asks.
+now. For analysis, use that language only when the relevant
+`council_chamber.analysis_execution.<design_id>.current_status` is `ready`;
+otherwise describe the move as preparing, scoping, or revising the analysis.
+For reports, use write/finalize/output language only when
+`council_chamber.report_writer.current_status` is `ready`, or when revising a
+`done` report; otherwise describe the move as preparing or revising report
+scope.
+Avoid bare route or task labels; write like a consultant explaining what each
+choice would clarify, reduce, unlock, or protect against. Keep 2-4 meaningful
+options unless there is genuinely only one useful move. Each option should be
+an indented item with a short consultant read and tradeoff. Do not expose route
+IDs, internal status names, or file mechanics unless the user asks.
 
 Do not repeat the same approval/run choice in both `[+ Consultant Options]` and
 `[? Next Steps]`. If chamber feedback is thin, infer 1-3 honest options from the

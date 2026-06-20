@@ -51,7 +51,8 @@ Classify the task into one of three content states:
 
 - **No ready scope yet**: null, missing, or `current_status: requested`
   prepares report scope feedback, sets status to `ready` or `blocked`, and
-  creates no files.
+  creates no files. Accepting a team-lead report option starts this scope
+  handoff; it is not approval of report output.
 - **Ready scope**: compare the current user message with the existing
   `report_assembly`.
   - Clear approval of the same scope creates the report and sets status to
@@ -172,17 +173,19 @@ When scope feedback is needed:
 - Set `council_chamber.report_writer.feedback_to_route` only when another route
   should review something before report output.
 
-Create report output only when the current user message clearly approves the
-existing report scope, approves it with refinements, requests revision of a done
-report, or asks for another format as a style cue that can be represented inside
-the approved HTML report scope.
+Create report output only when `council_chamber.report_writer.current_status`
+is `ready` and the current user message clearly approves the existing report
+scope, approves it with refinements, or when `current_status: done` and the user
+requests a bounded revision of the existing report. A new report request or
+acceptance of a report option prepares scope first, even when analysis artifacts
+already exist.
 
 Prepare one of the following for `team_lead`, depending on the user's request:
 
 - An approval-ready analysis report or planning report scope.
 - A created or revised HTML report, with revision notes when relevant.
-- A bounded requested-scope or style-focused report output when the user
-  requests it and the causal boundary is preserved.
+- A bounded requested-scope or style-focused report handoff, or approved output
+  after the report scope is ready.
 
 If `project_summary.analysis_output: non_exist`, record internally that any
 results section is blocked until causal-consultant analysis output exists.

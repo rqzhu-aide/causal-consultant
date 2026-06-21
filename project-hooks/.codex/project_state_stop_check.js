@@ -293,8 +293,8 @@ function validateStateStructure(text) {
   if (reportOutput === "exist" && !["md", "html"].includes(reportFormat)) {
     issues.push("project_summary.report_output is exist but report_assembly.current_format is not md or html");
   }
-  if (reportOutput === "exist" && reportStatus !== "produced") {
-    issues.push("project_summary.report_output is exist but council_chamber.report_writer.current_status is not produced");
+  if (reportOutput === "exist" && reportStatus !== "done") {
+    issues.push("project_summary.report_output is exist but council_chamber.report_writer.current_status is not done");
   }
   if (reportOutput === "non_exist" && ["md", "html"].includes(reportFormat)) {
     issues.push("project_summary.report_output is non_exist but report_assembly.current_format is md or html");

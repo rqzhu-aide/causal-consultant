@@ -18,7 +18,8 @@ When `next_step_plan` contains a `report_writer` entry, review:
 - `council_chamber.report_writer.summary`
 - `council_chamber.report_writer.questions_for_user`
 - `council_chamber.report_writer.feedback_to_route`
-- any `report_writer` `artifact_records` created this turn
+- the newest `report_writer` `artifact_records` created this turn, especially
+  its summary
 
 If results-focused drafting is requested before
 `project_summary.analysis_output: exist`, explain that only a planning report or
@@ -34,10 +35,13 @@ the normal user-facing headings, using `questions_for_user` for the approval,
 scope, audience, purpose, claim-strength, artifact-emphasis, omission, or
 disclosure choice that matters before output creation.
 
-If `current_status: done`, review report-writer output, update aggregate
-report status from visible report output or artifact records, and summarize the
-output briefly. Trust `report_writer` to distinguish refinements that were safe
-to incorporate from material redesigns that needed another scope handoff.
+If `current_status: done`, review the newest report-writer artifact record and
+`council_chamber.report_writer.summary`, then classify the closeout as report
+output, revised report, derivative communication artifact, or blocked/partial
+report handoff. Summarize that inside the normal headings. For derivative
+communication artifacts, say it is based on existing evidence and did not create
+new analysis. Trust `report_writer` to distinguish refinements that were safe to
+incorporate from material redesigns that needed another scope handoff.
 
 If `current_status: blocked`, explain the blocker under the normal headings and
 ask for the smallest useful clarification, scope revision, missing asset, or

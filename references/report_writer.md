@@ -26,6 +26,9 @@ Use this vocabulary consistently:
 - `report scope`: the proposed report structure, evidence use, audience, and
   limitations that `team_lead` can synthesize for approval or revision.
 - `report output`: created or revised HTML report.
+- `derivative communication artifact`: slide-style, memo-style, email-style,
+  handout, or other communication output derived from existing report evidence;
+  not new analysis.
 - `finished artifacts`: completed items in `artifact_records` and their existing
   output files that can be used, cited, linked, omitted, or disclosed in the
   report scope.
@@ -246,8 +249,16 @@ When any report text, report draft, HTML report, or report artifact is actually 
    Narrow report assets may use meaningful report-specific folders under
    `output/`.
 2. Set `report_assembly.current_format` to `html`.
-3. Record a compact item in `report_assembly.draft_notes` with the run time, report scope, key points or source context, summary, limitations, and output location.
-4. Append one `artifact_records` entry with `route: report_writer`, `location`, `created_at`, and a short `summary` of work, findings, limitations, or suggested additional work.
+3. Record a compact item in `report_assembly.draft_notes` with the run time,
+   output kind, source basis, whether new analysis was performed, inherited
+   causal boundary, limitations, and output location.
+4. Append one `artifact_records` entry with `route: report_writer`, `location`,
+   `created_at`, and a short `summary` that states the output kind, source
+   basis, whether new analysis was performed, and inherited causal boundary.
+   Use `report`, `revised report`, or `derivative communication artifact`.
+   Treat slide/PPT/email/memo-style requests as derivative communication
+   artifacts unless they are truly new reports. Use "conversion" only for a
+   literal format conversion that does not change content.
 5. Set `council_chamber.report_writer.current_status` to `done`.
 
 Do not create `artifact_records` entries for purely verbal report-scope setup that did not create a new output location.

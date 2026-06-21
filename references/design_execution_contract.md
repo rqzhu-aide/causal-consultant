@@ -85,6 +85,12 @@ fake or pending `artifact_records`, output folders, or `project_summary`.
 When execution is approved, run the user-approved `analysis_execution` task and
 keep support work inside the selected design scope.
 
+Before execution, verify the core review gate is satisfied:
+`data_facts.data_checked`, `domain_knowledge.domain_checked`, and
+`causal_facts.causal_checked` are each `passing` or `limited`, and
+`causal_facts.analysis_readiness` is `ready` or `limited`. If not, do
+scope/block feedback only; do not execute.
+
 Minor in-scope adjustment: if a practical execution adjustment is needed and it
 does not change the estimand, data source, model family, main output, or claim
 boundary, continue and document the rationale in the output note/manifest and

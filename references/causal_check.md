@@ -75,6 +75,13 @@ not that it is already approved or sufficient. Use `route_cautions` for
 non-obvious project-specific issues that could make the route wrong, narrower,
 or require special handling.
 
+Set `analysis_readiness: ready` or `limited`, and write mature
+`recommended_method_routes`, only when `data_facts.data_checked` and
+`domain_knowledge.domain_checked` are both `passing` or `limited`. If data or
+domain review is missing, imagined, blocked, or stale for the current request,
+record likely concerns and needed checks, but keep analysis readiness
+`not_ready` or `blocked` and avoid mature method-route recommendations.
+
 Use `analysis_readiness: ready` only when a loadable causal design route is
 recommended. Use `limited` when a bounded causal route or explicit non-causal
 fallback is mature enough for scope review. Use `not_ready` when data, domain,

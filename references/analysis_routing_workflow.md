@@ -42,10 +42,19 @@ Decision rules:
 
 ## Route Recommendation Rules
 
-- Check `causal_facts.analysis_readiness` before route recommendations.
-- If analysis readiness is missing or `not_ready`, plan `causal_check`.
-- If analysis readiness is `blocked`, plan only `team_lead` for boundary
-  synthesis.
+- Core review gate: create `analysis_execution.<design_id>` only when
+  `data_facts.data_checked`, `domain_knowledge.domain_checked`, and
+  `causal_facts.causal_checked` are each `passing` or `limited`, and
+  `causal_facts.analysis_readiness` is `ready` or `limited`.
+- If the gate fails, route the missing or stale reviewer instead of analysis:
+  `data_audit` for missing, blocked, imagined, or changed data facts;
+  `domain_expert` for missing, blocked, or changed construct/domain facts; and
+  `causal_check` for missing, blocked, not-ready, or changed causal readiness.
+  If the missing ingredient is user information rather than route work, plan
+  only `team_lead`.
+- If `causal_facts.analysis_readiness` is missing, `not_ready`, or `blocked`,
+  plan `causal_check` unless visible state says the blocker is missing user
+  information; then plan only `team_lead`.
 - For causal design routes, create `analysis_execution.<design_id>` only when
   `recommended_method_routes` includes one loadable item with that design id and
   `category: design`.

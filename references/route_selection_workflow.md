@@ -153,9 +153,12 @@ For exploration:
 - After `data_audit` inspects actual data and records concrete facts, prefer
   `causal_check` on the next substantive analysis-planning turn.
 
-Exploration can become complete only when `data_facts.data_checked`,
-`domain_knowledge.domain_checked`, and `causal_facts.causal_checked` are all
-`passing` or `limited`. This does not authorize execution by itself.
+Analysis scope routing requires the core review gate: `data_facts.data_checked`,
+`domain_knowledge.domain_checked`, and `causal_facts.causal_checked` are each
+`passing` or `limited`, and `causal_facts.analysis_readiness` is `ready` or
+`limited`. Satisfying this gate only allows analysis scope routing; execution
+still requires a matching `current_status: ready` analysis handoff and user
+approval.
 
 ## Do Not Do During Route Selection
 

@@ -24,6 +24,10 @@ artifact_records:
 Route-specific fields may be included when useful, such as `design` and
 `support` for `analysis_execution`.
 
+For `route: report_writer`, the summary should state output kind, evidence
+basis, and causal limitation or inherited boundary. Keep the same shape; do not
+add format-specific fields.
+
 ## Aggregate Output Flags
 
 When `analysis_execution` creates any analysis result, table, figure, model

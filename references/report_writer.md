@@ -60,6 +60,11 @@ recap and any derivative communication where dropping them would change the
 claim. A mathematically correct number can still have an unsupported explanation.
 Check the source's scientific qualification rather than trusting saved prose
 merely because the state or run verifies structurally.
+Review the selected diagnostic findings as well as their existence. If a
+consequential promised check lacks evidence, return the need to the lead or
+state a supported limitation; do not present an unchecked result as validated.
+Preserve the difference between numerical uncertainty and detectability: a
+confidence interval alone does not establish a minimum detectable effect.
 
 Check explanations of mechanisms and adjustment against the source evidence
 for variable roles and timing. A coefficient's sign change does not establish

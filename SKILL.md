@@ -2,7 +2,7 @@
 name: causal-consultant
 description: Explicit-use interactive causal consulting. Use when the user explicitly requests causal-consultant or its persistent lead-and-specialist workflow for causal study design, data audit, domain research, feasibility, analysis, or evidence-bound reporting.
 metadata:
-  version: "7.0.5"
+  version: "7.0.6"
 ---
 
 # Causal Consultant
@@ -59,7 +59,9 @@ that a descriptive fallback is the strongest attainable answer. Use
 [causal_check](references/causal_check.md) when consequential study-process gaps
 remain; a review label alone is insufficient. Reuse an adequate source-supported
 assessment. A fully documented design can go directly to design-worker fit and
-execution; an explicit descriptive-only request needs no causal clearance.
+execution; this still requires checking the supplied data against that design
+and the relevant analytical diagnostics. An explicit descriptive-only request
+needs no causal clearance.
 
 Proceed on a clear in-bound instruction, substantive checkpoint answer, selected
 option, bounded delegation or resumed agreed work. Enough information means

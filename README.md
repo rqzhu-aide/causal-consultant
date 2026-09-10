@@ -1,8 +1,12 @@
 # Causal Consultant v7
 
-Version: **7.0.5**, the active candidate at this repository's root.
+Version: **7.0.6**, the active candidate at this repository's root.
 The consultant and `interactive-test-cc` use the same release number. This
-revision adds durable incoming interpretation, lead closeout and generated
+release clarifies the evidence needed for data checks and completion, paired
+with four independently selectable testing problems and four personas. A
+documented design permits direct analysis while retaining the responsibility to
+reconcile the data, diagnose consequential issues and preserve qualifications.
+The existing workflow includes durable incoming interpretation, lead closeout and generated
 user, study and work views. The lead's response separates answers to your
 questions from information it needs from you. `[Your Questions]` comes first
 when applicable, followed by `[Status]`, `[I want to know]` and

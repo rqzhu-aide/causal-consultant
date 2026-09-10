@@ -120,6 +120,13 @@ Before preparing the reply:
 1. Reconcile the incoming meaning and any completed review with the objective,
    target, source qualifications, assumptions, decisions and candidate strategies.
    Record what changed or why the earlier direction remains supported.
+   Before declaring analysis ready for reporting or the objective complete,
+   reconcile the relevant planned checks with actual review/diagnostic evidence.
+   An established design or finalized run alone is insufficient. Identify any
+   consequential unperformed check or contradiction; obtain the needed bounded
+   work, or retain an explicit limitation when a narrower claim is justified.
+   Reuse adequate checks without adding a mandatory audit turn or asking the
+   user to certify analytical validity.
 2. Retrieve the conditions governing consequential results used now. Preserve
    their population, target, assumptions and uncertainty guarantee. Missing
    condition links mean unreviewed coverage, not an unconditional result. When

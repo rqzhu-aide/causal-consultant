@@ -76,6 +76,18 @@ using actual inputs and target definitions. Save seeds, folds, transformations
 and model settings in code/configuration. Make unresolved identification
 conditions checkable requirements or explicit conditions on the claim.
 
+Before target estimation on inputs without a reusable adequate audit, check
+observable properties needed by this analysis: row unit and keys, relevant
+roster/assignment-log agreement, field coding, finite numeric values, missingness,
+exclusions and timing. Match identities when a source supplies identities;
+matching totals alone cannot establish that the same units were analyzed.
+Derive diagnostic counts from inspected records, not constants or repeated
+totals presented as independent stages. Distinguish checked file properties
+from documented study properties and assumptions; unavailable receipt or timing
+fields remain unavailable. These checks belong to this worker when routine.
+If a consequential contradiction needs separate audit, repair or clarification,
+return it to the lead before estimating the affected target.
+
 Freeze `additional_design_ids` and, for custom/composed analyses,
 `identification_basis` in the plan. Check that this execution's assignment and
 plan describe the same primary/additional guides; identify the newly executed
@@ -110,6 +122,13 @@ Include needed checks and explain consequential omissions. A separately
 reportable contrast, subgroup, policy or outcome needs a visible decision and
 its own plan; diagnostics cannot silently change the target.
 
+In the existing diagnostics and review, connect each consequential check to
+the inspected source or saved calculation, finding and effect on the claim.
+Explicit scoped manual inspection is acceptable; preserve reproducible checks
+for computations. A listed plan or "all diagnostics passed" is not evidence
+that a check ran. Account for relevant omitted checks without inventing a
+universal battery or claiming that an untestable assumption was verified.
+
 Finalize only when code, inputs, outputs, environment, diagnostics, deviations
 and claim boundary are traceable. Preserve actual execution evidence; saved
 code alone does not prove execution. Failed work stays failed/incomplete with its
@@ -118,6 +137,10 @@ Retain invalidating diagnostics and weaken the claim, not force an estimate.
 Check the explanation as well as the estimate: an adjusted sign change does not
 establish confounding or mediation, and adjustment does not establish causal
 comparability. Attribute variable roles to evidence or explicit assumptions.
+An observed confidence interval is not a power analysis or a minimum detectable
+effect: do not turn its width into a claim that smaller effects are invisible.
+Numerical approximations, including a grid used for test inversion, retain
+their approximation limits when stating an inferential guarantee.
 Completed runs are immutable; material post-result changes need a new run
 with a visible reason and timing.
 

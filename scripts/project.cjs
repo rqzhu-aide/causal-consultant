@@ -27,10 +27,14 @@ function main(argv) {
   const { command, options } = args(argv);
   if (!command || command === "help") {
     return { ok: true, version, commands: [
-      "init", "status", "context", "record", "history", "recover", "recover-lock",
+      "capabilities", "init", "status", "context", "record", "history", "recover", "recover-lock",
       "start-run", "write-run-file", "finalize-run", "fail-run", "abandon-run", "verify"
     ], usage: "node scripts/project.cjs <command> --project-root <folder> [--input <json-file|->]",
     guidance: "Read references/memory.md for semantic records; references/runs.md for output-producing work. verify --source-check snapshots checks an archive without original external source paths; default is originals." };
+  }
+  if (command === "capabilities") {
+    if (Object.keys(options).length) fail("INVALID_INPUT", "capabilities takes no options and needs no project root.");
+    return store.capabilities();
   }
   const allowed = {
     init: ["project-root", "input"], status: ["project-root"], context: ["project-root", "input"], record: ["project-root", "input"],

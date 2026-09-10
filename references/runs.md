@@ -13,6 +13,14 @@ local file inputs, records their original identities and hashes, freezes the
 plan, and commits the start before returning the run path. Compute from the
 returned input snapshots, not a moving external source.
 
+For the durable exchange protocol, include the committed specialist
+`interpretation_ref` in the plan. It must identify an open turn and the selected
+operation: analysis belongs to design-worker execution, discovery to discovery,
+reporting to report writer, and transformation to data-audit preparation. Analysis
+guide identities must match the recorded assignment. A lead-only interpretation
+cannot start specialist artifact work. Old in-progress runs retain their original
+plans and can finish without inventing a past interpretation.
+
 All plans contain `kind`, `objective`, `claim_boundary`, and `inputs`. Each
 input has `source_ref` and a local file `path`, with an optional expected
 `sha256`. Relative input paths are relative to the selected project root;
@@ -24,6 +32,11 @@ absolute external inputs are read-only. Their contents are copied into the run.
 | `analysis` | `target`, `population`, `treatment`, `comparator`, `outcome`, `timing`, `estimand`, `design_id`, `estimator`, `exclusions`, `diagnostics` |
 | `discovery` | `variables`, `method`, `diagnostics` |
 | `report` | `purpose`, `evidence_refs`, `format` |
+
+A requested durable report uses `kind: "report"` with the report-writer
+assignment, even when its calculations were requested at the same time.
+An HTML file included in an analysis run does not receive the report evidence
+bindings below and cannot stand in for that report run.
 
 With helpers `7.0.0-rc.3` or newer, an analysis may add
 `additional_design_ids`: distinct standard design IDs, excluding its primary
@@ -51,6 +64,16 @@ limitation, not newly verified source bytes. Report prose must not turn legacy
 or external findings into verified new computations. A descriptive analysis uses
 `descriptive_association` and does not claim causal identification.
 
+Each new report binding also freezes current linked result conditions and their
+assumption contents and event identities. `condition_coverage: "linked"` means
+the records exist, not that they are scientifically correct; `unreviewed` means
+there are no linked condition records. Review old limitations before using an
+unlinked result. Do not infer unconditional validity or recompute automatically.
+Later assumption or condition corrections do not rewrite a frozen report plan.
+If they materially change its interpretation, record the impact and make an
+appropriately scoped revised report. A hash check alone cannot make an old claim
+scientifically current.
+
 Start input example:
 
 ```json
@@ -61,6 +84,7 @@ Start input example:
   "run_id": "run-audit-1",
   "plan": {
     "kind": "audit",
+    "interpretation_ref": "interpretation-audit",
     "objective": "Inspect panel coverage and timing",
     "claim_boundary": "Data structure only; no effect estimate",
     "inputs": [{"source_ref": "data/panel.csv", "path": "data/panel.csv"}],
@@ -113,6 +137,13 @@ Record a saved new computation as evidence with `kind: "computed"`, its
 completed `run_id`, and `source_ref: "runs/<run_id>/<manifested-output>"`.
 The reference must identify a manifested output or diagnostic with matching
 content.
+
+Before synthesis or reporting, record consequential quantities in
+`changes.result_conditions` with their target, assumption references and
+inferential scope where applicable. An estimate, sharp-null test and interval
+can have different conditions even when they share one output file. The selected
+specialist owns scientific validity; the lead preserves those distinctions in
+its closeout. Finalizing the run alone does not complete that handoff.
 
 `verify` is read-only. It reports missing or altered content, unexpected files,
 linked paths, incomplete runs, orphan directories, and a stale projection. It

@@ -89,6 +89,15 @@ not just a successful API call. Save what the check establishes and what it
 cannot; one simulated realization does not establish interval coverage. The
 same specialist owns this check, without an automatic second review.
 
+Check the inferential claim separately from the numerical calculation: what
+hypothesis a test addresses, what parameter an interval covers, and under which
+conditions its guarantee is exact, asymptotic or approximate. Inverting a test
+does not transfer its guarantee to a different hypothesis or effect target.
+In particular, do not describe an interval built under a constant-effect model
+as valid or conservative for a heterogeneous average effect without a justified
+argument for that claim. Correct enumeration or one simulation does not supply
+that argument. State an unresolved guarantee as unresolved.
+
 Use immutable input snapshots, saved code/configuration and a contained run.
 Keep originals read-only. Choose estimation and sensitivity specifications from
 the design and evidence, not attractive results. Preserve analysis-set flow,
@@ -115,10 +124,31 @@ with a visible reason and timing.
 ## Handoff
 
 Use the shared [memory](memory.md) review to connect the work to the selected
-uncertainty and strategy. Distinguish findings, assumptions and limitations;
-identify what the review ruled out and what remains possible. Computed study
+uncertainty, strategy and prospectively recorded interpretation. The completed
+assignment must match the bounded work selected before it began. Distinguish
+findings, assumptions and limitations; identify what the review ruled out and
+what remains possible. Computed study
 evidence must point to the completed run and its manifested output.
+
+Save governing assumptions as attributed assumption records and attach them
+directly through `changes.result_conditions`, with locatable results, targets,
+basis and limitations. Separate quantities with different conditions: the
+point estimate, a sharp-null test and a model-based interval need not share one
+inferential target or guarantee. For inferential results, preserve the tested
+hypothesis or interval target and scope of validity. An empty assumptions
+collection or a blanket run caveat does not establish unconditional validity.
+Record justified conditions, not a stronger guarantee chosen for presentation.
 
 A changed target or primary identifying frame returns to the lead, not another
 execution/specialist this turn. Alternative targets require adoption. Tuning
 cannot justify result-driven restrictions, recoding or evidence omission.
+Return the handoff to the lead for reconciliation and outgoing closeout;
+finalizing the analysis run alone does not complete the consulting turn.
+
+If the user also requested a durable report, keep that deliverable unfinished
+in this handoff. Commit the computed evidence and result conditions first; the
+report writer then uses them in its selected turn and a `report` run. Analysis
+notes, plots or diagnostic HTML can accompany the calculations, but packaging
+the final report inside the analysis run skips the report's frozen evidence
+bindings. It does not complete the requested reporting work. Keep the existing
+report request as direction for that next step; do not ask for permission again.

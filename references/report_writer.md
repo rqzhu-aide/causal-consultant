@@ -25,6 +25,16 @@ scope. Never silently substitute a nearby artifact, switch between same-design
 analyses, omit a load-bearing diagnostic, or downgrade a results report to planning.
 Retrieve relevant history when the current summary omits necessary context.
 
+Retrieve `result_conditions` with each consequential source result, including
+its target, assumption references, source basis and qualifications. Inferential
+results also retain the tested hypothesis or interval target and the scope of
+the stated guarantee. Different quantities in one output may need different
+conditions. Resolve a legacy result's missing links from attributable source
+evidence when possible; missing coverage is unreviewed, not assumption-free.
+If its guarantee remains unsupported, record the gap and withhold that
+interpretation. Do not invent conditions or derive a new scientific argument
+as hidden analysis while reporting.
+
 ## Structure and Interpretation
 
 Choose sections that answer the user's report question. A planning report normally
@@ -45,6 +55,11 @@ discovery and unvalidated subgroup screens stay exploratory. Words such as
 "suggests" do not rescue an unsupported causal claim. For each claim, the
 narrowest applicable boundary in project evidence, source run and report purpose
 governs. Audience, format and brevity never widen it.
+Carry these conditions through the main answer, tables, captions, executive
+recap and any derivative communication where dropping them would change the
+claim. A mathematically correct number can still have an unsupported explanation.
+Check the source's scientific qualification rather than trusting saved prose
+merely because the state or run verifies structurally.
 
 Check explanations of mechanisms and adjustment against the source evidence
 for variable roles and timing. A coefficient's sign change does not establish
@@ -78,6 +93,9 @@ review and record a new or corrected evidence version before selecting changed
 bytes. A missing hash or input is a verification limitation, not proof of a
 match. Keep the report in its own run, outside completed analysis runs. A revision
 gets a new run with its parent/source relationship.
+Preserve the bound result-condition references and their assumptions with the
+selected report sources. Check material corrections before reusing an older
+result; valid source hashes establish byte identity, not continued applicability.
 
 Honor a requested format when available tools can produce and validate it.
 Otherwise disclose the format limitation; do not silently promise a different
@@ -94,5 +112,8 @@ validated report.
 
 Return one saved review describing the output, source basis, whether any new
 analysis occurred (normally none), inherited claim boundary and important limits.
+Link the review to the router's prospectively recorded interpretation and
+assignment. Report completion still requires the lead's reconciled outgoing
+exchange, using the same conditions in its user-facing recap.
 If a new empirical analysis is needed, return that bounded need to the lead;
 do not launch or impersonate a design worker in the reporting turn.

@@ -124,5 +124,16 @@ not change that boundary. Existing results can be discussed without recomputatio
 or extension. A requested new estimate goes to one design worker in a later turn.
 
 Commit one meaningful review with evidence, assumptions and strategy changes.
+Link it to the prospectively recorded interpretation and assignment. An option
+selection authorizes bounded work; it does not confirm the identifying
+conditions. Preserve partial answers and uncertain accounts in the evidence
+and keep unanswered factual questions open.
+
+Link consequential supported claims to their target, assumptions, source basis
+and limits through memory's `result_conditions`. Do not merely place a condition
+in a general limitations paragraph where it can detach from the claim. Existing
+unlinked results are unreviewed for these conditions, not assumption-free.
 Return the decisive uncertainty and practical next direction to the lead. Do not
 start another specialist or perform final report production inside this review.
+The lead reconciles the handoff and records which questions it actually asks in
+the outgoing exchange.

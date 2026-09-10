@@ -1,9 +1,14 @@
 # Causal Consultant v7
 
-Version: **7.0.4**, the active candidate at this repository's root.
+Version: **7.0.5**, the active candidate at this repository's root.
 The consultant and `interactive-test-cc` use the same release number. This
-version aligns release metadata with the four-persona testing package; the
-consultation behavior and project format remain those of 7.0.2.
+revision adds durable incoming interpretation, lead closeout and generated
+user, study and work views. The lead's response separates answers to your
+questions from information it needs from you. `[Your Questions]` comes first
+when applicable, followed by `[Status]`, `[I want to know]` and
+`[Decide Next Steps]`, saved and rendered from one structured submission.
+Prepared responses remain distinct
+from observed emission or host-confirmed delivery.
 The September 7 folder reorganization moved the actual pre-v7 working files,
 including uncommitted edits, to the sibling `causal-consultant-v6` archive.
 Existing consultation projects are unchanged. This layout promotion is not a
@@ -16,6 +21,13 @@ explains how you can help resolve it. Your answer, choice, or instruction inform
 one specialist review. The lead returns with findings and a useful next step.
 Clear requests proceed without another approval question; a settled summary
 does not trigger another investigation.
+
+When your message combines questions and instructions, the lead checks which
+answers are needed before work can begin. It explains or asks for material
+clarification first when needed. Questions that depend on an authorized analysis
+are saved before work and answered at closeout, with any unresolved part kept
+visible for a later turn. Message length or technical detail alone does not
+require another clarification round.
 
 All nine original design families and six scientific supports remain, with a
 new custom-identification path. One design worker can combine relevant guides
@@ -31,10 +43,11 @@ causal question. The lead chooses checks by what different answers could change,
 including whether an accessible fact could reveal a stronger design. Descriptive
 deliverables can be completed while the original causal question remains open;
 explicit user narrowing and ready-to-execute work retain direct paths.
-Answers keep their qualifications and must inform advice. Existing memory,
-run integrity and the one-specialist-per-turn limit are unchanged. New behavioral
-fixtures test investigation and appropriate stopping; their existence is not
-evidence of a completed live comparison.
+Answers keep their qualifications and must inform advice. Each consequential
+result can retain direct condition and assumption references; report sources
+freeze those records and their versions. Run integrity and the one-specialist
+limit remain. New conversation tests cover reply binding, recovery and continuity;
+their existence alone is not evidence of a completed live comparison.
 
 ## Use the Skill
 
@@ -53,6 +66,7 @@ Node.js 18.18 or newer is required. From this directory:
 node scripts/validate.cjs
 npm test
 node scripts/project.cjs help
+node scripts/project.cjs capabilities
 node scripts/project.cjs init --project-root <new-consultation-folder>
 node scripts/project.cjs context --project-root <consultation-folder>
 node scripts/project.cjs status --project-root <consultation-folder>
@@ -73,6 +87,11 @@ Each consultation has one authoritative `journal.jsonl` and a rebuildable
 `project.yaml`. Both use JSON serialization; JSON is a valid YAML subset.
 Relevant current facts and all older records remain available. A review is saved
 once; the projection contains its short index rather than a second full handoff.
+The router records interpretation before dependent specialist work; the lead
+reconciles completed work before preparing the next response. Interrupted lead
+work remains visible across new turns. Generated memory views share the journal's
+version and link common facts instead of maintaining three independently edited
+files. Recent host session memory complements this project record.
 Use focused context for a known question or strategy, and complete status
 directly for broad reassessment. Context exposes omissions and history locators;
 it cannot infer missing scientific links or decide which conclusions are valid.
@@ -83,6 +102,13 @@ evidence excerpts are included in 7.0.0, having been introduced in rc.3. Earlier
 v7 journals remain readable without rewriting them; older helpers need not
 accept records using the newer features.
 Same-ID updates still replace the complete record, including optional fields.
+Check for both `durable-exchanges-v1` and `user-question-routing-v1` capabilities
+before using the current closeout workflow; the version number alone does not
+distinguish earlier 7.0.5 candidates. New helpers
+read old histories without fabricated questions, delivery observations or result
+conditions. Older helpers reject extended events and must not edit such projects.
+A skill instruction cannot force every host to use the closeout helper; this
+package installs no completion hook and does not claim host-enforced delivery.
 
 Saved outputs live in `runs/<run-id>/`. A run retains its frozen plan, file input
 snapshots, code or configuration, outputs, and hashed manifest. A changed result

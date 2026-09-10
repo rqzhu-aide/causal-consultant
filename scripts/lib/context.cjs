@@ -2,12 +2,11 @@
 
 const { fail, canonical } = require("./files.cjs");
 const { jsonValue, object, text, id, array } = require("./model.cjs");
+const { collectionIds, journalBodies, conversationRoots } = require("./views.cjs");
 
-const COLLECTIONS = { questions: "question_id", evidence: "evidence_id", assumptions: "assumption_id",
-  decisions: "decision_id", candidate_routes: "strategy_id", specialist_reviews: "review_id", runs: "run_id" };
 const ARRAY_REFS = ["basis_refs", "evidence_refs", "user_contribution_refs", "route_changes",
   "assumptions_added_or_revised", "evidence_for", "evidence_against", "strategy_ids_it_could_change",
-  "related_unresolved_question_refs"];
+  "related_unresolved_question_refs", "assumption_refs", "incoming_refs", "completed_work_refs", "reconciles", "work_refs"];
 const compare = (left, right) => left < right ? -1 : left > right ? 1 : 0;
 
 function requestShape(value) {
@@ -32,20 +31,33 @@ function requestShape(value) {
 function references(record, ownId) {
   const result = new Set();
   for (const field of ARRAY_REFS) for (const ref of record[field] || []) result.add(ref);
-  for (const field of ["supersedes", "last_review_id", "run_id", "parent_run_id"]) {
+  for (const field of ["supersedes", "last_review_id", "run_id", "parent_run_id", "evidence_ref", "interpretation_ref", "exchange_ref"]) {
     if (record[field] && record[field] !== ownId) result.add(record[field]);
   }
-  for (const assignment of [record.assignment, record.selected_assignment]) {
+  for (const assignment of [record.assignment, record.selected_assignment, record.next_action?.assignment]) {
     for (const ref of assignment?.strategy_ids || []) result.add(ref);
   }
   if (record.selection_basis) {
     result.add(record.selection_basis.checkpoint_id);
     for (const ref of record.selection_basis.user_contribution_refs || []) result.add(ref);
   }
+  for (const component of record.components || []) for (const field of ["exchange_ref", "question_ref", "delivery_ref", "user_question_ref"]) {
+    if (component[field]) result.add(component[field]);
+  }
+  for (const question of record.response?.questions || []) result.add(question.question_ref);
+  for (const question of [...(record.user_questions || []), ...(record.response?.user_questions || [])]) {
+    result.add(question.question_ref);
+    for (const ref of question.basis_refs || []) result.add(ref);
+  }
+  for (const option of record.response?.next_steps || []) {
+    for (const ref of option.basis_refs || []) result.add(ref);
+    for (const ref of option.assignment?.strategy_ids || []) result.add(ref);
+  }
   return [...result].sort(compare);
 }
 
 function graphFor(state, events) {
+  const COLLECTIONS = collectionIds(state);
   const nodes = new Map();
   const forward = new Map();
   const reverse = new Map();
@@ -56,6 +68,7 @@ function graphFor(state, events) {
   const priorContents = new Map();
   const eventMap = new Map(events.map(event => [event.event_id, event]));
   const reviewBodies = new Map();
+  const conversationBodies = journalBodies(events);
   const checkpoints = new Map();
   const add = (graph, from, to) => {
     if (!graph.has(from)) graph.set(from, new Set());
@@ -70,7 +83,7 @@ function graphFor(state, events) {
     const payload = event.payload;
     const defined = [];
     for (const [name, key] of Object.entries(COLLECTIONS)) {
-      if (name === "specialist_reviews" || name === "runs") continue;
+      if (["specialist_reviews", "runs", "interpretations", "exchanges", "deliveries", "turns"].includes(name)) continue;
       for (const record of payload.changes?.[name] || []) {
         const ref = record[key];
         const contents = canonical(record);
@@ -86,14 +99,18 @@ function graphFor(state, events) {
     }
     if (payload.review) { reviewBodies.set(payload.review.review_id, payload.review); defined.push(payload.review.review_id); }
     if (payload.run) defined.push(payload.run.run_id);
+    for (const [name, key] of [["interpretation", "interpretation_id"], ["exchange", "exchange_id"], ["delivery", "delivery_id"]]) {
+      if (payload[name]) defined.push(payload[name][key]);
+    }
     definitions.set(event.event_id, [...new Set(defined)]);
     for (const ref of definitions.get(event.event_id)) versions.set(ref, (versions.get(ref) || 0) + 1);
     nodes.set(event.event_id, { kind: "event", record: event, current: false });
   }
   for (const [ref, record] of checkpoints) nodes.set(ref, { kind: "checkpoint", record, current: false });
-  for (const [name, key] of Object.entries(COLLECTIONS)) for (const record of state[name]) {
+  for (const [name, key] of Object.entries(COLLECTIONS)) for (const record of state[name] || []) {
     const ref = record[key];
-    nodes.set(ref, { kind: name, record, current: true, links: name === "specialist_reviews" ? reviewBodies.get(ref) : record });
+    nodes.set(ref, { kind: name, record, current: true, links: name === "specialist_reviews" ? reviewBodies.get(ref)
+      : conversationBodies[name]?.get(ref) || record });
   }
   if (state.consultation) nodes.set(state.consultation.checkpoint_id, { kind: "checkpoint", record: state.consultation, current: true });
 
@@ -105,7 +122,21 @@ function graphFor(state, events) {
       continue;
     }
     for (const target of references(node.links || node.record, ref)) {
-      if (nodes.has(target)) { add(forward, ref, target); add(reverse, target, ref); }
+      if (nodes.has(target)) {
+        // Incoming provenance remains an impact edge. Following it forward
+        // through every earlier exchange would replay the entire conversation.
+        // Current/unfinished interpretations and explicit historical focus are
+        // added as roots below; exact history preserves the remaining bodies.
+        const provenanceOnly = target === (node.links || node.record).interpretation_ref
+          && ["exchanges", "runs", "specialist_reviews"].includes(node.kind);
+        if (!provenanceOnly) add(forward, ref, target);
+        const bindingOnly = node.kind === "interpretations" && ((node.links || node.record).components || []).some(component =>
+          [component.exchange_ref, component.question_ref, component.delivery_ref].includes(target));
+        if (!bindingOnly) add(reverse, target, ref);
+      }
+    }
+    if (node.kind === "result_conditions" && nodes.has(node.record.evidence_ref)) {
+      add(forward, node.record.evidence_ref, ref);
     }
     if (node.record.supersedes) revision(ref, node.record.supersedes);
   }
@@ -125,6 +156,7 @@ function stringValues(value) {
 function selectContext(loaded, request = {}) {
   const options = requestShape(request);
   const { state, events } = loaded;
+  const COLLECTIONS = collectionIds(state);
   if (options.expected_last_event_id !== undefined && options.expected_last_event_id !== state.state_meta.last_event_id) {
     fail("STALE_CONTEXT", "Project history changed; restart context pagination with the same focus and query.", {
       current_last_event_id: state.state_meta.last_event_id
@@ -135,6 +167,18 @@ function selectContext(loaded, request = {}) {
     if (!nodes.get(ref)?.current) fail("UNKNOWN_REFERENCE", "focus_refs requires a current record; use history --record-id or --event-id for historical or unknown reference: " + ref);
   }
   const roots = new Set(options.focus_refs || []);
+  const conversation = conversationRoots(state);
+  for (const ref of conversation.roots.keys()) roots.add(ref);
+  for (const record of state.user_context || []) if (record.status === "current") {
+    roots.add(record.context_id); conversation.roots.set(record.context_id, "current user context");
+  }
+  for (const ref of options.focus_refs || []) {
+    const record = nodes.get(ref);
+    if (["exchanges", "runs", "specialist_reviews"].includes(record?.kind)) {
+      const interpretation = (record.links || record.record).interpretation_ref;
+      if (interpretation) roots.add(interpretation);
+    }
+  }
   if (state.consultation) {
     roots.add(state.consultation.checkpoint_id);
     for (const ref of [...(state.consultation.strategy_ids_it_could_change || []), ...(state.consultation.related_unresolved_question_refs || [])]) roots.add(ref);
@@ -150,7 +194,8 @@ function selectContext(loaded, request = {}) {
     if (changed.has(ref)) reverseQueue.push(ref);
   };
   for (const ref of roots) {
-    include(ref, (options.focus_refs || []).includes(ref) ? "explicit focus" : "current checkpoint focus");
+    include(ref, (options.focus_refs || []).includes(ref) ? "explicit focus"
+      : conversation.roots.get(ref) || "current checkpoint focus");
     reverseQueue.push(ref);
   }
   for (const run of state.runs.filter(run => run.status === "in_progress")) include(run.run_id, "incomplete run");
@@ -178,18 +223,41 @@ function selectContext(loaded, request = {}) {
   }
 
   const ordered = Object.entries(COLLECTIONS).flatMap(([name, key]) =>
-    state[name].map(record => ({ ref: record[key], name, record })).sort((a, b) => compare(a.ref, b.ref)));
+    (state[name] || []).map(record => ({ ref: record[key], name, record })).sort((a, b) => compare(a.ref, b.ref)));
   const query = options.query?.toLowerCase();
   const optional = ordered.filter(item => !selected.has(item.ref) && (query !== undefined
     ? stringValues(item.record).some(value => value.toLowerCase().includes(query)) : !usefulFocus));
   const page = optional.slice(options.cursor, options.cursor + options.limit);
-  const essentialCount = [...selected.keys()].filter(ref => nodes.get(ref).current).length;
   for (const item of page) selected.set(item.ref, query !== undefined ? "query match; focus for dependencies" : "broad discovery");
+  // A discovered result must not be displayed without its recorded governing
+  // conditions. Other query hits remain discovery suggestions as before.
+  for (const item of page) {
+    if (item.name === "result_conditions") queue.push(item.ref);
+    if (item.name === "evidence") for (const condition of state.result_conditions || []) {
+      if (condition.evidence_ref === item.ref) include(condition.condition_id, "governing condition: " + item.ref);
+    }
+  }
+  while (forwardIndex < queue.length || reverseIndex < reverseQueue.length) {
+    while (forwardIndex < queue.length) {
+      const ref = queue[forwardIndex++];
+      for (const target of [...(forward.get(ref) || [])].sort(compare)) include(target, "direct basis: " + ref);
+      for (const target of [...(revisions.get(ref) || [])].sort(compare)) include(target, "correction/supersession: " + ref);
+    }
+    while (reverseIndex < reverseQueue.length) {
+      const ref = reverseQueue[reverseIndex++];
+      if (reverseSeen.has(ref)) continue;
+      reverseSeen.add(ref);
+      for (const target of [...(reverse.get(ref) || [])].sort(compare)) {
+        include(target, "reverse dependency: " + ref); reverseQueue.push(target);
+      }
+    }
+  }
+  const essentialCount = [...selected.keys()].filter(ref => nodes.get(ref).current && !page.some(item => item.ref === ref)).length;
   const context = { project_understanding: structuredClone(state.project_understanding), consultation: structuredClone(state.consultation) };
   const collections = {};
   for (const [name, key] of Object.entries(COLLECTIONS)) {
-    context[name] = state[name].filter(record => selected.has(record[key])).sort((a, b) => compare(a[key], b[key])).map(record => structuredClone(record));
-    collections[name] = { total: state[name].length, selected: context[name].length, omitted: state[name].length - context[name].length };
+    context[name] = (state[name] || []).filter(record => selected.has(record[key])).sort((a, b) => compare(a[key], b[key])).map(record => structuredClone(record));
+    collections[name] = { total: (state[name] || []).length, selected: context[name].length, omitted: (state[name] || []).length - context[name].length };
   }
   const next = options.cursor + page.length < optional.length ? options.cursor + page.length : null;
   const omissions = [];
@@ -203,6 +271,7 @@ function selectContext(loaded, request = {}) {
     if (!node.current) omissions.push("Historical content is not reproduced here: history " + (node.kind === "event" ? "--event-id " : "--record-id ") + ref + ". Current replacements do not establish an earlier version.");
     if (node.current && versions.get(ref) > 1) omissions.push("Earlier versions: history --record-id " + ref + ". Current content is the latest record.");
     if (node.kind === "specialist_reviews") omissions.push("Full review findings and limitations: history --event-id " + node.record.event_ref + " (review " + ref + ").");
+    if (["interpretations", "exchanges"].includes(node.kind)) omissions.push("Conversation body source: history --event-id " + node.record.event_ref + " (record " + ref + "); generated work views materialize the selected bodies.");
   }
   return { context, selection: { focus_refs: [...roots].sort(compare), reasons: [...selected.entries()]
     .filter(([ref]) => nodes.get(ref).current).sort(([a], [b]) => compare(a, b)).map(([record_ref, reason]) => ({ record_ref, reason })) },

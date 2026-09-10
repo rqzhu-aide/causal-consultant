@@ -2,7 +2,7 @@
 name: causal-consultant
 description: Explicit-use interactive causal consulting. Use when the user explicitly requests causal-consultant or its persistent lead-and-specialist workflow for causal study design, data audit, domain research, feasibility, analysis, or evidence-bound reporting.
 metadata:
-  version: "7.0.4"
+  version: "7.0.5"
 ---
 
 # Causal Consultant
@@ -13,6 +13,21 @@ an automatic method sequence. v7 never converts a v6
 `project_state.yaml` project in place.
 
 ## Consultation
+
+Read [team_lead.md](references/team_lead.md) for incoming reply binding and
+substantive lead closeout; reuse unchanged guidance. The router records meaning
+before dependent specialist work. Afterward, the lead reconciles the case and
+uses the helper's saved response: `[Your Questions]` first when user questions
+need addressing, then `[Status]`, `[I want to know]` and `[Decide Next Steps]`.
+These are responsibilities of the main assistant, not extra agents.
+
+Separate questions and requests for explanation from instructions, corrections
+and supplied facts. If an answer is needed before action, or material ambiguity
+needs clarification, route no specialist work: the lead answers what it can and
+asks what is needed. If an answer depends on authorized analysis, record the
+user's question before selecting one bounded worker, then answer it at lead
+closeout or explain what remains unresolved. Complexity alone does not require
+clarification; use the dependency rules in the lead guide.
 
 Load current understanding and the latest message. Keep the original decision
 and causal target in view even when the immediate deliverable is narrower.
@@ -29,8 +44,8 @@ issue that determines the claim. Distinguish unasked facts, explicit unknowns,
 unavailable evidence, user-owned choices and adopted assumptions. Do not invent
 alternatives or require a fixed number of checks.
 
-Normally explain this before selecting a specialist: why it matters, how the
-user could help, what you could inspect and your recommended direction.
+When a study decision needs user input, explain why it matters, how the user
+could help, what you could inspect and your recommended direction.
 Foreground one useful question and wait. Proactively notice consequential tacit
 knowledge the user is unlikely to volunteer. This prioritizes discovery, not a
 ban on ordinary essential clarification. Choose sources by reliability, access
@@ -51,7 +66,9 @@ option, bounded delegation or resumed agreed work. Enough information means
 enough for that review; do not reconfirm or demand certainty about assumptions
 the review should assess. Unsupported estimation can warrant readiness or
 feasibility instead; explain the departure. Clarify materially ambiguous targets.
-Options are not authorization; a bare "I do not know" does not delegate everything.
+Offered options alone are not authorization; a user's scoped selection directs
+that work without establishing its scientific assumptions. A bare "I do not
+know" does not delegate everything.
 Offer an attainable consultant-led next step.
 
 Clarify consequential misunderstandings or false presuppositions. An answer
@@ -84,6 +101,9 @@ Select at most one substantive bounded review, informed by user input, to remove
 or distinguish live routes. Related checks are fine; no chained roles or hidden
 review in lead synthesis. Prefer the specialist role here for small self-contained
 work; delegate when useful. Neither launches another specialist.
+Count work within the actual response to the user: creating another
+`interpretation_id` or `turn_id` does not create a new consultation round or
+waive this limit. Keep subsequent authorized work in the lead's next direction.
 
 For delegation, use the selection table, not a worker-guide preload solely to
 assign work. Pass scope/user direction, source paths/versions, relevant state/IDs
@@ -94,9 +114,11 @@ only missing/stale state, not a default full project/journal reread.
 Use completion events or 30-60s waits within host limits; keep user updates
 timely. No repetitive short polls or worker nudges without new information.
 
-Commit via [memory](references/memory.md) with the question handoff. Explain
-findings, discounted information, strategy changes and next direction, then end.
-Invite input only when useful; adapt prose without mandatory headings/questionnaires.
+Commit via [memory](references/memory.md), linked to the prospectively recorded
+interpretation, with the question and result-condition handoff. Then complete
+the [lead closeout](references/team_lead.md#closeout): reconcile findings,
+discounted information, strategy changes and next direction. Ask or offer only
+what is useful; no filler questions or minimum number of consultation rounds.
 
 ## Conditional Guidance
 
@@ -145,8 +167,12 @@ otherwise a clearly named new contained subfolder and tell the user its location
 Never reuse a v6 folder or modify original data.
 
 Read [memory.md](references/memory.md) before state use; reuse unchanged guidance
-and adequate supplied state. Follow its read rules; lead synthesis needs no
-artificial mutation or ID-only reread.
+and adequate supplied state. Check the helper's `durable-exchanges-v1` and
+`user-question-routing-v1` capabilities before extension writes. Follow its read
+rules; reuse receipt IDs. Lead-only
+substantive rounds still need a recorded interpretation and closeout, without
+fabricated specialist work. Session summaries are useful context, not a substitute
+for the recorded question, option or scientific condition needed now.
 
 Load [runs.md](references/runs.md) only for saved substantial audit/preparation,
 analysis, discovery or report artifacts. A no-output audit needs no run guide.
@@ -156,5 +182,6 @@ material changes need a new run and visible reason.
 
 Only helpers manage journal, projection, plans and manifests. They manage
 identities, references, contained writes and recovery, not scientific approval,
-response wording or arbitrary-code sandboxing. Host permissions still apply;
-optional hooks are not installed by this skill.
+and render the lead's structured response without choosing its meaning. They
+do not sandbox arbitrary code or prove that a saved reply reached the user.
+Host permissions still apply; optional hooks are not installed by this skill.

@@ -44,7 +44,8 @@ function validatePlan(plan, state) {
   if (!plan || typeof plan !== "object") fail("INVALID_INPUT", "plan must be an object.");
   enumeration(plan.kind, Object.keys(fields), "plan.kind");
   const optional = { audit: ["transformations"], analysis: ["additional_design_ids", "identification_basis"], discovery: [], report: [] };
-  object(plan, "plan", ["kind", "objective", "claim_boundary", "inputs", ...fields[plan.kind]], optional[plan.kind]);
+  object(plan, "plan", ["kind", "objective", "claim_boundary", "inputs", ...fields[plan.kind]], [...optional[plan.kind], "interpretation_ref"]);
+  validateRunInterpretation(plan, state);
   text(plan.objective, "plan.objective");
   text(plan.claim_boundary, "plan.claim_boundary");
   array(plan.inputs, "plan.inputs", (input, label) => {
@@ -77,6 +78,31 @@ function validatePlan(plan, state) {
   if (plan.kind === "report") {
     if (!plan.evidence_refs.length) fail("INVALID_INPUT", "A report must identify the evidence it synthesizes.");
     for (const evidenceId of plan.evidence_refs) knownEvidence(state, evidenceId);
+  }
+}
+function validateRunInterpretation(plan, state) {
+  if (!Object.hasOwn(plan, "interpretation_ref")) {
+    if (state.state_meta.protocol) fail("MISSING_INTERPRETATION", "A new protocol run needs its prospectively recorded interpretation_ref.");
+    return;
+  }
+  id(plan.interpretation_ref, "plan.interpretation_ref");
+  const interpretation = (state.interpretations || []).find(item => item.interpretation_id === plan.interpretation_ref);
+  const turn = (state.turns || []).find(item => item.interpretation_ref === plan.interpretation_ref);
+  if (!interpretation || !turn) fail("UNKNOWN_REFERENCE", "Run interpretation must identify a committed consultation turn.");
+  if (turn.exchange_ref) fail("TURN_CLOSED", "Record the new direction before starting more work for a closed turn.");
+  const action = interpretation.next_action;
+  if (action.kind !== "specialist") fail("ASSIGNMENT_MISMATCH", "A lead-only interpretation does not select output-producing specialist work.");
+  const assignment = action.assignment;
+  const required = { analysis: ["design_worker", "execution"], discovery: ["causal_discovery", "discovery"], report: ["report_writer", "reporting"] }[plan.kind];
+  if (required && (assignment.specialist_id !== required[0] || assignment.operation !== required[1])) {
+    fail("ASSIGNMENT_MISMATCH", "Run kind does not match the prospectively selected specialist operation.");
+  }
+  if (plan.kind === "analysis" && (plan.design_id !== assignment.design_id ||
+      canonical([...(plan.additional_design_ids || [])].sort()) !== canonical([...(assignment.additional_design_ids || [])].sort()))) {
+    fail("ASSIGNMENT_MISMATCH", "Run design guides do not match the recorded assignment.");
+  }
+  if (plan.kind === "audit" && plan.transformations && (assignment.specialist_id !== "data_audit" || assignment.operation !== "prepare")) {
+    fail("ASSIGNMENT_MISMATCH", "A transformation run requires the recorded data preparation operation.");
   }
 }
 function fileDigestAbsolute(filePath) {
@@ -115,6 +141,7 @@ function frozenPlan(root, run) {
   if (sha256(bytes) !== run.plan_sha256) fail("PLAN_CHANGED", "The frozen plan changed: " + run.plan_ref);
   const plan = store.parseJSON(bytes, "Run plan");
   if (plan.run_id !== run.run_id || plan.kind !== run.kind) fail("PLAN_CHANGED", "Plan identity does not match its committed run.");
+  if (plan.interpretation_ref !== run.interpretation_ref) fail("PLAN_CHANGED", "Plan interpretation does not match its committed run attribution.");
   return plan;
 }
 function checkInputs(root, plan, sourceCheck = true) {
@@ -162,6 +189,18 @@ function evidenceBindings(root, state, plan) {
       kind: record.kind, source_ref: record.source_ref, summary: record.summary
     };
     for (const key of ["source_sha256", "source_excerpt", "legacy", "limitations"]) if (Object.hasOwn(record, key)) binding[key] = structuredClone(record[key]);
+    const conditions = state.result_conditions || [];
+    const superseded = new Set(conditions.map(item => item.supersedes).filter(Boolean));
+    const applicable = conditions.filter(item => item.evidence_ref === evidenceId && !superseded.has(item.condition_id));
+    binding.condition_coverage = applicable.length ? "linked" : "unreviewed";
+    binding.condition_bindings = applicable.map(condition => ({
+      ...structuredClone(condition), event_ref: state.history_index[condition.condition_id].event_ref,
+      assumption_bindings: condition.assumption_refs.map(assumptionId => {
+        const assumption = state.assumptions.find(item => item.assumption_id === assumptionId);
+        if (!assumption) fail("UNKNOWN_REFERENCE", "A result condition refers to a missing assumption: " + assumptionId);
+        return { ...structuredClone(assumption), event_ref: state.history_index[assumptionId].event_ref };
+      })
+    }));
     if (record.run_id) {
       const run = getRun(state, record.run_id);
       const manifest = manifestFor(root, run);
@@ -250,6 +289,7 @@ function start(projectRoot, request, options = {}) {
     const serialized = JSON.stringify(plan, null, 2) + "\n";
     writeNew(root, plan_ref, serialized);
     const run = { run_id: request.run_id, kind: plan.kind, status: "in_progress", plan_ref, plan_sha256: sha256(serialized), claim_boundary: plan.claim_boundary, started_at };
+    if (plan.interpretation_ref) run.interpretation_ref = plan.interpretation_ref;
     if (request.parent_run_id !== undefined) run.parent_run_id = request.parent_run_id;
     return { type: "run_started", payload: { run }, result: { run_path: safePath(root, prefix), plan_ref, inputs: sources } };
   }, { ...options, eventType: "run_started" });

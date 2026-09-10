@@ -63,9 +63,14 @@ Review existing artifacts at their exact source rather than inventing a replacem
 
 Commit one review with sources, method, candidate findings, performed diagnostics,
 limitations and what structural hypotheses were weakened or remain plausible.
+Link the review to the router's committed interpretation and bounded assignment.
 Use language such as "compatible with", "candidate edge" or "unstable orientation".
 New computed evidence points to the finalized run and manifested file.
+Use memory's `result_conditions` to attach the particular graph claim to its
+target, required assumptions, source basis and candidate-only limits. Do not
+invent an inferential guarantee for a ranking or stability score.
 
 When the result could affect adjustment, variable roles, estimand or claim strength,
 return the concrete implication and its unresolved assumption to the lead. Do
 not certify it or start a causal-check or estimation specialist in this turn.
+The lead owns reconciliation and the saved outgoing exchange after this handoff.

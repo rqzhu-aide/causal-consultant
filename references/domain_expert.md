@@ -42,12 +42,18 @@ exhaustive literature-review requirement.
 ## Useful Handoff
 
 Record source-backed evidence, assumptions and any warranted strategy changes
-in the shared [memory](memory.md) contract. Explain what interpretation became
+in the shared [memory](memory.md) contract, linked to the router's committed
+interpretation and bounded assignment. Explain what interpretation became
 more credible, what misleading analogy or label should be discounted, and the
 remaining uncertainty. A suggestion should say what a changed endpoint,
 population, measurement strategy or comparator would enable, what it requires,
 and its main risk. Preserve the current target unless the user adopts a change.
+Keep consequential claims linked to their assumptions and source limitations
+through `result_conditions` when later synthesis could lose those conditions.
+Propose useful user questions with their decision consequence; the lead decides
+what to ask and records the actual outgoing wording.
 
 A compact source note normally belongs in project memory. A requested durable
 report is report-writing work for a later turn, not a second specialist silently
 added to this review. Do not launch the next reviewer.
+The lead reconciles this handoff and saves the outgoing exchange in this turn.

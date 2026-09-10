@@ -6,9 +6,9 @@ const {
   fail, canonical, sha256, rootPath, safePath, ensureDirectory, readFile,
   writeNew, atomicWrite, assertNotLegacy, withLock
 } = require("./files.cjs");
-const { emptyState, validateSemantic, applyEvent, createReplayBuilder } = require("./model.cjs");
+const { PUBLIC_TYPES, emptyState, validateSemantic, applyEvent, createReplayBuilder } = require("./model.cjs");
 
-const TYPES = new Set(["init", "checkpoint", "memory_updated", "review_completed", "correction",
+const TYPES = new Set(["init", ...PUBLIC_TYPES,
   "run_started", "run_finalized", "run_failed", "run_abandoned"]);
 const ID = /^[a-z][a-z0-9_-]{0,79}$/;
 function id(value, label) {
@@ -79,7 +79,15 @@ function readJournal(root, allowTail = false) {
 
 function receipt(event, extra = {}) {
   return { ok: true, project_id: event.project_id, last_event_id: event.event_id,
-    sequence: event.sequence, committed: true, ...extra };
+    sequence: event.sequence, committed: true, ...extra,
+    ...(event.type === "exchange_prepared" ? require("./exchanges.cjs").exchangeReceipt(event) : {}) };
+}
+function capabilities() {
+  return { ok: true, version: require("../../package.json").version, journal_schema: 7,
+    capabilities: ["durable-exchanges-v1", "user-question-routing-v1"],
+    renderers: ["lead-markdown-v1", "lead-markdown-v2", "lead-markdown-v3"],
+    compatibility: { minimum_extension_reader: "7.0.5", historical_events: "replayed unchanged",
+      host_closeout_enforcement: "instruction_only", delivery: "attributed observations, not independently verified" } };
 }
 function writeProjection(root, state, hooks = {}) {
   if (hooks.beforeProjection) hooks.beforeProjection();
@@ -201,16 +209,22 @@ function orphanRuns(root, state) {
 function status(projectRoot) {
   const loaded = readJournal(rootPath(projectRoot));
   const { history_index, ...context } = loaded.state;
-  return { ok: true, project: context, projection_current: loaded.projection_current,
+  return { ...capabilities(), project: context, projection_current: loaded.projection_current,
     orphan_run_paths: orphanRuns(loaded.root, loaded.state),
-    incomplete_run_ids: loaded.state.runs.filter(r => r.status === "in_progress").map(r => r.run_id) };
+    incomplete_run_ids: loaded.state.runs.filter(r => r.status === "in_progress").map(r => r.run_id),
+    ...memoryViews(loaded) };
+}
+function memoryViews(loaded, selected) {
+  if (!loaded.state.state_meta.protocol && !loaded.state.user_context?.length && !loaded.state.result_conditions?.length) return {};
+  return { views: require("./views.cjs").buildViews(loaded, selected) };
 }
 function context(projectRoot, request = {}) {
   const loaded = readJournal(rootPath(projectRoot));
   const selected = require("./context.cjs").selectContext(loaded, request);
-  return { ok: true, project_id: loaded.state.state_meta.project_id,
+  return { ...capabilities(), project_id: loaded.state.state_meta.project_id,
     last_event_id: loaded.state.state_meta.last_event_id, sequence: loaded.state.state_meta.sequence,
-    projection_current: loaded.projection_current, orphan_run_paths: orphanRuns(loaded.root, loaded.state), ...selected };
+    projection_current: loaded.projection_current, orphan_run_paths: orphanRuns(loaded.root, loaded.state), ...selected,
+    ...memoryViews(loaded, selected) };
 }
 function history(projectRoot, options = {}) {
   const { events } = readJournal(rootPath(projectRoot));
@@ -249,4 +263,4 @@ function recover(projectRoot, options = {}) {
   });
 }
 
-module.exports = { id, parseJSON, readJournal, transact, init, record, status, context, history, recover, orphanRuns };
+module.exports = { id, parseJSON, readJournal, transact, init, record, status, context, history, recover, orphanRuns, capabilities };

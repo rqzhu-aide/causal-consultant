@@ -56,6 +56,9 @@ documentation; population, row unit, keys/linkage, key meanings/timing,
 selection/missingness and unchecked scope. Attribute user accounts and assumptions.
 Record known file hashes for reuse; hashes identify bytes, not meaning.
 Link open questions and strategy implications via [memory](memory.md).
+Link the review to the router's committed interpretation and bounded assignment.
+Preserve unresolved parts of user answers, and mark proposed questions as
+proposals for the lead rather than questions already asked.
 
 Example: booking is not attendance. If attendance timing matters, propose
 "Are actual attendance events recorded separately?" A usable source could
@@ -63,4 +66,8 @@ enable that timeline, not establish offer assignment or select a new target.
 The lead selects the question and records its consequence.
 
 No-output reviews need only committed review/source evidence. Audit artifacts
-use a run; memory keeps concise interpretation and provenance.
+use a run; memory keeps concise interpretation and provenance. Link consequential
+derived-data claims to their construction conditions using `result_conditions`;
+do not invent an inferential target or hypothesis for preparation outputs.
+Run finalization ends artifact work; the lead still reconciles and saves the
+outgoing exchange.

@@ -4,7 +4,7 @@ const { fail } = require("./files.cjs");
 const CATALOG = require("../../references/catalog.json");
 
 const ID = /^[a-z][a-z0-9_-]{0,79}$/;
-const PUBLIC_TYPES = ["checkpoint", "memory_updated", "review_completed", "correction"];
+const PUBLIC_TYPES = ["checkpoint", "memory_updated", "review_completed", "correction", "reply_interpreted", "exchange_prepared", "exchange_delivery"];
 const RUN_TYPES = ["run_started", "run_finalized", "run_failed", "run_abandoned"];
 const CHECKPOINT_STATUSES = ["assessing", "awaiting_user", "ready_for_specialist", "specialist_complete"];
 const STRATEGY_STATUSES = ["possible", "conditional", "preferred", "unsupported_with_current_evidence", "not_relevant"];
@@ -13,7 +13,9 @@ const COLLECTIONS = {
   evidence: { id: "evidence_id", kind: "evidence" },
   assumptions: { id: "assumption_id", kind: "assumption" },
   decisions: { id: "decision_id", kind: "decision" },
-  candidate_routes: { id: "strategy_id", kind: "strategy" }
+  candidate_routes: { id: "strategy_id", kind: "strategy" },
+  user_context: { id: "context_id", kind: "user_context" },
+  result_conditions: { id: "condition_id", kind: "result_condition" }
 };
 
 function jsonValue(value, label = "input", seen = new Set(), depth = 0) {
@@ -100,6 +102,12 @@ function semanticContext(state, request) {
     });
   }
   if (payload.review) reserve(payload.review.review_id, "review", true);
+  if (payload.interpretation) {
+    reserve(payload.interpretation.interpretation_id, "interpretation", true);
+    reserve(payload.interpretation.turn_id, "turn", true);
+  }
+  if (payload.exchange) reserve(payload.exchange.exchange_id, "exchange", true);
+  if (payload.delivery) reserve(payload.delivery.delivery_id, "delivery", true);
   function reference(value, label, kind) {
     id(value, label);
     if (!available.has(value) || (kind && available.get(value) !== kind)) {
@@ -174,11 +182,13 @@ function validateChanges(changes, context) {
   if (Object.hasOwn(changes, "consultation") && changes.consultation !== null) validateCheckpoint(changes.consultation, "changes.consultation", context);
   for (const record of changes.questions || []) {
     const label = "question " + record.question_id;
-    object(record, label, ["question_id", "statement", "status"], ["reason", "basis_refs"]);
+    object(record, label, ["question_id", "statement", "status"], ["reason", "basis_refs", "origin"]);
     text(record.statement, label + ".statement");
     enumeration(record.status, ["open", "answered", "retired"], label + ".status");
     if (record.status !== "open" || Object.hasOwn(record, "reason")) text(record.reason, label + ".reason");
     optionalRefs(record, { basis_refs: undefined }, label, context);
+    if (Object.hasOwn(record, "origin")) enumeration(record.origin, ["user", "consultant"], label + ".origin");
+    if (record.origin === "user") context.references(record.basis_refs, label + ".basis_refs", undefined, true);
   }
   for (const record of changes.evidence || []) {
     const label = "evidence " + record.evidence_id;
@@ -237,11 +247,36 @@ function validateChanges(changes, context) {
     optionalRefs(record, { evidence_for: "evidence", evidence_against: "evidence" }, label, context);
     if (Object.hasOwn(record, "last_review_id")) context.reference(record.last_review_id, label + ".last_review_id", "review");
   }
+  for (const record of changes.user_context || []) {
+    const label = "user context " + record.context_id;
+    object(record, label, ["context_id", "kind", "statement", "basis_refs", "status"], ["supersedes"]);
+    enumeration(record.kind, ["preference", "constraint", "communication", "domain_expertise", "statistical_expertise"], label + ".kind");
+    text(record.statement, label + ".statement");
+    context.references(record.basis_refs, label + ".basis_refs", undefined, true);
+    enumeration(record.status, ["current", "superseded"], label + ".status");
+    supersedes(record, record.context_id, "user_context", label, context);
+  }
+  for (const record of changes.result_conditions || []) {
+    const label = "result condition " + record.condition_id;
+    object(record, label, ["condition_id", "evidence_ref", "result_locator", "claim", "target", "assumption_refs", "basis_refs", "limitations"], ["inference", "supersedes"]);
+    context.reference(record.evidence_ref, label + ".evidence_ref", "evidence");
+    for (const key of ["result_locator", "claim", "target"]) text(record[key], label + "." + key);
+    context.references(record.assumption_refs, label + ".assumption_refs", "assumption");
+    context.references(record.basis_refs, label + ".basis_refs");
+    strings(record.limitations, label + ".limitations");
+    if (Object.hasOwn(record, "inference")) {
+      object(record.inference, label + ".inference", ["kind", "target", "guarantee"], ["hypothesis"]);
+      enumeration(record.inference.kind, ["test", "interval", "estimate"], label + ".inference.kind");
+      for (const key of ["target", "guarantee"]) text(record.inference[key], label + ".inference." + key);
+      if (record.inference.kind === "test" || Object.hasOwn(record.inference, "hypothesis")) text(record.inference.hypothesis, label + ".inference.hypothesis");
+    }
+    supersedes(record, record.condition_id, "result_condition", label, context);
+  }
 }
 function validateReview(review, context) {
   object(review, "review", ["review_id", "summary", "assignment", "question_addressed", "selection_basis", "work_performed", "findings"], [
     "evidence_refs", "limitations", "noise_or_invalid_information", "route_changes", "assumptions_added_or_revised",
-    "remaining_uncertainty", "suggested_next_uncertainty"
+    "remaining_uncertainty", "suggested_next_uncertainty", "interpretation_ref"
   ]);
   text(review.summary, "review.summary");
   text(review.question_addressed, "review.question_addressed");
@@ -254,6 +289,7 @@ function validateReview(review, context) {
   optionalStrings(review, ["limitations", "noise_or_invalid_information", "remaining_uncertainty"], "review");
   optionalRefs(review, { evidence_refs: "evidence", route_changes: "strategy", assumptions_added_or_revised: "assumption" }, "review", context);
   if (Object.hasOwn(review, "suggested_next_uncertainty")) text(review.suggested_next_uncertainty, "review.suggested_next_uncertainty");
+  if (Object.hasOwn(review, "interpretation_ref")) context.reference(review.interpretation_ref, "review.interpretation_ref", "interpretation");
 }
 
 function validateSemantic(state, request) {
@@ -266,15 +302,25 @@ function validateSemantic(state, request) {
   if (request.expected_last_event_id !== state.state_meta.last_event_id) fail("STALE_WRITE", "Reload current state before changing it.");
   enumeration(request.type, PUBLIC_TYPES, "type");
   const required = {
-    checkpoint: ["checkpoint"], memory_updated: ["changes"], review_completed: ["review"], correction: ["corrects_refs", "reason", "changes"]
+    checkpoint: ["checkpoint"], memory_updated: ["changes"], review_completed: ["review"], correction: ["corrects_refs", "reason", "changes"],
+    reply_interpreted: ["protocol", "interpretation"], exchange_prepared: ["protocol", "exchange"], exchange_delivery: ["protocol", "delivery"]
   }[request.type];
-  const optional = { checkpoint: ["changes"], memory_updated: [], review_completed: ["changes", "checkpoint"], correction: [] }[request.type];
+  const optional = { checkpoint: ["changes"], memory_updated: [], review_completed: ["changes", "checkpoint"], correction: [],
+    reply_interpreted: ["changes", "checkpoint", "delivery"], exchange_prepared: ["changes", "checkpoint", "review", "interpretation", "delivery"], exchange_delivery: [] }[request.type];
   object(request.payload, "payload", required, optional);
+  const exchanges = require("./exchanges.cjs");
+  if (Object.hasOwn(request.payload, "protocol") && request.payload.protocol !== exchanges.PROTOCOL) fail("UNSUPPORTED_PROTOCOL", "Unknown conversation protocol.");
   if (Object.hasOwn(request.payload, "changes")) object(request.payload.changes, "changes", [], ["project_understanding", "consultation", ...Object.keys(COLLECTIONS)]);
   const context = semanticContext(state, request);
   if (Object.hasOwn(request.payload, "checkpoint")) validateCheckpoint(request.payload.checkpoint, "checkpoint", context);
   if (Object.hasOwn(request.payload, "changes")) validateChanges(request.payload.changes, context);
-  if (request.type === "review_completed") validateReview(request.payload.review, context);
+  if (Object.hasOwn(request.payload, "delivery")) exchanges.validateDelivery(request.payload.delivery, context, state);
+  if (Object.hasOwn(request.payload, "interpretation")) exchanges.validateInterpretation(request.payload.interpretation, context, state, request.payload);
+  if (Object.hasOwn(request.payload, "review")) {
+    validateReview(request.payload.review, context);
+    exchanges.validateReviewInterpretation(request.payload.review, context, state, request.payload);
+  }
+  if (Object.hasOwn(request.payload, "exchange")) exchanges.validateExchange(request.payload.exchange, context, state, request.payload);
   if (request.type === "correction") {
     text(request.payload.reason, "payload.reason");
     context.references(request.payload.corrects_refs, "payload.corrects_refs", undefined, true);
@@ -328,18 +374,54 @@ function reduceEvent(state, event, copyState) {
     }
     if (changes.project_understanding) Object.assign(next.project_understanding, structuredClone(changes.project_understanding));
     for (const [name, config] of Object.entries(COLLECTIONS)) for (const record of changes[name] || []) {
+      if (!next[name]) next[name] = [];
       upsert(next[name], record, config.id);
       index(record[config.id], config.kind);
     }
     if (payload.review) {
       const review = payload.review;
-      next.specialist_reviews.push({ review_id: review.review_id, event_ref: event.event_id, summary: review.summary, completed_at: event.timestamp });
+      next.specialist_reviews.push({ review_id: review.review_id, event_ref: event.event_id, summary: review.summary, completed_at: event.timestamp,
+        ...(review.interpretation_ref ? { interpretation_ref: review.interpretation_ref } : {}) });
       index(review.review_id, "review");
       if (next.consultation?.checkpoint_id === review.selection_basis.checkpoint_id) next.consultation.status = "specialist_complete";
     }
     if (Object.hasOwn(changes, "consultation")) {
       next.consultation = structuredClone(changes.consultation);
       if (changes.consultation) index(changes.consultation.checkpoint_id, "checkpoint");
+    }
+    if (payload.protocol) {
+      next.state_meta.protocol = payload.protocol;
+      for (const name of ["interpretations", "exchanges", "deliveries", "turns"]) if (!next[name]) next[name] = [];
+    }
+    if (payload.interpretation) {
+      const interpretation = payload.interpretation;
+      const userQuestions = require("./exchanges.cjs").userQuestions(interpretation);
+      next.interpretations.push({ interpretation_id: interpretation.interpretation_id, turn_id: interpretation.turn_id,
+        event_ref: event.event_id, incoming_refs: structuredClone(interpretation.incoming_refs), basis_refs: structuredClone(interpretation.basis_refs),
+        next_action: structuredClone(interpretation.next_action), ...(userQuestions.length ? { user_questions: userQuestions } : {}) });
+      next.turns.push({ turn_id: interpretation.turn_id, interpretation_ref: interpretation.interpretation_id, work_refs: [], exchange_ref: null });
+      index(interpretation.interpretation_id, "interpretation");
+      index(interpretation.turn_id, "turn");
+    }
+    if (payload.delivery) {
+      next.deliveries.push({ ...structuredClone(payload.delivery), event_ref: event.event_id });
+      index(payload.delivery.delivery_id, "delivery");
+    }
+    if (payload.review?.interpretation_ref) linkWork(next, payload.review.interpretation_ref, payload.review.review_id);
+    if (payload.exchange) {
+      const exchange = payload.exchange;
+      const receipt = require("./exchanges.cjs").exchangeReceipt(event);
+      next.exchanges.push({ exchange_id: exchange.exchange_id, turn_id: exchange.turn_id, interpretation_ref: exchange.interpretation_ref,
+        event_ref: event.event_id, renderer: exchange.renderer, response_sha256: receipt.response_sha256,
+        question_refs: exchange.response.questions.map(question => question.question_ref),
+        options: exchange.response.next_steps.map(option => ({ option_id: option.option_id, kind: option.kind, actor: option.actor,
+          ...(option.assignment ? { assignment: structuredClone(option.assignment) } : {}) })),
+        ...(exchange.supersedes ? { supersedes: exchange.supersedes } : {}) });
+      index(exchange.exchange_id, "exchange");
+      for (const interpretationId of [exchange.interpretation_ref, ...(exchange.reconciles || [])]) {
+        const turn = next.turns.find(entry => entry.interpretation_ref === interpretationId);
+        if (turn) turn.exchange_ref = exchange.exchange_id;
+      }
     }
   }
   if (RUN_TYPES.includes(event.type)) {
@@ -351,13 +433,23 @@ function reduceEvent(state, event, copyState) {
     if (run.status !== expected) fail("INVALID_EVENT", "Run event and status disagree.");
     const prior = next.runs.find(item => item.run_id === run.run_id);
     if (event.type === "run_started" ? !!prior : !prior || prior.status !== "in_progress") fail("INVALID_EVENT", "Invalid run lifecycle transition.");
+    if (prior && (Object.hasOwn(prior, "interpretation_ref") !== Object.hasOwn(run, "interpretation_ref") || prior.interpretation_ref !== run.interpretation_ref)) {
+      fail("INVALID_EVENT", "A run lifecycle transition must preserve its original interpretation attribution.");
+    }
     upsert(next.runs, run, "run_id");
     index(run.run_id, "run");
+    if (run.interpretation_ref) linkWork(next, run.interpretation_ref, run.run_id);
   }
   next.state_meta.last_event_id = event.event_id;
   next.state_meta.sequence = event.sequence;
   next.state_meta.updated_at = event.timestamp;
   return next;
+}
+function linkWork(state, interpretationId, workId) {
+  const turn = (state.turns || []).find(entry => entry.interpretation_ref === interpretationId);
+  if (!turn) fail("UNKNOWN_REFERENCE", "Work requires its recorded interpretation and turn.");
+  if (!turn.work_refs.includes(workId)) turn.work_refs.push(workId);
+  turn.exchange_ref = null;
 }
 function applyEvent(state, event) { return reduceEvent(state, event, true); }
 

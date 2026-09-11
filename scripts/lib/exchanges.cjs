@@ -4,8 +4,8 @@ const { canonical, sha256, fail } = require("./files.cjs");
 const { object, text, id, enumeration, array, strings, validateAssignment } = require("./model.cjs");
 
 const PROTOCOL = "durable-exchanges-v1";
-const RENDERER = "lead-markdown-v3";
-const RENDERERS = ["lead-markdown-v1", "lead-markdown-v2", RENDERER];
+const RENDERER = "lead-markdown-v4";
+const RENDERERS = ["lead-markdown-v1", "lead-markdown-v2", "lead-markdown-v3", RENDERER];
 const list = (state, name) => state[name] || [];
 function userQuestions(interpretation) {
   return interpretation?.user_questions || (interpretation?.components || [])
@@ -31,7 +31,7 @@ function validateDelivery(value, context, state) {
   if (value.response_sha256 !== exchange.response_sha256) fail("DELIVERY_MISMATCH", "Delivery hash must identify the prepared response.");
 }
 function validateInterpretation(value, context, state, payload) {
-  object(value, "interpretation", ["interpretation_id", "turn_id", "incoming_refs", "components", "basis_refs", "next_action"]);
+  object(value, "interpretation", ["interpretation_id", "turn_id", "incoming_refs", "components", "basis_refs", "next_action"], ["action_decisions", "focus_scope_ref"]);
   id(value.interpretation_id, "interpretation.interpretation_id");
   id(value.turn_id, "interpretation.turn_id");
   context.contributionRefs(value.incoming_refs, "interpretation.incoming_refs", true);
@@ -63,7 +63,7 @@ function validateInterpretation(value, context, state, payload) {
     }
   }, true);
   distinct(userQuestions(value).map(question => question.question_ref), "interpretation user questions");
-  object(value.next_action, "interpretation.next_action", ["kind", "scope", "reason"], ["assignment", "adjustment_reason", "clarification_needed"]);
+  object(value.next_action, "interpretation.next_action", ["kind", "scope", "reason"], ["assignment", "adjustment_reason", "clarification_needed", "scope_ref", "authorization_ref"]);
   enumeration(value.next_action.kind, ["lead_only", "specialist"], "interpretation.next_action.kind");
   text(value.next_action.scope, "interpretation.next_action.scope");
   text(value.next_action.reason, "interpretation.next_action.reason");
@@ -76,6 +76,7 @@ function validateInterpretation(value, context, state, payload) {
     fail("USER_QUESTION_BLOCKS_WORK", "Prerequisite questions or necessary clarification require a lead-only response before specialist work.");
   }
   for (const component of value.components.filter(entry => entry.option_id)) {
+    if (require("./authorizations.cjs").active(state) && value.action_decisions?.some(decision => decision.exchange_ref === component.exchange_ref && decision.option_id === component.option_id && decision.disposition !== "accept")) continue;
     const exchange = list(state, "exchanges").find(entry => entry.exchange_id === component.exchange_ref);
     const option = exchange.options.find(entry => entry.option_id === component.option_id);
     const changedWork = option.assignment
@@ -86,13 +87,15 @@ function validateInterpretation(value, context, state, payload) {
     }
   }
   if (payload.exchange && value.next_action.kind !== "lead_only") fail("INVALID_INPUT", "An inline interpretation can only select lead-only work.");
+  require("./authorizations.cjs").validateDecisions(state, value, context, payload);
 }
 function interpretationFor(state, payload, interpretationId) {
   return payload.interpretation?.interpretation_id === interpretationId ? payload.interpretation : list(state, "interpretations").find(entry => entry.interpretation_id === interpretationId);
 }
 function validateReviewInterpretation(review, context, state, payload) {
+  const protectedReview = require("./authorizations.cjs").active(state) && (review.assignment.specialist_id === "report_writer" || (review.assignment.specialist_id === "design_worker" && review.assignment.operation === "execution"));
   if (!review.interpretation_ref) {
-    if (state.state_meta.protocol || payload.protocol) fail("MISSING_INTERPRETATION", "A review requires its prospectively recorded interpretation_ref.");
+    if (state.state_meta.protocol || payload.protocol || protectedReview) fail("MISSING_INTERPRETATION", "A review requires its prospectively recorded interpretation_ref.");
     return;
   }
   context.reference(review.interpretation_ref, "review.interpretation_ref", "interpretation");
@@ -102,6 +105,11 @@ function validateReviewInterpretation(review, context, state, payload) {
   const turn = list(state, "turns").find(entry => entry.interpretation_ref === review.interpretation_ref);
   if (turn?.exchange_ref) fail("TURN_CLOSED", "This turn has already closed; record a new interpretation before new specialist work.");
   if (turn?.work_refs.some(ref => state.history_index[ref]?.kind === "review")) fail("DUPLICATE_REVIEW", "One interpretation can complete at most one substantive specialist review.");
+  if (protectedReview) {
+    const kind = review.assignment.specialist_id === "report_writer" ? "report" : "analysis";
+    const run = state.runs.find(record => record.interpretation_ref === review.interpretation_ref && record.kind === kind && record.status !== "in_progress" && record.authorization_binding?.authorization_ref === interpretation.next_action.authorization_ref);
+    if (!run) fail("UNACCOUNTED_PROTECTED_WORK", "An execution/reporting review must reconcile its finished authorized run, including a failed attempt when applicable.");
+  }
 }
 function validateExchange(value, context, state, payload) {
   object(value, "exchange", ["exchange_id", "turn_id", "interpretation_ref", "basis_refs", "completed_work_refs", "reconciliation", "response", "renderer"], ["supersedes", "reconciles"]);
@@ -141,10 +149,23 @@ function validateExchange(value, context, state, payload) {
   for (const key of ["changes", "limitations", "unresolved"]) strings(value.reconciliation[key], "exchange.reconciliation." + key);
   text(value.reconciliation.next_direction, "exchange.reconciliation.next_direction");
   const response = value.response;
-  object(response, "exchange.response", ["status", "questions", "next_steps"], ["questions_none", "next_steps_none", "user_questions"]);
+  object(response, "exchange.response", ["status", "questions", "next_steps"], ["questions_none", "next_steps_none", "user_questions", "findings"]);
+  if (response.findings) {
+    if (value.renderer !== RENDERER || !require("./authorizations.cjs").active(state)) fail("UNSUPPORTED_PROTOCOL", "Structured findings require the consultation loop and lead-markdown-v4.");
+    object(response.findings, "exchange.response.findings", ["work_refs", "summary", "diagnostics", "limitations"]);
+    context.references(response.findings.work_refs, "exchange.response.findings.work_refs", undefined, true);
+    text(response.findings.summary, "exchange.response.findings.summary");
+    strings(response.findings.diagnostics, "exchange.response.findings.diagnostics");
+    strings(response.findings.limitations, "exchange.response.findings.limitations");
+    for (const ref of response.findings.work_refs) {
+      const kind = state.history_index[ref]?.kind || (payload.review?.review_id === ref ? "review" : null);
+      if (!["review", "run", "evidence"].includes(kind) || (kind === "run" && context.runStatus(ref) !== "completed")) fail("INVALID_FINDINGS", "Presented findings require completed work.");
+      if (kind === "evidence" && state.evidence.find(record => record.evidence_id === ref)?.kind !== "computed") fail("INVALID_FINDINGS", "Evidence findings require computed evidence; source-only findings belong to an actual review.");
+    }
+  }
   text(response.status, "exchange.response.status");
   if (Object.hasOwn(response, "user_questions")) {
-    if (value.renderer !== "lead-markdown-v3") fail("INVALID_INPUT", "User-question answers require lead-markdown-v3 so the saved answers are rendered.");
+    if (!["lead-markdown-v3", RENDERER].includes(value.renderer)) fail("INVALID_INPUT", "User-question answers require a renderer that displays the saved answers.");
     array(response.user_questions, "exchange.response.user_questions", (answer, label) => {
       object(answer, label, ["question_ref", "text", "answer", "status", "basis_refs"]);
       context.reference(answer.question_ref, label + ".question_ref", "question");
@@ -173,7 +194,7 @@ function validateExchange(value, context, state, payload) {
   });
   distinct(response.questions.map(entry => entry.question_ref), "exchange.response.questions");
   array(response.next_steps, "exchange.response.next_steps", (option, label) => {
-    object(option, label, ["option_id", "kind", "label", "actor", "scope", "basis_refs"], ["assignment"]);
+    object(option, label, ["option_id", "kind", "label", "actor", "scope", "basis_refs"], ["assignment", "scope_ref", "proposal", "execution_plan"]);
     id(option.option_id, label + ".option_id");
     enumeration(option.kind, ["action", "discussion"], label + ".kind");
     for (const key of ["label", "actor", "scope"]) text(option[key], label + "." + key);
@@ -183,11 +204,23 @@ function validateExchange(value, context, state, payload) {
       if (option.kind !== "action" || option.actor !== "consultant") fail("INVALID_INPUT", "Only consultant actions carry specialist assignments.");
       validateAssignment(option.assignment, label + ".assignment", context);
     }
+    if (option.scope_ref || option.proposal || option.execution_plan) {
+      if (value.renderer !== RENDERER) fail("UNSUPPORTED_PROTOCOL", "Protected proposals require lead-markdown-v4.");
+      context.reference(option.scope_ref, label + ".scope_ref", "action_scope");
+      require("./authorizations.cjs").validateOffer(state, option, response, payload);
+    } else if (require("./authorizations.cjs").active(state) && (option.assignment?.specialist_id === "report_writer" || (option.assignment?.specialist_id === "design_worker" && option.assignment.operation === "execution"))) {
+      fail("MISSING_SCOPE", "A protected action offer requires its concrete current scope and reporting requires findings discussion.");
+    }
   });
   distinct(response.next_steps.map(entry => entry.option_id), "exchange.response.next_steps");
   for (const key of ["questions", "next_steps"]) {
     if (!response[key].length || Object.hasOwn(response, key + "_none")) text(response[key + "_none"], "exchange.response." + key + "_none");
     if (response[key].length && Object.hasOwn(response, key + "_none")) fail("INVALID_INPUT", key + "_none is only allowed for an empty section.");
+  }
+  if (require("./authorizations.cjs").active(state)) {
+    for (const run of state.runs.filter(record => record.kind === "analysis" && record.status === "completed" && record.authorization_binding && closing.includes(record.interpretation_ref))) {
+      if (!require("./authorizations.cjs").findingsCoverRun(state, response.findings, run, payload)) fail("FINDINGS_DISCUSSION_REQUIRED", "Closing completed analysis must present its findings, diagnostics and limitations before returning the next decision to the user.");
+    }
   }
 }
 function renderExchange(exchange) {
@@ -196,17 +229,35 @@ function renderExchange(exchange) {
   const continuation = value => value.replace(/\r\n?|\n/g, "\n   ");
   const questions = response.questions.length ? response.questions.map((question, index) =>
     `${index + 1}. ${continuation(question.text)}\n   Why this matters: ${continuation(question.why)}\n   Helpful information: ${continuation(question.needed)}`).join("\n\n") : response.questions_none;
-  const steps = response.next_steps.length ? response.next_steps.map((option, index) =>
-    `${index + 1}. ${option.label}\n   ${continuation(option.actor + ": " + option.scope)}`).join("\n\n") : response.next_steps_none;
+  const steps = response.next_steps.length ? response.next_steps.map((option, index) => {
+    let rendered = `${index + 1}. ${option.label}\n   ${continuation(option.actor + ": " + option.scope)}`;
+    if (exchange.renderer === RENDERER && option.proposal) {
+      // Journal serialization sorts object keys. Use explicit/stable field order
+      // and canonical nested values so a fresh read reproduces the exact receipt.
+      for (const key of ["target", "population", "evidence", "approach", "checks", "outputs", "claim_boundary"]) {
+        const entry = option.proposal[key];
+        rendered += `\n   ${key.replace(/_/g, " ")}: ${continuation(Array.isArray(entry) ? (entry.join("; ") || "None required.") : entry)}`;
+      }
+      for (const key of Object.keys(option.execution_plan).sort()) {
+        if (["inputs", "kind", "claim_boundary", "target", "population", "diagnostics", "design_id", "additional_design_ids", "evidence_refs"].includes(key)) continue;
+        const entry = option.execution_plan[key];
+        if (key === "estimator" && entry === option.proposal.approach) continue;
+        const display = typeof entry === "string" ? entry : (Array.isArray(entry) && !entry.length ? "None" : canonical(entry));
+        rendered += `\n   ${key.replace(/_/g, " ")}: ${continuation(display)}`;
+      }
+    }
+    return rendered;
+  }).join("\n\n") : response.next_steps_none;
   // Renderer identity owns whitespace because delivered responses bind its exact hash.
   const afterLabel = exchange.renderer === "lead-markdown-v1" ? "\n" : "\n\n";
-  if (exchange.renderer !== "lead-markdown-v3") {
+  if (!["lead-markdown-v3", RENDERER].includes(exchange.renderer)) {
     return `[Status]${afterLabel}${response.status}\n\n[Questions]${afterLabel}${questions}\n\n[Next Steps]${afterLabel}${steps}`;
   }
   const answers = (response.user_questions || []).map((entry, index) =>
     `${index + 1}. ${continuation(entry.text)}\n   ${continuation(entry.answer)}`).join("\n\n");
+  const findings = response.findings ? `\n\nFindings: ${response.findings.summary}\n\nDiagnostics: ${response.findings.diagnostics.join("; ") || "No additional diagnostics for this work."}\n\nLimitations: ${response.findings.limitations.join("; ") || "No additional limitations recorded."}` : "";
   return (answers ? `[Your Questions]\n\n${answers}\n\n` : "")
-    + `[Status]\n\n${response.status}\n\n[I want to know]\n\n${questions}\n\n[Decide Next Steps]\n\n${steps}`;
+    + `[Status]\n\n${response.status}${findings}\n\n[I want to know]\n\n${questions}\n\n[Decide Next Steps]\n\n${steps}`;
 }
 function exchangeReceipt(event) {
   if (!event.payload.exchange) return {};

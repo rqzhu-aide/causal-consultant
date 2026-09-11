@@ -34,7 +34,7 @@ function validate(directory = root) {
   const demand = (condition, message) => { if (!condition) errors.push(message); };
   const read = file => fs.readFileSync(path.join(directory, file), "utf8").replace(/\r\n/g, "\n");
   const required = ["SKILL.md", "README.md", "LICENSE", "package.json", "agents/openai.yaml",
-    "references/catalog.json", "references/memory.md", "references/runs.md", "scripts/project.cjs"];
+    "references/catalog.json", "references/memory.md", "references/runs.md", "references/authorizations.md", "scripts/lib/authorizations.cjs", "scripts/project.cjs"];
   for (const name of required) demand(files.includes(name), "Missing " + name);
   const pkg = JSON.parse(read("package.json"));
   demand(Array.isArray(pkg.files) && JSON.stringify([...pkg.files].sort()) === JSON.stringify([...PACKAGE_ENTRIES].sort()),

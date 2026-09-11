@@ -8,9 +8,11 @@ node <skill-root>/scripts/project.cjs <command> --project-root <folder>
 ```
 
 Check `node <skill-root>/scripts/project.cjs capabilities` once for a loaded helper;
-it needs no project root. This skill requires `durable-exchanges-v1` and
-`user-question-routing-v1`; check capabilities rather than version alone because
-earlier 7.0.5 candidates lack question-aware routing and `lead-markdown-v3`.
+it needs no project root. This skill requires `durable-exchanges-v1`,
+`user-question-routing-v1` and `consultation-loop-v1`; check capabilities rather
+than version alone. Read [authorizations.md](authorizations.md) for activation,
+immutable action scopes and later user decisions. New policy exchanges use
+`lead-markdown-v4`; earlier renderers remain available for historical replay.
 Do not write these records with an older helper. Existing v7 histories
 remain readable without adding fictional past exchanges; v6 is not converted.
 
@@ -47,6 +49,17 @@ Open user-origin questions are also retained as context roots so a later turn
 can find deferred answers after the immediate focus changes.
 Check its coverage before interpreting a reply dependent on a past question.
 
+With the action policy active, `views.work.actions` includes `focus_scope_ref`,
+`scopes`, `decisions`, `offers`, `eligibility`, `exact_basis` and
+`findings_awaiting_discussion`. Inspect the linked scope and exact evidence
+versions on focus return, not only the eligibility label. Eligibility entries
+distinguish unused permission from `current_direction` and `executable_now`:
+paused or redirected work can retain acceptance while new output remains suspended.
+Explicit resumption must select its scope/authorization in the latest interpretation.
+Discussion obligations identify the completed `run_ref` and either `recover_or_confirm_delivery` or
+`present_saved_findings_without_recomputation`. Use saved findings to complete
+that handoff; do not rerun work or treat a prepared reply as already delivered.
+
 ## Record Contract
 
 Request: `event_id`, `expected_project_id`, `expected_last_event_id`,
@@ -62,6 +75,7 @@ Use a new event ID and reuse that exact request on an uncertain retry.
 | `reply_interpreted` | `protocol`, `interpretation`; optional `changes`, `checkpoint`, prior `delivery` |
 | `exchange_prepared` | `protocol`, `exchange`; optional `changes`, `checkpoint`, `review`, lead-only `interpretation`, prior `delivery` |
 | `exchange_delivery` | `protocol`, `delivery` |
+| `consultation_policy_activated` | `policy: "consultation-loop-v1"`, `reconciliation` |
 
 For the three exchange types, `protocol` is exactly `durable-exchanges-v1`.
 These record boundaries follow [team_lead.md](team_lead.md). A lead-only round
@@ -89,6 +103,7 @@ All listed record fields are required unless marked optional.
 | `user_context` | `context_id`, `kind`: `preference`/`constraint`/`communication`/`domain_expertise`/`statistical_expertise`, `statement`, nonempty `basis_refs`, `status`: `current`/`superseded`; optional `supersedes` |
 | `result_conditions` | `condition_id`, `evidence_ref`, `result_locator`, `claim`, `target`, `assumption_refs`, `basis_refs`, `limitations`; optional `inference`, `supersedes` |
 | `consultation` | Current/next checkpoint or `null` |
+| `action_scopes` | Immutable analysis/report scope revisions; exact fields and activation in [authorizations.md](authorizations.md) |
 
 Strategy status: `possible`, `conditional`, `preferred`,
 `unsupported_with_current_evidence`, `not_relevant`. Distinct targets,
@@ -163,8 +178,10 @@ Review requires `review_id`, `summary`, `assignment`,
   selected assignment exactly; a lead-only interpretation cannot authorize a
   specialist review, and one interpretation completes at most one review.
 
-For a direct request, save its interpretation, selection checkpoint and user
-evidence before dependent specialist work, without another user approval.
+For a direct investigation request, save its interpretation, checkpoint and user
+evidence before dependent specialist work. Protected analysis/reporting requires
+the current presented scope and later acceptance under the action contract;
+ordinary selection rationale cannot substitute for them.
 Historical pre-protocol reviews may contain retrospective combined selection;
 do not rewrite them or use that older convention for new work.
 `payload.checkpoint` is the selection checkpoint; put a
@@ -208,7 +225,9 @@ earlier consultant question, not the user's new question; a `question` component
 uses `user_question_ref` without these prior-delivery bindings. A selection requires its stable option ID;
 question/option bindings require matching exchange and delivery references.
 The displayed option number selects the corresponding entry in that exchange's
-ordered list. A clear new instruction needs no preceding exchange.
+ordered list. A clear new investigation or explanation instruction needs no
+preceding exchange. Protected work follows the later-decision contract even when
+the user's report or analysis request is direct.
 
 `next_action` has `kind`: `lead_only` or `specialist`, `scope`, `reason`.
 Specialist work also requires `assignment` in the existing assignment shape;
@@ -226,14 +245,19 @@ work when that option had no specialist assignment, supply `adjustment_reason`
 explaining the current instruction or evidence that supports the change. A plain
 discussion or information-sharing selection cannot silently become specialist
 work; documenting an adjustment is not scientific approval or new user direction.
+For the active consultation policy, `action_decisions` and optional
+`focus_scope_ref` preserve offer acceptance/deferral/withdrawal and current focus.
+Protected `next_action` also names `scope_ref` and `authorization_ref`. Follow
+[authorizations.md](authorizations.md) rather than deriving permission from
+free-form decisions or a checkpoint status.
 
 ### Exchange
 
 `exchange_id`, `turn_id`, `interpretation_ref`, `basis_refs`,
-`completed_work_refs`, `reconciliation`, `response`, `renderer: "lead-markdown-v3"`.
-Use v3 for new exchanges; it renders `[Your Questions]` when present, then
+`completed_work_refs`, `reconciliation`, `response`, `renderer: "lead-markdown-v4"`.
+Use v4 under the active consultation policy; it renders `[Your Questions]` when present, then
 `[Status]`, `[I want to know]` and `[Decide Next Steps]`. The helper retains
-v1 and v2 for exact replay and receipts of earlier exchanges. Do not relabel an
+v1, v2 and v3 for exact replay and receipts of earlier exchanges. Do not relabel an
 old exchange or normalize its saved response when recording delivery.
 The interpretation and turn must match. Work references identify reviews or
 terminal runs; account for every recorded completed, failed or abandoned item
@@ -249,12 +273,14 @@ exchange of this same turn. Revise by appending, never overwriting an old reply.
 and unresolved impacts; the helper cannot certify its scientific completeness.
 
 `response`: `status` string, `questions` array, `next_steps` array, optional
-`user_questions` array. An empty
+`user_questions` array and optional `findings` under v4. `findings` contains
+`work_refs`, `summary`, `diagnostics` and `limitations`; it carries the actual
+results discussion used by report offers. An empty
 questions array requires `questions_none`; empty next steps requires
 `next_steps_none`. Supply the actual short text for those empty sections instead
 of manufacturing another question or investigation.
 
-- User question (`user_questions`, v3): `question_ref`, `text`, `answer`,
+- User question (`user_questions`, v3/v4): `question_ref`, `text`, `answer`,
   `status`: `answered`/`pending`/`withdrawn`, `basis_refs`. The question
   must have `origin: "user"`; these statuses respectively match its effective
   `answered`/`open`/`retired` record after this submission's changes. `answer`
@@ -274,6 +300,10 @@ of manufacturing another question or investigation.
   Displayed order is array order; keep `label` on one line. A discussion invitation
   is not execution. The renderer indents subordinate multiline text so it cannot
   appear as an additional numbered option.
+  Protected action offers additionally bind `scope_ref`, `proposal` and
+  `execution_plan` under [authorizations.md](authorizations.md); v4 renders the
+  substantive proposal. A report offer references current findings, not merely
+  the user's original deliverable request.
 
 The preparation receipt returns `exchange_id`, `renderer`, `rendered_response`
 and `response_sha256` along with commit identity. Present **rendered_response
@@ -292,12 +322,13 @@ can be batched with the next interpretation/lead-only closeout to avoid an extra
 write. The helper checks matching records, not the truth of your observation.
 
 If a bare "yes" or number depends on an unobserved prepared exchange, inspect
-the actual previous message or clarify. An explicit new instruction can still
-proceed. Legacy history without outgoing records remains a coverage limit.
+the actual previous message or clarify. An explicit new investigation or
+explanation can still proceed; a protected action cannot use a missing historical
+offer as permission. Legacy outgoing coverage remains a limitation.
 
 ### Lead-Only First Round Example
 
-After `init` returns event-init, one submission can save the attributed request,
+After a new `init` returns event-init with the action policy active, one submission can save the attributed request,
 answer the user's prerequisite question and ask for a missing study fact.
 This is an authoring example, not evidence about a real study:
 
@@ -322,7 +353,7 @@ This is an authoring example, not evidence about a real study:
     },
     "exchange": {
       "exchange_id":"exchange-intake","turn_id":"turn-intake","interpretation_ref":"interpretation-intake",
-      "basis_refs":["user-request"],"completed_work_refs":[],"renderer":"lead-markdown-v3",
+      "basis_refs":["user-request"],"completed_work_refs":[],"renderer":"lead-markdown-v4",
       "reconciliation":{"changes":["Explained the offer-effect target before selecting work."],"limitations":["Allocation has not been described."],"unresolved":["How program offers were assigned."],"next_direction":"Obtain the study procedure."},
       "response":{
         "user_questions":[{"question_ref":"question-offer-effect","text":"What does an offer effect mean?","answer":"It compares outcomes under being offered a program place versus not being offered one. People may choose whether to attend, so this is a different question from the effect of attending. Which comparison we can support depends on how the offers were assigned.","status":"answered","basis_refs":[]}],

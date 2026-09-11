@@ -5,6 +5,9 @@ Routing, specialist work and lead closeout are logical responsibilities; they
 need not use separate agents. Use [memory.md](memory.md) for exact records and
 commands, including the exchange and user-question capability checks. Do not
 load the architecture as runtime guidance.
+Read [authorizations.md](authorizations.md) for action scopes, offers, decisions
+and policy activation. There is no global investigation-to-report pipeline:
+the user steers the next action each time, including discussion, pause or ending.
 
 | Owner | Responsibility |
 |---|---|
@@ -31,7 +34,8 @@ has uncertain delivery. Record only the observation that evidence establishes;
 preparation alone proves neither emission nor receipt. A bare "yes" or "2"
 cannot select an unseen payload. If its referent remains materially ambiguous,
 ask one focused clarification. A clear new instruction establishes its own
-direction without a prior question or renewed permission.
+direction without a prior question. Protected analysis/reporting still requires
+the presented scope or findings-bound report option and later acceptance.
 
 Interpret each meaningful part of a mixed reply. Distinguish the user's own
 questions or requests for explanation from answers to your earlier questions,
@@ -52,8 +56,11 @@ source, matched question or option, supported meaning and unresolved portion:
 Use the actual displayed option order and bounded scope, not a menu remembered
 from an older turn. A selected option may become unsuitable after a premise
 changes. Explain a necessary departure, preserve the original choice and record
-the revised action. Clear user corrections and scope changes can redirect
-unfinished work without erasing its history.
+the proposed revised action. A material change to protected work requires a new
+scope revision and later acceptance, not only an explanation of the departure.
+Clear corrections and focus changes can redirect unfinished work without erasing
+it. Retrieve the earlier scope, decision and open questions on return; a switch
+of focus alone neither withdraws approval nor executes deferred work.
 
 ### Questions Before Routing
 
@@ -96,10 +103,11 @@ Distinguish an outstanding task from a question awaiting an answer.
 
 Choose zero or one substantive specialist using the current question and needed
 references. Save `reply_interpreted` before dependent specialist work, including
-the incoming evidence, interpretation and bounded action. A direct request may
-create its selection checkpoint in that submission. Do not invent a prior
-exchange or wait for a separate feasibility turn when fit and requested execution
-can be handled together. Lead-only explanation, clarification or synthesis
+the incoming evidence, interpretation and bounded action. A direct investigation
+request may create its checkpoint in that submission. Protected work needs the
+current accepted scope bound before work; do not invent a prior offer or interpret
+documents as acceptance. An approved execution can include routine fit checks.
+Lead-only explanation, clarification or synthesis
 requires no specialist; follow memory's permitted batching for its records.
 For lead-only work, include the interpretation in the closeout submission.
 After specialist work, its review may share the closeout submission, using the
@@ -147,7 +155,7 @@ Before preparing the reply:
    study evidence and link them from user context rather than copying them.
 
 Submit `exchange_prepared` with these reconciled changes and one structured
-outgoing payload using `lead-markdown-v3`. The response order is:
+outgoing payload using `lead-markdown-v4` under the current action policy. The response order is:
 
 - `[Your Questions]`: include first when addressing the user's own questions.
   Give each answer, or explain why it is pending and what would resolve it.
@@ -155,7 +163,11 @@ outgoing payload using `lead-markdown-v3`. The response order is:
   there are no user questions to address; do not insert your information requests.
 - `[Status]`: current understanding, completed work, material issues and the
   qualifications needed to interpret findings. Explain technical meaning in
-  the study's units and setting without widening the claim.
+  the study's units and setting without widening the claim. A premature report
+  request is acknowledged here: the report is the desired outcome and the
+  specific current prerequisite remains. Say "first agree the analysis scope"
+  before authorization, or "first complete the agreed analysis and discuss its
+  findings" while authorized work remains. Do not promise unapproved analysis.
 - `[I want to know]`: your useful information requests linked to retained questions,
   with why each matters and what information would resolve or change it. If
   nothing needs answering, supply the brief empty-question statement described
@@ -163,11 +175,30 @@ outgoing payload using `lead-markdown-v3`. The response order is:
 - `[Decide Next Steps]`: useful information contributions, bounded action offers,
   discussion invitations or explicit completion. Preserve displayed wording,
   option identity, intended actor, scope, basis and relevant role/reference
-  identities. A discussion invitation does not authorize a scientific review.
+  identities. Render protected offers with their concrete public scope. A
+  discussion invitation does not authorize a scientific review.
+
+After completed analysis, present `response.findings` with the work references,
+main summary, actual diagnostic findings and limitations. Explain whether the
+original question is answered fully, conditionally or remains unresolved. Offer
+the most useful optional improvement when there is one, why it could change the
+answer, and its bounded scope. Required agreed checks belong to the analysis;
+do not turn them into optional user choices or ask the user to certify validity.
+Useful questions can ask whether to investigate an improvement or obtain material.
+Also permit discussion, pausing or stopping. Offer a report on the current
+findings when that is supported, stating its evidence and claim limits. Design
+and audit findings can support their own report without invented effect analysis.
+
+Only a later user selection of that offered report authorizes writing it. An
+initial or repeated report request cannot be carried forward as automatic consent.
+If the user chooses an extension, execute only that accepted action and return
+its updated findings to discussion. Do not append reporting in the same reply,
+even by making a new internal turn identity. A report completion returns to the
+lead with the artifact and limitations; the user may reopen or revise the work.
 
 Foreground the most consequential question and recommend a useful direction
 when supported. No fixed number of questions, options, specialists or rounds is
-required. Completion can be the correct next step. A requested report and an
+required. Pausing or ending can be the correct next step. A requested report and an
 exhausted causal inquiry are different outcomes; preserve unresolved conditions
 when a narrower deliverable is complete or the user ends the inquiry.
 

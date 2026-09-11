@@ -9,6 +9,7 @@ const test = require("node:test");
 const store = require("../scripts/lib/store.cjs");
 const runs = require("../scripts/lib/runs.cjs");
 const { sha256 } = require("../scripts/lib/files.cjs");
+const { preparePlan } = require("./fixtures/consultation-loop.cjs");
 
 function project(t) {
   const temporaryBase = fs.realpathSync.native(os.tmpdir());
@@ -36,7 +37,8 @@ function plan(kind = "analysis") {
   throw new Error("Unknown fixture plan kind");
 }
 function start(root, run_id = "run-main", extra = {}) {
-  return runs.start(root, { ...identities(root, "event-start-" + run_id), run_id, plan: plan(), ...extra });
+  const prepared = preparePlan(root, extra.plan || plan());
+  return runs.start(root, { ...identities(root, "event-start-" + run_id), run_id, ...extra, plan: prepared });
 }
 function write(root, run_id, filePath, content) {
   const { event_id, ...identity } = identities(root, "unused");
@@ -73,7 +75,8 @@ function registerComputed(root) {
   return record;
 }
 function reportStart(root, run_id = "run-report") {
-  return runs.start(root, { ...identities(root, "event-start-" + run_id), run_id, plan: { kind: "report", objective: "Summarize the saved synthetic result", claim_boundary: "Descriptive only", inputs: [], purpose: "Planning illustration", evidence_refs: ["evidence-result"], format: "Markdown" } });
+  const prepared = preparePlan(root, { kind: "report", objective: "Summarize the saved synthetic result", claim_boundary: "Descriptive only", inputs: [], purpose: "Planning illustration", evidence_refs: ["evidence-result"], format: "Markdown" });
+  return runs.start(root, { ...identities(root, "event-start-" + run_id), run_id, plan: prepared });
 }
 function reportFinalize(root, run_id = "run-report") {
   write(root, run_id, "report.md", "The synthetic sample mean is 11. This is descriptive only.\n");
@@ -135,7 +138,8 @@ test("finalization rejects filename-case mismatch before freezing an unusable ma
 test("all supported run kinds validate their own plan shape without analysis fields on reports", t => {
   const root = project(t);
   for (const kind of ["audit", "analysis", "discovery"]) {
-    runs.start(root, { ...identities(root, "event-" + kind), run_id: "run-" + kind, plan: plan(kind) });
+    const prepared = preparePlan(root, plan(kind));
+    runs.start(root, { ...identities(root, "event-" + kind), run_id: "run-" + kind, plan: prepared });
   }
   store.record(root, { ...identities(root, "event-source"), type: "memory_updated", payload: { changes: { evidence: [{ evidence_id: "evidence-result", kind: "file", source_ref: "data/sample.csv", summary: "Synthetic source." }] } } });
   reportStart(root);
@@ -175,7 +179,8 @@ test("completed run is immutable and a child has a new identity and frozen plan"
 
 test("start and finalize remain idempotent after projection delivery failure", t => {
   const root = project(t);
-  const startRequest = { ...identities(root, "event-start"), run_id: "run-main", plan: plan() };
+  const prepared = preparePlan(root, plan());
+  const startRequest = { ...identities(root, "event-start"), run_id: "run-main", plan: prepared };
   const failedDelivery = { hooks: { beforeProjection() { throw new Error("injected projection failure"); } } };
   assert.equal(runs.start(root, startRequest, failedDelivery).projection_written, false);
   assert.equal(runs.start(root, startRequest).replayed, true);
@@ -190,7 +195,8 @@ test("start and finalize remain idempotent after projection delivery failure", t
 
 test("files written before a failed start append remain reported orphans, never adopted", t => {
   const root = project(t);
-  const request = { ...identities(root, "event-start"), run_id: "run-main", plan: plan() };
+  const prepared = preparePlan(root, plan());
+  const request = { ...identities(root, "event-start"), run_id: "run-main", plan: prepared };
   assert.throws(() => runs.start(root, request, { hooks: { beforeAppend() { throw new Error("stop before append"); } } }));
   assert.equal(current(root).runs.length, 0);
   assert.equal(runs.verify(root).issues.some(issue => issue.code === "ORPHAN_RUN"), true);
@@ -250,7 +256,8 @@ test("failed and abandoned runs remain visible but never become completed output
 
 test("wrong identities, invalid parents and unknown fields reject before generated files", t => {
   const root = project(t);
-  const request = { ...identities(root, "event-start"), run_id: "run-main", plan: plan() };
+  const prepared = preparePlan(root, plan());
+  const request = { ...identities(root, "event-start"), run_id: "run-main", plan: prepared };
   assert.throws(() => runs.start(root, { ...request, expected_project_id: "project-other" }), hasCode("WRONG_PROJECT"));
   assert.throws(() => runs.start(root, { ...request, expected_last_event_id: null }), hasCode("STALE_WRITE"));
   assert.throws(() => runs.start(root, { ...request, parent_run_id: "run-missing" }), hasCode("UNKNOWN_RUN"));

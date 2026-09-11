@@ -1,11 +1,13 @@
 # Causal Consultant v7
 
-Version: **7.0.6**, the active candidate at this repository's root.
+Version: **7.0.7**, the active candidate at this repository's root.
 The consultant and `interactive-test-cc` use the same release number. This
-release clarifies the evidence needed for data checks and completion, paired
-with four independently selectable testing problems and four personas. A
-documented design permits direct analysis while retaining the responsibility to
-reconcile the data, diagnose consequential issues and preserve qualifications.
+release restores explicit choices inside a persistent consultation: agree a
+concrete analysis scope before execution, discuss findings and possible
+improvements afterward, then choose whether to extend the work or produce a
+report. An early report request records the desired outcome without skipping
+those choices. Four independently selectable testing problems and four personas
+remain. Data checks and scientific qualifications remain the consultant's duty.
 The existing workflow includes durable incoming interpretation, lead closeout and generated
 user, study and work views. The lead's response separates answers to your
 questions from information it needs from you. `[Your Questions]` comes first
@@ -23,8 +25,12 @@ new installation or a claim that release qualification is complete.
 The lead helps identify the uncertainty that most affects a causal study and
 explains how you can help resolve it. Your answer, choice, or instruction informs
 one specialist review. The lead returns with findings and a useful next step.
-Clear requests proceed without another approval question; a settled summary
-does not trigger another investigation.
+Clear requests for investigation or explanation can proceed directly. Protected
+analysis and report production use specific presented scopes and later user
+decisions. Routine checks within accepted analysis need no further approval.
+A settled finding does not automatically trigger another investigation or report.
+You may change focus, defer, pause or end without a report, and reopen completed
+work later. The report is a saved artifact, not a permanent end to consultation.
 
 When your message combines questions and instructions, the lead checks which
 answers are needed before work can begin. It explains or asks for material
@@ -46,7 +52,8 @@ This revision requires an investigated basis before settling an underspecified
 causal question. The lead chooses checks by what different answers could change,
 including whether an accessible fact could reveal a stronger design. Descriptive
 deliverables can be completed while the original causal question remains open;
-explicit user narrowing and ready-to-execute work retain direct paths.
+explicit user narrowing remains supported. Ready-to-execute work proceeds after
+acceptance of its concrete scope, without a redundant feasibility review.
 Answers keep their qualifications and must inform advice. Each consequential
 result can retain direct condition and assumption references; report sources
 freeze those records and their versions. Run integrity and the one-specialist
@@ -82,6 +89,8 @@ historical copies are not discovered. Node test options are forwarded, for
 example `npm test -- --test-name-pattern="version"`.
 
 [Memory](references/memory.md) documents focused reads, records, history and recovery.
+[Action authorizations](references/authorizations.md) documents activation,
+presented scopes, later decisions and resumption of protected work.
 [Runs](references/runs.md) documents pre-result plans, saved artifacts, and
 verification. These are conditional instructions, not a questionnaire for you.
 
@@ -106,9 +115,12 @@ evidence excerpts are included in 7.0.0, having been introduced in rc.3. Earlier
 v7 journals remain readable without rewriting them; older helpers need not
 accept records using the newer features.
 Same-ID updates still replace the complete record, including optional fields.
-Check for both `durable-exchanges-v1` and `user-question-routing-v1` capabilities
-before using the current closeout workflow; the version number alone does not
-distinguish earlier 7.0.5 candidates. New helpers
+Check for `durable-exchanges-v1`, `user-question-routing-v1` and
+`consultation-loop-v1` before using the current workflow. New projects activate
+the policy on initialization; existing inactive projects require explicit
+activation. Earlier active runs must first be resolved with their original
+runtime. New permissions do not apply retrospectively. Current offers use the
+v4 renderer, while historical replies and hashes remain unchanged. New helpers
 read old histories without fabricated questions, delivery observations or result
 conditions. Older helpers reject extended events and must not edit such projects.
 A skill instruction cannot force every host to use the closeout helper; this

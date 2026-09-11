@@ -21,7 +21,10 @@ unobserved event from a missing record.
 Audit diagnostics can inspect distributions, missingness, recurrence and
 exposure-only support. No target exposure-outcome contrast, adjusted/subgroup
 effect or target model, even under a diagnostic label. Those require a planned
-design-worker execution. Do not select a final method or silently change target.
+authorized design-worker execution under [authorizations.md](authorizations.md).
+Policy learning/value and outcome-based subgroup selection share that boundary.
+Do not select a final method or silently change target. File reads and routine
+data checks inside this bounded audit require no separate approval for each step.
 
 Suggest useful linkage, reconstruction, aggregation, justified restriction or
 additional collection with what it enables and its limitations. Finding a
@@ -70,4 +73,6 @@ use a run; memory keeps concise interpretation and provenance. Link consequentia
 derived-data claims to their construction conditions using `result_conditions`;
 do not invent an inferential target or hypothesis for preparation outputs.
 Run finalization ends artifact work; the lead still reconciles and saves the
-outgoing exchange.
+outgoing exchange. Audit findings return to discussion; they do not authorize
+analysis or report production. A bounded audit report can be offered on its
+actual findings, then written only after the user's later selection.

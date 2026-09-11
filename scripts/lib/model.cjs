@@ -4,7 +4,7 @@ const { fail } = require("./files.cjs");
 const CATALOG = require("../../references/catalog.json");
 
 const ID = /^[a-z][a-z0-9_-]{0,79}$/;
-const PUBLIC_TYPES = ["checkpoint", "memory_updated", "review_completed", "correction", "reply_interpreted", "exchange_prepared", "exchange_delivery"];
+const PUBLIC_TYPES = ["checkpoint", "memory_updated", "review_completed", "correction", "reply_interpreted", "exchange_prepared", "exchange_delivery", "consultation_policy_activated"];
 const RUN_TYPES = ["run_started", "run_finalized", "run_failed", "run_abandoned"];
 const CHECKPOINT_STATUSES = ["assessing", "awaiting_user", "ready_for_specialist", "specialist_complete"];
 const STRATEGY_STATUSES = ["possible", "conditional", "preferred", "unsupported_with_current_evidence", "not_relevant"];
@@ -15,7 +15,8 @@ const COLLECTIONS = {
   decisions: { id: "decision_id", kind: "decision" },
   candidate_routes: { id: "strategy_id", kind: "strategy" },
   user_context: { id: "context_id", kind: "user_context" },
-  result_conditions: { id: "condition_id", kind: "result_condition" }
+  result_conditions: { id: "condition_id", kind: "result_condition" },
+  action_scopes: { id: "scope_id", kind: "action_scope", immutable: true }
 };
 
 function jsonValue(value, label = "input", seen = new Set(), depth = 0) {
@@ -97,7 +98,7 @@ function semanticContext(state, request) {
     if (!Object.hasOwn(changes, name)) continue;
     array(changes[name], "changes." + name, (record, label) => {
       if (!record || typeof record !== "object" || Array.isArray(record)) fail("INVALID_INPUT", label + " must be an object.");
-      reserve(record[config.id], config.kind);
+      reserve(record[config.id], config.kind, config.immutable === true);
       if (name === "evidence") evidence.set(record.evidence_id, record);
     });
   }
@@ -105,6 +106,7 @@ function semanticContext(state, request) {
   if (payload.interpretation) {
     reserve(payload.interpretation.interpretation_id, "interpretation", true);
     reserve(payload.interpretation.turn_id, "turn", true);
+    for (const decision of payload.interpretation.action_decisions || []) reserve(decision.decision_id, "action_decision", true);
   }
   if (payload.exchange) reserve(payload.exchange.exchange_id, "exchange", true);
   if (payload.delivery) reserve(payload.delivery.delivery_id, "delivery", true);
@@ -303,15 +305,18 @@ function validateSemantic(state, request) {
   enumeration(request.type, PUBLIC_TYPES, "type");
   const required = {
     checkpoint: ["checkpoint"], memory_updated: ["changes"], review_completed: ["review"], correction: ["corrects_refs", "reason", "changes"],
-    reply_interpreted: ["protocol", "interpretation"], exchange_prepared: ["protocol", "exchange"], exchange_delivery: ["protocol", "delivery"]
+    reply_interpreted: ["protocol", "interpretation"], exchange_prepared: ["protocol", "exchange"], exchange_delivery: ["protocol", "delivery"], consultation_policy_activated: ["policy", "reconciliation"]
   }[request.type];
   const optional = { checkpoint: ["changes"], memory_updated: [], review_completed: ["changes", "checkpoint"], correction: [],
-    reply_interpreted: ["changes", "checkpoint", "delivery"], exchange_prepared: ["changes", "checkpoint", "review", "interpretation", "delivery"], exchange_delivery: [] }[request.type];
+    reply_interpreted: ["changes", "checkpoint", "delivery"], exchange_prepared: ["changes", "checkpoint", "review", "interpretation", "delivery"], exchange_delivery: [], consultation_policy_activated: [] }[request.type];
   object(request.payload, "payload", required, optional);
   const exchanges = require("./exchanges.cjs");
   if (Object.hasOwn(request.payload, "protocol") && request.payload.protocol !== exchanges.PROTOCOL) fail("UNSUPPORTED_PROTOCOL", "Unknown conversation protocol.");
   if (Object.hasOwn(request.payload, "changes")) object(request.payload.changes, "changes", [], ["project_understanding", "consultation", ...Object.keys(COLLECTIONS)]);
   const context = semanticContext(state, request);
+  const authorizations = require("./authorizations.cjs");
+  if (request.type === "consultation_policy_activated") authorizations.validateActivation(state, request.payload);
+  if (request.payload.changes?.action_scopes) authorizations.validateScopes(state, request.payload.changes.action_scopes, context, request.payload);
   if (Object.hasOwn(request.payload, "checkpoint")) validateCheckpoint(request.payload.checkpoint, "checkpoint", context);
   if (Object.hasOwn(request.payload, "changes")) validateChanges(request.payload.changes, context);
   if (Object.hasOwn(request.payload, "delivery")) exchanges.validateDelivery(request.payload.delivery, context, state);
@@ -350,7 +355,8 @@ function reduceEvent(state, event, copyState) {
     validateSemantic(state, { event_id: event.event_id, expected_project_id: event.project_id, expected_last_event_id: event.previous_event_id, type: event.type, payload: event.payload });
   } else if (event.type === "init") {
     if (state.state_meta.sequence !== 0) fail("INVALID_EVENT", "A project can only be initialized once.");
-    object(event.payload, "init payload", ["project_understanding"]);
+    object(event.payload, "init payload", ["project_understanding"], ["consultation_policy"]);
+    if (event.payload.consultation_policy) enumeration(event.payload.consultation_policy, [require("./authorizations.cjs").POLICY], "init.consultation_policy");
     validateUnderstanding(event.payload.project_understanding);
   } else if (!RUN_TYPES.includes(event.type)) fail("INVALID_EVENT", "Unknown event type: " + event.type);
 
@@ -358,12 +364,16 @@ function reduceEvent(state, event, copyState) {
   const index = (recordId, kind) => {
     const prior = next.history_index[recordId];
     if (prior && prior.kind !== kind) fail("DUPLICATE_ID", "Conflicting history identity: " + recordId);
-    next.history_index[recordId] = { kind, event_ref: event.event_id };
+    next.history_index[recordId] = { kind, event_ref: event.event_id, ...(next.state_meta.consultation_policy ? { sequence: event.sequence } : {}) };
   };
   index(event.event_id, "event");
   if (event.type === "init") {
     next.project_understanding = structuredClone(event.payload.project_understanding);
     next.state_meta.created_at = event.timestamp;
+  }
+  if (event.type === "consultation_policy_activated" || event.payload.consultation_policy) {
+    next.state_meta.consultation_policy = { policy: require("./authorizations.cjs").POLICY, event_ref: event.event_id };
+    next.action_scopes = []; next.action_decisions = []; next.focus_scope_ref = null;
   }
   if (PUBLIC_TYPES.includes(event.type)) {
     const payload = event.payload;
@@ -381,6 +391,8 @@ function reduceEvent(state, event, copyState) {
     if (payload.review) {
       const review = payload.review;
       next.specialist_reviews.push({ review_id: review.review_id, event_ref: event.event_id, summary: review.summary, completed_at: event.timestamp,
+        ...(next.state_meta.consultation_policy ? { evidence_refs: structuredClone(review.evidence_refs || []),
+          assumptions_added_or_revised: structuredClone(review.assumptions_added_or_revised || []) } : {}),
         ...(review.interpretation_ref ? { interpretation_ref: review.interpretation_ref } : {}) });
       index(review.review_id, "review");
       if (next.consultation?.checkpoint_id === review.selection_basis.checkpoint_id) next.consultation.status = "specialist_complete";
@@ -402,6 +414,11 @@ function reduceEvent(state, event, copyState) {
       next.turns.push({ turn_id: interpretation.turn_id, interpretation_ref: interpretation.interpretation_id, work_refs: [], exchange_ref: null });
       index(interpretation.interpretation_id, "interpretation");
       index(interpretation.turn_id, "turn");
+      if (Object.hasOwn(interpretation, "focus_scope_ref")) next.focus_scope_ref = interpretation.focus_scope_ref;
+      for (const decision of interpretation.action_decisions || []) {
+        next.action_decisions.push({ ...structuredClone(decision), interpretation_ref: interpretation.interpretation_id, event_ref: event.event_id });
+        index(decision.decision_id, "action_decision");
+      }
     }
     if (payload.delivery) {
       next.deliveries.push({ ...structuredClone(payload.delivery), event_ref: event.event_id });
@@ -414,7 +431,10 @@ function reduceEvent(state, event, copyState) {
       next.exchanges.push({ exchange_id: exchange.exchange_id, turn_id: exchange.turn_id, interpretation_ref: exchange.interpretation_ref,
         event_ref: event.event_id, renderer: exchange.renderer, response_sha256: receipt.response_sha256,
         question_refs: exchange.response.questions.map(question => question.question_ref),
+        ...(next.state_meta.consultation_policy ? { sequence: event.sequence, findings: structuredClone(exchange.response.findings || null),
+          findings_basis_versions: require("./authorizations.cjs").requiredBasisRefs(next, exchange.response.findings?.work_refs || []).map(ref => ({ ref, event_ref: next.history_index[ref]?.event_ref || event.event_id })) } : {}),
         options: exchange.response.next_steps.map(option => ({ option_id: option.option_id, kind: option.kind, actor: option.actor,
+          ...(option.scope_ref ? { scope_ref: option.scope_ref } : {}),
           ...(option.assignment ? { assignment: structuredClone(option.assignment) } : {}) })),
         ...(exchange.supersedes ? { supersedes: exchange.supersedes } : {}) });
       index(exchange.exchange_id, "exchange");
@@ -432,6 +452,7 @@ function reduceEvent(state, event, copyState) {
     const expected = { run_started: "in_progress", run_finalized: "completed", run_failed: "failed", run_abandoned: "abandoned" }[event.type];
     if (run.status !== expected) fail("INVALID_EVENT", "Run event and status disagree.");
     const prior = next.runs.find(item => item.run_id === run.run_id);
+    require("./authorizations.cjs").validateRunRecord(state, run, event.type);
     if (event.type === "run_started" ? !!prior : !prior || prior.status !== "in_progress") fail("INVALID_EVENT", "Invalid run lifecycle transition.");
     if (prior && (Object.hasOwn(prior, "interpretation_ref") !== Object.hasOwn(run, "interpretation_ref") || prior.interpretation_ref !== run.interpretation_ref)) {
       fail("INVALID_EVENT", "A run lifecycle transition must preserve its original interpretation attribution.");

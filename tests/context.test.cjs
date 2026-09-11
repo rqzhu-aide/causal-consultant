@@ -81,13 +81,15 @@ test("focusing an ordinary premise reveals reverse dependents without needing a 
   assert.ok(result.selection.reasons.some(item => item.record_ref === "strategy-attendance" && item.reason.includes("reverse")));
 });
 
-test("journal review links and historical checkpoints remain discoverable without widening review records", t => {
+test("review dependencies and historical checkpoints remain discoverable", t => {
   const root = project(t);
   const expected = fixture.cases.find(item => item.id === "review-history");
   const result = store.context(root, expected.request);
   hasRefs(result.context, expected.required_refs);
   const review = result.context.specialist_reviews.find(item => item.review_id === "review-allocation");
-  assert.deepEqual(Object.keys(review).sort(), ["completed_at", "event_ref", "review_id", "summary"]);
+  const original = fixture.events.find(event => event.payload.review?.review_id === review.review_id).payload.review;
+  assert.deepEqual(review.evidence_refs, original.evidence_refs || []);
+  assert.deepEqual(review.assumptions_added_or_revised, original.assumptions_added_or_revised || []);
   assert.ok(result.coverage.omission_reasons.some(reason => reason.includes("checkpoint-reviewed") && reason.includes("history")));
   const history = store.history(root, { record_id: "checkpoint-reviewed" });
   assert.ok(history.events.some(event => event.payload.checkpoint?.checkpoint_id === "checkpoint-reviewed"));

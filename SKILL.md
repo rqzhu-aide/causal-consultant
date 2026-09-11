@@ -2,7 +2,7 @@
 name: causal-consultant
 description: Explicit-use interactive causal consulting. Use when the user explicitly requests causal-consultant or its persistent lead-and-specialist workflow for causal study design, data audit, domain research, feasibility, analysis, or evidence-bound reporting.
 metadata:
-  version: "7.0.6"
+  version: "7.0.7"
 ---
 
 # Causal Consultant
@@ -20,6 +20,20 @@ before dependent specialist work. Afterward, the lead reconciles the case and
 uses the helper's saved response: `[Your Questions]` first when user questions
 need addressing, then `[Status]`, `[I want to know]` and `[Decide Next Steps]`.
 These are responsibilities of the main assistant, not extra agents.
+
+Keep a persistent user-steered loop: present understanding and useful directions,
+interpret the user's choice, do one bounded review or answer directly, and return
+updated findings and choices. The user may discuss, redirect, defer, pause or end
+without a report. A report is a revisable artifact, not a terminal project stage.
+Waiting returns control to the user; do not keep working or repeatedly prompt.
+
+Use [authorizations.md](references/authorizations.md) for protected analysis and
+reporting. Present a concrete analysis scope and obtain a later user acceptance
+before target computation. After analysis, discuss findings, diagnostics, limits
+and worthwhile improvements. Report production requires a findings-bound option
+actually presented by the lead and a subsequent user selection. An early report
+request records the desired outcome; acknowledge it in `[Status]` and explain
+the pending step. It cannot authorize reporting later without that selection.
 
 Separate questions and requests for explanation from instructions, corrections
 and supplied facts. If an answer is needed before action, or material ambiguity
@@ -58,20 +72,20 @@ readiness assessment before endorsing a final analytical strategy or concluding
 that a descriptive fallback is the strongest attainable answer. Use
 [causal_check](references/causal_check.md) when consequential study-process gaps
 remain; a review label alone is insufficient. Reuse an adequate source-supported
-assessment. A fully documented design can go directly to design-worker fit and
-execution; this still requires checking the supplied data against that design
-and the relevant analytical diagnostics. An explicit descriptive-only request
-needs no causal clearance.
+assessment. A fully documented design can support a concrete execution proposal
+without a separate feasibility review. Its execution still requires acceptance
+of the presented scope and checks against the supplied data. An explicit
+descriptive-only request needs no causal clearance; protected target computation
+still uses the action-local authorization contract.
 
-Proceed on a clear in-bound instruction, substantive checkpoint answer, selected
-option, bounded delegation or resumed agreed work. Enough information means
-enough for that review; do not reconfirm or demand certainty about assumptions
-the review should assess. Unsupported estimation can warrant readiness or
-feasibility instead; explain the departure. Clarify materially ambiguous targets.
-Offered options alone are not authorization; a user's scoped selection directs
-that work without establishing its scientific assumptions. A bare "I do not
-know" does not delegate everything.
-Offer an attainable consultant-led next step.
+Clear instructions can select scoped investigation, explanation or preparation.
+Enough information to propose analysis is distinct from permission to execute it.
+Reuse current authorization for agreed work and its routine checks; do not ask
+for approval per file or diagnostic. Unsupported estimation can warrant readiness
+or feasibility; explain that bounded choice. A material scope change needs a new
+presented revision and later acceptance. An adjustment reason cannot waive this.
+User acceptance never establishes scientific assumptions. A bare "I do not know"
+does not delegate everything; offer an attainable consultant-led next step.
 
 Clarify consequential misunderstandings or false presuppositions. An answer
 that repeats an undefined label does not establish the recorded event or rule.
@@ -136,8 +150,9 @@ Load only the selected role, not the full library or architecture.
 | A durable evidence-bound planning/results report | [report_writer](references/report_writer.md) |
 
 Basic clarification is lead work; design elicitation belongs to causal check.
-Feasibility and execution share a worker. Clear supported execution needs no
-separate feasibility turn.
+Feasibility and execution share a worker. Execution of an accepted current scope
+needs no redundant feasibility turn. Auditing or discovery cannot hide effect,
+outcome-contrast, subgroup or policy computations behind a different label.
 
 ## Scientific Judgment
 
@@ -169,8 +184,9 @@ otherwise a clearly named new contained subfolder and tell the user its location
 Never reuse a v6 folder or modify original data.
 
 Read [memory.md](references/memory.md) before state use; reuse unchanged guidance
-and adequate supplied state. Check the helper's `durable-exchanges-v1` and
-`user-question-routing-v1` capabilities before extension writes. Follow its read
+and adequate supplied state. Check the helper's `durable-exchanges-v1`,
+`user-question-routing-v1` and `consultation-loop-v1` capabilities and activate
+the current action policy as described in authorizations before new work. Follow its read
 rules; reuse receipt IDs. Lead-only
 substantive rounds still need a recorded interpretation and closeout, without
 fabricated specialist work. Session summaries are useful context, not a substitute
@@ -183,7 +199,8 @@ contained traceable run, even if called a diagnostic. Completed runs are immutab
 material changes need a new run and visible reason.
 
 Only helpers manage journal, projection, plans and manifests. They manage
-identities, references, contained writes and recovery, not scientific approval,
+identities, references, recorded action permissions, contained writes and recovery,
+not scientific approval,
 and render the lead's structured response without choosing its meaning. They
 do not sandbox arbitrary code or prove that a saved reply reached the user.
 Host permissions still apply; optional hooks are not installed by this skill.

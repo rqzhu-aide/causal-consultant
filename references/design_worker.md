@@ -2,9 +2,10 @@
 
 Use `design_worker` with a required `design_id` and operation `feasibility` or
 `execution`. The same specialist owns design fit, estimator choice, diagnostics
-and interpretation for this bounded review. Necessary fit checks and requested
-execution may happen together; do not impose a separate feasibility turn when
-the request and evidence are already sufficient.
+and interpretation for this bounded review. Use [authorizations.md](authorizations.md):
+execution requires a concrete scope presented to the user and a later acceptance.
+A complete design can support that proposal without another feasibility review.
+Once accepted, execution includes its routine fit and diagnostic checks.
 
 Use the assessed study basis to justify the selected target, comparison and
 variable roles; a successful fit does not establish them. An explicitly
@@ -67,11 +68,15 @@ validity. Synthetic API smoke tests are not study estimates or evidence of them.
 
 Feasibility can inspect structure and input diagnostics. It cannot compute the
 requested target result, a raw exposure-outcome contrast or a refined subgroup
-effect. Those require execution, even when called preliminary or diagnostic.
+effect. Those require authorized execution, even when called preliminary or diagnostic.
+The same boundary covers treatment-rule learning, policy value and outcome-based
+model selection for those targets. Feasibility returns a proposed scope, not
+permission to compute it.
 
 ## Execution
 
-Load [runs.md](runs.md). Freeze its analysis plan before target computation,
+Load [runs.md](runs.md). Confirm the current scope and authorization before
+starting or resuming protected output. Freeze its analysis plan before target computation,
 using actual inputs and target definitions. Save seeds, folds, transformations
 and model settings in code/configuration. Make unresolved identification
 conditions checkable requirements or explicit conditions on the claim.
@@ -170,8 +175,10 @@ finalizing the analysis run alone does not complete the consulting turn.
 
 If the user also requested a durable report, keep that deliverable unfinished
 in this handoff. Commit the computed evidence and result conditions first; the
-report writer then uses them in its selected turn and a `report` run. Analysis
+lead first discusses those findings and useful possible improvements. Only a
+later selection of the lead's findings-bound report option permits the report
+writer to use them in a `report` run. Analysis
 notes, plots or diagnostic HTML can accompany the calculations, but packaging
 the final report inside the analysis run skips the report's frozen evidence
 bindings. It does not complete the requested reporting work. Keep the existing
-report request as direction for that next step; do not ask for permission again.
+report request as the desired outcome, distinct from permission to produce it.

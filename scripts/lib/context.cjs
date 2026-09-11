@@ -6,7 +6,7 @@ const { collectionIds, journalBodies, conversationRoots } = require("./views.cjs
 
 const ARRAY_REFS = ["basis_refs", "evidence_refs", "user_contribution_refs", "route_changes",
   "assumptions_added_or_revised", "evidence_for", "evidence_against", "strategy_ids_it_could_change",
-  "related_unresolved_question_refs", "assumption_refs", "incoming_refs", "completed_work_refs", "reconciles", "work_refs"];
+  "related_unresolved_question_refs", "assumption_refs", "incoming_refs", "completed_work_refs", "reconciles", "work_refs", "findings_refs", "user_refs"];
 const compare = (left, right) => left < right ? -1 : left > right ? 1 : 0;
 
 function requestShape(value) {
@@ -31,9 +31,18 @@ function requestShape(value) {
 function references(record, ownId) {
   const result = new Set();
   for (const field of ARRAY_REFS) for (const ref of record[field] || []) result.add(ref);
-  for (const field of ["supersedes", "last_review_id", "run_id", "parent_run_id", "evidence_ref", "interpretation_ref", "exchange_ref"]) {
+  for (const field of ["supersedes", "last_review_id", "run_id", "parent_run_id", "evidence_ref", "interpretation_ref", "exchange_ref", "scope_ref", "authorization_ref", "delivery_ref", "focus_scope_ref"]) {
     if (record[field] && record[field] !== ownId) result.add(record[field]);
   }
+  for (const binding of record.basis_versions || []) result.add(binding.ref);
+  for (const bound of [record.next_action, record.authorization_binding]) {
+    for (const field of ["scope_ref", "authorization_ref"]) if (bound?.[field]) result.add(bound[field]);
+  }
+  for (const decision of record.action_decisions || []) {
+    result.add(decision.decision_id);
+    for (const ref of references(decision, decision.decision_id)) result.add(ref);
+  }
+  for (const ref of record.response?.findings?.work_refs || []) result.add(ref);
   for (const assignment of [record.assignment, record.selected_assignment, record.next_action?.assignment]) {
     for (const ref of assignment?.strategy_ids || []) result.add(ref);
   }
@@ -50,6 +59,7 @@ function references(record, ownId) {
     for (const ref of question.basis_refs || []) result.add(ref);
   }
   for (const option of record.response?.next_steps || []) {
+    if (option.scope_ref) result.add(option.scope_ref);
     for (const ref of option.basis_refs || []) result.add(ref);
     for (const ref of option.assignment?.strategy_ids || []) result.add(ref);
   }
@@ -102,6 +112,7 @@ function graphFor(state, events) {
     for (const [name, key] of [["interpretation", "interpretation_id"], ["exchange", "exchange_id"], ["delivery", "delivery_id"]]) {
       if (payload[name]) defined.push(payload[name][key]);
     }
+    for (const decision of payload.interpretation?.action_decisions || []) defined.push(decision.decision_id);
     definitions.set(event.event_id, [...new Set(defined)]);
     for (const ref of definitions.get(event.event_id)) versions.set(ref, (versions.get(ref) || 0) + 1);
     nodes.set(event.event_id, { kind: "event", record: event, current: false });

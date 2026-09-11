@@ -9,6 +9,7 @@ const store = require("../scripts/lib/store.cjs");
 const runs = require("../scripts/lib/runs.cjs");
 const cli = require("../scripts/project.cjs");
 const { sha256 } = require("../scripts/lib/files.cjs");
+const { preparePlan } = require("./fixtures/consultation-loop.cjs");
 
 function fixture(t) {
   const base = fs.realpathSync.native(os.tmpdir());
@@ -34,11 +35,14 @@ function evidence(root, extra = {}, event_id = "event-evidence") {
   store.record(root, { ...identity(root, event_id), type: "memory_updated", payload: { changes: { evidence: [record] } } });
   return record;
 }
-function start(root, extra = {}) {
-  return runs.start(root, { ...identity(root, "event-start"), run_id: "run-report", plan: {
+function proposal(root, extra = {}) {
+  return preparePlan(root, {
     kind: "report", objective: "Summarize selected source evidence", claim_boundary: "Source evidence only, not a new causal computation.",
     inputs: [{ source_ref: "data/source.txt", path: "data/source.txt" }], purpose: "Review source findings", evidence_refs: ["evidence-source"], format: "Markdown", ...extra
-  } });
+  });
+}
+function start(root, extra = {}, prepared = proposal(root, extra)) {
+  return runs.start(root, { ...identity(root, "event-start"), run_id: "run-report", plan: prepared });
 }
 function finish(root) {
   const { event_id, ...ids } = identity(root, "unused");
@@ -64,9 +68,10 @@ for (const verification of [null, "reviewed_summary", "legacy_unverified"]) {
   test("a changed known source rejects before files for " + (verification || "ordinary evidence"), t => {
     const { root } = fixture(t);
     evidence(root, verification ? { legacy: { source_project: "old-project", source_version: "6.3.0", verification } } : {});
+    const prepared = proposal(root);
     fs.writeFileSync(path.join(root, "data/source.txt"), "A changed source finding.\n");
     const journal = fs.readFileSync(path.join(root, "journal.jsonl"));
-    assert.throws(() => start(root), code("SOURCE_CHANGED"));
+    assert.throws(() => start(root, {}, prepared), code("INPUT_CHANGED"));
     assert.equal(fs.existsSync(path.join(root, "runs/run-report")), false);
     assert.deepEqual(fs.readFileSync(path.join(root, "journal.jsonl")), journal);
     assert.equal(store.status(root).project.runs.length, 0);

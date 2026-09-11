@@ -22,7 +22,8 @@ identification. A popular endpoint need not measure the user's intended outcome.
 Keep user recollection, protocol statements, inspected facts and your inference
 distinct. A dictionary explains a field; it does not prove that the actual
 records contain that field correctly. Do not turn this review into a separate
-row-level data audit or estimation pass. Return any consequential inspection
+row-level data audit, effect/policy computation or report-production pass.
+Protected work follows [authorizations.md](authorizations.md). Return any consequential inspection
 need to the lead with the specific material or question it would address.
 
 ## Targeted Sources
@@ -57,3 +58,5 @@ A compact source note normally belongs in project memory. A requested durable
 report is report-writing work for a later turn, not a second specialist silently
 added to this review. Do not launch the next reviewer.
 The lead reconciles this handoff and saves the outgoing exchange in this turn.
+Its findings can support a later proposed action; they do not select it or
+authorize writing a report without a presented option and later user decision.

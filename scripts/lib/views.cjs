@@ -4,10 +4,11 @@
 const BASE_COLLECTIONS = { questions: "question_id", evidence: "evidence_id", assumptions: "assumption_id",
   decisions: "decision_id", candidate_routes: "strategy_id", specialist_reviews: "review_id", runs: "run_id" };
 const EXTENSION_COLLECTIONS = { user_context: "context_id", result_conditions: "condition_id",
-  interpretations: "interpretation_id", exchanges: "exchange_id", deliveries: "delivery_id", turns: "turn_id" };
+  interpretations: "interpretation_id", exchanges: "exchange_id", deliveries: "delivery_id", turns: "turn_id",
+  action_scopes: "scope_id", action_decisions: "decision_id" };
 
 function hasExtension(state) {
-  return Boolean(state.state_meta.protocol || Object.keys(EXTENSION_COLLECTIONS).some(name => Object.hasOwn(state, name)));
+  return Boolean(state.state_meta.protocol || state.state_meta.consultation_policy || Object.keys(EXTENSION_COLLECTIONS).some(name => Object.hasOwn(state, name)));
 }
 
 function collectionIds(state) {
@@ -39,6 +40,20 @@ function conversationRoots(state) {
   const lastObservation = (state.deliveries || []).at(-1);
   const roots = new Map();
   const add = (ref, reason) => { if (ref && !roots.has(ref)) roots.set(ref, reason); };
+  add(state.focus_scope_ref, "current user focus");
+  const supersededScopes = new Set((state.action_scopes || []).map(scope => scope.supersedes).filter(Boolean));
+  for (const scope of state.action_scopes || []) {
+    const decision = (state.action_decisions || []).filter(item => item.scope_ref === scope.scope_id).at(-1);
+    const consumed = decision && state.runs.some(run => run.authorization_binding?.authorization_ref === decision.decision_id);
+    if (scope.scope_id !== state.focus_scope_ref && (supersededScopes.has(scope.scope_id)
+      || ["decline", "withdraw"].includes(decision?.disposition) || consumed)) continue;
+    add(scope.scope_id, decision?.disposition === "defer" ? "deferred action scope" : "pending action scope");
+    add(decision?.decision_id, "latest scoped user decision");
+    for (const exchange of state.exchanges || []) if (exchange.options.some(option => option.scope_ref === scope.scope_id)) {
+      add(exchange.exchange_id, "exact action offer and option ordering");
+      for (const delivery of state.deliveries || []) if (delivery.exchange_ref === exchange.exchange_id) add(delivery.delivery_id, "action offer presentation observation");
+    }
+  }
   add(currentInterpretation?.interpretation_id, "current incoming interpretation");
   add(currentExchange?.exchange_id, "latest prepared outgoing exchange");
   add(lastObservation?.delivery_id, "latest recorded delivery observation");
@@ -64,6 +79,61 @@ function conversationRoots(state) {
     current_interpretation_ref: currentInterpretation?.interpretation_id || null,
     latest_delivery_observation_ref: lastObservation?.delivery_id || null,
     latest_observed_exchange_ref: lastObservation?.exchange_ref || null };
+}
+
+function actionMemory(loaded, data, bodies) {
+  const { state, events } = loaded;
+  if (!state.state_meta.consultation_policy) return null;
+  const policy = require("./authorizations.cjs");
+  const scopes = data.action_scopes || [];
+  const scopeIds = new Set(scopes.map(scope => scope.scope_id));
+  const decisions = (state.action_decisions || []).filter(decision => scopeIds.has(decision.scope_ref));
+  const offers = [];
+  for (const exchange of bodies.exchanges.values()) for (const option of exchange.response.next_steps) {
+    if (!scopeIds.has(option.scope_ref)) continue;
+    offers.push({ exchange_ref: exchange.exchange_id, option_id: option.option_id, scope_ref: option.scope_ref,
+      option_number: exchange.response.next_steps.indexOf(option) + 1, label: option.label,
+      proposal: structuredClone(option.proposal), execution_plan: structuredClone(option.execution_plan),
+      delivery: deliveryState(state, exchange.exchange_id) });
+  }
+  const exactRecord = binding => {
+    const event = events.find(item => item.event_id === binding.event_ref);
+    if (!event) return null;
+    for (const [name, key] of Object.entries(collectionIds(state))) {
+      const record = event.payload.changes?.[name]?.find(item => item[key] === binding.ref);
+      if (record) return structuredClone(record);
+    }
+    for (const key of ["review", "run", "interpretation", "exchange"]) {
+      const record = event.payload[key];
+      if (record && [record.review_id, record.run_id, record.interpretation_id, record.exchange_id].includes(binding.ref)) return structuredClone(record);
+    }
+    return null;
+  };
+  const basis = scopes.map(scope => ({ scope_ref: scope.scope_id, versions: scope.basis_versions.map(binding => ({
+    ...structuredClone(binding), current_event_ref: state.history_index[binding.ref]?.event_ref || null,
+    recorded_body: exactRecord(binding)
+  })) }));
+  const obligations = [];
+  for (const run of state.runs) {
+    if (run.status !== "completed") continue;
+    const discussions = [...bodies.exchanges.values()].filter(exchange => policy.findingsCoverRun(state, exchange.response.findings, run));
+    const presented = discussions.some(exchange => deliveryState(state, exchange.exchange_id).status !== "unobserved");
+    if (!presented && run.authorization_binding) obligations.push({ run_ref: run.run_id,
+      scope_ref: run.authorization_binding.scope_ref, interpretation_ref: run.interpretation_ref,
+      prepared_exchange_refs: discussions.map(exchange => exchange.exchange_id),
+      next_action: discussions.length ? "recover_or_confirm_delivery" : "present_saved_findings_without_recomputation" });
+  }
+  return { policy: structuredClone(state.state_meta.consultation_policy), focus_scope_ref: state.focus_scope_ref || null,
+    scopes: structuredClone(scopes), decisions: structuredClone(decisions), offers, exact_basis: basis,
+    eligibility: scopes.map(scope => {
+      const permission = policy.eligibility(state, scope.scope_id);
+      const direction = (state.interpretations || []).at(-1)?.next_action;
+      const current = direction?.kind === "specialist" && direction.scope_ref === scope.scope_id && direction.authorization_ref === permission.authorization_ref;
+      return { scope_ref: scope.scope_id, ...permission, current_direction: current,
+        executable_now: permission.eligible && current };
+    }),
+    findings_awaiting_discussion: obligations,
+    enforcement: "Recorded permissions and version bindings; natural-language meaning and actual host actions require independent observation." };
 }
 
 function buildViews(loaded, selected) {
@@ -114,6 +184,8 @@ function buildViews(loaded, selected) {
     current_interpretation_ref: info.current_interpretation_ref, current_exchange_ref: info.current_exchange_ref,
     latest_delivery_observation_ref: info.latest_delivery_observation_ref, latest_observed_exchange_ref: info.latest_observed_exchange_ref,
     unfinished_turns: info.unfinished, pending_user_question_refs: info.pending_user_question_refs, interpretations, exchanges };
+  const actions = actionMemory(loaded, data, bodies);
+  if (actions) work.actions = actions;
   return { user, study, work };
 }
 

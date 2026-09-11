@@ -2,9 +2,13 @@
 
 Use `report_writer` / `reporting` for a durable planning or results report,
 revision or derivative communication. The task is synthesis, not new estimation.
-A sufficiently specified request can be fulfilled in this turn; no separate
-approval ritual is required. Clarify only material ambiguity about purpose,
-audience, evidence selection or requested claims.
+Use [authorizations.md](authorizations.md). The lead must have presented relevant
+findings, limitations and a concrete report option, and a subsequent user message
+must accept that current scope. An earlier broad request for a report, accepted
+analysis or completed run cannot supply that permission. Check the bound evidence
+versions before writing. Missing or stale permission returns to the lead; do not
+create a preliminary final report and seek approval afterward. This applies to
+planning, design and bounded audit reports as well as effect-analysis reports.
 
 ## Evidence Basis
 
@@ -96,8 +100,10 @@ path mentioned in prose. Use the exact recorded `source_ref` for each
 corresponding input. Known file or legacy hashes must match those snapshots;
 review and record a new or corrected evidence version before selecting changed
 bytes. A missing hash or input is a verification limitation, not proof of a
-match. Keep the report in its own run, outside completed analysis runs. A revision
-gets a new run with its parent/source relationship.
+match. Keep the report in its own authorized run, outside completed analysis
+runs. A material revision requires a newly presented scope and later selection,
+then a new run with its parent/source relationship. Routine drafting and rendering
+corrections within the approved report require no extra user decision.
 Preserve the bound result-condition references and their assumptions with the
 selected report sources. Check material corrections before reusing an older
 result; valid source hashes establish byte identity, not continued applicability.
@@ -119,6 +125,8 @@ Return one saved review describing the output, source basis, whether any new
 analysis occurred (normally none), inherited claim boundary and important limits.
 Link the review to the router's prospectively recorded interpretation and
 assignment. Report completion still requires the lead's reconciled outgoing
-exchange, using the same conditions in its user-facing recap.
+exchange, using the same conditions in its user-facing recap. The artifact does
+not close the project permanently or select another action. Preserve questions,
+deferred work and the user's ability to discuss, pause or request a revision.
 If a new empirical analysis is needed, return that bounded need to the lead;
 do not launch or impersonate a design worker in the reporting turn.

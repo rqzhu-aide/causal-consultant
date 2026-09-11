@@ -11,6 +11,7 @@ const runs = require("../scripts/lib/runs.cjs");
 const model = require("../scripts/lib/model.cjs");
 const { canonical, sha256 } = require("../scripts/lib/files.cjs");
 const examples = require("./fixtures/extensions-rc3.json");
+const { preparePlan } = require("./fixtures/consultation-loop.cjs");
 
 function project(t) {
   const base = fs.realpathSync.native(os.tmpdir());
@@ -37,7 +38,13 @@ function record(root, changes, event_id = "event-memory") {
   return store.record(root, { ...identity(root, event_id), type: "memory_updated", payload: { changes } });
 }
 function start(root, plan, run_id = "run-extension", event_id = "event-start") {
-  return runs.start(root, { ...identity(root, event_id), run_id, plan: structuredClone(plan) });
+  // Validate malformed legacy shape fixtures before constructing a current user
+  // conversation. These checks must leave history unchanged when rejected.
+  const shapeState = store.readJournal(root).state;
+  delete shapeState.state_meta.protocol;
+  runs.validatePlan(plan, shapeState);
+  const prepared = ["analysis", "report"].includes(plan.kind) ? preparePlan(root, plan) : plan;
+  return runs.start(root, { ...identity(root, event_id), run_id, plan: structuredClone(prepared) });
 }
 function write(root, run_id, relative, content) {
   const { event_id, ...identities } = identity(root, "unused");
@@ -130,7 +137,8 @@ test("source excerpts preserve exact text and reject blank or non-text additions
 test("standard plans remain byte-compatible in meaning without inserting extension defaults", t => {
   const root = project(t);
   const plan = structuredClone(examples.plans.standard);
-  const request = { ...identity(root, "event-standard"), run_id: "run-standard", plan };
+  const prepared = preparePlan(root, plan);
+  const request = { ...identity(root, "event-standard"), run_id: "run-standard", plan: prepared };
   runs.start(root, request);
   const saved = frozen(root, "run-standard");
   for (const key of ["additional_design_ids", "identification_basis", "transformations"]) assert.equal(Object.hasOwn(saved, key), false);
@@ -271,10 +279,9 @@ test("a report freezes its source excerpt even when the current evidence wording
   const report = frozen(root);
   assert.equal(report.evidence_bindings[0].source_excerpt, evidence.source_excerpt);
   assert.equal(state(root).evidence[0].source_excerpt, "No offer was randomized.");
-  write(root, "run-extension", "report.md", "The original account was qualified; later interpretation requires its separately recorded correction.\n");
-  runs.finalize(root, { ...identity(root, "event-finalize"), run_id: "run-extension", code_paths: [], output_paths: ["report.md"],
-    diagnostic_paths: [], environment: { authoring: "Synthetic report fixture" }, deviations: [] });
-  assert.equal(runs.verify(root).ok, true);
+  rejectedUnchanged(root, () => write(root, "run-extension", "report.md", "An obsolete interpretation.\n"), "STALE_SCOPE");
+  assert.equal(fs.existsSync(path.join(root, "runs/run-extension/report.md")), false);
+  assert.equal(runs.verify(root).issues.some(issue => issue.code === "INCOMPLETE_RUN"), true);
 });
 
 test("old semantic requests remain unchanged rather than acquiring extension fields during replay", () => {

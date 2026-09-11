@@ -67,7 +67,8 @@ function rejected(root, event_id, type, payload, code) {
 
 test("question-routing capability advertises the preferred renderer without removing durable exchanges", () => {
   const value = store.capabilities();
-  assert.equal(RENDERER, "lead-markdown-v3");
+  assert.equal(RENDERER, "lead-markdown-v4");
+  assert.ok(value.renderers.includes("lead-markdown-v3"));
   assert.ok(value.capabilities.includes(PROTOCOL));
   assert.ok(value.capabilities.includes("user-question-routing-v1"));
 });

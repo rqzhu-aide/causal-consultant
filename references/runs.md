@@ -3,7 +3,9 @@
 Read this only when saving audit artifacts, running analysis or discovery, or
 writing a durable report. A no-output inspection can record file evidence and
 its limitations without a run. The helper protects managed paths and records
-provenance; it is not a process sandbox or a scientific readiness judge.
+provenance and recorded action permissions; it is not a process sandbox or a
+scientific readiness judge. Read [authorizations.md](authorizations.md) before
+protected analysis/report work, including activation for an existing project.
 
 ## Start before target computation
 
@@ -18,12 +20,18 @@ For the durable exchange protocol, include the committed specialist
 operation: analysis belongs to design-worker execution, discovery to discovery,
 reporting to report writer, and transformation to data-audit preparation. Analysis
 guide identities must match the recorded assignment. A lead-only interpretation
-cannot start specialist artifact work. Old in-progress runs retain their original
-plans and can finish without inventing a past interpretation.
+cannot start specialist artifact work. Under `consultation-loop-v1`, analysis
+and report plans also require `scope_ref` and `authorization_ref` matching the
+current accepted scope. The helper freezes `authorization_binding`; do not supply
+it yourself or change the proposed substantive terms at execution. A fresh
+internal interpretation ID cannot bypass acceptance or the one-review limit.
+Old in-progress runs must be resolved with their original runtime before policy
+activation; new work cannot borrow retrospective approval from those runs.
 
 All plans contain `kind`, `objective`, `claim_boundary`, and `inputs`. Each
-input has `source_ref` and a local file `path`, with an optional expected
-`sha256`. Relative input paths are relative to the selected project root;
+input has `source_ref` and a local file `path`. Protected analysis/report proposals
+require the file's expected `sha256` before presentation; it remains optional for
+unprotected investigations. Relative input paths are relative to the selected project root;
 absolute external inputs are read-only. Their contents are copied into the run.
 
 | Kind | Additional fields |
@@ -36,7 +44,10 @@ absolute external inputs are read-only. Their contents are copied into the run.
 A requested durable report uses `kind: "report"` with the report-writer
 assignment, even when its calculations were requested at the same time.
 An HTML file included in an analysis run does not receive the report evidence
-bindings below and cannot stand in for that report run.
+bindings below and cannot stand in for that report run. Do not create a report
+artifact before its later user selection and merely finalize it afterward.
+Analysis completion first returns findings and limitations to the lead; the
+report is a separately selected action on those discussed findings.
 
 With helpers `7.0.0-rc.3` or newer, an analysis may add
 `additional_design_ids`: distinct standard design IDs, excluding its primary
@@ -105,6 +116,18 @@ retry; changed content requires a new filename, preserving the earlier file.
 Do not overwrite a completed run. Put revisions in a new run, normally with
 `parent_run_id` pointing to the earlier run.
 
+Before resuming protected output, check that its accepted scope and relevant
+basis still apply and the latest interpretation selects that scope/authorization.
+A pause or question-driven redirection suspends output while preserving applicable
+acceptance for explicit resumption. Changed evidence, withdrawn permission or a superseded scope
+requires reconciliation before more output or finalization. Routine code and
+diagnostic work inside the accepted scope does not require another user choice.
+Pause or cancellation preserves unfinished work; use its terminal status honestly
+when abandoning rather than hiding files or automatically starting a revision.
+A routine command retry remains within an in-progress current run; use new file
+paths to preserve earlier outputs. Terminal failure/abandonment ends that action,
+so a new run needs later selection instead of silently reusing consumed permission.
+
 The host's execution tools must keep generated files inside the run and avoid
 modifying source inputs. Saving code beside an output does not prove that the
 code produced it. Preserve actual commands, execution output, runtime versions,
@@ -143,7 +166,9 @@ Before synthesis or reporting, record consequential quantities in
 inferential scope where applicable. An estimate, sharp-null test and interval
 can have different conditions even when they share one output file. The selected
 specialist owns scientific validity; the lead preserves those distinctions in
-its closeout. Finalizing the run alone does not complete that handoff.
+its closeout. Finalizing the run alone does not complete that handoff, authorize
+a report or choose the next action. Preserve the user's current and deferred
+questions after reporting as well as after analysis.
 
 `verify` is read-only. It reports missing or altered content, unexpected files,
 linked paths, incomplete runs, orphan directories, and a stale projection. It

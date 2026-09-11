@@ -1,4 +1,5 @@
 "use strict";
+const { preparePlan } = require("./fixtures/consultation-loop.cjs");
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
@@ -157,9 +158,10 @@ test("report bindings retain result and assumption versions through later correc
     assumptions: [{ assumption_id: "assumption-constant", statement: "All units share one additive effect.", status: "active", basis_refs: ["evidence-result"] }],
     result_conditions: [condition]
   } });
-  runs.start(root, { ...ids(root, "event-report-start"), run_id: "run-report", plan: {
+  const prepared = preparePlan(root, {
     kind: "report", objective: "Explain the supplied interval", claim_boundary: "Conditional inference only", purpose: "Methods summary",
-    inputs: [{ source_ref: "provided-result.txt", path: "provided-result.txt" }], evidence_refs: ["evidence-result"], format: "Markdown" } });
+    inputs: [{ source_ref: "provided-result.txt", path: "provided-result.txt" }], evidence_refs: ["evidence-result"], format: "Markdown" });
+  runs.start(root, { ...ids(root, "event-report-start"), run_id: "run-report", plan: prepared });
   const frozenBytes = fs.readFileSync(path.join(root, "runs/run-report/plan.yaml"));
   const binding = JSON.parse(frozenBytes).evidence_bindings[0];
   assert.equal(binding.condition_coverage, "linked");
@@ -172,16 +174,16 @@ test("report bindings retain result and assumption versions through later correc
   assert.deepEqual(fs.readFileSync(path.join(root, "runs/run-report/plan.yaml")), frozenBytes);
   assert.equal(binding.condition_bindings[0].assumption_bindings[0].status, "active");
   assert.equal(store.status(root).project.assumptions[0].status, "retired");
-  write(root, "run-report", "report.md", "This report preserves the originally supplied conditional calculation; the later assumption correction needs a revised interpretation.\n");
-  finalize(root, "run-report", "report.md");
-  assert.equal(runs.verify(root).ok, true);
+  rejectUnchanged(root, "STALE_SCOPE", () => write(root, "run-report", "report.md", "An obsolete conditional interpretation.\n"));
+  assert.equal(fs.existsSync(path.join(root, "runs/run-report/report.md")), false);
 });
 
 test("unlinked old report evidence is explicitly unreviewed for result conditions", t => {
   const root = project(t);
-  runs.start(root, { ...ids(root, "event-report"), run_id: "run-report", plan: {
+  const prepared = preparePlan(root, {
     kind: "report", objective: "Summarize the request", claim_boundary: "User account only", purpose: "Intake note", inputs: [],
-    evidence_refs: ["user-request"], format: "Markdown" } });
+    evidence_refs: ["user-request"], format: "Markdown" });
+  runs.start(root, { ...ids(root, "event-report"), run_id: "run-report", plan: prepared });
   const binding = JSON.parse(fs.readFileSync(path.join(root, "runs/run-report/plan.yaml"))).evidence_bindings[0];
   assert.equal(binding.condition_coverage, "unreviewed");
   assert.deepEqual(binding.condition_bindings, []);

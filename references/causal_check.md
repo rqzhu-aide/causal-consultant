@@ -9,7 +9,8 @@ process before endorsing a final strategy or an exhausted-evidence fallback.
 This is substantive work, not a required checklist of status fields. Reuse
 established facts and earlier adequate assessments; ask or inspect only gaps
 that could change the target, design or advice. Explicit descriptive work can
-proceed within its own claim boundary while the causal question remains open.
+proceed within its own claim boundary while the causal question remains open,
+subject to [authorizations.md](authorizations.md) for protected computation.
 
 ## Design Elicitation
 
@@ -98,7 +99,7 @@ decision that would discriminate them. Recommend an actionable next investigatio
 with its required material, rather than another generic causal review. A missing
 assignment log cannot be supplied by invoking a different specialist. If no
 attainable review would change advice, give the supported conditional or limited
-recommendation and stop. Residual assumptions need not be repeatedly sent back
+recommendation and return to the lead for discussion. Residual assumptions need not be repeatedly sent back
 to the user as factual questions. Apply the shared question disposition in memory.
 
 ## Claim and Work Boundary
@@ -121,7 +122,9 @@ This review may inspect inputs, existing results and input/design-feasibility
 diagnostics. Do not compute a new target outcome contrast, fitted target result,
 subgroup effect or exposure-outcome association. Calling it a diagnostic does
 not change that boundary. Existing results can be discussed without recomputation
-or extension. A requested new estimate goes to one design worker in a later turn.
+or extension. Policy learning/value and outcome-based subgroup selection are
+also protected analysis. A new estimate needs a presented analysis scope and
+later acceptance before one design worker executes it in a later turn.
 
 Commit one meaningful review with evidence, assumptions and strategy changes.
 Link it to the prospectively recorded interpretation and assignment. An option
@@ -136,4 +139,6 @@ unlinked results are unreviewed for these conditions, not assumption-free.
 Return the decisive uncertainty and practical next direction to the lead. Do not
 start another specialist or perform final report production inside this review.
 The lead reconciles the handoff and records which questions it actually asks in
-the outgoing exchange.
+the outgoing exchange. Readiness is a finding, not execution permission or an
+automatic report transition. A design-only or nonidentification finding can be
+discussed and support its own later report offer without invented effect results.

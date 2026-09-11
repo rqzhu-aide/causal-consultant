@@ -84,9 +84,10 @@ function receipt(event, extra = {}) {
 }
 function capabilities() {
   return { ok: true, version: require("../../package.json").version, journal_schema: 7,
-    capabilities: ["durable-exchanges-v1", "user-question-routing-v1"],
-    renderers: ["lead-markdown-v1", "lead-markdown-v2", "lead-markdown-v3"],
-    compatibility: { minimum_extension_reader: "7.0.5", historical_events: "replayed unchanged",
+    capabilities: ["durable-exchanges-v1", "user-question-routing-v1", "consultation-loop-v1"],
+    renderers: ["lead-markdown-v1", "lead-markdown-v2", "lead-markdown-v3", "lead-markdown-v4"],
+    compatibility: { minimum_extension_reader: "7.0.7", historical_events: "replayed unchanged",
+      protected_work_enforcement: "helper identities, order, scope and current record versions; semantic consent and host bypass require observation",
       host_closeout_enforcement: "instruction_only", delivery: "attributed observations, not independently verified" } };
 }
 function writeProjection(root, state, hooks = {}) {
@@ -187,7 +188,7 @@ function init(projectRoot, request, options = {}) {
     const changes = { project_understanding: request.project_understanding || {} };
     validateSemantic(state, { event_id: request.event_id, expected_project_id: request.project_id,
       expected_last_event_id: null, type: "memory_updated", payload: { changes } });
-    return { type: "init", payload: { project_understanding: changes.project_understanding } };
+    return { type: "init", payload: { project_understanding: changes.project_understanding, consultation_policy: require("./authorizations.cjs").POLICY } };
   }, { ...options, initializing: true, eventType: "init" });
 }
 function record(projectRoot, request, options = {}) {
@@ -215,7 +216,7 @@ function status(projectRoot) {
     ...memoryViews(loaded) };
 }
 function memoryViews(loaded, selected) {
-  if (!loaded.state.state_meta.protocol && !loaded.state.user_context?.length && !loaded.state.result_conditions?.length) return {};
+  if (!loaded.state.state_meta.protocol && !loaded.state.state_meta.consultation_policy && !loaded.state.user_context?.length && !loaded.state.result_conditions?.length) return {};
   return { views: require("./views.cjs").buildViews(loaded, selected) };
 }
 function context(projectRoot, request = {}) {

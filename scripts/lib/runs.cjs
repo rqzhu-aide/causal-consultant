@@ -9,6 +9,7 @@ const {
 } = require("./files.cjs");
 const { CATALOG, jsonValue, object, text, id, enumeration, array, strings, validateAdditionalDesigns } = require("./model.cjs");
 const store = require("./store.cjs");
+const authorizations = require("./authorizations.cjs");
 
 const IDENTITIES = ["event_id", "expected_project_id", "expected_last_event_id"];
 function requestShape(request, required, optional = [], withEvent = true) {
@@ -44,7 +45,7 @@ function validatePlan(plan, state) {
   if (!plan || typeof plan !== "object") fail("INVALID_INPUT", "plan must be an object.");
   enumeration(plan.kind, Object.keys(fields), "plan.kind");
   const optional = { audit: ["transformations"], analysis: ["additional_design_ids", "identification_basis"], discovery: [], report: [] };
-  object(plan, "plan", ["kind", "objective", "claim_boundary", "inputs", ...fields[plan.kind]], [...optional[plan.kind], "interpretation_ref"]);
+  object(plan, "plan", ["kind", "objective", "claim_boundary", "inputs", ...fields[plan.kind]], [...optional[plan.kind], "interpretation_ref", "scope_ref", "authorization_ref", "operations"]);
   validateRunInterpretation(plan, state);
   text(plan.objective, "plan.objective");
   text(plan.claim_boundary, "plan.claim_boundary");
@@ -78,6 +79,14 @@ function validatePlan(plan, state) {
   if (plan.kind === "report") {
     if (!plan.evidence_refs.length) fail("INVALID_INPUT", "A report must identify the evidence it synthesizes.");
     for (const evidenceId of plan.evidence_refs) knownEvidence(state, evidenceId);
+  }
+  if (Object.hasOwn(plan, "operations")) {
+    strings(plan.operations, "plan.operations", true);
+    const allowed = { audit: ["source_inspection", "data_quality", "preparation"], discovery: ["graph_exploration"] }[plan.kind];
+    if (!allowed || plan.operations.some(operation => !allowed.includes(operation))) {
+      fail("PROTECTED_OPERATION", "Audit/discovery declarations cannot include effect estimation, policy learning or report production. Use the corresponding authorized action.");
+    }
+    if (plan.operations.includes("preparation") && !plan.transformations) fail("INVALID_INPUT", "Preparation must declare its transformations.");
   }
 }
 function validateRunInterpretation(plan, state) {
@@ -142,6 +151,7 @@ function frozenPlan(root, run) {
   const plan = store.parseJSON(bytes, "Run plan");
   if (plan.run_id !== run.run_id || plan.kind !== run.kind) fail("PLAN_CHANGED", "Plan identity does not match its committed run.");
   if (plan.interpretation_ref !== run.interpretation_ref) fail("PLAN_CHANGED", "Plan interpretation does not match its committed run attribution.");
+  if (canonical(plan.authorization_binding || null) !== canonical(run.authorization_binding || null)) fail("PLAN_CHANGED", "Plan permission binding does not match its committed run.");
   return plan;
 }
 function checkInputs(root, plan, sourceCheck = true) {
@@ -252,6 +262,7 @@ function start(projectRoot, request, options = {}) {
   requestShape(request, ["run_id", "plan"], ["parent_run_id"]);
   return store.transact(projectRoot, request, ({ root, state }) => {
     validatePlan(request.plan, state);
+    const authorization_binding = authorizations.validateRunStart(state, request.plan);
     if (state.runs.some(run => run.run_id === request.run_id)) fail("RUN_EXISTS", "Run identity is already committed.");
     if (request.run_id === request.event_id || Object.hasOwn(state.history_index, request.run_id)) {
       fail("DUPLICATE_ID", "Run identity conflicts with another project record: " + request.run_id);
@@ -283,6 +294,7 @@ function start(projectRoot, request, options = {}) {
     }
     const started_at = new Date().toISOString();
     const plan = { ...structuredClone(request.plan), plan_schema_version: 1, run_id: request.run_id, frozen_at: started_at, inputs: sources };
+    if (authorization_binding) plan.authorization_binding = structuredClone(authorization_binding);
     if (bindings.length) plan.evidence_bindings = bindings;
     checkInputs(root, plan);
     const plan_ref = prefix + "/plan.yaml";
@@ -290,6 +302,7 @@ function start(projectRoot, request, options = {}) {
     writeNew(root, plan_ref, serialized);
     const run = { run_id: request.run_id, kind: plan.kind, status: "in_progress", plan_ref, plan_sha256: sha256(serialized), claim_boundary: plan.claim_boundary, started_at };
     if (plan.interpretation_ref) run.interpretation_ref = plan.interpretation_ref;
+    if (authorization_binding) run.authorization_binding = structuredClone(authorization_binding);
     if (request.parent_run_id !== undefined) run.parent_run_id = request.parent_run_id;
     return { type: "run_started", payload: { run }, result: { run_path: safePath(root, prefix), plan_ref, inputs: sources } };
   }, { ...options, eventType: "run_started" });
@@ -308,7 +321,7 @@ function write(projectRoot, request) {
     if (request.expected_project_id !== state.state_meta.project_id) fail("WRONG_PROJECT", "This write belongs to a different project.");
     if (request.expected_last_event_id !== state.state_meta.last_event_id) fail("STALE_WRITE", "Reload state before writing the run file.");
     const run = getRun(state, request.run_id, true);
-    frozenPlan(root, run);
+    const plan = frozenPlan(root, run);
     const destination = runPrefix(run.run_id) + "/" + relative;
     const target = safePath(root, destination);
     const digest = sha256(request.content);
@@ -316,6 +329,9 @@ function write(projectRoot, request) {
       if (fileDigest(root, destination).sha256 !== digest) fail("FILE_EXISTS", "Use a new filename for changed content; this file was not overwritten.");
       return { ok: true, run_id: run.run_id, path: destination, sha256: digest, replayed: true };
     }
+    authorizations.validateRunContinuation(state, run, plan);
+    checkInputs(root, plan);
+    checkEvidenceBindings(root, plan);
     const parent = path.posix.dirname(destination);
     ensureDirectory(root, parent);
     writeNew(root, destination, request.content);
@@ -360,6 +376,7 @@ function finalize(projectRoot, request, options = {}) {
     const run = getRun(state, request.run_id, true);
     const prefix = runPrefix(run.run_id);
     const plan = frozenPlan(root, run);
+    authorizations.validateRunContinuation(state, run, plan);
     checkInputs(root, plan);
     checkEvidenceBindings(root, plan);
     const code_paths = declaredPaths(root, prefix, request.code_paths, "code_paths");
@@ -391,6 +408,7 @@ function finalize(projectRoot, request, options = {}) {
       deviations: structuredClone(request.deviations), claim_boundary: run.claim_boundary,
       evidence_bindings: plan.evidence_bindings || [], files
     };
+    if (run.authorization_binding) manifest.authorization_binding = structuredClone(run.authorization_binding);
     const serialized = JSON.stringify(manifest, null, 2) + "\n";
     writeNew(root, manifest_ref, serialized);
     const completed = { ...run, status: "completed", manifest_ref, manifest_sha256: sha256(serialized), completed_at };
@@ -433,6 +451,9 @@ function verify(projectRoot, options = {}) {
     const prefix = runPrefix(run.run_id);
     if (run.status === "completed") {
       const manifest = capture(run.run_id, () => manifestFor(root, run));
+      if (manifest && canonical(manifest.authorization_binding || null) !== canonical(run.authorization_binding || null)) {
+        issues.push({ run_id: run.run_id, code: "MANIFEST_CHANGED", message: "Manifest permission binding differs from the committed run." });
+      }
       const actual = capture(run.run_id, () => inventory(root, prefix, true));
       if (manifest && actual && canonical(actual) !== canonical(manifest.files)) issues.push({ run_id: run.run_id, code: "ARTIFACT_CHANGED", message: "Run files are missing, changed, or unmanifested." });
     } else capture(run.run_id, () => {

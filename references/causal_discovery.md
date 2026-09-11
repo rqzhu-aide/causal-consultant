@@ -9,7 +9,10 @@ Reviewing existing graph objects, edge tables, code or diagnostics may need no
 new output. Scoping a future run is also a meaningful review when it resolves
 the graph target, assumptions or feasibility. Do not create an artifact merely
 to record verbal framing. A clear request with sufficient inputs may proceed
-directly to a bounded run without another approval checkpoint.
+directly to a genuine bounded discovery run without another approval checkpoint.
+Use [authorizations.md](authorizations.md) for operation boundaries. Treatment-rule
+learning, policy value, exposure-outcome contrasts and subgroup effects require
+accepted analysis scope; do not perform them as graph diagnostics or discovery.
 
 ## Method and Assumptions
 
@@ -74,3 +77,5 @@ When the result could affect adjustment, variable roles, estimand or claim stren
 return the concrete implication and its unresolved assumption to the lead. Do
 not certify it or start a causal-check or estimation specialist in this turn.
 The lead owns reconciliation and the saved outgoing exchange after this handoff.
+It discusses candidate findings and useful directions; completing discovery
+does not authorize effect estimation or final report production.

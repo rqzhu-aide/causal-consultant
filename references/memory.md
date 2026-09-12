@@ -305,21 +305,25 @@ of manufacturing another question or investigation.
   substantive proposal. A report offer references current findings, not merely
   the user's original deliverable request.
 
-The preparation receipt returns `exchange_id`, `renderer`, `rendered_response`
-and `response_sha256` along with commit identity. Present **rendered_response
-unchanged**. It comes from the same payload that was committed. If the wording
+The preparation receipt returns `exchange_id`, `renderer`, `rendered_response`,
+`response_sha256` and a ready-to-send `response_path` with `response_file_written`.
+Present **rendered_response unchanged**, or the identical successful file export.
+The file is a recoverable copy of the committed exchange, not evidence of delivery.
+An export failure does not undo the committed response; use the returned text.
+If the wording
 needs correction, prepare a new exchange with a supersession link. A receipt
 means saved and prepared, not emitted, delivered, read or understood.
 
 ### Delivery Observation
 
-`delivery_id`, `exchange_ref`, `observation`: `assistant_emission` or
-`host_confirmed`, `source_ref`, `response_sha256`; optional `observed_at`.
-The hash must match the prepared response. Record only an actual visible message
-or host observation with its source, never a preparation receipt as proof of
-delivery. Host-confirmed delivery requires host evidence. A prior observation
-can be batched with the next interpretation/lead-only closeout to avoid an extra
-write. The helper checks matching records, not the truth of your observation.
+Use [captured delivery](delivery.md) to retain the actual assistant message and
+compute its correspondence with the prepared response. A different message is
+saved as a discrepancy and cannot supply that exchange's option/question binding
+or establish its findings discussion. This does not prove that the user gave no
+meaningful direction: reconcile their actual words without inventing a receipt.
+Historical hash-only observations retain their original attributed meaning and
+are not upgraded to checked captures. Host-confirmed attribution still requires
+host evidence; matching text alone proves neither transport origin nor consent.
 
 If a bare "yes" or number depends on an unobserved prepared exchange, inspect
 the actual previous message or clarify. An explicit new investigation or

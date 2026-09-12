@@ -29,9 +29,13 @@ function journalBodies(events) {
 
 function deliveryState(state, exchangeRef) {
   const observations = (state.deliveries || []).filter(record => record.exchange_ref === exchangeRef);
-  return { status: observations.some(record => record.observation === "host_confirmed") ? "host_confirmed"
-    : observations.some(record => record.observation === "assistant_emission") ? "assistant_emission" : "unobserved",
-  observation_refs: observations.map(record => record.delivery_id) };
+  const matching = observations.filter(record => require("./exchanges.cjs").deliveryMatches(record, state));
+  const discrepancies = observations.filter(record => Object.hasOwn(record, "observed_response_sha256")
+    && record.observed_response_sha256 !== record.response_sha256);
+  return { status: matching.some(record => record.observation === "host_confirmed") ? "host_confirmed"
+    : matching.some(record => record.observation === "assistant_emission") ? "assistant_emission" : "unobserved",
+  observation_refs: observations.map(record => record.delivery_id),
+  ...(discrepancies.length ? { discrepancy_refs: discrepancies.map(record => record.delivery_id) } : {}) };
 }
 
 function conversationRoots(state) {

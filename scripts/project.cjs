@@ -28,7 +28,7 @@ function main(argv) {
   if (!command || command === "help") {
     return { ok: true, version, commands: [
       "capabilities", "init", "status", "context", "record", "history", "recover", "recover-lock",
-      "start-run", "write-run-file", "finalize-run", "fail-run", "abandon-run", "verify"
+      "observe-exchange", "start-run", "write-run-file", "finalize-run", "fail-run", "abandon-run", "verify"
     ], usage: "node scripts/project.cjs <command> --project-root <folder> [--input <json-file|->]",
     guidance: "Read references/memory.md for semantic records; references/authorizations.md for current action scopes and user decisions; references/runs.md for output-producing work. New projects activate consultation-loop-v1 automatically. Existing inactive projects use record with consultation_policy_activated after reconciling legacy work. verify --source-check snapshots checks an archive without original external source paths; default is originals." };
   }
@@ -42,7 +42,7 @@ function main(argv) {
     recover: ["project-root", "repair-tail"], "recover-lock": ["project-root", "token"],
     "start-run": ["project-root", "input"], "write-run-file": ["project-root", "input"],
     "finalize-run": ["project-root", "input"], "fail-run": ["project-root", "input"],
-    "abandon-run": ["project-root", "input"], verify: ["project-root", "source-check"]
+    "abandon-run": ["project-root", "input"], "observe-exchange": ["project-root", "input"], verify: ["project-root", "source-check"]
   };
   if (!allowed[command] || Object.keys(options).some(k => !allowed[command].includes(k))) fail("INVALID_INPUT", "Unsupported command or option.");
   const root = options["project-root"];
@@ -61,6 +61,7 @@ function main(argv) {
   if (command === "status") return store.status(root);
   if (command === "context") return store.context(root, options.input ? readInput(options.input) : {});
   if (command === "record") return store.record(root, readInput(options.input));
+  if (command === "observe-exchange") return require("./lib/delivery.cjs").observe(root, readInput(options.input));
   if (command === "history") return store.history(root, {
     event_id: options["event-id"], record_id: options["record-id"], type: options.type,
     query: options.query, cursor: options.cursor, limit: options.limit

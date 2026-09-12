@@ -121,6 +121,23 @@ visual validation. Finalize with output paths, environment, validation evidence
 and any deviations. Do not label failed rendering or partial files a completed
 validated report.
 
+For JSON-backed quantitative results, use [numerical presentation](presentation.md)
+to render headline estimates/intervals and tables from the frozen sources. Save
+the locator specification and use its intact generated blocks in the artifact;
+verify those complete blocks against the actual saved report. Do not retype the
+same interval elsewhere and extend that verification claim to the duplicate.
+Other formats or custom displays need an equivalent source-to-label check, with
+its actual coverage recorded. Checking that expected numbers occur somewhere
+does not establish their labels, column placement or visibility.
+
+Review free prose separately: does the stated comparison match the calculation,
+are outcome benefits separated from costs/net utility, and do causal or mechanism
+explanations retain their evidence and conditions? If a prior public number was
+wrong, correct it explicitly in the lead handoff instead of silently replacing it
+in the report. Describe verification by what was checked: generated blocks,
+numerical computations, rendered layout or scientific interpretation. Do not
+substitute any one of these for the others or claim checks that were not performed.
+
 Return one saved review describing the output, source basis, whether any new
 analysis occurred (normally none), inherited claim boundary and important limits.
 Link the review to the router's prospectively recorded interpretation and

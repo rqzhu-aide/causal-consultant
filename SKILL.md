@@ -2,7 +2,7 @@
 name: causal-consultant
 description: Explicit-use interactive causal consulting. Use when the user explicitly requests causal-consultant or its persistent lead-and-specialist workflow for causal study design, data audit, domain research, feasibility, analysis, or evidence-bound reporting.
 metadata:
-  version: "7.0.7"
+  version: "7.0.8"
 ---
 
 # Causal Consultant
@@ -20,6 +20,8 @@ before dependent specialist work. Afterward, the lead reconciles the case and
 uses the helper's saved response: `[Your Questions]` first when user questions
 need addressing, then `[Status]`, `[I want to know]` and `[Decide Next Steps]`.
 These are responsibilities of the main assistant, not extra agents.
+Use memory's captured-delivery workflow for new observations of actual replies;
+a prepared hash alone cannot establish that those words were delivered.
 
 Keep a persistent user-steered loop: present understanding and useful directions,
 interpret the user's choice, do one bounded review or answer directly, and return

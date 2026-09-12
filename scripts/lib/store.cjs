@@ -77,18 +77,25 @@ function readJournal(root, allowTail = false) {
     projection_current: projection !== null && canonical(projection) === canonical(state) };
 }
 
-function receipt(event, extra = {}) {
+function receipt(event, extra = {}, root) {
   return { ok: true, project_id: event.project_id, last_event_id: event.event_id,
     sequence: event.sequence, committed: true, ...extra,
-    ...(event.type === "exchange_prepared" ? require("./exchanges.cjs").exchangeReceipt(event) : {}) };
+    ...(event.type === "exchange_prepared" ? require("./exchanges.cjs").exchangeReceipt(event) : {}),
+    ...(event.type === "exchange_prepared" && root ? require("./delivery.cjs").savePrepared(root, event) : {}),
+    ...(event.payload.delivery?.observed_response_sha256 ? {
+      correspondence: require("./exchanges.cjs").deliveryMatches(event.payload.delivery) ? "exact" : "different",
+      observed_response_sha256: event.payload.delivery.observed_response_sha256,
+      observed_response_path: event.payload.delivery.source_ref
+    } : {}) };
 }
 function capabilities() {
   return { ok: true, version: require("../../package.json").version, journal_schema: 7,
-    capabilities: ["durable-exchanges-v1", "user-question-routing-v1", "consultation-loop-v1"],
+    capabilities: ["durable-exchanges-v1", "user-question-routing-v1", "consultation-loop-v1", "captured-delivery-v1", "proposal-preflight-v1"],
     renderers: ["lead-markdown-v1", "lead-markdown-v2", "lead-markdown-v3", "lead-markdown-v4"],
     compatibility: { minimum_extension_reader: "7.0.7", historical_events: "replayed unchanged",
+      additional_reader_requirements: { captured_observations: "captured-delivery-v1" },
       protected_work_enforcement: "helper identities, order, scope and current record versions; semantic consent and host bypass require observation",
-      host_closeout_enforcement: "instruction_only", delivery: "attributed observations, not independently verified" } };
+      host_closeout_enforcement: "instruction_only", delivery: "observe-exchange compares retained actual text; capture attribution remains host/agent supplied; historical hash-only observations are unverified" } };
 }
 function writeProjection(root, state, hooks = {}) {
   if (hooks.beforeProjection) hooks.beforeProjection();
@@ -136,7 +143,7 @@ function transact(projectRoot, request, producer, options = {}) {
       try { writeProjection(root, loaded.state, options.hooks); }
       catch { projectionWritten = false; }
       return receipt(prior, { replayed: true, projection_written: projectionWritten,
-        current_last_event_id: loaded.state.state_meta.last_event_id });
+        current_last_event_id: loaded.state.state_meta.last_event_id }, root);
     }
     if (options.initializing && loaded.events.length) fail("ALREADY_INITIALIZED", "This project is already initialized; no files were replaced.");
     if (!options.initializing) {
@@ -172,11 +179,11 @@ function transact(projectRoot, request, producer, options = {}) {
     try {
       if (options.hooks && options.hooks.afterAppend) options.hooks.afterAppend();
       writeProjection(root, next, options.hooks);
-      return receipt(event, { replayed: false, projection_written: true, ...(prepared.result || {}) });
+      return receipt(event, { replayed: false, projection_written: true, ...(prepared.result || {}) }, root);
     } catch (error) {
       return receipt(event, { replayed: false, projection_written: false, ...(prepared.result || {}),
         warning: "The event committed, but projection delivery failed. Do not repeat the work; status reconstructs from the journal.",
-        projection_error: error.message });
+        projection_error: error.message }, root);
     }
   });
 }
@@ -194,6 +201,8 @@ function init(projectRoot, request, options = {}) {
 function record(projectRoot, request, options = {}) {
   return transact(projectRoot, request, ({ root, state }) => {
     validateSemantic(state, request);
+    require("./authorizations.cjs").validateProposalWrite(state, request);
+    if (request.payload.delivery) require("./delivery.cjs").validateWrite(root, request.payload.delivery);
     for (const evidence of request.payload.changes?.evidence || []) {
       if (evidence.kind === "computed") require("./runs.cjs").assertComputedEvidence(root, state, evidence);
     }

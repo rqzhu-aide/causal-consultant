@@ -1,6 +1,6 @@
 {
   "name": "causal-consultant-v7",
-  "version": "7.0.7",
+  "version": "7.0.8",
   "private": true,
   "type": "commonjs",
   "description": "Lead-mediated causal consultation with auditable local project memory.",

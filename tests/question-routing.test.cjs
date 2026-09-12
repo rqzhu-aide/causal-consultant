@@ -58,6 +58,13 @@ function submission(root, event_id, type, payload) {
 function record(root, event_id, type, payload, options) {
   return store.record(root, submission(root, event_id, type, payload), options);
 }
+function capture(root, event_id, delivery_id, exchange_ref, receipt) {
+  const message_path = "fixture-message-" + delivery_id + ".txt";
+  fs.writeFileSync(path.join(root, message_path), receipt.rendered_response);
+  const { type, payload, ...identities } = submission(root, event_id, "exchange_delivery", {});
+  return require("../scripts/lib/delivery.cjs").observe(root, { ...identities, delivery_id, exchange_ref,
+    observation: "assistant_emission", message_path, source_ref: "fixture-host:" + delivery_id });
+}
 function rejected(root, event_id, type, payload, code) {
   const journal = fs.readFileSync(path.join(root, "journal.jsonl"));
   assert.throws(() => record(root, event_id, type, payload), { code });
@@ -230,16 +237,12 @@ test("an open user question remains in minimal context after several unrelated c
   } });
   const first = record(root, "event-pending", "exchange_prepared", { protocol: PROTOCOL,
     interpretation: questionInterpretation("first", "clarify_first", false), exchange: outgoing("first", "pending") });
-  record(root, "event-first-delivery", "exchange_delivery", { protocol: PROTOCOL, delivery: {
-    delivery_id: "delivery-first", exchange_ref: "exchange-first", observation: "assistant_emission",
-    source_ref: "chat:assistant-first", response_sha256: first.response_sha256 } });
+  capture(root, "event-first-delivery", "delivery-first", "exchange-first", first);
   for (let index = 0; index < 8; index++) {
     const suffix = "aside-" + index;
     const receipt = record(root, "event-aside-" + index, "exchange_prepared", { protocol: PROTOCOL,
       interpretation: interpretation(suffix), exchange: { ...exchange(suffix), renderer: "lead-markdown-v3" } });
-    record(root, "event-delivery-" + index, "exchange_delivery", { protocol: PROTOCOL, delivery: {
-      delivery_id: "delivery-" + suffix, exchange_ref: "exchange-" + suffix, observation: "assistant_emission",
-      source_ref: "chat:assistant-" + index, response_sha256: receipt.response_sha256 } });
+    capture(root, "event-delivery-" + index, "delivery-" + suffix, "exchange-" + suffix, receipt);
   }
   store.recover(root);
   const selected = store.context(root, { limit: 1 });
@@ -312,17 +315,20 @@ test("v3 committed response retries preserve its exact user answer after newer m
 });
 
 test("v1 and v2 committed responses and delivery hashes replay unchanged after v3 adoption", t => {
-  const root = project(t), older = [];
+  const historical = fixture(), older = [];
   for (const [index, renderer] of ["lead-markdown-v1", "lead-markdown-v2"].entries()) {
     const suffix = "historical-" + index;
-    const request = submission(root, "event-historical-" + index, "exchange_prepared", { protocol: PROTOCOL,
-      interpretation: interpretation(suffix), exchange: { ...exchange(suffix), renderer } });
-    const receipt = store.record(root, request);
-    record(root, "event-historical-delivery-" + index, "exchange_delivery", { protocol: PROTOCOL, delivery: {
+    const payload = { protocol: PROTOCOL, interpretation: interpretation(suffix), exchange: { ...exchange(suffix), renderer } };
+    const event = historical.append("exchange_prepared", payload, "event-historical-" + index);
+    const request = { event_id: event.event_id, expected_project_id: event.project_id,
+      expected_last_event_id: event.previous_event_id, type: event.type, payload };
+    const receipt = require("../scripts/lib/exchanges.cjs").exchangeReceipt(event);
+    historical.append("exchange_delivery", { protocol: PROTOCOL, delivery: {
       delivery_id: "delivery-" + suffix, exchange_ref: "exchange-" + suffix, observation: "assistant_emission",
-      source_ref: "chat:assistant-historical-" + index, response_sha256: receipt.response_sha256 } });
+      source_ref: "chat:assistant-historical-" + index, response_sha256: receipt.response_sha256 } }, "event-historical-delivery-" + index);
     older.push({ request, receipt, suffix });
   }
+  const root = project(t, historical);
   const historicalBytes = fs.readFileSync(path.join(root, "journal.jsonl"));
   record(root, "event-current-v3", "exchange_prepared", { protocol: PROTOCOL,
     interpretation: questionInterpretation("current", "before_work", false),

@@ -2,6 +2,7 @@
 
 const { fail, canonical } = require("./files.cjs");
 const { object, text, id, enumeration, array, strings, validateAssignment } = require("./model.cjs");
+const { validatePlanStructure } = require("./plan-validation.cjs");
 const POLICY = "consultation-loop-v1";
 const list = (state, name) => state[name] || [];
 const active = state => state.state_meta.consultation_policy?.policy === POLICY;
@@ -19,6 +20,15 @@ function normalizedPlan(plan) {
   return result;
 }
 function changedRecords(payload) { return Object.values(payload.changes || {}).filter(Array.isArray).flat(); }
+function validateProposalWrite(state, request) {
+  // Call only for a new public write, after semantic validation. Historical
+  // events and exact retries must retain their original acceptance rules.
+  const payload = request.payload;
+  for (const scope of payload.changes?.action_scopes || []) validatePlanStructure(scope.execution_plan);
+  for (const option of payload.exchange?.response.next_steps || []) {
+    if (option.scope_ref) validatePlanStructure(scopeFor(state, option.scope_ref, payload).execution_plan);
+  }
+}
 function requiredBasisRefs(state, refs) {
   const found = new Set(refs), queue = [...refs];
   const add = ref => { if (ref && !found.has(ref)) { found.add(ref); queue.push(ref); } };
@@ -102,7 +112,7 @@ function validateOffer(state, option, response, payload) {
   if (canonical(option.assignment) !== canonical(scope.assignment) || canonical(option.proposal) !== canonical(scope.public_scope) || canonical(option.execution_plan) !== canonical(scope.execution_plan)) fail("SCOPE_MISMATCH", "The rendered offer must contain the exact scope, execution terms and assignment being proposed.");
   if (scope.action === "report") {
     const discussed = new Set(response.findings?.work_refs || []);
-    for (const exchange of list(state, "exchanges")) if (list(state, "deliveries").some(delivery => delivery.exchange_ref === exchange.exchange_id)) {
+    for (const exchange of list(state, "exchanges")) if (list(state, "deliveries").some(delivery => delivery.exchange_ref === exchange.exchange_id && require("./exchanges.cjs").deliveryMatches(delivery, state, payload))) {
       for (const ref of exchange.findings?.work_refs || []) {
         const dependencies = requiredBasisRefs(state, [ref]);
         if (dependencies.every(dependency => exchange.findings_basis_versions?.some(binding => binding.ref === dependency && binding.event_ref === state.history_index[dependency]?.event_ref))) discussed.add(ref);
@@ -125,7 +135,7 @@ function validateDecisions(state, interpretation, context, payload) {
     const exchange = list(state, "exchanges").find(x => x.exchange_id === decision.exchange_ref);
     const option = exchange?.options.find(x => x.option_id === decision.option_id);
     const delivery = payload.delivery?.delivery_id === decision.delivery_ref ? payload.delivery : list(state, "deliveries").find(x => x.delivery_id === decision.delivery_ref);
-    if (!exchange || !option || option.scope_ref !== decision.scope_ref || !delivery || delivery.exchange_ref !== decision.exchange_ref) fail("INVALID_AUTHORIZATION", "A decision must bind its exact previously offered scope, option and observed delivery.");
+    if (!exchange || !option || option.scope_ref !== decision.scope_ref || !delivery || delivery.exchange_ref !== decision.exchange_ref || !require("./exchanges.cjs").deliveryMatches(delivery, state, payload)) fail("INVALID_AUTHORIZATION", "A decision must bind its exact previously offered scope, option and observed delivery.");
     for (const ref of decision.user_refs) {
       const fresh = (payload.changes?.evidence || []).some(x => x.evidence_id === ref && !state.history_index[ref]);
       const sequence = state.history_index[ref]?.sequence;
@@ -210,4 +220,4 @@ function findingsCoverRun(state, findings, run, payload = {}) {
     || state.evidence.some(record => record.evidence_id === ref && record.kind === "computed" && record.run_id === run.run_id)
     || [...list(state, "specialist_reviews"), ...(payload.review ? [payload.review] : [])].some(review => review.review_id === ref && review.interpretation_ref && review.interpretation_ref === run.interpretation_ref));
 }
-module.exports = { POLICY, active, validateActivation, validateScopes, validateOffer, validateDecisions, validateRunStart, validateRunContinuation, validateRunRecord, eligibility, normalizedPlan, staleReason, requiredBasisRefs, findingsCoverRun };
+module.exports = { POLICY, active, validateActivation, validateScopes, validateProposalWrite, validateOffer, validateDecisions, validateRunStart, validateRunContinuation, validateRunRecord, eligibility, normalizedPlan, staleReason, requiredBasisRefs, findingsCoverRun };

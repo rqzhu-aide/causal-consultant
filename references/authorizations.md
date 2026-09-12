@@ -54,6 +54,15 @@ package its final report under an analysis/audit name to bypass the report choic
 
 ## Present a Concrete Scope
 
+Before saving or offering a new scope, the helper checks the execution plan with
+the same structural rules used at run start. Supply the plan's required fields,
+including `objective` for every run and an `exclusions` array for analysis; do not
+invent defaults to make it pass. A rejected proposal has not been saved or offered,
+so repair its structure before presenting it to the user. Interpretation,
+authorization, reference and actual file checks still apply when work starts.
+Historical scopes replay unchanged; newly offering an old malformed scope requires
+a corrected scope first.
+
 Save each immutable scope in `changes.action_scopes`:
 
 - `scope_id`: a fresh project identity for this revision.

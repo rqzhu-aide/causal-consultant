@@ -19,8 +19,17 @@ function questionRecord(ref, state, payload) {
 function distinct(values, label) {
   if (new Set(values).size !== values.length) fail("INVALID_INPUT", label + " contains duplicates.");
 }
+// Legacy receipts retain their attributed meaning; captured discrepancies do
+// not establish delivery of the prepared questions or options.
+function deliveryMatches(value, state, payload = {}) {
+  if (!value || (Object.hasOwn(value, "observed_response_sha256")
+    && value.observed_response_sha256 !== value.response_sha256)) return false;
+  const latest = [...(state?.deliveries || []), ...(payload.delivery ? [payload.delivery] : [])]
+    .filter(item => item.exchange_ref === value.exchange_ref && Object.hasOwn(item, "observed_response_sha256")).at(-1);
+  return !latest || latest.observed_response_sha256 === latest.response_sha256;
+}
 function validateDelivery(value, context, state) {
-  object(value, "delivery", ["delivery_id", "exchange_ref", "observation", "source_ref", "response_sha256"], ["observed_at"]);
+  object(value, "delivery", ["delivery_id", "exchange_ref", "observation", "source_ref", "response_sha256"], ["observed_at", "observed_response_sha256", "capture_source_ref"]);
   id(value.delivery_id, "delivery.delivery_id");
   context.reference(value.exchange_ref, "delivery.exchange_ref", "exchange");
   enumeration(value.observation, ["assistant_emission", "host_confirmed"], "delivery.observation");
@@ -29,6 +38,10 @@ function validateDelivery(value, context, state) {
   const exchange = list(state, "exchanges").find(entry => entry.exchange_id === value.exchange_ref);
   if (!exchange) fail("UNKNOWN_REFERENCE", "Delivery requires an already committed exchange.");
   if (value.response_sha256 !== exchange.response_sha256) fail("DELIVERY_MISMATCH", "Delivery hash must identify the prepared response.");
+  if (Object.hasOwn(value, "observed_response_sha256")) {
+    if (!/^[a-f0-9]{64}$/.test(value.observed_response_sha256)) fail("INVALID_INPUT", "Observed message hash must be a SHA-256 hash.");
+    text(value.capture_source_ref, "delivery.capture_source_ref");
+  } else if (Object.hasOwn(value, "capture_source_ref")) fail("INVALID_INPUT", "A captured message requires its observed hash.");
 }
 function validateInterpretation(value, context, state, payload) {
   object(value, "interpretation", ["interpretation_id", "turn_id", "incoming_refs", "components", "basis_refs", "next_action"], ["action_decisions", "focus_scope_ref"]);
@@ -60,6 +73,7 @@ function validateInterpretation(value, context, state, payload) {
     if (component.delivery_ref) {
       const delivery = payload.delivery?.delivery_id === component.delivery_ref ? payload.delivery : list(state, "deliveries").find(entry => entry.delivery_id === component.delivery_ref);
       if (!delivery || delivery.exchange_ref !== component.exchange_ref) fail("UNKNOWN_REFERENCE", "The observation must identify the referenced exchange.");
+      if (!deliveryMatches(delivery, state, payload)) fail("UNOBSERVED_EXCHANGE", "The captured message differs from the prepared exchange. Reconcile the actual reply before binding its questions or options.");
     }
   }, true);
   distinct(userQuestions(value).map(question => question.question_ref), "interpretation user questions");
@@ -266,5 +280,5 @@ function exchangeReceipt(event) {
     rendered_response: response, response_sha256: sha256(response) };
 }
 
-module.exports = { PROTOCOL, RENDERER, renderExchange, exchangeReceipt, validateDelivery,
+module.exports = { PROTOCOL, RENDERER, renderExchange, exchangeReceipt, validateDelivery, deliveryMatches,
   validateInterpretation, validateExchange, validateReviewInterpretation, userQuestions };

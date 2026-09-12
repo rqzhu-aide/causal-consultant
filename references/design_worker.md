@@ -106,6 +106,14 @@ not just a successful API call. Save what the check establishes and what it
 cannot; one simulated realization does not establish interval coverage. The
 same specialist owns this check, without an automatic second review.
 
+For cross-validation, give each fitting step only its training rows. Any learned
+eligibility rule, confidence bound, preprocessing or tuning choice belongs inside
+that training step, not a full-data object read from a surrounding scope. Save
+fold memberships and check train/evaluation separation against the actual inputs.
+For a separate held-out evaluation, save the candidate, utility, comparators and
+evaluation procedure before obtaining its outcomes; bind the received file's hash
+when constructing the executable scope. Input labels alone do not prove separation.
+
 Check the inferential claim separately from the numerical calculation: what
 hypothesis a test addresses, what parameter an interval covers, and under which
 conditions its guarantee is exact, asymptotic or approximate. Inverting a test
@@ -133,6 +141,16 @@ Explicit scoped manual inspection is acceptable; preserve reproducible checks
 for computations. A listed plan or "all diagnostics passed" is not evidence
 that a check ran. Account for relevant omitted checks without inventing a
 universal battery or claiming that an untestable assumption was verified.
+
+Keep selected reported estimates and uncertainty in machine-readable results.
+Use [numerical presentation](presentation.md) for JSON-backed headline quantities
+and tables, selecting source locators instead of retyping numbers. Preserve units,
+population, comparison and uncertainty method together. Keep outcome gain, cost
+and net utility distinct and compute their arithmetic in the analysis output.
+Agreement of algebraically equivalent estimators is an implementation check, not
+independent scientific corroboration. Retain each actual check's result, tolerance
+when relevant and scope of support; a structural verifier cannot certify the
+meaning of an explanation.
 
 Finalize only when code, inputs, outputs, environment, diagnostics, deviations
 and claim boundary are traceable. Preserve actual execution evidence; saved

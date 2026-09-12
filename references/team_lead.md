@@ -208,6 +208,11 @@ separately rewrite its questions, options or qualifications,
 or append another actionable menu. If substantive content must change, submit
 a new exchange revision with its supersession link. Reuse the receipt's event
 and exchange identities instead of rereading solely for IDs.
+The receipt also exports identical ready-to-send text at `response_path`; check
+`response_file_written` before using that file. Capture the actual emitted reply
+with [observe-exchange](delivery.md) when it becomes available. A saved reply file
+is preparation, not a delivery observation. A mismatch needs reconciliation,
+not a copied canonical hash or an automatic additional approval question.
 
 ## Recovery and Session Memory
 

@@ -21,10 +21,17 @@ function exchange(root, interpretation, suffix, response, completed_work_refs = 
     reconciliation: { changes: [], limitations: ["Synthetic fixture only."], unresolved: [], next_direction: "The user chooses the next bounded action." }, renderer: "lead-markdown-v4", response } }, "event-out-" + suffix);
 }
 function deliver(root, exchange_ref, suffix, response_sha256) {
-  const saved = state(root).exchanges.find(item => item.exchange_id === exchange_ref);
+  const loaded = store.readJournal(root);
+  const saved = loaded.state.exchanges.find(item => item.exchange_id === exchange_ref);
+  if (response_sha256 && response_sha256 !== saved.response_sha256) throw new Error("Fixture received the wrong prepared-response hash.");
+  const outgoing = loaded.events.find(event => event.payload.exchange?.exchange_id === exchange_ref).payload.exchange;
   const delivery_id = "delivery-" + suffix;
-  record(root, "exchange_delivery", { protocol: PROTOCOL, delivery: { delivery_id, exchange_ref, observation: "assistant_emission",
-    source_ref: "conversation:assistant-" + suffix, response_sha256: response_sha256 || saved.response_sha256 } }, "event-delivery-" + suffix);
+  // This synthetic host emits the rendered fixture reply exactly. Production
+  // capture must instead come from the actual host message or transcript.
+  const message_path = "fixture-message-" + suffix + ".txt";
+  require("node:fs").writeFileSync(require("node:path").join(root, message_path), require("../../scripts/lib/exchanges.cjs").renderExchange(outgoing));
+  require("../../scripts/lib/delivery.cjs").observe(root, { ...ids(root, "event-delivery-" + suffix),
+    delivery_id, exchange_ref, observation: "assistant_emission", message_path, source_ref: "fixture-host:assistant-" + suffix });
   return delivery_id;
 }
 function emptyResponse(status) { return { status, questions: [], questions_none: "No additional information is needed for this bounded decision.", next_steps: [], next_steps_none: "You may pause or ask another question." }; }

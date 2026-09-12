@@ -216,3 +216,26 @@ test("protected continuation stops at lead closeout and resumes only on a later 
     changes: { evidence: [{ evidence_id: "user-resume-incomplete", kind: "user_statement", source_ref: "conversation:resume", source_excerpt: "Please resume the already approved work.", summary: "Resume the same bounded action." }] } });
   assert.deepEqual(policy.validateRunContinuation(env.fixture.state, run, plan), run.authorization_binding);
 });
+
+test("a later captured discrepancy prevents an older hash-only receipt authorizing new work", () => {
+  const env = setup();
+  env.fixture.append("exchange_delivery", { protocol: PROTOCOL, delivery: {
+    delivery_id: "delivery-actual-different", exchange_ref: env.outgoing.exchange_id,
+    observation: "host_confirmed", source_ref: "exchanges/actual-different.txt", capture_source_ref: "test-host:actual-message",
+    response_sha256: env.fixture.state.exchanges.at(-1).response_sha256, observed_response_sha256: "b".repeat(64)
+  } });
+  rejects(() => env.fixture.append("reply_interpreted", acceptance(env)), "UNOBSERVED_EXCHANGE");
+  assert.equal(env.fixture.state.action_decisions.length, 0);
+  assert.equal(Object.hasOwn(env.fixture.state.deliveries[0], "observed_response_sha256"), false);
+});
+
+test("a later captured discrepancy prevents old findings supporting an undisclosed report offer", () => {
+  const env = setup("report");
+  env.fixture.append("exchange_delivery", { protocol: PROTOCOL, delivery: {
+    delivery_id: "delivery-findings-different", exchange_ref: env.outgoing.exchange_id,
+    observation: "host_confirmed", source_ref: "exchanges/findings-different.txt", capture_source_ref: "test-host:actual-findings",
+    response_sha256: env.fixture.state.exchanges.at(-1).response_sha256, observed_response_sha256: "b".repeat(64)
+  } });
+  rejects(() => policy.validateOffer(env.fixture.state, env.outgoing.response.next_steps[0], {}, {}), "FINDINGS_NOT_DISCUSSED");
+  assert.doesNotThrow(() => policy.validateOffer(env.fixture.state, env.outgoing.response.next_steps[0], env.outgoing.response, {}));
+});

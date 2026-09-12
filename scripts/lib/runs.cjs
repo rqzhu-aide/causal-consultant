@@ -7,7 +7,8 @@ const {
   fail, canonical, sha256, rootPath, safePath, ensureDirectory, readFile,
   writeNew, withLock, assertNotLegacy
 } = require("./files.cjs");
-const { CATALOG, jsonValue, object, text, id, enumeration, array, strings, validateAdditionalDesigns } = require("./model.cjs");
+const { jsonValue, object, text, id, enumeration, array, strings } = require("./model.cjs");
+const { validatePlanStructure } = require("./plan-validation.cjs");
 const store = require("./store.cjs");
 const authorizations = require("./authorizations.cjs");
 
@@ -35,59 +36,9 @@ function knownEvidence(state, evidenceId) {
   return evidence;
 }
 function validatePlan(plan, state) {
-  jsonValue(plan, "plan");
-  const fields = {
-    audit: ["question", "diagnostics"],
-    analysis: ["target", "population", "treatment", "comparator", "outcome", "timing", "estimand", "design_id", "estimator", "exclusions", "diagnostics"],
-    discovery: ["variables", "method", "diagnostics"],
-    report: ["purpose", "evidence_refs", "format"]
-  };
-  if (!plan || typeof plan !== "object") fail("INVALID_INPUT", "plan must be an object.");
-  enumeration(plan.kind, Object.keys(fields), "plan.kind");
-  const optional = { audit: ["transformations"], analysis: ["additional_design_ids", "identification_basis"], discovery: [], report: [] };
-  object(plan, "plan", ["kind", "objective", "claim_boundary", "inputs", ...fields[plan.kind]], [...optional[plan.kind], "interpretation_ref", "scope_ref", "authorization_ref", "operations"]);
+  validatePlanStructure(plan);
   validateRunInterpretation(plan, state);
-  text(plan.objective, "plan.objective");
-  text(plan.claim_boundary, "plan.claim_boundary");
-  array(plan.inputs, "plan.inputs", (input, label) => {
-    object(input, label, ["source_ref", "path"], ["sha256"]);
-    text(input.source_ref, label + ".source_ref");
-    text(input.path, label + ".path");
-    if (input.path.includes("\0")) fail("INVALID_INPUT", label + ".path contains a NUL byte.");
-    if (Object.hasOwn(input, "sha256") && !/^[a-f0-9]{64}$/.test(input.sha256)) fail("INVALID_INPUT", label + ".sha256 must be a SHA-256 hash.");
-  });
-  for (const key of fields[plan.kind]) {
-    if (["exclusions", "diagnostics", "variables", "evidence_refs"].includes(key)) strings(plan[key], "plan." + key);
-    else text(plan[key], "plan." + key);
-  }
-  if (plan.kind === "analysis") {
-    enumeration(plan.design_id, CATALOG.designs, "plan.design_id");
-    validateAdditionalDesigns(plan, "plan");
-    if (Object.hasOwn(plan, "identification_basis")) {
-      object(plan.identification_basis, "plan.identification_basis", ["argument", "assumptions", "source_refs"]);
-      text(plan.identification_basis.argument, "plan.identification_basis.argument");
-      strings(plan.identification_basis.assumptions, "plan.identification_basis.assumptions", true);
-      strings(plan.identification_basis.source_refs, "plan.identification_basis.source_refs", true);
-    } else if (plan.design_id === "custom_identification" || plan.additional_design_ids?.length) {
-      fail("INVALID_INPUT", "Custom or composed analyses require an identification_basis.");
-    }
-  }
-  if (plan.kind === "audit" && Object.hasOwn(plan, "transformations")) {
-    strings(plan.transformations, "plan.transformations", true);
-    strings(plan.diagnostics, "plan.diagnostics", true);
-  }
-  if (plan.kind === "report") {
-    if (!plan.evidence_refs.length) fail("INVALID_INPUT", "A report must identify the evidence it synthesizes.");
-    for (const evidenceId of plan.evidence_refs) knownEvidence(state, evidenceId);
-  }
-  if (Object.hasOwn(plan, "operations")) {
-    strings(plan.operations, "plan.operations", true);
-    const allowed = { audit: ["source_inspection", "data_quality", "preparation"], discovery: ["graph_exploration"] }[plan.kind];
-    if (!allowed || plan.operations.some(operation => !allowed.includes(operation))) {
-      fail("PROTECTED_OPERATION", "Audit/discovery declarations cannot include effect estimation, policy learning or report production. Use the corresponding authorized action.");
-    }
-    if (plan.operations.includes("preparation") && !plan.transformations) fail("INVALID_INPUT", "Preparation must declare its transformations.");
-  }
+  if (plan.kind === "report") for (const evidenceId of plan.evidence_refs) knownEvidence(state, evidenceId);
 }
 function validateRunInterpretation(plan, state) {
   if (!Object.hasOwn(plan, "interpretation_ref")) {
@@ -441,6 +392,10 @@ function verify(projectRoot, options = {}) {
   capture(undefined, () => {
     for (const runPath of store.orphanRuns(root, loaded.state)) issues.push({ code: "ORPHAN_RUN", path: "runs/" + runPath, message: "This directory has no committed run start." });
   });
+  for (const delivery of loaded.state.deliveries || []) if (Object.hasOwn(delivery, "observed_response_sha256")) {
+    try { require("./delivery.cjs").verifyCapture(root, delivery); }
+    catch (error) { issues.push({ delivery_id: delivery.delivery_id, code: error.code || "IO_ERROR", message: error.message }); }
+  }
   for (const run of loaded.state.runs) {
     if (run.status === "in_progress") issues.push({ run_id: run.run_id, code: "INCOMPLETE_RUN", message: "The run has no committed terminal event." });
     const plan = capture(run.run_id, () => frozenPlan(root, run));

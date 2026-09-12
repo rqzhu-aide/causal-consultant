@@ -194,10 +194,10 @@ test("the documented lead-only JSON submission is accepted by the actual helper"
   const block = source.match(/### Lead-Only First Round Example[\s\S]*?```json\s*([\s\S]*?)```/);
   assert.ok(block, "The authoring example must be discoverable.");
   const request = JSON.parse(block[1]);
-  const root = project(t);
+  const root = project(t, { events: createFixture().events.slice(0, 1) });
   request.expected_project_id = store.readJournal(root).state.state_meta.project_id;
   request.expected_last_event_id = store.readJournal(root).state.state_meta.last_event_id;
-  // This fixture already has user-request; complete record replacement is intentional.
+  // A first-round authoring example starts before any other user source is saved.
   const result = store.record(root, request);
   assert.equal(result.committed, true);
   assert.equal(result.rendered_response, renderExchange(request.payload.exchange));

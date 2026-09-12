@@ -107,6 +107,9 @@ useful further work when it could matter; do not manufacture improvements.
 Record actual proposal delivery through memory's attributed delivery observation.
 Preparation is not delivery. If a short answer depends on an uncertain menu,
 inspect the actual previous assistant message or clarify before binding it.
+An intact reply recovered under [delivery.md](delivery.md) retains the offered
+scope and later-choice requirements; added introductory prose alone does not
+require another user acceptance. Changed scope or conflicting instructions do.
 
 The subsequent interpretation records `action_decisions` with `decision_id`,
 `scope_ref`, `disposition` (`accept`, `defer`, `decline`, `withdraw`),
@@ -118,6 +121,9 @@ cannot grant this permission. When selecting protected work, bind
 acceptance. Optional `focus_scope_ref` records current focus without withdrawing
 other scopes; `null` clears focus. Record acceptance only when the whole-message
 interpretation permits selecting the matching protected work.
+The referenced user evidence needs its relevant exact `source_excerpt`, including
+conditions, rather than only an acceptance summary. Preserve the existing decision
+when recovering the same unfinished action; do not invent another acceptance.
 
 Interpret the whole reply first. "Yes, but use the other population" changes the
 scope; propose a revision instead of executing the old or expanded analysis.

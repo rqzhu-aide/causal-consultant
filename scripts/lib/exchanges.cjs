@@ -19,17 +19,21 @@ function questionRecord(ref, state, payload) {
 function distinct(values, label) {
   if (new Set(values).size !== values.length) fail("INVALID_INPUT", label + " contains duplicates.");
 }
-// Legacy receipts retain their attributed meaning; captured discrepancies do
-// not establish delivery of the prepared questions or options.
+// A span is checked against retained capture bytes on write and verification.
+// Historical mismatches have no span and retain their original meaning.
+function deliveryCorrespondence(value) {
+  if (!value) return "different";
+  if (!Object.hasOwn(value, "observed_response_sha256") || value.observed_response_sha256 === value.response_sha256) return "exact";
+  return value.response_span ? "wrapped" : "different";
+}
 function deliveryMatches(value, state, payload = {}) {
-  if (!value || (Object.hasOwn(value, "observed_response_sha256")
-    && value.observed_response_sha256 !== value.response_sha256)) return false;
+  if (deliveryCorrespondence(value) === "different") return false;
   const latest = [...(state?.deliveries || []), ...(payload.delivery ? [payload.delivery] : [])]
     .filter(item => item.exchange_ref === value.exchange_ref && Object.hasOwn(item, "observed_response_sha256")).at(-1);
-  return !latest || latest.observed_response_sha256 === latest.response_sha256;
+  return !latest || deliveryCorrespondence(latest) !== "different";
 }
 function validateDelivery(value, context, state) {
-  object(value, "delivery", ["delivery_id", "exchange_ref", "observation", "source_ref", "response_sha256"], ["observed_at", "observed_response_sha256", "capture_source_ref"]);
+  object(value, "delivery", ["delivery_id", "exchange_ref", "observation", "source_ref", "response_sha256"], ["observed_at", "observed_response_sha256", "capture_source_ref", "response_span"]);
   id(value.delivery_id, "delivery.delivery_id");
   context.reference(value.exchange_ref, "delivery.exchange_ref", "exchange");
   enumeration(value.observation, ["assistant_emission", "host_confirmed"], "delivery.observation");
@@ -42,6 +46,19 @@ function validateDelivery(value, context, state) {
     if (!/^[a-f0-9]{64}$/.test(value.observed_response_sha256)) fail("INVALID_INPUT", "Observed message hash must be a SHA-256 hash.");
     text(value.capture_source_ref, "delivery.capture_source_ref");
   } else if (Object.hasOwn(value, "capture_source_ref")) fail("INVALID_INPUT", "A captured message requires its observed hash.");
+  if (Object.hasOwn(value, "response_span")) {
+    const span = value.response_span;
+    object(span, "delivery.response_span", ["start_byte", "end_byte"], ["wrapper_review"]);
+    if (!value.observed_response_sha256 || value.observed_response_sha256 === value.response_sha256
+      || !Number.isSafeInteger(span.start_byte) || span.start_byte < 0
+      || !Number.isSafeInteger(span.end_byte) || span.end_byte <= span.start_byte) {
+      fail("INVALID_INPUT", "A recovered response span requires a different captured message and valid byte boundaries.");
+    }
+    if (Object.hasOwn(span, "wrapper_review")) {
+      text(span.wrapper_review, "delivery.response_span.wrapper_review");
+      if (!span.wrapper_review.trim()) fail("INVALID_INPUT", "A wrapper review must explain why the surrounding text leaves the reply applicable.");
+    }
+  }
 }
 function validateInterpretation(value, context, state, payload) {
   object(value, "interpretation", ["interpretation_id", "turn_id", "incoming_refs", "components", "basis_refs", "next_action"], ["action_decisions", "focus_scope_ref"]);
@@ -280,5 +297,5 @@ function exchangeReceipt(event) {
     rendered_response: response, response_sha256: sha256(response) };
 }
 
-module.exports = { PROTOCOL, RENDERER, renderExchange, exchangeReceipt, validateDelivery, deliveryMatches,
+module.exports = { PROTOCOL, RENDERER, renderExchange, exchangeReceipt, validateDelivery, deliveryMatches, deliveryCorrespondence,
   validateInterpretation, validateExchange, validateReviewInterpretation, userQuestions };

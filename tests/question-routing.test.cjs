@@ -209,9 +209,13 @@ test("answered, pending and withdrawn outgoing questions agree with their saved 
     ["open", "pending"], ["answered", "answered"], ["retired", "withdrawn"]
   ].entries()) {
     const suffix = "consistent-" + index;
+    const question = userQuestion(savedStatus);
+    const evidence = savedStatus === "retired" ? [{ evidence_id: "user-withdrawal", kind: "user_statement", source_ref: "chat:withdrawal",
+      source_excerpt: "Please drop my causal interpretation question for now.", summary: "The user withdraws the pending causal question." }] : [];
+    if (evidence.length) question.basis_refs.push("user-withdrawal");
     record(root, "event-consistent-" + index, "exchange_prepared", { protocol: PROTOCOL,
       interpretation: questionInterpretation(suffix, "before_work", false),
-      changes: { questions: [userQuestion(savedStatus)] }, exchange: outgoing(suffix, responseStatus) });
+      changes: { questions: [question], evidence }, exchange: outgoing(suffix, responseStatus) });
     assert.equal(store.status(root).project.questions.find(value => value.question_id === QUESTION_ID).status, savedStatus);
   }
 });
@@ -233,7 +237,7 @@ test("an open user question remains in minimal context after several unrelated c
   record(root, "event-question-source", "memory_updated", { changes: {
     evidence: [{ evidence_id: "user-question-source", kind: "user_statement", source_ref: "chat:user-causal-question",
       summary: "The user asks a causal question while discussing report formatting.", source_excerpt: QUESTION_TEXT }],
-    questions: [{ ...userQuestion(), basis_refs: ["user-question-source"] }]
+    questions: [{ ...userQuestion(), basis_refs: ["user-request", "user-question-source"] }]
   } });
   const first = record(root, "event-pending", "exchange_prepared", { protocol: PROTOCOL,
     interpretation: questionInterpretation("first", "clarify_first", false), exchange: outgoing("first", "pending") });

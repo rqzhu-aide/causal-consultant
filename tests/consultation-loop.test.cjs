@@ -49,6 +49,38 @@ function unchanged(root, code, action, run_id) {
   if (run_id) assert.equal(fs.existsSync(path.join(root, "runs", run_id)), false);
 }
 
+test("wrapped approval and recovered findings finish one action without reapproval or recomputation", t => {
+  const root = project(t);
+  const offer = f.prepareScope(root, plan(), { basis_refs: ["data-source"] });
+  const capture = (exchange_ref, suffix, actual, wrapper_review) => {
+    fs.writeFileSync(path.join(root, "actual-reply.txt"), actual);
+    return require("../scripts/lib/delivery.cjs").observe(root, { ...f.ids(root, "event-capture-" + suffix),
+      delivery_id: "delivery-" + suffix, exchange_ref, message_path: "actual-reply.txt",
+      source_ref: "fixture-host:assistant-" + suffix, observation: "assistant_emission", wrapper_review });
+  };
+  const proposed = capture(offer.exchange_ref, "wrapped-offer", "Here is the proposal.\n\n" + offer.rendered_response,
+    "The added introduction identifies the proposal; its full terms and option ordering are unchanged.");
+  assert.equal(proposed.correspondence, "wrapped");
+  offer.delivery_ref = "delivery-wrapped-offer";
+  const approved = f.acceptScope(root, offer);
+  finish(root, approved, "run-once");
+  const saved = discuss(root, approved, "run-once", "saved-findings", false);
+  const beforeResult = fs.readFileSync(path.join(root, "runs/run-once/result.json"));
+  // A new process has no session memory of the finished computation or reply.
+  const command = spawnSync(process.execPath, [path.resolve(__dirname, "../scripts/project.cjs"), "context", "--project-root", root], { encoding: "utf8", windowsHide: true });
+  assert.equal(command.status, 0, command.stdout);
+  const resumed = JSON.parse(command.stdout);
+  assert.ok(resumed.views.work.actions.findings_awaiting_discussion.some(item => item.run_ref === "run-once"));
+  assert.ok(resumed.views.work.exchanges.some(item => item.exchange_id === saved.exchange_id));
+  capture(saved.exchange_id, "recovered-findings", saved.rendered_response + "\n\nThe saved results remain available.",
+    "The closing sentence only identifies saved results; all findings, limitations and next steps are intact.");
+  assert.equal(store.status(root).views.work.actions.findings_awaiting_discussion.length, 0);
+  assert.equal(f.state(root).action_decisions.filter(item => item.disposition === "accept").length, 1);
+  assert.equal(f.state(root).runs.length, 1);
+  assert.deepEqual(fs.readFileSync(path.join(root, "runs/run-once/result.json")), beforeResult);
+  assert.equal(runs.verify(root).ok, true);
+});
+
 test("report desire and a saved proposal grant no work permission and create no artifacts", t => {
   const root = project(t);
   unchanged(root, "MISSING_AUTHORIZATION", () => start(root, plan(), "run-shortcut"), "run-shortcut");
@@ -135,7 +167,7 @@ test("a material correction blocks new files while retaining exact prior basis i
   const approved = f.acceptScope(root, offer);
   start(root, approved, "run-correction");
   const beforePlan = fs.readFileSync(path.join(root, "runs/run-correction/plan.yaml"));
-  f.record(root, "memory_updated", { changes: { evidence: [{ evidence_id: "data-source", kind: "file", source_ref: "data.json", summary: "Correction: one row belongs to a different population.", limitations: ["Population membership needs clarification."] }] } }, "event-correction");
+  f.record(root, "correction", { corrects_refs: ["data-source"], reason: "Source inspection changes the recorded population limitation.", changes: { evidence: [{ evidence_id: "data-source", kind: "file", source_ref: "data.json", summary: "Correction: one row belongs to a different population.", limitations: ["Population membership needs clarification."] }] } }, "event-correction");
   unchanged(root, "STALE_SCOPE", () => write(root, "run-correction", "result.json", "{}"));
   assert.equal(fs.existsSync(path.join(root, "runs/run-correction/result.json")), false);
   assert.deepEqual(fs.readFileSync(path.join(root, "runs/run-correction/plan.yaml")), beforePlan);

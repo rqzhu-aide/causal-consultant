@@ -336,6 +336,107 @@ function validateSemantic(state, request) {
   return request;
 }
 
+// Live writes carry forward existing attribution instead of asking the caller
+// to reconstruct it. The reducer deliberately retains historical replacement
+// semantics, and transact fingerprints the original request for exact retries.
+const MEMORY_FIELDS = {
+  evidence: ["source_excerpt", "limitations", "supersedes", "legacy"],
+  questions: ["origin", "basis_refs"],
+  assumptions: ["basis_refs", "supersedes"],
+  decisions: ["basis_refs", "user_contribution_refs", "supersedes"],
+  user_context: ["basis_refs", "supersedes"]
+};
+function changedFileSource(before, after) {
+  return before.kind !== "user_statement" && (before.kind !== after.kind || before.source_ref !== after.source_ref
+    || (Object.hasOwn(after, "source_sha256") && before.source_sha256 !== after.source_sha256));
+}
+function changedUserSource(before, after) {
+  return before.kind === "user_statement" && (before.kind !== after.kind
+    || (Object.hasOwn(after, "source_ref") && before.source_ref !== after.source_ref)
+    || (Object.hasOwn(after, "source_sha256") && before.source_sha256 !== after.source_sha256));
+}
+function prepareMemoryWrite(state, request) {
+  jsonValue(request);
+  const prepared = structuredClone(request);
+  for (const [name, fields] of Object.entries(MEMORY_FIELDS)) {
+    const records = prepared.payload?.changes?.[name];
+    if (!Array.isArray(records)) continue; // Ordinary validation supplies the error.
+    const key = COLLECTIONS[name].id;
+    for (const record of records) {
+      if (!record || typeof record !== "object" || Array.isArray(record)) continue;
+      const previous = (state[name] || []).find(item => item[key] === record[key]);
+      if (!previous) continue;
+      const userSourceChanged = name === "evidence" && changedUserSource(previous, record);
+      const retained = [...fields, ...(name === "evidence" && previous.kind === "user_statement" ? ["source_ref", "source_sha256"] : [])];
+      for (const field of retained) if (Object.hasOwn(previous, field) && !Object.hasOwn(record, field)) {
+        if (userSourceChanged && ["source_ref", "source_excerpt", "source_sha256", "legacy"].includes(field)) continue;
+        // A new file/version cannot inherit text or legacy attribution from
+        // the old source. Cautious limitations still carry until reconciled.
+        if (name === "evidence" && changedFileSource(previous, record) && ["source_excerpt", "legacy"].includes(field)) continue;
+        record[field] = structuredClone(previous[field]);
+      }
+    }
+  }
+  return prepared;
+}
+function validateMemoryWrite(state, request) {
+  const changes = request.payload.changes || {};
+  const evidence = new Map(state.evidence.map(item => [item.evidence_id, item]));
+  for (const item of changes.evidence || []) evidence.set(item.evidence_id, item);
+  const quoted = record => record?.kind === "user_statement" && typeof record.source_excerpt === "string" && !!record.source_excerpt.trim();
+  function requireQuote(ref, label) {
+    if (!quoted(evidence.get(ref))) fail("MISSING_USER_SOURCE", label + " requires source_excerpt on " + ref + ": retain the user's relevant exact words, including qualifications. This records attribution, not independent verification.");
+  }
+  const interpretation = request.payload.interpretation;
+  for (const decision of interpretation?.action_decisions || []) {
+    for (const ref of decision.user_refs) requireQuote(ref, "Action decision " + decision.decision_id);
+  }
+  if (interpretation?.components.some(component => component.kind === "correction")) {
+    if (!interpretation.incoming_refs.some(ref => quoted(evidence.get(ref)))) {
+      fail("MISSING_USER_SOURCE", "The user's correction requires its relevant exact words in an incoming source_excerpt, including qualifications. Unrelated input records need no extra quotation.");
+    }
+  }
+  if (request.type === "correction") {
+    for (const item of changes.evidence || []) if (item.kind === "user_statement") requireQuote(item.evidence_id, "The user's correction");
+  }
+  for (const question of changes.questions || []) {
+    const prior = state.questions.find(item => item.question_id === question.question_id);
+    if (question.status === "open") continue;
+    // The original question's quotation is not evidence that it was withdrawn.
+    // A consultant answer may instead cite its review or saved result.
+    const added = (question.basis_refs || []).filter(ref => !(prior?.basis_refs || []).includes(ref));
+    if (question.origin === "user" && question.status === "retired" && prior?.status !== "retired") {
+      const sources = added.filter(ref => evidence.get(ref)?.kind === "user_statement");
+      if (!sources.length) fail("MISSING_USER_SOURCE", "Withdrawing user question " + question.question_id + " requires its user's withdrawal source in basis_refs, distinct from the original question source.");
+      sources.forEach(ref => requireQuote(ref, "Question withdrawal"));
+    } else if (question.status === "answered") {
+      added.filter(ref => evidence.get(ref)?.kind === "user_statement").forEach(ref => requireQuote(ref, "The user's answer"));
+    }
+  }
+  const same = (a, b) => a === undefined || b === undefined ? a === b : require("./files.cjs").canonical(a) === require("./files.cjs").canonical(b);
+  function sourcedCorrection(ref, before, after) {
+    if (request.type !== "correction" || !request.payload.corrects_refs.includes(ref)) return false;
+    // A correction can be grounded in the retained account or in a newly cited
+    // file/result. It need not invent another user statement for an internal fix.
+    const refs = [...(before.basis_refs || []), ...(after.basis_refs || []), ...(after.user_contribution_refs || [])];
+    const sources = [after.evidence_id ? after : null, ...refs.map(id => evidence.get(id))].filter(Boolean);
+    return sources.some(item => quoted(item) || (item.kind !== "user_statement" && !!item.source_ref));
+  }
+  for (const [name, fields] of Object.entries(MEMORY_FIELDS)) for (const record of changes[name] || []) {
+    const key = COLLECTIONS[name].id;
+    const prior = (state[name] || []).find(item => item[key] === record[key]);
+    if (!prior) continue;
+    const protectedFields = [...fields, ...(name === "evidence" && prior.kind === "user_statement" ? ["kind", "source_ref", "source_sha256"] : [])]
+      .filter(field => !(name === "evidence" && changedFileSource(prior, record) && ["source_excerpt", "legacy"].includes(field)));
+    const altered = protectedFields.filter(field => Object.hasOwn(prior, field) && (
+      Array.isArray(prior[field]) ? prior[field].some(value => !(record[field] || []).some(item => same(item, value))) : !same(prior[field], record[field])
+    ));
+    if (altered.length && !sourcedCorrection(record[key], prior, record)) {
+      fail("MEMORY_SOURCE_CHANGED", "Updating " + record[key] + " would remove or replace retained " + altered.join(", ") + ". Keep the attribution, or use a sourced correction identifying this record and why it changes.");
+    }
+  }
+}
+
 function upsert(list, record, key) {
   const index = list.findIndex(existing => existing[key] === record[key]);
   if (index < 0) list.push(structuredClone(record));
@@ -483,6 +584,6 @@ function createReplayBuilder(projectId, timestamp) {
 
 module.exports = {
   CATALOG, ID, PUBLIC_TYPES, CHECKPOINT_STATUSES, STRATEGY_STATUSES, COLLECTIONS,
-  emptyState, validateSemantic, applyEvent, createReplayBuilder, jsonValue, object, text, id,
+  emptyState, validateSemantic, prepareMemoryWrite, validateMemoryWrite, applyEvent, createReplayBuilder, jsonValue, object, text, id,
   enumeration, array, strings, validateUnderstanding, validateAssignment, validateAdditionalDesigns
 };

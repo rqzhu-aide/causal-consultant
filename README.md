@@ -1,9 +1,11 @@
 # Causal Consultant v7
 
-Version: **7.0.8**, the active candidate at this repository's root.
+Version: **7.0.9**, the active candidate at this repository's root.
 The consultant and `interactive-test-cc` use the same release number. This
-release checks proposed scopes before presentation, retains actual message
-captures, and builds numerical presentations from saved sources. The consultation
+release preserves source attribution and qualifications across memory updates,
+requires source quotations for consequential user decisions, and recovers a
+unique intact prepared reply from an actual message capture. Added prose needs
+lead review; changed or repeated reply bodies cannot use that recovery. The consultation
 keeps explicit choices: agree a
 concrete analysis scope before execution, discuss findings and possible
 improvements afterward, then choose whether to extend the work or produce a
@@ -18,9 +20,11 @@ when applicable, followed by `[Status]`, `[I want to know]` and
 Prepared responses remain distinct
 from observed emission or host-confirmed delivery.
 See [delivery](references/delivery.md) and [presentation](references/presentation.md)
-for the new helpers and their verification limits. The paired tester checks
-held-out source release, preserves actor inputs, prepares final checks before
-assessment, and verifies complete or explicitly partial evidence packages.
+for the helpers and their verification limits. The paired tester independently
+compares actual replies with delivery captures, flags unrecorded source acquisition,
+distinguishes missing evidence from discrepancies, and permits undetermined
+failure attribution. Its novice and statistician personas respond to the current
+discussion without rushing disclosure or merely copying approvals.
 Local validation does not establish live host or scientific qualification.
 The September 7 folder reorganization moved the actual pre-v7 working files,
 including uncommitted edits, to the sibling `causal-consultant-v6` archive.

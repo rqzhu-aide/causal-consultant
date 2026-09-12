@@ -19,6 +19,7 @@
               "evidence_id": "evidence-assignment-original",
               "kind": "user_statement",
               "source_ref": "chat:allocation-recollection",
+              "source_excerpt": "I think offers were randomized; I did not operate allocation.",
               "summary": "I think offers were randomized; I did not operate allocation.",
               "limitations": ["Recollection is qualified and assignment has not been verified."]
             }
@@ -76,7 +77,7 @@
         "corrects_refs": ["event-assignment"],
         "reason": "The user checked the assignment account and reports no randomized offer.",
         "changes": {
-          "evidence": [{"evidence_id": "evidence-assignment-revised", "kind": "user_statement", "source_ref": "chat:allocation-correction", "summary": "No offer was randomized; local managers chose whom to offer it to.", "limitations": ["This account still needs the available assignment documents."], "supersedes": "evidence-assignment-original"}]
+          "evidence": [{"evidence_id": "evidence-assignment-revised", "kind": "user_statement", "source_ref": "chat:allocation-correction", "source_excerpt": "No offer was randomized; local managers chose whom to offer it to.", "summary": "No offer was randomized; local managers chose whom to offer it to.", "limitations": ["This account still needs the available assignment documents."], "supersedes": "evidence-assignment-original"}]
         }
       }
     }

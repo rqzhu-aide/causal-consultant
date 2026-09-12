@@ -107,7 +107,7 @@ test("event-only correction links reveal their changed premise even without supe
   const root = project(t);
   append(root, "event-extra-source", { evidence: [{ evidence_id: "evidence-extra-old", kind: "user_statement", source_ref: "chat:extra-old", summary: "Earlier allocation detail." }] });
   append(root, "event-extra-decision", { decisions: [{ decision_id: "decision-extra", kind: "design", statement: "Depends on the earlier detail.", status: "current", basis_refs: ["evidence-extra-old"] }] });
-  append(root, "event-extra-correction", { evidence: [{ evidence_id: "evidence-extra-new", kind: "user_statement", source_ref: "chat:extra-new", summary: "The earlier detail was wrong." }] },
+  append(root, "event-extra-correction", { evidence: [{ evidence_id: "evidence-extra-new", kind: "user_statement", source_ref: "chat:extra-new", source_excerpt: "The earlier detail was wrong.", summary: "The earlier detail was wrong." }] },
     "correction", { corrects_refs: ["event-extra-source"], reason: "Correct the prior detail from its original event." });
   const result = store.context(root, { focus_refs: ["evidence-extra-new"] });
   hasRefs(result.context, ["evidence-extra-old", "evidence-extra-new", "decision-extra"]);
@@ -120,7 +120,7 @@ test("a correction covering multiple events retains each affected premise and de
     append(root, "event-multi-" + suffix, { evidence: [{ evidence_id: "evidence-multi-" + suffix, kind: "user_statement", source_ref: "chat:multi-" + suffix, summary: "Prior fact " + suffix }] });
     append(root, "event-dependent-" + suffix, { decisions: [{ decision_id: "decision-multi-" + suffix, kind: "design", statement: "Depends on fact " + suffix, status: "current", basis_refs: ["evidence-multi-" + suffix] }] });
   }
-  append(root, "event-multi-correction", { evidence: [{ evidence_id: "evidence-multi-new", kind: "user_statement", source_ref: "chat:multi-correction", summary: "Both earlier accounts need revision." }] },
+  append(root, "event-multi-correction", { evidence: [{ evidence_id: "evidence-multi-new", kind: "user_statement", source_ref: "chat:multi-correction", source_excerpt: "Both earlier accounts need revision.", summary: "Both earlier accounts need revision." }] },
     "correction", { corrects_refs: ["event-multi-a", "event-multi-b"], reason: "The user corrects both original accounts." });
   const result = store.context(root, { focus_refs: ["evidence-multi-new"] });
   hasRefs(result.context, ["evidence-multi-new", "evidence-multi-a", "evidence-multi-b", "decision-multi-a", "decision-multi-b"]);
@@ -131,7 +131,8 @@ test("same-ID evidence changes expose current content and a locator for its earl
   const root = project(t);
   append(root, "event-stable-old", { evidence: [{ evidence_id: "evidence-stable", kind: "user_statement", source_ref: "chat:stable-old", summary: "The earlier account was uncertain." }] });
   append(root, "event-stable-dependent", { decisions: [{ decision_id: "decision-stable", kind: "design", statement: "Assess the stable evidence record.", status: "current", basis_refs: ["evidence-stable"] }] });
-  append(root, "event-stable-new", { evidence: [{ evidence_id: "evidence-stable", kind: "user_statement", source_ref: "chat:stable-new", summary: "The current account explicitly corrects the earlier wording." }] });
+  append(root, "event-stable-new", { evidence: [{ evidence_id: "evidence-stable", kind: "user_statement", source_ref: "chat:stable-new", source_excerpt: "I need to correct my earlier account.", summary: "The current account explicitly corrects the earlier wording." }] },
+    "correction", { corrects_refs: ["evidence-stable"], reason: "The user's newly quoted account replaces the earlier one." });
   const result = store.context(root, { focus_refs: ["evidence-stable"] });
   hasRefs(result.context, ["decision-stable"]);
   assert.equal(result.context.evidence.find(record => record.evidence_id === "evidence-stable").source_ref, "chat:stable-new");
@@ -173,8 +174,9 @@ for (const [collection, premise, changedField] of [
 test("current replacements are not presented as the historical content of an event reference", t => {
   const root = project(t);
   append(root, "event-source-old-version", { evidence: [{ evidence_id: "evidence-versioned", kind: "user_statement", source_ref: "chat:old-version", summary: "Old wording with a qualification." }] });
-  append(root, "event-source-new-version", { evidence: [{ evidence_id: "evidence-versioned", kind: "user_statement", source_ref: "chat:new-version", summary: "New current wording." }],
-    questions: [{ question_id: "question-event-basis", statement: "What was actually said earlier?", status: "open", basis_refs: ["event-source-old-version"] }] });
+  append(root, "event-source-new-version", { evidence: [{ evidence_id: "evidence-versioned", kind: "user_statement", source_ref: "chat:new-version", source_excerpt: "This corrects what I said earlier.", summary: "New current wording." }],
+    questions: [{ question_id: "question-event-basis", statement: "What was actually said earlier?", status: "open", basis_refs: ["event-source-old-version"] }] },
+    "correction", { corrects_refs: ["evidence-versioned"], reason: "The user's revised source replaces the earlier wording." });
   const result = store.context(root, { focus_refs: ["question-event-basis"] });
   assert.ok(result.coverage.omission_reasons.some(reason => reason.includes("event-source-old-version") && reason.includes("history")));
   const current = result.context.evidence.find(item => item.evidence_id === "evidence-versioned");

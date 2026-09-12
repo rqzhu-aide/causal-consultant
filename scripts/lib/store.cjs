@@ -83,17 +83,18 @@ function receipt(event, extra = {}, root) {
     ...(event.type === "exchange_prepared" ? require("./exchanges.cjs").exchangeReceipt(event) : {}),
     ...(event.type === "exchange_prepared" && root ? require("./delivery.cjs").savePrepared(root, event) : {}),
     ...(event.payload.delivery?.observed_response_sha256 ? {
-      correspondence: require("./exchanges.cjs").deliveryMatches(event.payload.delivery) ? "exact" : "different",
+      correspondence: require("./exchanges.cjs").deliveryCorrespondence(event.payload.delivery),
       observed_response_sha256: event.payload.delivery.observed_response_sha256,
-      observed_response_path: event.payload.delivery.source_ref
+      observed_response_path: event.payload.delivery.source_ref,
+      ...(event.payload.delivery.response_span ? { response_span: event.payload.delivery.response_span } : {})
     } : {}) };
 }
 function capabilities() {
   return { ok: true, version: require("../../package.json").version, journal_schema: 7,
-    capabilities: ["durable-exchanges-v1", "user-question-routing-v1", "consultation-loop-v1", "captured-delivery-v1", "proposal-preflight-v1"],
+    capabilities: ["durable-exchanges-v1", "user-question-routing-v1", "consultation-loop-v1", "captured-delivery-v1", "proposal-preflight-v1", "intact-reply-recovery-v1", "source-attributed-memory-v1"],
     renderers: ["lead-markdown-v1", "lead-markdown-v2", "lead-markdown-v3", "lead-markdown-v4"],
     compatibility: { minimum_extension_reader: "7.0.7", historical_events: "replayed unchanged",
-      additional_reader_requirements: { captured_observations: "captured-delivery-v1" },
+      additional_reader_requirements: { captured_observations: "captured-delivery-v1", recovered_observations: "intact-reply-recovery-v1" },
       protected_work_enforcement: "helper identities, order, scope and current record versions; semantic consent and host bypass require observation",
       host_closeout_enforcement: "instruction_only", delivery: "observe-exchange compares retained actual text; capture attribution remains host/agent supplied; historical hash-only observations are unverified" } };
 }
@@ -200,13 +201,15 @@ function init(projectRoot, request, options = {}) {
 }
 function record(projectRoot, request, options = {}) {
   return transact(projectRoot, request, ({ root, state }) => {
-    validateSemantic(state, request);
-    require("./authorizations.cjs").validateProposalWrite(state, request);
-    if (request.payload.delivery) require("./delivery.cjs").validateWrite(root, request.payload.delivery);
-    for (const evidence of request.payload.changes?.evidence || []) {
+    const prepared = require("./model.cjs").prepareMemoryWrite(state, request);
+    validateSemantic(state, prepared);
+    require("./model.cjs").validateMemoryWrite(state, prepared);
+    require("./authorizations.cjs").validateProposalWrite(state, prepared);
+    if (prepared.payload.delivery) require("./delivery.cjs").validateWrite(root, prepared.payload.delivery);
+    for (const evidence of prepared.payload.changes?.evidence || []) {
       if (evidence.kind === "computed") require("./runs.cjs").assertComputedEvidence(root, state, evidence);
     }
-    return { type: request.type, payload: request.payload };
+    return { type: prepared.type, payload: prepared.payload };
   }, { ...options, eventType: request?.type });
 }
 function orphanRuns(root, state) {

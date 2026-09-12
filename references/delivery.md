@@ -39,15 +39,34 @@ The helper freezes the actual bytes under
 `exchange_delivery` event. Its `response_sha256` identifies the prepared message;
 `observed_response_sha256` identifies the captured message. `source_ref` becomes
 the retained file and `capture_source_ref` preserves the supplied attribution.
-The receipt reports `correspondence: exact` or `different`. Comparison does not
-normalize whitespace, strip wrappers or infer semantic equivalence.
+The receipt reports `correspondence: exact`, `wrapped` or `different`. Exact
+comparison keeps all bytes; it does not normalize wording or internal whitespace.
+
+For a wrapper, the helper can locate one exact, complete prepared reply inside
+the capture. Surrounding whitespace alone recovers automatically. If surrounding
+prose was added, inspect the complete actual message and include optional
+`wrapper_review` in the same observation request, explaining why that prose does
+not change the questions, options, findings or qualifications. For example:
+`"wrapper_review": "The introduction only identifies the saved consultation; it adds no instructions or changes to the proposal."`
+Do not supply this for contradictory instructions, another menu or an unclear
+presentation. An edited, truncated or duplicated body cannot be recovered this way.
+
+The helper derives `response_span` byte boundaries and verifies that the retained
+span hashes to the prepared reply. It preserves the full capture and its different
+hash. This proves an intact body; the wrapper review remains the lead's attributed
+interpretation, not a machine check of meaning. A `wrapped` observation can bind
+the later reply and recover saved findings without another approval or computation.
+The work view can still list it in `discrepancy_refs` because the full bytes differ;
+its recovered delivery status distinguishes that from an unresolved discrepancy.
 
 A `different` result is a successfully retained observation, not confirmation
 that the prepared offer was delivered. Its record remains visible in the work
 view, and it cannot bind an option or establish findings discussion. Inspect the
 actual scope and the user's reply. Reconcile substantive differences through the
 lead; do not enlarge work or treat a missing match as proof of a permission breach.
-Independent questions and clear new directions remain interpretable.
+Independent questions and clear new directions remain interpretable. If an already
+saved discrepancy qualifies for wrapper recovery, append a new observation with
+its review using the retained actual capture; never overwrite the old observation.
 
 New `record` submissions containing a delivery, including batched deliveries,
 require the retained actual message, its `observed_response_sha256` and
@@ -57,10 +76,12 @@ computes the hashes and retains the source automatically.
 
 Retry an uncertain capture with its exact original event/request identity. The
 committed capture is reused without rereading a now-missing external source.
-`verify` checks retained captured bytes as well as run artifacts. Missing or
-changed captures are evidence gaps; never repair them with prepared text.
+`verify` checks retained captured bytes and recovered spans as well as run
+artifacts. Missing or changed captures are evidence gaps; never repair them with
+prepared text.
 
 Old readers without `captured-delivery-v1` cannot read these extended observation
-records. Use a reader advertising this capability for new captured records.
+records. Use a reader advertising this capability for new captured records;
+recovered spans additionally require `intact-reply-recovery-v1`.
 Historical hash-only receipts still replay and retry unchanged. They remain
 attributed observations, not independently checked captures.

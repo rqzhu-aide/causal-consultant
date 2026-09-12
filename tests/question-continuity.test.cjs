@@ -42,7 +42,7 @@ test("existing records preserve the specialist proposal, lead checkpoint, deferr
   assert.equal(state.candidate_routes[0].status, "conditional");
   const strategy = structuredClone(state.candidate_routes[0]);
   p.record("event-clarified", "memory_updated", { changes: {
-    evidence: [fixture.precise_answer],
+    evidence: [{ ...fixture.precise_answer, source_excerpt: "start_date is when the booking was made, not when they attended. We have a separate appointment-event table." }],
     questions: [{ ...state.questions[0], status: "answered", reason: fixture.resolution,
       basis_refs: [...state.questions[0].basis_refs, fixture.precise_answer.evidence_id] }],
     candidate_routes: [{ ...strategy, reason: "Booking cannot anchor attendance follow-up; inspect the offered event table",
@@ -76,12 +76,12 @@ test("retiring an unavailable question preserves its basis and does not assert t
   assert.equal(state.specialist_reviews.length, 1);
 });
 
-test("same-ID records remain complete replacements; preserving optional fields is a caller responsibility", t => {
+test("live same-ID updates retain existing question provenance when callers omit optional fields", t => {
   const p = project(t);
   p.record("event-audit", fixture.audit.type, fixture.audit.payload);
   p.record("event-replacement", "memory_updated", { changes: { questions: [{ question_id: "question-start",
     statement: "The same question", status: "open" }] } });
   const state = store.status(p.root).project;
-  assert.equal(Object.hasOwn(state.questions[0], "basis_refs"), false);
+  assert.deepEqual(state.questions[0].basis_refs, store.history(p.root, { record_id: "question-start" }).events[0].payload.changes.questions[0].basis_refs);
   assert.equal(store.history(p.root, { record_id: "question-start" }).events[0].payload.changes.questions[0].basis_refs.length, 2);
 });

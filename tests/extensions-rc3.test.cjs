@@ -275,7 +275,10 @@ test("a report freezes its source excerpt even when the current evidence wording
   record(root, { evidence: [evidence] });
   start(root, { kind: "report", objective: "Preserve the selected evidence version", claim_boundary: "Qualified recollection only",
     inputs: [], purpose: "Planning", evidence_refs: [evidence.evidence_id], format: "Markdown" });
-  record(root, { evidence: [{ ...evidence, summary: "Later correction.", source_excerpt: "No offer was randomized." }] }, "event-corrected-wording");
+  store.record(root, { ...identity(root, "event-corrected-wording"), type: "correction", payload: {
+    corrects_refs: [evidence.evidence_id], reason: "The later user statement corrects the original recollection.",
+    changes: { evidence: [{ ...evidence, summary: "Later correction.", source_excerpt: "No offer was randomized." }] }
+  } });
   const report = frozen(root);
   assert.equal(report.evidence_bindings[0].source_excerpt, evidence.source_excerpt);
   assert.equal(state(root).evidence[0].source_excerpt, "No offer was randomized.");

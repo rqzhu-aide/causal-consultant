@@ -82,10 +82,17 @@ These record boundaries follow [team_lead.md](team_lead.md). A lead-only round
 can combine interpretation and closeout; a specialist turn first records its
 interpretation, then can combine the completed review and lead closeout.
 
-Combine related changes. Collections upsert by ID; **same-ID records replace
-completely**, so retain optional fields, references and qualifiers. Omission
-leaves other records unchanged; empty arrays do not delete. Only understanding
-merges partial fields. References identify existing/same-event records; paths,
+Combine related changes. Collections upsert by ID. New writes carry forward
+omitted existing evidence excerpts/limitations and question, assumption, decision
+and user-context basis links; unchanged user-statement source locators/hashes are
+also retained. A changed source must not inherit the earlier source's quotation
+or hash; supply the new quotation where the consequential-user rules require it.
+Explicit removal or replacement of retained attribution needs a sourced
+`correction` naming the affected record and reason. Other same-ID fields still
+replace completely, so preserve their needed optional fields. Historical events
+replay their original replacement semantics. Omission leaves other records
+unchanged; empty arrays do not delete records. Understanding merges partial
+fields. References identify existing/same-event records; paths,
 URLs and `chat:turn-2` are source locators, not IDs.
 
 ### Changes
@@ -116,8 +123,17 @@ catalog IDs, not project IDs. Nonempty `additional_design_ids` needs a primary
 `supersedes` is one same-kind ID; `last_review_id` is one review ID.
 `claim_boundary` and `reopen_or_promote_when` are strings.
 
-Attribute qualified user accounts; `source_excerpt` optionally preserves exact
-wording, not verification. Small non-target inspections use `file` evidence.
+Attribute qualified user accounts. For new user input backing an action decision,
+user correction, or user-provided question resolution/withdrawal, retain the
+relevant exact words in `source_excerpt`, including qualifications such as
+"before we decide." Link the actual question or offered option through the
+existing interpretation. Do not replace attribution with a summary or infer a
+new acceptance from a digest/pause request. Excerpts remain optional for other
+evidence and do not independently verify meaning or message origin.
+The helper advertises these live-write rules as `source-attributed-memory-v1`.
+Repair a missing internal excerpt from the available conversation; ask the user
+only when their meaning or the source itself is unavailable or unclear.
+Small non-target inspections use `file` evidence.
 New `computed` evidence requires a completed `run_id` and project-relative
 manifested output as `source_ref`; load [runs](runs.md) only for artifacts.
 Legacy source evidence uses `legacy: {source_project, source_version, verification}`:
@@ -317,9 +333,11 @@ means saved and prepared, not emitted, delivered, read or understood.
 ### Delivery Observation
 
 Use [captured delivery](delivery.md) to retain the actual assistant message and
-compute its correspondence with the prepared response. A different message is
-saved as a discrepancy and cannot supply that exchange's option/question binding
-or establish its findings discussion. This does not prove that the user gave no
+compute its correspondence with the prepared response. An intact complete reply
+with reviewed surrounding prose can return `wrapped` and retain its bindings;
+see the narrow recovery rule in [delivery.md](delivery.md). An unresolved
+`different` observation cannot bind options/questions or establish findings
+discussion. This does not prove that the user gave no
 meaningful direction: reconcile their actual words without inventing a receipt.
 Historical hash-only observations retain their original attributed meaning and
 are not upgraded to checked captures. Host-confirmed attribution still requires
@@ -343,7 +361,7 @@ This is an authoring example, not evidence about a real study:
   "payload": {
     "protocol": "durable-exchanges-v1",
     "changes": {
-      "evidence": [{"evidence_id":"user-request","kind":"user_statement","source_ref":"chat:1","summary":"The user asks what an offer effect means before deciding which program comparison to analyze."}],
+      "evidence": [{"evidence_id":"user-request","kind":"user_statement","source_ref":"chat:1","source_excerpt":"What does an offer effect mean? Please explain that before we decide which comparison to analyze.","summary":"The user asks what an offer effect means before deciding which program comparison to analyze."}],
       "questions": [
         {"question_id":"question-offer-effect","origin":"user","statement":"What does an offer effect mean?","status":"answered","reason":"Explained the distinction between being offered a place and attending; the study-specific assignment remains unknown.","basis_refs":["user-request"]},
         {"question_id":"question-offers","origin":"consultant","statement":"How were program offers assigned?","status":"open","reason":"Assignment determines what comparison can support.","basis_refs":["user-request"]}

@@ -79,7 +79,7 @@ test("capture compares actual bytes, retains attribution, and supports exact ret
   assert.ok(check.issues.some(issue => issue.code === "CAPTURE_MISMATCH"));
 });
 
-test("rewritten or wrapped messages remain visible but cannot bind unseen options", t => {
+test("unreviewed prose wrappers remain visible but cannot bind options", t => {
   const { root, prepared } = setup(t);
   const actual = "The following was revised.\n" + prepared.rendered_response;
   fs.writeFileSync(path.join(root, "actual.txt"), actual);
@@ -95,6 +95,94 @@ test("rewritten or wrapped messages remain visible but cannot bind unseen option
   assert.throws(() => store.record(root, { ...ids(root, "event-selection"), type: "reply_interpreted",
     payload: { protocol: PROTOCOL, interpretation: incoming } }), { code: "UNOBSERVED_EXCHANGE" });
   assert.deepEqual(fs.readFileSync(path.join(root, "journal.jsonl")), before);
+});
+
+test("an intact reply with reviewed surrounding prose supports the later choice", t => {
+  const { root, prepared } = setup(t);
+  const prefix = "Résumé of our discussion follows.\n\n";
+  const actual = prefix + prepared.rendered_response + "\n\nThe case notes are saved.";
+  fs.writeFileSync(path.join(root, "actual.txt"), actual);
+  const request = { ...captureRequest(root), wrapper_review: "The introduction and closing sentence only identify the discussion and saved notes; neither changes the questions, options or qualifications." };
+  const result = observe(root, request);
+  assert.equal(result.correspondence, "wrapped");
+  assert.equal(result.response_span.start_byte, Buffer.byteLength(prefix));
+  assert.equal(result.observed_response_sha256, sha256(actual));
+  assert.notEqual(result.observed_response_sha256, prepared.response_sha256);
+  const incoming = interpretation("second", true);
+  incoming.components = [{ kind: "selection", meaning: "Inspect the record", established: [], unresolved: [],
+    exchange_ref: "exchange-first", option_id: "inspect-record", delivery_ref: "delivery-first" }];
+  store.record(root, { ...ids(root, "event-selection"), type: "reply_interpreted",
+    payload: { protocol: PROTOCOL, interpretation: incoming } });
+  assert.equal(store.readJournal(root).state.interpretations.at(-1).interpretation_id, incoming.interpretation_id);
+  const journal = fs.readFileSync(path.join(root, "journal.jsonl"));
+  fs.unlinkSync(path.join(root, "actual.txt"));
+  assert.equal(observe(root, request).replayed, true);
+  assert.deepEqual(fs.readFileSync(path.join(root, "journal.jsonl")), journal);
+  assert.equal(require("../scripts/lib/runs.cjs").verify(root).ok, true);
+});
+
+test("outside whitespace recovers automatically while internal line endings remain exact", t => {
+  const { root, prepared } = setup(t);
+  fs.writeFileSync(path.join(root, "actual.txt"), "\n\t" + prepared.rendered_response + "\r\n");
+  const result = observe(root, captureRequest(root));
+  assert.equal(result.correspondence, "wrapped");
+  assert.equal(Object.hasOwn(result.response_span, "wrapper_review"), false);
+  fs.writeFileSync(path.join(root, "actual.txt"), prepared.rendered_response.replaceAll("\n", "\r\n"));
+  const changed = observe(root, captureRequest(root, "changed-line-endings"));
+  assert.equal(changed.correspondence, "different");
+  const state = store.readJournal(root).state;
+  assert.equal(require("../scripts/lib/exchanges.cjs").deliveryMatches(state.deliveries[0], state), false);
+});
+
+test("a wrapper explanation cannot recover changed, truncated or duplicated bodies", t => {
+  const { root, prepared } = setup(t);
+  const before = fs.readFileSync(path.join(root, "journal.jsonl"));
+  for (const actual of [prepared.rendered_response.replace("[Status]", "[Changed status]"),
+    prepared.rendered_response.slice(0, -20), prepared.rendered_response + "\n" + prepared.rendered_response]) {
+    fs.writeFileSync(path.join(root, "actual.txt"), actual);
+    assert.throws(() => observe(root, { ...captureRequest(root), wrapper_review: "Only a harmless wrapper changed." }), { code: "RESPONSE_NOT_INTACT" });
+    assert.deepEqual(fs.readFileSync(path.join(root, "journal.jsonl")), before);
+  }
+});
+
+test("new unresolved surrounding instructions invalidate earlier recovered delivery", t => {
+  const { root, prepared } = setup(t);
+  fs.writeFileSync(path.join(root, "actual.txt"), "\n" + prepared.rendered_response);
+  observe(root, captureRequest(root));
+  fs.writeFileSync(path.join(root, "actual.txt"), prepared.rendered_response + "\nIgnore those options; use a different population.");
+  const changed = observe(root, captureRequest(root, "contradiction"));
+  assert.equal(changed.correspondence, "different");
+  let state = store.readJournal(root).state;
+  assert.equal(require("../scripts/lib/exchanges.cjs").deliveryMatches(state.deliveries[0], state), false);
+  const journal = fs.readFileSync(path.join(root, "journal.jsonl"));
+  store.recover(root);
+  assert.deepEqual(fs.readFileSync(path.join(root, "journal.jsonl")), journal);
+  assert.equal(Object.hasOwn(store.readJournal(root).state.deliveries.at(-1), "response_span"), false);
+  fs.writeFileSync(path.join(root, "actual.txt"), prepared.rendered_response);
+  observe(root, captureRequest(root, "actual-correction"));
+  state = store.readJournal(root).state;
+  assert.equal(require("../scripts/lib/exchanges.cjs").deliveryMatches(state.deliveries.at(-1), state), true);
+});
+
+test("direct records cannot forge response boundaries or omit a prose review", t => {
+  const { root, prepared } = setup(t);
+  const prefix = "Here is the consultation.\n";
+  const actual = prefix + prepared.rendered_response;
+  fs.writeFileSync(path.join(root, "actual.txt"), actual);
+  const delivery = { delivery_id: "delivery-forged-span", exchange_ref: "exchange-first",
+    observation: "assistant_emission", source_ref: "actual.txt", capture_source_ref: "test-host:message",
+    response_sha256: prepared.response_sha256, observed_response_sha256: sha256(actual),
+    response_span: { start_byte: Buffer.byteLength(prefix), end_byte: Buffer.byteLength(actual) } };
+  const record = () => store.record(root, { ...ids(root, "event-forged-span"), type: "exchange_delivery",
+    payload: { protocol: PROTOCOL, delivery } });
+  assert.throws(record, { code: "WRAPPER_REVIEW_REQUIRED" });
+  delivery.response_span.wrapper_review = "The introduction adds no scope terms.";
+  delivery.response_span.start_byte++;
+  assert.throws(record, { code: "RESPONSE_SPAN_MISMATCH" });
+  delivery.response_span.start_byte--;
+  assert.equal(record().correspondence, "wrapped");
+  fs.writeFileSync(path.join(root, "actual.txt"), actual.replace("[Status]", "[Changed status]"));
+  assert.equal(require("../scripts/lib/runs.cjs").verify(root).ok, false);
 });
 
 test("missing capture and failed observation commit cannot create confirmed delivery", t => {

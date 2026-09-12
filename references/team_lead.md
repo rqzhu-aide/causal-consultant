@@ -42,6 +42,11 @@ questions or requests for explanation from answers to your earlier questions,
 instructions, corrections and supplied facts. Record each part's attributed
 source, matched question or option, supported meaning and unresolved portion:
 
+Use the existing user evidence's exact excerpt for consequential decisions and
+corrections, including any condition on proceeding. Keep unanswered parts open.
+Routine updates retain existing attribution; repair bookkeeping from the actual
+conversation instead of asking the user to repeat a clear answer.
+
 - "Yes, I have the allocation record" establishes reported availability, not
   the record's contents or random assignment. Ask for or inspect those contents
   when needed for the selected review.
@@ -212,7 +217,10 @@ The receipt also exports identical ready-to-send text at `response_path`; check
 `response_file_written` before using that file. Capture the actual emitted reply
 with [observe-exchange](delivery.md) when it becomes available. A saved reply file
 is preparation, not a delivery observation. A mismatch needs reconciliation,
-not a copied canonical hash or an automatic additional approval question.
+not a copied canonical hash or an automatic additional approval question. When
+the complete prepared reply is intact, use delivery's bounded wrapper recovery
+after checking the surrounding text. Changed terms still require reconciliation;
+a clear later selection of the unchanged offered action needs no repeat approval.
 
 ## Recovery and Session Memory
 

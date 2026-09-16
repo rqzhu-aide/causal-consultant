@@ -15,7 +15,12 @@ function createFixture(store, root, options = {}) {
   store.init(root, { project_id: fixture.project_id, event_id: "event-init", project_understanding: fixture.project_understanding });
   let previous = "event-init";
   const record = (item) => {
-    store.record(root, { ...structuredClone(item), expected_project_id: fixture.project_id, expected_last_event_id: previous });
+    // These fixed rc3 records model an existing journal, including archived
+    // answers without modern resolution records. Replay their original shapes
+    // under semantic journal validation, not today's live reply-write gates.
+    // Context tests below still submit their new changes through store.record.
+    const request = { ...structuredClone(item), expected_project_id: fixture.project_id, expected_last_event_id: previous };
+    store.transact(root, request, () => ({ type: item.type, payload: structuredClone(item.payload) }), { eventType: item.type });
     previous = item.event_id;
   };
   for (const event of fixture.events) record(event);

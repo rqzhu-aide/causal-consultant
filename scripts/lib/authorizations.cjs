@@ -26,7 +26,17 @@ function validateProposalWrite(state, request) {
   const payload = request.payload;
   for (const scope of payload.changes?.action_scopes || []) validatePlanStructure(scope.execution_plan);
   for (const option of payload.exchange?.response.next_steps || []) {
-    if (option.scope_ref) validatePlanStructure(scopeFor(state, option.scope_ref, payload).execution_plan);
+    if (option.scope_ref) {
+      const scope = scopeFor(state, option.scope_ref, payload);
+      validatePlanStructure(scope.execution_plan);
+      const target = scope.basis_versions.some(binding => {
+        const decision = list(state, "decisions").find(item => item.decision_id === binding.ref);
+        return decision?.kind === "target" && decision.status === "current"
+          && state.history_index[binding.ref]?.event_ref === binding.event_ref
+          && require("./model.cjs").decisionHasSource(state, payload, decision);
+      });
+      if (!target) fail("MISSING_TARGET_BINDING", "A new protected offer must bind a current source-linked target decision; the lead checks its relevance to this scope.");
+    }
   }
 }
 function requiredBasisRefs(state, refs) {
@@ -147,7 +157,23 @@ function validateDecisions(state, interpretation, context, payload) {
     if (decision.disposition === "accept") {
       const scope = scopeFor(state, decision.scope_ref, payload);
       const reason = staleReason(state, scope, payload); if (reason) fail("STALE_SCOPE", reason);
-      if (interpretation.next_action.kind !== "specialist" || interpretation.next_action.scope_ref !== scope.scope_id || interpretation.next_action.authorization_ref !== decision.decision_id || canonical(interpretation.next_action.assignment) !== canonical(scope.assignment)) fail("INVALID_AUTHORIZATION", "Accepting an action binds this bounded specialist assignment, scope and decision.");
+      const next = interpretation.next_action;
+      if (next.kind === "specialist" && next.scope_ref === scope.scope_id) {
+        if (next.authorization_ref !== decision.decision_id || canonical(next.assignment) !== canonical(scope.assignment)) fail("INVALID_AUTHORIZATION", "Executing the accepted action requires its exact assignment, scope and decision.");
+      } else {
+        if (!next.adjustment_reason) fail("INVALID_AUTHORIZATION", "Retaining acceptance without executing it requires an explicit postponement reason.");
+        // A valid choice may wait for clarification. Doing something else also
+        // needs a separate user direction; an adjustment alone cannot invent work.
+        const separatelySelected = next.kind !== "specialist" || interpretation.components.some(component => {
+          if (component.exchange_ref === decision.exchange_ref && component.option_id === decision.option_id) return false;
+          if (component.kind === "instruction" && component.established.length && !component.option_id) return true;
+          if (component.kind !== "selection") return false;
+          const other = list(state, "exchanges").find(item => item.exchange_id === component.exchange_ref)?.options.find(item => item.option_id === component.option_id);
+          return other?.assignment && canonical(other.assignment) === canonical(next.assignment)
+            && (other.scope_ref || null) === (next.scope_ref || null);
+        });
+        if (next.kind === "specialist" && !separatelySelected) fail("INVALID_AUTHORIZATION", "Work independent of a paused acceptance requires its own explicit user instruction or observed selection.");
+      }
     }
   });
   if ((interpretation.action_decisions || []).filter(x => x.disposition === "accept").length > 1) fail("INVALID_AUTHORIZATION", "One reply selects at most one protected action.");

@@ -30,7 +30,7 @@ function main(argv) {
       "capabilities", "init", "status", "context", "record", "history", "recover", "recover-lock",
       "observe-exchange", "start-run", "write-run-file", "finalize-run", "fail-run", "abandon-run", "verify"
     ], usage: "node scripts/project.cjs <command> --project-root <folder> [--input <json-file|->]",
-    guidance: "Read references/memory.md for semantic records; references/authorizations.md for current action scopes and user decisions; references/runs.md for output-producing work. New projects activate consultation-loop-v1 automatically. Existing inactive projects use record with consultation_policy_activated after reconciling legacy work. verify --source-check snapshots checks an archive without original external source paths; default is originals." };
+    guidance: 'Read references/helper.md for incoming interpretation and its submission, and references/team_lead.md for closeout and its submission. Resume with context --input containing {"mode":"brief"}; omit mode to use focused context selection. Read references/memory.md for shared memory operations, relevant sections of references/memory-records.md for shared record fields, references/authorizations.md for action scopes and references/runs.md for output-producing work. New projects activate consultation-loop-v1 automatically. Existing inactive projects use record with consultation_policy_activated after reconciling legacy work. verify --source-check snapshots checks an archive without original external source paths; default is originals.' };
   }
   if (command === "capabilities") {
     if (Object.keys(options).length) fail("INVALID_INPUT", "capabilities takes no options and needs no project root.");

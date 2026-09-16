@@ -31,33 +31,30 @@ function add(root, name, content) {
   fs.writeFileSync(target, content, { flag: "wx" });
 }
 
-test("the active release identity agrees across package, skill, README and CLI", () => {
+test("the active release identity agrees across package, skill and CLI", () => {
   const pkg = require("../package.json");
-  assert.equal(pkg.version, "7.0.9");
-  assert.match(fs.readFileSync(path.join(repository, "SKILL.md"), "utf8"), /metadata:\r?\n  version: "7\.0\.9"/);
-  assert.match(fs.readFileSync(path.join(repository, "README.md"), "utf8"), /^Version: \*\*7\.0\.9\*\*/m);
+  assert.equal(pkg.version, "7.0.10");
+  assert.match(fs.readFileSync(path.join(repository, "SKILL.md"), "utf8"), /metadata:\r?\n  version: "7\.0\.10"/);
   const result = spawnSync(process.execPath, [path.join(repository, "scripts/project.cjs"), "help"], { encoding: "utf8", windowsHide: true });
   assert.ifError(result.error);
   assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(result.stdout).version, pkg.version);
 });
 
-for (const file of ["SKILL.md", "README.md"]) {
-  test("distribution validation detects version drift in " + file, t => {
-    const root = fixture(t), target = path.join(root, file);
-    const original = fs.readFileSync(target, "utf8");
-    assert.ok(original.includes("7.0.9"));
-    fs.writeFileSync(target, original.replace("7.0.9", "7.0.10"));
-    const result = validate(root);
-    assert.equal(result.ok, false);
-    assert.ok(result.errors.some(error => error.includes(file + " version must match package.json")));
-  });
-}
+test("distribution validation detects version drift in SKILL.md", t => {
+  const root = fixture(t), target = path.join(root, "SKILL.md");
+  const original = fs.readFileSync(target, "utf8");
+  assert.ok(original.includes("7.0.10"));
+  fs.writeFileSync(target, original.replace("7.0.10", "7.0.11"));
+  const result = validate(root);
+  assert.equal(result.ok, false);
+  assert.ok(result.errors.some(error => error.includes("SKILL.md version must match package.json")));
+});
 
 test("the CLI reads its version from the installed package", t => {
   const root = fixture(t), target = path.join(root, "package.json");
   const pkg = JSON.parse(fs.readFileSync(target, "utf8"));
-  pkg.version = "7.0.10";
+  pkg.version = "7.0.11";
   fs.writeFileSync(target, JSON.stringify(pkg));
   const result = spawnSync(process.execPath, [path.join(root, "scripts/project.cjs"), "help"], { encoding: "utf8", windowsHide: true });
   assert.ifError(result.error);
@@ -87,6 +84,14 @@ test("runtime references cannot depend on excluded developer files", t => {
   const result = validate(root);
   assert.equal(result.ok, false);
   assert.ok(result.errors.some(error => error.includes("Reference is outside the distribution")));
+});
+
+test("distribution validation requires the shared record reference", t => {
+  const root = fixture(t);
+  fs.unlinkSync(path.join(root, "references/memory-records.md"));
+  const result = validate(root);
+  assert.equal(result.ok, false);
+  assert.ok(result.errors.includes("Missing references/memory-records.md"));
 });
 
 test("the declared npm files cannot silently include developer evidence", t => {

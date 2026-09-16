@@ -94,7 +94,8 @@ test("history exposes old resolved questions and supports explicit pagination", 
     const record = request("event-q-" + i, previous);
     record.payload.changes.questions = [{ question_id: "question-" + i, statement: "Historical fact " + i,
       status: "answered", reason: "Resolution " + i }];
-    store.record(root, record);
+    // Seed historical answer shapes without inventing modern answer evidence.
+    store.transact(root, record, () => ({ type: record.type, payload: record.payload }), { eventType: record.type });
     previous = record.event_id;
   }
   assert.equal(store.status(root).project.questions.length, 40);

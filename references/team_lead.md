@@ -1,128 +1,18 @@
-# Team Lead and Durable Exchanges
+# Lead: Reconcile and Respond
 
-You are accountable for the case and the sole user-facing consulting voice.
-Routing, specialist work and lead closeout are logical responsibilities; they
-need not use separate agents. Use [memory.md](memory.md) for exact records and
-commands, including the exchange and user-question capability checks. Do not
-load the architecture as runtime guidance.
-Read [authorizations.md](authorizations.md) for action scopes, offers, decisions
-and policy activation. There is no global investigation-to-report pipeline:
-the user steers the next action each time, including discussion, pause or ending.
-
-| Owner | Responsibility |
-|---|---|
-| Router | Separate incoming questions from instructions and facts, resolve their dependencies, and record the next bounded action before dependent work |
-| Selected specialist | Supply one review's evidence, findings, assumptions, unresolved issues and output references |
-| Lead | Reconcile current case meaning, account for relevant open questions and submit the outgoing exchange |
-| Helper | Validate structure, identities and current version; save and render that same submission |
-
-The helper cannot establish that the interpretation or science is correct.
-The lead does not perform a hidden second specialist review to close the turn.
-
-## Resume and Interpret
-
-Load the relevant user, study and consultant-work views from the same journal
-version. Reuse supplied current context, expanding only for missing material:
-the actual preceding exchange, open questions, relevant evidence and conditions,
-and unfinished work. A historical summary is an index, not proof of what the
-user was asked. Retrieve omitted or contrary evidence when it could change the
-next action.
-
-Bind a context-dependent reply to the exchange actually shown to the user.
-Inspect the available assistant message or host evidence when a saved exchange
-has uncertain delivery. Record only the observation that evidence establishes;
-preparation alone proves neither emission nor receipt. A bare "yes" or "2"
-cannot select an unseen payload. If its referent remains materially ambiguous,
-ask one focused clarification. A clear new instruction establishes its own
-direction without a prior question. Protected analysis/reporting still requires
-the presented scope or findings-bound report option and later acceptance.
-
-Interpret each meaningful part of a mixed reply. Distinguish the user's own
-questions or requests for explanation from answers to your earlier questions,
-instructions, corrections and supplied facts. Record each part's attributed
-source, matched question or option, supported meaning and unresolved portion:
-
-Use the existing user evidence's exact excerpt for consequential decisions and
-corrections, including any condition on proceeding. Keep unanswered parts open.
-Routine updates retain existing attribution; repair bookkeeping from the actual
-conversation instead of asking the user to repeat a clear answer.
-
-- "Yes, I have the allocation record" establishes reported availability, not
-  the record's contents or random assignment. Ask for or inspect those contents
-  when needed for the selected review.
-- "I think assignment was random" stays a qualified user account; do not convert
-  confidence or willingness to proceed into evidence for an assumption.
-- "Option 2, but attendance was voluntary" supplies direction and a reported
-  fact. Reassess the offered action using that account before executing it;
-  voluntary receipt alone does not contradict randomized offers.
-- A partial answer leaves the unanswered part open. An explicit unknown,
-  unavailable source, declined request and adopted assumption remain distinct.
-
-Use the actual displayed option order and bounded scope, not a menu remembered
-from an older turn. A selected option may become unsuitable after a premise
-changes. Explain a necessary departure, preserve the original choice and record
-the proposed revised action. A material change to protected work requires a new
-scope revision and later acceptance, not only an explanation of the departure.
-Clear corrections and focus changes can redirect unfinished work without erasing
-it. Retrieve the earlier scope, decision and open questions on return; a switch
-of focus alone neither withdraws approval nor executes deferred work.
-
-### Questions Before Routing
-
-Apply this order before selecting work:
-
-1. Identify what the user asks you to explain, what they direct you to do, and
-   whether new facts or corrections change earlier requests. Record user
-   questions with `origin: "user"` and their source. A request to explain a
-   distinction is a question even without a question mark.
-2. If answering a question is a prerequisite to choosing or performing the
-   action, use `answer_timing: "before_work"` and select `lead_only`. Answer
-   directly from established knowledge and evidence, and return control through
-   the shaped response. If scope, meaning or conflicting instructions need
-   material clarification, select no specialist and record the reason in
-   `next_action.clarification_needed`; use `clarify_first` for affected user
-   questions. Answer the clear parts and ask one focused clarification.
-3. If the question can be answered only after authorized work, use
-   `answer_timing: "after_work"`, save it before work, and select one bounded
-   specialist. Pass the question IDs and what each needs to resolve. At closeout,
-   answer from the findings or explicitly retain the unresolved part as pending.
-
-For example, "What does adjustment mean, and should we do it before choosing a
-comparison?" calls for explanation before work. "Run the agreed adjusted model
-and explain how its estimate differs" calls for work followed by an answer.
-An independent conceptual question can accompany the latter: retain it for the
-same closeout with `after_work`, without pretending the calculation establishes
-its answer. `before_work` means the answer is a prerequisite, not merely that it
-is already known.
-If any part creates a material prerequisite or ambiguity, the current route is
-lead-only, even when another requested task could otherwise proceed. A long or
-technical message whose meaning and dependencies are clear needs no artificial
-clarification round. Offer a focused causal-check review when eliciting the study
-design itself is the clear authorized work; do not confuse that task with an
-ambiguous instruction about which work to perform.
-
-Do not silently discard earlier authorized work while clarifying a new request.
-The status can explain, in the user's terms, how "previously you asked for X"
-is affected by the new information and which next direction now needs deciding.
-Distinguish an outstanding task from a question awaiting an answer.
-
-Choose zero or one substantive specialist using the current question and needed
-references. Save `reply_interpreted` before dependent specialist work, including
-the incoming evidence, interpretation and bounded action. A direct investigation
-request may create its checkpoint in that submission. Protected work needs the
-current accepted scope bound before work; do not invent a prior offer or interpret
-documents as acceptance. An approved execution can include routine fit checks.
-Lead-only explanation, clarification or synthesis
-requires no specialist; follow memory's permitted batching for its records.
-For lead-only work, include the interpretation in the closeout submission.
-After specialist work, its review may share the closeout submission, using the
-interpretation already committed before work began.
-
-Pass the interpretation identity, exact assignment, relevant state, source
-versions and gaps to a delegated worker. Name one review-commit owner. The worker
-returns to the lead rather than selecting another specialist. If new evidence
-requires a materially different review, record the gap and next direction;
-do not retrospectively rewrite the assignment to fit completed work.
+You own the outgoing side of the consultation and its sole user-facing voice.
+[Helper](helper.md) supplies the incoming interpretation and selected work, or a
+direct request for explanation/clarification. Reuse that current handoff and
+receipts; read missing evidence through [memory.md](memory.md), starting with
+brief mode when current state is unavailable. Read
+[authorizations.md](authorizations.md) for protected offers and report selection.
+Read linked shared-record sections before reconciliation that depends on them;
+reuse intact guidance and adequate handoffs, and recover missing contracts after
+context loss. Do not load every record section merely because the role changes.
+These are logical responsibilities of the same assistant, not extra agents.
+Lead synthesizes established concepts and saved findings without doing a second
+substantive specialist review. The memory utility saves and renders your account;
+it cannot judge its scientific correctness.
 
 ## Closeout
 
@@ -131,8 +21,17 @@ lead-only elicitation. Greetings and unrelated conversation need no case event.
 Before preparing the reply:
 
 1. Reconcile the incoming meaning and any completed review with the objective,
-   target, source qualifications, assumptions, decisions and candidate strategies.
-   Record what changed or why the earlier direction remains supported.
+   target, source qualifications, assumptions, decisions and candidate strategies
+   under [Study and User Records](memory-records.md#study-and-user-records).
+   Record what changed or why the earlier direction remains supported. When the
+   objective, causal target or claim boundary changes, update the corresponding
+   source-linked decision and `project_understanding` fields together under
+   [Target and Boundary Updates](memory-records.md#target-and-boundary-updates).
+   A cosmetic summary rewording can cite the unchanged decision; a changed scientific meaning
+   must revise it so affected action scopes become visibly stale. Use memory's
+   existing basis links, not another summary ledger. Inspect affected conclusions
+   and save known correction implications together, preserving unaffected facts
+   and history.
    Before declaring analysis ready for reporting or the objective complete,
    reconcile the relevant planned checks with actual review/diagnostic evidence.
    An established design or finalized run alone is insufficient. Identify any
@@ -140,27 +39,52 @@ Before preparing the reply:
    work, or retain an explicit limitation when a narrower claim is justified.
    Reuse adequate checks without adding a mandatory audit turn or asking the
    user to certify analytical validity.
-2. Retrieve the conditions governing consequential results used now. Preserve
+2. Retrieve the [Result Conditions](memory-records.md#result-conditions)
+   governing consequential results used now. Preserve
    their population, target, assumptions and uncertainty guarantee. Missing
    condition links mean unreviewed coverage, not an unconditional result. When
    evidence conflicts or a scientific guarantee is unsupported, expose the gap
    and withhold that interpretation. A further scientific review is future
    bounded work, not an unrecorded second worker.
-3. Address every user question recorded in this interpretation and relevant
+3. Apply the origin-specific [Questions](memory-records.md#questions) contract.
+   Address every user question recorded in this interpretation and relevant
    older user questions. Answer with its basis; retain an unresolved answer as
    pending with a reason and return condition; or record the user's explicit
-   withdrawal. A failed analysis does not answer the question it was meant to
-   resolve. Separately account for consultant information requests: ask, defer
-   while open, or close with resolution/source or a clear unavailable, declined
-   or scope reason. A worker's proposed question is not evidence that it was
-   asked. Do not mark an unanswered part resolved.
+   withdrawal. Source unavailability alone cannot retire a user's question; a
+   failed analysis does not answer it. Separately account for consultant requests:
+   ask, defer while open with reason and return condition, or close with
+   resolution/source and reason, including unavailable, declined or scope limits.
+   Save material unresolved worker proposals as consultant questions with
+   `statement`, `reason`, `basis_refs`; own their priority, wording and checkpoint
+   `related_unresolved_question_refs`. A proposal is not evidence it was asked.
+   Do not bury a useful user-resolvable issue as a limitation or mark an unanswered
+   part resolved. Distinguish unasked, explicitly unknown, unavailable, declined
+   and assumed in the reason and linked evidence/assumptions; an absent field is
+   not an unavailable record. Retirement does not establish an assumption, and
+   analysis authorization is a decision, not a scientific answer. Expand to
+   status/history if current context cannot cover relevant older open questions.
 4. Update useful user context with attribution. Distinguish stated preferences
    and constraints from tentative domain or statistical expertise. Expertise
    changes explanation, not evidentiary standards. Keep scientific facts in
    study evidence and link them from user context rather than copying them.
+5. Reconcile the current checkpoint with the remaining work. Retain a checkpoint
+   that remains accurate. Use `changes.consultation` when its status, uncertainty
+   or question links need updating, or `changes.consultation: null` when no current
+   checkpoint remains. Answering
+   one question does not automatically clear a wider unresolved objective.
+   Keep its status, uncertainty and question links consistent with the outgoing
+   `reconciliation.next_direction`; do not leave a settled question as the current
+   focus or imply that unresolved work is complete.
 
-Submit `exchange_prepared` with these reconciled changes and one structured
-outgoing payload using `lead-markdown-v4` under the current action policy. The response order is:
+Maintain [Case Brief Selection](memory-records.md#case-brief-selection),
+`changes.case_brief.knowledge_refs` and `work_refs`, for important knowledge
+and findings, using their saved records and qualifications. Retain relevant
+existing selections; explain consequential removals or replacements in the
+reconciliation. Brief selection cannot resolve a question or grant permission.
+A finalized run without reviewed findings remains pending reconciliation, not a
+scientific result. Expand exact conditions before relying on a condensed item.
+
+Prepare one response using [Exchange Submission](#exchange-submission). Its order is:
 
 - `[Your Questions]`: include first when addressing the user's own questions.
   Give each answer, or explain why it is pending and what would resolve it.
@@ -175,8 +99,11 @@ outgoing payload using `lead-markdown-v4` under the current action policy. The r
   findings" while authorized work remains. Do not promise unapproved analysis.
 - `[I want to know]`: your useful information requests linked to retained questions,
   with why each matters and what information would resolve or change it. If
-  nothing needs answering, supply the brief empty-question statement described
-  in memory; invent no question.
+  nothing needs answering, supply `questions_none`; invent no question. During
+  clarification, state the understood part
+  and repeat the relevant original unanswered part or action alternatives, with
+  what depends on them. Offer an unknown/unavailable path when appropriate;
+  do not repeat the whole questionnaire or pressure a user who declined.
 - `[Decide Next Steps]`: useful information contributions, bounded action offers,
   discussion invitations or explicit completion. Preserve displayed wording,
   option identity, intended actor, scope, basis and relevant role/reference
@@ -203,30 +130,90 @@ lead with the artifact and limitations; the user may reopen or revise the work.
 
 Foreground the most consequential question and recommend a useful direction
 when supported. No fixed number of questions, options, specialists or rounds is
-required. Pausing or ending can be the correct next step. A requested report and an
-exhausted causal inquiry are different outcomes; preserve unresolved conditions
-when a narrower deliverable is complete or the user ends the inquiry.
+required. Pausing or ending can be the correct next step. Completing an intermediate
+deliverable does not close the original causal question. If the user narrows or
+ends the inquiry, record that scope decision and remaining limits instead of
+claiming missing facts were established.
 
-After successful commitment, present the helper's returned `rendered_response` unchanged
-and retain its `response_sha256` for later correspondence checks. Do not
-separately rewrite its questions, options or qualifications,
-or append another actionable menu. If substantive content must change, submit
-a new exchange revision with its supersession link. Reuse the receipt's event
-and exchange identities instead of rereading solely for IDs.
-The receipt also exports identical ready-to-send text at `response_path`; check
-`response_file_written` before using that file. Capture the actual emitted reply
-with [observe-exchange](delivery.md) when it becomes available. A saved reply file
-is preparation, not a delivery observation. A mismatch needs reconciliation,
-not a copied canonical hash or an automatic additional approval question. When
-the complete prepared reply is intact, use delivery's bounded wrapper recovery
-after checking the surrounding text. Changed terms still require reconciliation;
-a clear later selection of the unchanged offered action needs no repeat approval.
+## Exchange Submission
+
+Submit `exchange_prepared` using the envelope in [memory.md](memory.md#record-contract)
+with reconciled `changes` and one `payload.exchange`. For a direct Lead-only turn,
+include Helper's prepared interpretation unless already saved. If the handoff
+lacks it, use [Interpretation Submission](helper.md#interpretation-submission),
+without inventing a second interpretation. Bundle it with closeout unless its
+source or changed records must first be committed as a protected offer's basis.
+Save the returned review here by default under
+[Checkpoints and Reviews](memory-records.md#checkpoints-and-reviews), or cite its
+successful receipt if the named owner saved it earlier. Save it once. The utility
+refreshes generated memory; Lead does not separately rewrite the brief/projection.
+
+For an offer based on new or changed findings, conditions or target records,
+follow the [protected-offer save order](authorizations.md#present-a-concrete-scope):
+commit the basis first, then prepare the scope and this exchange from its receipt
+within the same user-facing round. Do not bundle the new review or bound basis
+changes into that offer event. This requires neither another user approval nor
+another specialist review.
+
+Fields below are required unless marked optional. Use fresh project-local
+exchange identities; the interpretation and `turn_id` must match.
+
+| Object | Fields and meaning |
+|---|---|
+| Exchange | `exchange_id`, `turn_id`, `interpretation_ref`, `basis_refs`, `completed_work_refs`, `reconciliation`, `response`, `renderer: "lead-markdown-v4"` |
+| Optional exchange links | `reconciles`: other interpretation IDs whose unfinished work is accounted for here; `supersedes`: a previous exchange of this same turn being revised |
+| `reconciliation` | `changes`, `limitations`, `unresolved` string arrays and `next_direction` string, including unchanged findings and unresolved impacts |
+| `response` | `status` string, `questions`, `next_steps` arrays; optional `user_questions`, `findings`; empty `questions` requires `questions_none`, empty `next_steps` requires `next_steps_none` with actual short section text |
+| `response.findings` | Nonempty `work_refs`, `summary` string, `diagnostics` and `limitations` string arrays: the actual discussion supporting report offers |
+| Each `user_questions` item | `question_ref`, `text`, `answer`, `status`: `answered`/`pending`/`withdrawn`, `basis_refs`; origin must be `user`, and statuses match the effective record's `answered`/`open`/`retired` after this submission |
+| Each consultant `questions` item | `question_ref`, `text`, `why`, `needed` (what information helps resolve it); use consultant-origin or legacy questions, never user-origin |
+| Each `next_steps` item | Exchange-local `option_id`, `kind`: `action`/`discussion`, `label`, `actor`, `scope`, `basis_refs`; optional `assignment` only for `kind: "action"` with `actor: "consultant"` |
+
+`completed_work_refs` identifies reviews or terminal runs. Account for every
+recorded completed, failed or abandoned item of each turn being closed, including
+other interpretations in `reconciles`; an in-progress run is not completed work.
+Explain older work's disposition in reconciliation rather than erasing it after
+new direction. The utility cannot certify this account's scientific completeness.
+
+For user questions, `answer` contains the answer, pending reason and remaining
+need, or acknowledgment of withdrawal. Cite saved evidence and conditions for
+empirical answers; `basis_refs` may be empty for conceptual explanations without
+a specific stored evidential basis. Include every current user question, including
+pending ones, and relevant carried questions, without repeating unrelated old ones.
+All consultant-question text is retained for interpreting the next reply.
+
+Option order is array order; keep `label` on one line. Subordinate multiline text
+is indented by the renderer to avoid false additional options. Intended assignments
+use [Checkpoints and Reviews](memory-records.md#checkpoints-and-reviews).
+Protected offers additionally bind `scope_ref`, `proposal`, `execution_plan`
+under [authorizations.md](authorizations.md); the renderer shows the substantive
+proposal. A report offer binds current findings, not an original report request.
+A discussion invitation is not execution. Use this renderer under the active
+policy; preserve historical renderers for exact replay under
+[Compatibility](memory-records.md#compatibility), without relabeling old replies.
+
+The preparation receipt returns `exchange_id`, `renderer`, `rendered_response`,
+`response_sha256`, `response_path` and `response_file_written`. After commitment,
+present **rendered_response unchanged**, or the identical export only when its
+write succeeded. An export failure does not undo commitment; use returned text.
+Retain the hash, event and exchange identities; no reread solely for IDs is needed.
+Do not rewrite qualifications, questions or options or append another actionable
+menu. Correct wording by appending a new exchange with `supersedes`, never by
+overwriting its predecessor.
+
+A receipt/file proves preparation, not emission, delivery, reading or understanding.
+Capture the actual reply with [observe-exchange](delivery.md) when available.
+A mismatch needs reconciliation, not a copied canonical hash or automatic repeat
+approval. For an intact prepared reply with surrounding prose, use delivery's
+bounded wrapper recovery after inspecting that prose. Changed terms still require
+reconciliation; a clear later selection of an unchanged offer needs no repeat approval.
 
 ## Recovery and Session Memory
 
-Artifact finalization is not conversational closeout. If a run or review was
-committed before interruption, resume lead reconciliation from that work; do
-not rerun computation merely to recreate a response. If only preparation was
+Artifact finalization is not conversational closeout. Resume saved reviews through
+Lead. If only a run was finalized, use [memory recovery](memory.md#recovery) to
+finish its original specialist handoff before Lead synthesis, without recomputation.
+If only response preparation was
 saved, retain uncertain delivery and reconcile actual message evidence before
 binding a later reply. Changed user direction still takes precedence over an
 obsolete offer. Use memory's exact retry and recovery rules.
@@ -236,16 +223,9 @@ handoff. Repair the persistence problem where possible; do not claim a completed
 record or repeat successful analysis. A necessary failure or cancellation reply
 must not be blocked to satisfy closeout. Resume from the last committed version.
 
-Keep host session memory as recent conversational context and a pointer to the
-case, not a separately rewritten scientific record. If a session summary and
-project state disagree, inspect actual user messages and source evidence; honor
-current explicit corrections and record their consequences. Neither stored
-case prose nor host memory is automatically scientifically true. Do not
-reconstruct missing historical questions or delivery claims from a summary.
-
 A successful receipt establishes preparation. Record `exchange_delivery` only
 from actual emission or host delivery evidence, retaining its source and the
 strength of observation. A later visible assistant message can resolve earlier
 uncertainty. Neither observation proves reading or understanding. Ordinary skill
-use cannot enforce helper calls on every host; do not claim host enforcement or
+use cannot enforce memory-utility calls on every host; do not claim host enforcement or
 install hooks. Cancellation and user interruption remain available.

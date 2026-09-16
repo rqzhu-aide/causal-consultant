@@ -1,35 +1,23 @@
-# Causal Consultant v7
+# Causal Consultant
 
-Version: **7.0.9**, the active candidate at this repository's root.
-The consultant and `interactive-test-cc` use the same release number. This
-release preserves source attribution and qualifications across memory updates,
-requires source quotations for consequential user decisions, and recovers a
-unique intact prepared reply from an actual message capture. Added prose needs
-lead review; changed or repeated reply bodies cannot use that recovery. The consultation
-keeps explicit choices: agree a
-concrete analysis scope before execution, discuss findings and possible
-improvements afterward, then choose whether to extend the work or produce a
-report. An early report request records the desired outcome without skipping
-those choices. Four independently selectable testing problems and four personas
-remain. Data checks and scientific qualifications remain the consultant's duty.
-The existing workflow includes durable incoming interpretation, lead closeout and generated
-user, study and work views. The lead's response separates answers to your
-questions from information it needs from you. `[Your Questions]` comes first
-when applicable, followed by `[Status]`, `[I want to know]` and
-`[Decide Next Steps]`, saved and rendered from one structured submission.
-Prepared responses remain distinct
-from observed emission or host-confirmed delivery.
+Start with [SKILL.md](SKILL.md) for invocation and release identity.
+The consultation follows **User -> Helper -> selected work -> Lead -> User**.
+Helper resumes the case and interprets the incoming message; Lead reconciles
+findings, constructs useful questions/options and provides the sole user-facing
+response. Explanation and clarification can go directly from Helper to Lead.
+These are responsibilities of one assistant, not mandatory extra agents.
+
+A generated case brief and five recent saved intakes provide ordinary memory
+reads. Exact older questions, choices, sources and conditions remain retrievable;
+live issues do not expire with the window. Source qualifications and partial
+answers survive updates. The memory utility saves records and refreshes views;
+it cannot certify interpretation or scientific validity.
+
+Lead uses `[Your Questions]` when applicable, followed by `[Status]`,
+`[I want to know]` and `[Decide Next Steps]`, saved and rendered from one
+submission. Prepared replies remain distinct from observed actual messages.
 See [delivery](references/delivery.md) and [presentation](references/presentation.md)
-for the helpers and their verification limits. The paired tester independently
-compares actual replies with delivery captures, flags unrecorded source acquisition,
-distinguishes missing evidence from discrepancies, and permits undetermined
-failure attribution. Its novice and statistician personas respond to the current
-discussion without rushing disclosure or merely copying approvals.
-Local validation does not establish live host or scientific qualification.
-The September 7 folder reorganization moved the actual pre-v7 working files,
-including uncommitted edits, to the sibling `causal-consultant-v6` archive.
-Existing consultation projects are unchanged. This layout promotion is not a
-new installation or a claim that release qualification is complete.
+for the utilities and their verification limits.
 
 ## What Changes for the User
 
@@ -43,8 +31,8 @@ A settled finding does not automatically trigger another investigation or report
 You may change focus, defer, pause or end without a report, and reopen completed
 work later. The report is a saved artifact, not a permanent end to consultation.
 
-When your message combines questions and instructions, the lead checks which
-answers are needed before work can begin. It explains or asks for material
+When your message combines questions and instructions, Helper checks which
+answers are needed before work can begin; Lead supplies the response. It explains or asks for material
 clarification first when needed. Questions that depend on an authorized analysis
 are saved before work and answered at closeout, with any unresolved part kept
 visible for a later turn. Message length or technical detail alone does not
@@ -77,9 +65,9 @@ Use this repository root as the skill root. For a standalone distribution copy
 `package.json` itself plus the runtime files it lists; exclude `architecture/`, tests and
 Git/development metadata from the consultant's installed instruction package.
 Invoke the skill explicitly and select a **new consultation folder**. Do
-not install both versions under the same name without deliberately choosing
+not install multiple copies under the same name without deliberately choosing
 which one is active. No global setup, hooks, accounts, or package downloads are
-required for the memory helpers. Analysis dependencies depend on the actual
+required for the memory utility. Analysis dependencies depend on the actual
 study and are selected separately.
 
 Node.js 18.18 or newer is required. From this directory:
@@ -90,7 +78,7 @@ npm test
 node scripts/project.cjs help
 node scripts/project.cjs capabilities
 node scripts/project.cjs init --project-root <new-consultation-folder>
-node scripts/project.cjs context --project-root <consultation-folder>
+node scripts/project.cjs context --project-root <consultation-folder> --input brief-request.json
 node scripts/project.cjs status --project-root <consultation-folder>
 node scripts/project.cjs verify --project-root <consultation-folder>
 ```
@@ -99,7 +87,10 @@ Keep active test files directly in `tests/` as `*.test.cjs`; nested fixture and
 historical copies are not discovered. Node test options are forwarded, for
 example `npm test -- --test-name-pattern="version"`.
 
-[Memory](references/memory.md) documents focused reads, records, history and recovery.
+`brief-request.json` contains `{"mode":"brief"}`.
+[Memory](references/memory.md) is the shared guide to reads, saves and recovery.
+[Record details](references/memory-records.md) are consulted by section when needed;
+Helper and Lead own their incoming and outgoing submission contracts.
 [Action authorizations](references/authorizations.md) documents activation,
 presented scopes, later decisions and resumption of protected work.
 [Runs](references/runs.md) documents pre-result plans, saved artifacts, and
@@ -107,35 +98,39 @@ verification. These are conditional instructions, not a questionnaire for you.
 
 ## Auditability and Containment
 
-Each consultation has one authoritative `journal.jsonl` and a rebuildable
-`project.yaml`. Both use JSON serialization; JSON is a valid YAML subset.
-Relevant current facts and all older records remain available. A review is saved
-once; the projection contains its short index rather than a second full handoff.
-The router records interpretation before dependent specialist work; the lead
-reconciles completed work before preparing the next response. Interrupted lead
-work remains visible across new turns. Generated memory views share the journal's
-version and link common facts instead of maintaining three independently edited
-files. Recent host session memory complements this project record.
-Use focused context for a known question or strategy, and complete status
-directly for broad reassessment. Context exposes omissions and history locators;
-it cannot infer missing scientific links or decide which conclusions are valid.
-Paging through everything can cost more than one complete read.
+Each consultation has one authoritative `journal.jsonl`, a rebuildable
+`project.yaml` and generated `case-brief.md`. The journal and projection use
+JSON serialization, a valid YAML subset. The utility alone writes these memory
+files; Helper and Lead submit updates to their underlying records. A review is
+saved once, including its full findings and limitations in the journal.
 
-The context command, preparation operation, custom/composed plans and optional
-evidence excerpts are included in 7.0.0, having been introduced in rc.3. Earlier
-v7 journals remain readable without rewriting them; older helpers need not
-accept records using the newer features.
-Same-ID updates still replace the complete record, including optional fields.
-Check for `durable-exchanges-v1`, `user-question-routing-v1` and
-`consultation-loop-v1` before using the current workflow. New projects activate
-the policy on initialization; existing inactive projects require explicit
-activation. Earlier active runs must first be resolved with their original
-runtime. New permissions do not apply retrospectively. Current offers use the
-v4 renderer, while historical replies and hashes remain unchanged. New helpers
-read old histories without fabricated questions, delivery observations or result
-conditions. Older helpers reject extended events and must not edit such projects.
-A skill instruction cannot force every host to use the closeout helper; this
-package installs no completion hook and does not claim host-enforced delivery.
+Helper saves consequential incoming interpretation before dependent work. Run
+commits preserve execution progress. Lead saves its reconciled understanding and
+outgoing response afterward. The utility refreshes the projection and brief from
+each committed state, reporting independent export failures. An interrupted
+handoff resumes from saved work instead of repeating successful computation.
+Local session memory complements this durable record.
+
+The brief preserves selected knowledge and findings plus live controls. Helper
+maintains incoming knowledge selection; Lead reconciles it and retained work.
+A section never initialized differs from an explicitly empty selection. Older
+projects require broad reads and sourced curation of missing sections, without
+rewriting historical messages. Focused context/history retrieves exact records;
+complete status remains available for broad reassessment. The recent window is
+five saved user intakes, not five tool calls or observations. The new unsaved
+host message is supplied separately.
+
+Same-ID updates preserve specified attribution and question resolutions;
+other optional fields retain their documented replacement semantics. Follow
+[memory](references/memory.md) for this contract and required capabilities,
+including `case-brief-v1`. Earlier journals stay readable without fabricated
+questions, delivery observations or result conditions; incompatible utilities
+must not write extended records. New projects activate the action policy during
+initialization; existing inactive projects need explicit activation after earlier
+active runs are resolved with their original runtime. Permissions are not
+retrospective. Historical renderer bytes and hashes remain unchanged.
+A skill instruction cannot force every host to use the utility; this package
+installs no completion hook and does not claim host-enforced delivery.
 
 Saved outputs live in `runs/<run-id>/`. A run retains its frozen plan, file input
 snapshots, code or configuration, outputs, and hashed manifest. A changed result
@@ -159,7 +154,7 @@ have not been performance-qualified.
 
 If a process crashes while recovering a lock, its `.consultant-recovery.lock`
 guard can remain. Automatic recovery intentionally refuses an unverifiable
-guard. For offline operator recovery, first stop all helpers for that project;
+guard. For offline operator recovery, first stop all memory-utility processes for that project;
 check the exact guard is a regular file inside the resolved project folder,
 its recorded host is this machine, and its recorded PID is definitely no longer
 alive. Only then remove that exact guard, leaving the writer lock and project
@@ -167,16 +162,18 @@ history intact, and retry `recover-lock` for the original writer if needed.
 If ownership or inactivity cannot be established, leave both locks in place.
 This rare recovery path is manual, not an automatic resumption guarantee.
 
-## Existing v6 Projects
+## Existing Legacy Projects
 
-Continue them with v6, or start a new v7 folder and carry over explicitly reviewed
-source summaries. The helper refuses a folder containing `project_state.yaml`.
-No automatic conversion, deletion, or import of legacy claims as verified v7
+Continue projects using `project_state.yaml` with their original controller, or
+start a new consultation folder and carry over explicitly reviewed
+source summaries. The memory utility refuses a folder containing `project_state.yaml`.
+No automatic conversion, deletion, or import of legacy claims as verified current
 results occurs. Legacy evidence keeps its source version and verification label.
-The preserved local v6 controller is in the sibling `causal-consultant-v6`
-directory, not in this repository. Archives are filesystem snapshots; this
+The preserved local legacy controller is in a sibling archive directory, not in
+this repository. See [SKILL.md](SKILL.md) for legacy compatibility guidance.
+Archives are filesystem snapshots; this
 repository retains its Git history and remotes. They are not separate remote
-backups, and their uncommitted v6 edits are not included in a future v7 commit.
+backups, and their uncommitted edits are not included in a future commit here.
 
 ## Verification Status
 
@@ -188,7 +185,7 @@ model-evaluated.
 
 Full behavioral qualification still requires fresh complete interaction and scientific
 trajectory comparisons, including full objective-level resource accounting.
-Earlier rc.3 testing used a separate, versioned sequential capture protocol with the installed
+Earlier testing used a separate sequential capture protocol with the installed
 Codex transport; targeted question-chain observations do not qualify the full
 scientific suite. Independent numerical fixtures check reference algebra, not
 the consultant's ability to reproduce it. The generic validator uses the existing

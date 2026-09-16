@@ -18,9 +18,9 @@ planning report describes targets, evidence gaps, strategies and next decisions;
 it does not contain a completed target-analysis conclusion. Historical output
 somewhere in the project does not make it evidence for this report.
 
-Verify selected v7 runs and their manifested files. For external or legacy results,
+Verify selected project runs and their manifested files. For external or legacy results,
 preserve exact source identity and recorded verification limits; never present
-them as verified v7 computation. A prior report is a presentation source, not
+them as verified computations from the current project. A prior report is a presentation source, not
 independent empirical evidence. Identify its underlying results where available.
 
 If a selected result, diagnostic or source is unavailable or has drifted, explain
@@ -29,7 +29,8 @@ scope. Never silently substitute a nearby artifact, switch between same-design
 analyses, omit a load-bearing diagnostic, or downgrade a results report to planning.
 Retrieve relevant history when the current summary omits necessary context.
 
-Retrieve `result_conditions` with each consequential source result, including
+Use the [result-condition contract](memory-records.md#result-conditions) when
+retrieving or supplying conditions for each consequential source result, including
 its target, assumption references, source basis and qualifications. Inferential
 results also retain the tested hypothesis or interval target and the scope of
 the stated guarantee. Different quantities in one output may need different
@@ -138,10 +139,12 @@ in the report. Describe verification by what was checked: generated blocks,
 numerical computations, rendered layout or scientific interpretation. Do not
 substitute any one of these for the others or claim checks that were not performed.
 
-Return one saved review describing the output, source basis, whether any new
+Return one review to the [named commit owner](memory.md#ownership-and-save-points),
+normally Lead, describing the output, source basis, whether any new
 analysis occurred (normally none), inherited claim boundary and important limits.
-Link the review to the router's prospectively recorded interpretation and
-assignment. Report completion still requires the lead's reconciled outgoing
+Use the [review contract](memory-records.md#checkpoints-and-reviews), linked to
+Helper's prospectively recorded interpretation and assignment. Report completion
+still requires the lead's reconciled outgoing
 exchange, using the same conditions in its user-facing recap. The artifact does
 not close the project permanently or select another action. Preserve questions,
 deferred work and the user's ability to discuss, pause or request a revision.

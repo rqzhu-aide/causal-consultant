@@ -190,7 +190,7 @@ test("unlinked old report evidence is explicitly unreviewed for result condition
 });
 
 test("the documented lead-only JSON submission is accepted by the actual helper", t => {
-  const source = fs.readFileSync(path.resolve(__dirname, "../references/memory.md"), "utf8");
+  const source = fs.readFileSync(path.resolve(__dirname, "../references/memory-records.md"), "utf8");
   const block = source.match(/### Lead-Only First Round Example[\s\S]*?```json\s*([\s\S]*?)```/);
   assert.ok(block, "The authoring example must be discoverable.");
   const request = JSON.parse(block[1]);

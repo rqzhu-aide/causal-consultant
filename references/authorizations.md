@@ -3,15 +3,19 @@
 Use this contract for protected analysis and durable reporting inside the
 persistent consultation loop. The user can ask questions, change focus, defer,
 pause or end at any time. There is no project-wide sequence to complete and no
-per-file approval requirement. Read [memory.md](memory.md) for event envelopes,
-attributed user evidence and exact retries.
+per-file approval requirement. Read [memory.md](memory.md) for event envelopes
+and exact retries. Use [incoming-source fields](memory-records.md#incoming-user-sources)
+when attributing user permission and [target updates](memory-records.md#target-and-boundary-updates)
+before changing a proposal's target or boundary.
 
 ## Activate the Current Policy
 
-Check for `consultation-loop-v1` alongside the exchange/question capabilities.
-New `init` creates a project with this policy active. Inspect
-`state_meta.consultation_policy` before activation; do not reactivate it. For an
-existing inactive v7 project, use `record` with type `consultation_policy_activated`
+Check for `consultation-loop-v1` and `reply-reconciliation-v1` alongside the
+exchange/question capabilities.
+New `init` creates a project with this policy active. Inspect brief context's
+`consultation_policy` (or status's `project.state_meta.consultation_policy`)
+before activation; do not reactivate it. For an
+existing supported journal project with an inactive policy, use `record` with type `consultation_policy_activated`
 and payload `{"policy":"consultation-loop-v1","reconciliation":"..."}`.
 Explain how existing evidence and unfinished obligations will be used before
 starting new work under this skill.
@@ -54,7 +58,7 @@ package its final report under an analysis/audit name to bypass the report choic
 
 ## Present a Concrete Scope
 
-Before saving or offering a new scope, the helper checks the execution plan with
+Before saving or offering a new scope, the memory utility checks the execution plan with
 the same structural rules used at run start. Supply the plan's required fields,
 including `objective` for every run and an `exclusions` array for analysis; do not
 invent defaults to make it pass. A rejected proposal has not been saved or offered,
@@ -73,7 +77,7 @@ Save each immutable scope in `changes.action_scopes`:
   in language the user can understand, including the consequential assumptions
   and planned checks. Internal method names alone are not an explanation.
 - `execution_plan`: the proposed [run plan](runs.md), without transient
-  interpretation/authorization fields or helper-added frozen-run fields. Its
+  interpretation/authorization fields or utility-added frozen-run fields. Its
   action and claim boundary must match the public scope. For analysis, target,
   population and diagnostics also match the corresponding public terms.
   Hash each existing file input before presenting the proposal and include its
@@ -81,7 +85,11 @@ Save each immutable scope in `changes.action_scopes`:
   awaiting the answer must not silently become the approved data version.
 - `basis_versions`: `{ref,event_ref}` pairs naming already committed current
   versions of relevant evidence, assumptions, decisions or work. Include the
-  conditions that can change whether this scope remains applicable. Include
+  relevant current source-linked target decision in every new offer's bindings.
+  When an objective or claim changes, revise the affected target/boundary decision
+  together with its understanding summary; a summary-only edit cannot expose stale
+  scope terms. Do not bind unrelated targets merely to satisfy the structural check.
+  Include conditions that can change whether this scope remains applicable:
   source evidence, underlying completed runs, governing current result conditions,
   their assumptions and source basis. New relevant conditions, updated versions
   and assumption-status changes require reconciliation; do not omit dependencies
@@ -91,9 +99,22 @@ Save each immutable scope in `changes.action_scopes`:
   for report scopes and also included in `basis_versions`.
 - Optional `supersedes`: the earlier scope ID being replaced.
 
+If an outgoing offer needs new or changed review findings, result conditions or
+target/boundary records, commit that basis before preparing the scope and exchange.
+The named review owner saves `review_completed` once with its basis changes;
+use `memory_updated` or a sourced `correction` for changes without a review.
+For a direct Lead-only turn whose incoming source or interpretation supplies the
+basis, save `reply_interpreted` with that source and the affected records first.
+Then use the committed receipt and current versions in `exchange_prepared`,
+without resubmitting the review or changing its bound basis again in that event.
+Both saves belong to the same user-facing round. This exception to bundled
+closeout adds no user approval or extra round; execution still requires the later
+acceptance of the presented scope. Reuse an adequate existing receipt when the
+basis is already committed.
+
 An action option in a `lead-markdown-v4` exchange includes its `scope_ref`, the
 exact `public_scope` as `proposal`, the exact `execution_plan`, and matching
-`assignment`. The helper renders the proposed terms. Do not put material scope
+`assignment`. The memory utility renders the proposed terms. Do not put material scope
 only in private state and show the user a vague "proceed" option.
 
 A report option must refer to findings presented in `response.findings` in the
@@ -104,7 +125,7 @@ useful further work when it could matter; do not manufacture improvements.
 
 ## Interpret the Later User Decision
 
-Record actual proposal delivery through memory's attributed delivery observation.
+Record actual proposal delivery through [captured delivery](delivery.md).
 Preparation is not delivery. If a short answer depends on an uncertain menu,
 inspect the actual previous assistant message or clarify before binding it.
 An intact reply recovered under [delivery.md](delivery.md) retains the offered
@@ -119,23 +140,36 @@ record, confidence about assumptions, source attachment or initial report desire
 cannot grant this permission. When selecting protected work, bind
 `next_action.scope_ref` and `next_action.authorization_ref` to that scope and
 acceptance. Optional `focus_scope_ref` records current focus without withdrawing
-other scopes; `null` clears focus. Record acceptance only when the whole-message
-interpretation permits selecting the matching protected work.
+other scopes; `null` clears focus. Record acceptance only when the whole message
+clearly accepts that still-current offered scope. Acceptance can remain unused
+while execution waits for a prerequisite or the user selects independent work.
 The referenced user evidence needs its relevant exact `source_excerpt`, including
 conditions, rather than only an acceptance summary. Preserve the existing decision
 when recovering the same unfinished action; do not invent another acceptance.
 
 Interpret the whole reply first. "Yes, but use the other population" changes the
 scope; propose a revision instead of executing the old or expanded analysis.
-"Yes, but explain what this comparison means before we decide" is lead-only
-under the question-dependency rules. A clear independent question can accompany
-authorized work and be answered at closeout. An `adjustment_reason` explains a
-route change; it cannot supply missing or stale protected authorization.
+"Explain what this comparison means before we decide" is lead-only and does not
+accept the offer. "I approve it, but first explain the allocation record" may
+record valid acceptance while selecting `lead_only`, without an assignment or run.
+Use `adjustment_reason` to explain that postponement. If the offered scope is
+already stale, retain the preference and propose revised terms instead of recording
+acceptance. "Yes" after one clearly identified current offer needs no extra
+confirmation; multiple plausible choices require focused clarification.
+
+If the user approves A but clearly requests independent audit B while A waits,
+record A's acceptance and select B alone with the adjustment explained. Validate
+B's direction and any required authorization separately. Do not infer B, accept
+two new protected scopes or execute two specialists in one turn. An independent
+question can accompany authorized work and be answered at closeout. A missing
+prerequisite blocks the affected work, not every other requested action.
+An `adjustment_reason` cannot supply missing or stale authorization, materially
+expand the scope or justify treating an unknown as a favorable premise.
 
 ## Work, Discuss and Preserve Choices
 
 An analysis/report plan carries `scope_ref` and `authorization_ref`. Start the
-run before computation or report output. The helper freezes its
+run before computation or report output. The memory utility freezes its
 `authorization_binding` with `policy`, scope, authorization and basis versions;
 do not hand-author that binding. New or resumed protected output must remain
 inside the accepted scope. A changed relevant basis, superseded scope or withdrawn
@@ -143,8 +177,14 @@ decision requires reconciliation before further work. Unrelated preferences or
 work on another scope do not invalidate all permission.
 Permission and current direction are distinct: a pause, prerequisite question or
 focus change suspends output on the earlier action. Start and continuation require
-the latest interpretation to select that same scope and authorization. Explicit
-resumption can reuse its still-current acceptance; it does not invent new consent.
+the latest interpretation to select that same scope and authorization. Explicit or
+clearly contextual resumption can reuse its still-current acceptance: unused for
+a new run, or already bound to the interrupted current run.
+Answering the sole stated blocker can support resumption when that was the clear
+next step, without another ritual "yes". A focus change or ambiguous direction
+does not automatically resume waiting work. If the answer changes a version-bound
+premise, reconcile it and present revised terms for later acceptance; do not weaken
+version checks because the action label is unchanged.
 Preparing the lead's closing exchange ends protected output for that turn.
 Further output requires a later interpretation selecting the same current scope;
 retrying an identical already-saved file remains idempotent.
@@ -169,7 +209,7 @@ do not manufacture consent or start deferred work without current direction.
 Completed work with an interrupted closeout requires discussion recovery, not
 recomputation. A later consent never legitimizes an earlier unauthorized output.
 
-The helper validates recorded identities, versions, order and scope compatibility.
+The memory utility validates recorded identities, versions, order and scope compatibility.
 The lead still judges meaning and scientific adequacy. Ordinary skill use cannot
-prove actual delivery or prevent arbitrary host tools bypassing these helpers;
+prove actual delivery or prevent arbitrary host tools bypassing the memory utility;
 do not describe this as a host-enforced execution sandbox.

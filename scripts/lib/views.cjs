@@ -38,6 +38,45 @@ function deliveryState(state, exchangeRef) {
   ...(discrepancies.length ? { discrepancy_refs: discrepancies.map(record => record.delivery_id) } : {}) };
 }
 
+// Derive question continuity from recorded exchanges, not model-maintained
+// pointers. An old prepared offer is never upgraded into an observed one.
+function questionMemoryLinks(state, events, bodies = journalBodies(events)) {
+  const result = new Map();
+  for (const question of state.questions.filter(record => record.origin !== "user")) {
+    const mentions = (state.exchanges || []).filter(exchange => exchange.question_refs.includes(question.question_id)
+      || (question.basis_refs || []).includes(exchange.exchange_id));
+    const observed = mentions.filter(exchange => deliveryState(state, exchange.exchange_id).status !== "unobserved");
+    const original = observed[0], latest = observed.at(-1);
+    const interpretations = events.filter(event => {
+      const interpretation = event.payload?.interpretation;
+      return interpretation && ((event.payload.changes?.questions || []).some(record => record.question_id === question.question_id)
+        || interpretation.basis_refs.includes(question.question_id)
+        || interpretation.components.some(component => component.question_ref === question.question_id)
+        || interpretation.incoming_refs.some(ref => (question.resolution?.answer_refs || []).includes(ref)));
+    });
+    const latestInterpretation = interpretations.at(-1)?.payload.interpretation;
+    const exchangeRefs = [...new Set([original?.exchange_id, latest?.exchange_id].filter(Boolean))];
+    const deliveryRefs = exchangeRefs.flatMap(ref => {
+      const observations = (state.deliveries || []).filter(record => record.exchange_ref === ref);
+      const matching = observations.filter(record => require("./exchanges.cjs").deliveryMatches(record, state));
+      return [...new Set([matching.at(-1)?.delivery_id, observations.at(-1)?.delivery_id].filter(Boolean))];
+    });
+    result.set(question.question_id, {
+      original_exchange_ref: original?.exchange_id || null,
+      latest_exchange_ref: latest?.exchange_id || null,
+      latest_interpretation_ref: latestInterpretation?.interpretation_id || null,
+      delivery_refs: deliveryRefs,
+      unobserved_exchange_refs: mentions.filter(exchange => !observed.includes(exchange)).map(exchange => exchange.exchange_id),
+      missing_body_refs: exchangeRefs.filter(ref => !bodies.exchanges.has(ref)),
+      related_scope_refs: (state.action_scopes || []).filter(scope => (scope.basis_versions || []).some(binding => binding.ref === question.question_id)
+        || (scope.basis_refs || []).includes(question.question_id)).map(scope => scope.scope_id),
+      related_checkpoint_refs: (state.consultation?.related_unresolved_question_refs || []).includes(question.question_id)
+        ? [state.consultation.checkpoint_id] : []
+    });
+  }
+  return result;
+}
+
 function conversationRoots(state) {
   const currentExchange = (state.exchanges || []).at(-1);
   const currentInterpretation = (state.interpretations || []).at(-1);
@@ -154,9 +193,25 @@ function buildViews(loaded, selected) {
   const sharedCoverage = { scope, historical_bodies: "Exact historical versions remain in history; current records do not replace historical evidence.",
     omissions: selected ? [...selected.coverage.omission_reasons] : [] };
   const info = conversationRoots(state), bodies = journalBodies(events);
+  const questionLinks = questionMemoryLinks(state, events, bodies);
+  const pendingConsultantQuestions = state.questions.filter(question => question.origin !== "user" && question.status === "open")
+    .map(question => ({ question_ref: question.question_id, statement: question.statement,
+      ...(question.resolution ? { remaining: structuredClone(question.resolution.remaining) } : {}),
+      resolution_recorded: Boolean(question.resolution), retrieval: { focus_refs: [question.question_id] } }));
+  const relevantQuestions = (data.questions || []).filter(question => question.origin !== "user").map(question => ({
+    question_ref: question.question_id, statement: question.statement, status: question.status,
+    ...(question.reason ? { reason: question.reason } : {}),
+    ...(question.resolution ? { resolution: structuredClone(question.resolution) } : {}),
+    ...structuredClone(questionLinks.get(question.question_id)), retrieval: { focus_refs: [question.question_id] }
+  }));
   const needed = new Set(info.roots.keys());
   if (selected) for (const name of ["interpretations", "exchanges", "deliveries", "turns"]) {
     for (const record of data[name] || []) needed.add(record[EXTENSION_COLLECTIONS[name]]);
+  }
+  // Complete status expands every current question; selected context expands
+  // only its recorded neighborhood. The compact inventory remains discoverable.
+  if (!selected) for (const question of relevantQuestions) {
+    for (const ref of [question.original_exchange_ref, question.latest_exchange_ref, question.latest_interpretation_ref]) if (ref) needed.add(ref);
   }
   const missing = [];
   const materialize = (name, key) => (state[name] || []).filter(record => needed.has(record[key])).map(record => {
@@ -181,16 +236,19 @@ function buildViews(loaded, selected) {
   const work = { source: structuredClone(source), coverage: { ...structuredClone(sharedCoverage),
     interpretations: { total: (state.interpretations || []).length, materialized: interpretations.length },
     exchanges: { total: (state.exchanges || []).length, materialized: exchanges.length }, missing_bodies: missing,
+    question_memory: "The pending inventory lists all open consultant questions. Detailed records follow selected context; focus a question for its original/latest observed exchanges, answer sources and latest interpretation. Retired uncertainty is not a request to ask again.",
     delivery: "Observations are attributed records, not proof of reading. The latest observation is ordered by journal commit, not assumed to be the immediately preceding displayed response.",
     legacy_continuity: state.state_meta.protocol ? "Earlier unrecorded exchanges remain unavailable." : "No durable exchange protocol has been recorded; recover prior questions from attributable conversation evidence." },
     protocol: state.state_meta.protocol || null, checkpoint_source_path: prefix + ".consultation",
     collections: Object.fromEntries(["specialist_reviews", "runs", "turns", "deliveries"].map(name => [name, collection(name)])),
     current_interpretation_ref: info.current_interpretation_ref, current_exchange_ref: info.current_exchange_ref,
     latest_delivery_observation_ref: info.latest_delivery_observation_ref, latest_observed_exchange_ref: info.latest_observed_exchange_ref,
-    unfinished_turns: info.unfinished, pending_user_question_refs: info.pending_user_question_refs, interpretations, exchanges };
+    unfinished_turns: info.unfinished, pending_user_question_refs: info.pending_user_question_refs,
+    pending_consultant_questions: pendingConsultantQuestions, question_memory: relevantQuestions,
+    interpretations, exchanges };
   const actions = actionMemory(loaded, data, bodies);
   if (actions) work.actions = actions;
   return { user, study, work };
 }
 
-module.exports = { buildViews, collectionIds, hasExtension, journalBodies, conversationRoots };
+module.exports = { buildViews, collectionIds, hasExtension, journalBodies, conversationRoots, questionMemoryLinks, deliveryState };

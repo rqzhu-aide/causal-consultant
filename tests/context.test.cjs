@@ -143,7 +143,7 @@ test("same-ID evidence changes expose current content and a locator for its earl
 
 for (const [collection, premise, changedField] of [
   ["evidence", { evidence_id: "premise", kind: "user_statement", source_ref: "chat:premise", summary: "Original account." }, "summary"],
-  ["questions", { question_id: "premise", statement: "Original account?", status: "answered", reason: "Original response." }, "reason"],
+  ["questions", { question_id: "premise", statement: "Original account?", status: "open", reason: "The original question remains unresolved." }, "reason"],
   ["assumptions", { assumption_id: "premise", statement: "Original account.", status: "active" }, "statement"],
   ["decisions", { decision_id: "premise", kind: "design", statement: "Original account.", status: "current" }, "statement"],
   ["candidate_routes", { strategy_id: "premise", target: "Original target.", approach: "Original argument.", status: "conditional", reason: "Original account." }, "reason"]

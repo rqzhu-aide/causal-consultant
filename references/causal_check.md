@@ -76,8 +76,9 @@ assignment cannot be recovered, distinguish an established access/knowledge limi
 from a source that has simply not been examined. No fixed question order follows
 from this example.
 
-Maintain project-specific candidates through [memory](memory.md). Recommend a
-default only when evidence can rank a responsible route for the current target.
+Maintain project-specific candidates using the
+[study-record contract](memory-records.md#study-and-user-records). Recommend a default
+only when evidence can rank a responsible route for the current target.
 Useful alternatives may involve different data construction, linkage, collection,
 population, comparator, follow-up, estimand, identification frame, or an explicitly
 non-causal fallback. Do not force alternatives when one path is adequate.
@@ -100,7 +101,9 @@ with its required material, rather than another generic causal review. A missing
 assignment log cannot be supplied by invoking a different specialist. If no
 attainable review would change advice, give the supported conditional or limited
 recommendation and return to the lead for discussion. Residual assumptions need not be repeatedly sent back
-to the user as factual questions. Apply the shared question disposition in memory.
+to the user as factual questions. Return proposed dispositions for the
+[lead to reconcile](team_lead.md#closeout); use the [question contract](memory-records.md#questions)
+when updating a saved answer or unresolved remainder.
 
 ## Claim and Work Boundary
 
@@ -126,14 +129,17 @@ or extension. Policy learning/value and outcome-based subgroup selection are
 also protected analysis. A new estimate needs a presented analysis scope and
 later acceptance before one design worker executes it in a later turn.
 
-Commit one meaningful review with evidence, assumptions and strategy changes.
-Link it to the prospectively recorded interpretation and assignment. An option
+Return one meaningful review with evidence, assumptions and strategy changes
+to the [named commit owner](memory.md#ownership-and-save-points), normally Lead.
+Use the [review contract](memory-records.md#checkpoints-and-reviews), linking it
+to the prospectively recorded interpretation and assignment. An option
 selection authorizes bounded work; it does not confirm the identifying
 conditions. Preserve partial answers and uncertain accounts in the evidence
 and keep unanswered factual questions open.
 
 Link consequential supported claims to their target, assumptions, source basis
-and limits through memory's `result_conditions`. Do not merely place a condition
+and limits through the [result-condition contract](memory-records.md#result-conditions).
+Do not merely place a condition
 in a general limitations paragraph where it can detach from the claim. Existing
 unlinked results are unreviewed for these conditions, not assumption-free.
 Return the decisive uncertainty and practical next direction to the lead. Do not

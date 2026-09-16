@@ -2,7 +2,7 @@
 
 Read this only when saving audit artifacts, running analysis or discovery, or
 writing a durable report. A no-output inspection can record file evidence and
-its limitations without a run. The helper protects managed paths and records
+its limitations without a run. The memory utility protects managed paths and records
 provenance and recorded action permissions; it is not a process sandbox or a
 scientific readiness judge. Read [authorizations.md](authorizations.md) before
 protected analysis/report work, including activation for an existing project.
@@ -10,7 +10,7 @@ protected analysis/report work, including activation for an existing project.
 ## Start before target computation
 
 Use `start-run` with a new run ID, the current project/event identities, and a
-plan. Keep the user's target and claim boundary explicit. The helper snapshots
+plan. Keep the user's target and claim boundary explicit. The memory utility snapshots
 local file inputs, records their original identities and hashes, freezes the
 plan, and commits the start before returning the run path. Compute from the
 returned input snapshots, not a moving external source.
@@ -22,7 +22,7 @@ reporting to report writer, and transformation to data-audit preparation. Analys
 guide identities must match the recorded assignment. A lead-only interpretation
 cannot start specialist artifact work. Under `consultation-loop-v1`, analysis
 and report plans also require `scope_ref` and `authorization_ref` matching the
-current accepted scope. The helper freezes `authorization_binding`; do not supply
+current accepted scope. The memory utility freezes `authorization_binding`; do not supply
 it yourself or change the proposed substantive terms at execution. A fresh
 internal interpretation ID cannot bypass acceptance or the one-review limit.
 Old in-progress runs must be resolved with their original runtime before policy
@@ -49,12 +49,14 @@ artifact before its later user selection and merely finalize it afterward.
 Analysis completion first returns findings and limitations to the lead; the
 report is a separately selected action on those discussed findings.
 
-With helpers `7.0.0-rc.3` or newer, an analysis may add
+An analysis may add
 `additional_design_ids`: distinct standard design IDs, excluding its primary
 `design_id` and `custom_identification`. Custom or composed analysis requires
 `identification_basis: {argument, assumptions, source_refs}`: nonempty text,
 a nonempty string array and a nonempty source-locator array respectively.
 The worker checks these guides against the assignment for this execution.
+These frozen identities select the design; additional guidance consulted within
+unchanged scope belongs in the review's `work_performed`, not new plan IDs.
 
 Requested preparation is an `audit` plan with nonempty `transformations` and
 `diagnostics` string arrays. Freeze join, eligibility and timing rules before
@@ -110,7 +112,7 @@ Start input example:
 Save code, configuration, diagnostics, and outputs beneath the returned
 `runs/<run_id>/` path. `write-run-file` accepts the current project/event
 identities, `run_id`, a run-relative `path`, and text `content`. Frozen plans,
-input snapshots, and manifests are not editable through this helper. Do not
+input snapshots, and manifests are not editable through this memory utility. Do not
 send an `event_id` for a managed file write. Existing identical bytes are a safe
 retry; changed content requires a new filename, preserving the earlier file.
 Do not overwrite a completed run. Put revisions in a new run, normally with
@@ -156,18 +158,20 @@ Missing files or drift are errors, not reasons to silently replace the plan.
 Use `fail-run` or `abandon-run` with a reason when work cannot or should not
 finish. A started run remains visibly incomplete until a terminal event commits.
 
-Record a saved new computation as evidence with `kind: "computed"`, its
+Use the [evidence contract](memory-records.md#study-and-user-records) to record
+a saved new computation with `kind: "computed"`, its
 completed `run_id`, and `source_ref: "runs/<run_id>/<manifested-output>"`.
 The reference must identify a manifested output or diagnostic with matching
 content.
 
-Before synthesis or reporting, record consequential quantities in
-`changes.result_conditions` with their target, assumption references and
-inferential scope where applicable. An estimate, sharp-null test and interval
+Before synthesis or reporting, use the [result-condition contract](memory-records.md#result-conditions)
+to record consequential quantities in `changes.result_conditions` with their target,
+assumption references and inferential scope where applicable. An estimate, sharp-null test and interval
 can have different conditions even when they share one output file. The selected
 specialist owns scientific validity; the lead preserves those distinctions in
-its closeout. Finalizing the run alone does not complete that handoff, authorize
-a report or choose the next action. Preserve the user's current and deferred
+its closeout. Prepare the [review contract](memory-records.md#checkpoints-and-reviews)
+for the named commit owner. Finalizing the run alone does not complete that handoff,
+authorize a report or choose the next action. Preserve the user's current and deferred
 questions after reporting as well as after analysis.
 
 `verify` is read-only. It reports missing or altered content, unexpected files,
@@ -183,8 +187,8 @@ unchanged. Keep existing plans and hashes intact when moving an archive.
 Finalization still checks original sources; this read-only option cannot bypass
 completion checks.
 
-A committed event followed by failed projection replacement is still committed:
-retry the same event ID
-or recover the projection without repeating the computation. If files exist
+A committed event followed by a failed projection or brief export is still committed.
+Use [memory recovery](memory.md#recovery) to refresh derived files without
+repeating computation. If files exist
 without the intended commit, inspect the orphan attempt and start with a new
 run ID; do not adopt arbitrary existing files as a completed run.

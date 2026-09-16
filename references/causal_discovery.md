@@ -64,13 +64,16 @@ Review existing artifacts at their exact source rather than inventing a replacem
 
 ## Handoff
 
-Commit one review with sources, method, candidate findings, performed diagnostics,
+Return one review to the [named commit owner](memory.md#ownership-and-save-points),
+normally Lead, with sources, method, candidate findings, performed diagnostics,
 limitations and what structural hypotheses were weakened or remain plausible.
-Link the review to the router's committed interpretation and bounded assignment.
+Use the [review contract](memory-records.md#checkpoints-and-reviews), linked to
+Helper's committed interpretation and bounded assignment, and the
+[study-record fields](memory-records.md#study-and-user-records) for evidence or candidate changes.
 Use language such as "compatible with", "candidate edge" or "unstable orientation".
 New computed evidence points to the finalized run and manifested file.
-Use memory's `result_conditions` to attach the particular graph claim to its
-target, required assumptions, source basis and candidate-only limits. Do not
+Use [result conditions](memory-records.md#result-conditions) to attach the particular
+graph claim to its target, required assumptions, source basis and candidate-only limits. Do not
 invent an inferential guarantee for a ranking or stability score.
 
 When the result could affect adjustment, variable roles, estimand or claim strength,

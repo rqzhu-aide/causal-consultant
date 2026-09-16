@@ -126,7 +126,8 @@ function semanticContext(state, request) {
       fail("UNKNOWN_REFERENCE", label + " must refer to user-statement evidence: " + value);
     }
   }
-  return { reference, references, contributionRefs, runStatus: runId => state.runs.find(run => run.run_id === runId)?.status };
+  return { reference, references, contributionRefs, kindOf: ref => available.get(ref),
+    runStatus: runId => state.runs.find(run => run.run_id === runId)?.status };
 }
 
 function validateAdditionalDesigns(value, label) {
@@ -179,26 +180,46 @@ function supersedes(value, ownId, kind, label, context) {
 }
 
 function validateChanges(changes, context) {
-  object(changes, "changes", [], ["project_understanding", "consultation", ...Object.keys(COLLECTIONS)]);
+  object(changes, "changes", [], ["project_understanding", "consultation", "case_brief", ...Object.keys(COLLECTIONS)]);
   if (Object.hasOwn(changes, "project_understanding")) validateUnderstanding(changes.project_understanding, "changes.project_understanding");
+  if (Object.hasOwn(changes, "case_brief")) {
+    object(changes.case_brief, "changes.case_brief", [], ["knowledge_refs", "work_refs"]);
+    if (!Object.keys(changes.case_brief).length) fail("INVALID_INPUT", "changes.case_brief must update at least one selection list.");
+    for (const [key, refs] of Object.entries(changes.case_brief)) {
+      context.references(refs, "changes.case_brief." + key, key === "knowledge_refs" ? "evidence" : undefined);
+      if (key === "work_refs" && refs.some(ref => !["review", "run"].includes(context.kindOf(ref)))) {
+        fail("UNKNOWN_REFERENCE", "changes.case_brief.work_refs must identify reviews or runs.");
+      }
+    }
+  }
   if (Object.hasOwn(changes, "consultation") && changes.consultation !== null) validateCheckpoint(changes.consultation, "changes.consultation", context);
   for (const record of changes.questions || []) {
     const label = "question " + record.question_id;
-    object(record, label, ["question_id", "statement", "status"], ["reason", "basis_refs", "origin"]);
+    object(record, label, ["question_id", "statement", "status"], ["reason", "basis_refs", "origin", "resolution"]);
     text(record.statement, label + ".statement");
     enumeration(record.status, ["open", "answered", "retired"], label + ".status");
     if (record.status !== "open" || Object.hasOwn(record, "reason")) text(record.reason, label + ".reason");
     optionalRefs(record, { basis_refs: undefined }, label, context);
     if (Object.hasOwn(record, "origin")) enumeration(record.origin, ["user", "consultant"], label + ".origin");
     if (record.origin === "user") context.references(record.basis_refs, label + ".basis_refs", undefined, true);
+    if (Object.hasOwn(record, "resolution")) {
+      if (record.origin === "user") fail("INVALID_INPUT", "User questions retain the existing user-question answer contract.");
+      object(record.resolution, label + ".resolution", ["answer_refs", "remaining"]);
+      context.references(record.resolution.answer_refs, label + ".resolution.answer_refs");
+      strings(record.resolution.remaining, label + ".resolution.remaining");
+    }
   }
   for (const record of changes.evidence || []) {
     const label = "evidence " + record.evidence_id;
-    object(record, label, ["evidence_id", "kind", "source_ref", "summary"], ["limitations", "source_sha256", "source_excerpt", "supersedes", "legacy", "run_id"]);
+    object(record, label, ["evidence_id", "kind", "source_ref", "summary"], ["limitations", "source_sha256", "source_excerpt", "complete_message", "supersedes", "legacy", "run_id"]);
     enumeration(record.kind, ["user_statement", "file", "literature", "computed"], label + ".kind");
     text(record.source_ref, label + ".source_ref");
     text(record.summary, label + ".summary");
-    if (Object.hasOwn(record, "source_excerpt")) text(record.source_excerpt, label + ".source_excerpt");
+    if (Object.hasOwn(record, "complete_message")) {
+      if (typeof record.complete_message !== "boolean" || record.kind !== "user_statement" || typeof record.source_excerpt !== "string") {
+        fail("INVALID_INPUT", label + ".complete_message requires a boolean, user_statement kind and string source_excerpt.");
+      }
+    } else if (Object.hasOwn(record, "source_excerpt")) text(record.source_excerpt, label + ".source_excerpt");
     optionalStrings(record, ["limitations"], label);
     if (Object.hasOwn(record, "source_sha256") && !/^[a-f0-9]{64}$/.test(record.source_sha256)) fail("INVALID_INPUT", label + ".source_sha256 must be a SHA-256 hash.");
     supersedes(record, record.evidence_id, "evidence", label, context);
@@ -312,7 +333,7 @@ function validateSemantic(state, request) {
   object(request.payload, "payload", required, optional);
   const exchanges = require("./exchanges.cjs");
   if (Object.hasOwn(request.payload, "protocol") && request.payload.protocol !== exchanges.PROTOCOL) fail("UNSUPPORTED_PROTOCOL", "Unknown conversation protocol.");
-  if (Object.hasOwn(request.payload, "changes")) object(request.payload.changes, "changes", [], ["project_understanding", "consultation", ...Object.keys(COLLECTIONS)]);
+  if (Object.hasOwn(request.payload, "changes")) object(request.payload.changes, "changes", [], ["project_understanding", "consultation", "case_brief", ...Object.keys(COLLECTIONS)]);
   const context = semanticContext(state, request);
   const authorizations = require("./authorizations.cjs");
   if (request.type === "consultation_policy_activated") authorizations.validateActivation(state, request.payload);
@@ -340,7 +361,7 @@ function validateSemantic(state, request) {
 // to reconstruct it. The reducer deliberately retains historical replacement
 // semantics, and transact fingerprints the original request for exact retries.
 const MEMORY_FIELDS = {
-  evidence: ["source_excerpt", "limitations", "supersedes", "legacy"],
+  evidence: ["source_excerpt", "complete_message", "limitations", "supersedes", "legacy"],
   questions: ["origin", "basis_refs"],
   assumptions: ["basis_refs", "supersedes"],
   decisions: ["basis_refs", "user_contribution_refs", "supersedes"],
@@ -367,19 +388,49 @@ function prepareMemoryWrite(state, request) {
       const previous = (state[name] || []).find(item => item[key] === record[key]);
       if (!previous) continue;
       const userSourceChanged = name === "evidence" && changedUserSource(previous, record);
+      // Coverage is a statement about these exact captured bytes. A source repair
+      // must restate it in the submitted request, before retention fills omissions.
+      const messageChanged = userSourceChanged || (name === "evidence" && Object.hasOwn(record, "source_excerpt")
+        && record.source_excerpt !== previous.source_excerpt);
+      if (name === "evidence" && Object.hasOwn(previous, "complete_message") && messageChanged
+        && !Object.hasOwn(record, "complete_message")) {
+        fail("MESSAGE_COVERAGE_REQUIRED", "Replacing a marked incoming message requires an explicit complete_message boolean on the submitted source correction.");
+      }
       const retained = [...fields, ...(name === "evidence" && previous.kind === "user_statement" ? ["source_ref", "source_sha256"] : [])];
       for (const field of retained) if (Object.hasOwn(previous, field) && !Object.hasOwn(record, field)) {
-        if (userSourceChanged && ["source_ref", "source_excerpt", "source_sha256", "legacy"].includes(field)) continue;
+        if (userSourceChanged && ["source_ref", "source_excerpt", "source_sha256", "complete_message", "legacy"].includes(field)) continue;
         // A new file/version cannot inherit text or legacy attribution from
         // the old source. Cautious limitations still carry until reconciled.
         if (name === "evidence" && changedFileSource(previous, record) && ["source_excerpt", "legacy"].includes(field)) continue;
         record[field] = structuredClone(previous[field]);
       }
+      // Unlike provenance, an explicit remaining-answer list is replaceable.
+      if (name === "questions" && previous.resolution && !Object.hasOwn(record, "resolution")) {
+        record.resolution = structuredClone(previous.resolution);
+      }
     }
   }
   return prepared;
 }
-function validateMemoryWrite(state, request) {
+function decisionHasSource(state, payload, decision) {
+  const records = new Map();
+  for (const name of ["evidence", "assumptions", "decisions", "specialist_reviews"]) {
+    const key = name === "specialist_reviews" ? "review_id" : COLLECTIONS[name].id;
+    for (const record of [...(state[name] || []), ...(payload.changes?.[name] || [])]) records.set(record[key], record);
+  }
+  if (payload.review) records.set(payload.review.review_id, payload.review);
+  const seen = new Set();
+  const visit = ref => {
+    if (seen.has(ref)) return false;
+    seen.add(ref);
+    const record = records.get(ref);
+    if (!record) return false;
+    if (record.evidence_id) return typeof record.source_ref === "string" && !!record.source_ref.trim();
+    return [...(record.basis_refs || []), ...(record.user_contribution_refs || []), ...(record.evidence_refs || [])].some(visit);
+  };
+  return [...(decision.basis_refs || []), ...(decision.user_contribution_refs || [])].some(visit);
+}
+function validateMemoryWrite(state, request, events = []) {
   const changes = request.payload.changes || {};
   const evidence = new Map(state.evidence.map(item => [item.evidence_id, item]));
   for (const item of changes.evidence || []) evidence.set(item.evidence_id, item);
@@ -418,7 +469,8 @@ function validateMemoryWrite(state, request) {
     if (request.type !== "correction" || !request.payload.corrects_refs.includes(ref)) return false;
     // A correction can be grounded in the retained account or in a newly cited
     // file/result. It need not invent another user statement for an internal fix.
-    const refs = [...(before.basis_refs || []), ...(after.basis_refs || []), ...(after.user_contribution_refs || [])];
+    const refs = [...(before.basis_refs || []), ...(after.basis_refs || []), ...(after.user_contribution_refs || []),
+      ...(before.resolution?.answer_refs || []), ...(after.resolution?.answer_refs || [])];
     const sources = [after.evidence_id ? after : null, ...refs.map(id => evidence.get(id))].filter(Boolean);
     return sources.some(item => quoted(item) || (item.kind !== "user_statement" && !!item.source_ref));
   }
@@ -434,6 +486,67 @@ function validateMemoryWrite(state, request) {
     if (altered.length && !sourcedCorrection(record[key], prior, record)) {
       fail("MEMORY_SOURCE_CHANGED", "Updating " + record[key] + " would remove or replace retained " + altered.join(", ") + ". Keep the attribution, or use a sourced correction identifying this record and why it changes.");
     }
+  }
+  const interpretationRef = request.payload.exchange?.interpretation_ref || request.payload.review?.interpretation_ref
+    || state.interpretations?.at(-1)?.interpretation_id;
+  const currentReply = interpretation || events.find(event => event.payload.interpretation?.interpretation_id === interpretationRef)?.payload.interpretation;
+  const reviews = new Set((state.specialist_reviews || []).map(review => review.review_id));
+  if (request.payload.review) reviews.add(request.payload.review.review_id);
+  for (const question of changes.questions || []) {
+    if (question.origin === "user") continue;
+    const prior = state.questions.find(item => item.question_id === question.question_id);
+    const resolution = question.resolution;
+    const closing = question.status !== "open" && question.status !== prior?.status;
+    if (prior && question.statement !== prior.statement && !sourcedCorrection(question.question_id, prior, question)) {
+      fail("QUESTION_IDENTITY_CHANGED", "Keep the original question statement through clarification; use the exchange for clarified wording or a sourced correction for an incorrectly recorded question.");
+    }
+    if (closing && !resolution) fail("MISSING_QUESTION_RESOLUTION", "Closing consultant question " + question.question_id + " requires answer_refs and the exact remaining uncertainty; retired does not mean answered.");
+    if (!resolution) continue;
+    if ((question.status === "answered" && (resolution.remaining.length || !resolution.answer_refs.length))
+      || (question.status === "open" && !resolution.remaining.length)) {
+      fail("QUESTION_RESOLUTION_CONFLICT", "An answered question needs supported answers and no remainder; an open question retains its unanswered part.");
+    }
+    for (const ref of resolution.answer_refs) {
+      if (!evidence.has(ref) && !reviews.has(ref)) fail("INVALID_ANSWER_SOURCE", "Question answers cite evidence or specialist reviews, not an assumption, permission or question: " + ref);
+      if (evidence.get(ref)?.kind === "user_statement") requireQuote(ref, "Question resolution");
+    }
+    const removed = (prior?.resolution?.answer_refs || []).filter(ref => !resolution.answer_refs.includes(ref));
+    const superseded = ref => resolution.answer_refs.some(next => evidence.get(next)?.supersedes === ref);
+    if (removed.some(ref => !superseded(ref)) && !sourcedCorrection(question.question_id, prior, question)) {
+      fail("MEMORY_SOURCE_CHANGED", "Replacing a question's supporting answers needs a sourced correction or explicit evidence supersession.");
+    }
+    if (same(prior?.resolution, resolution) && !closing) continue;
+    const addedAnswers = resolution.answer_refs.filter(ref => !(prior?.resolution?.answer_refs || []).includes(ref));
+    const reduced = (prior?.resolution?.remaining || []).some(part => !resolution.remaining.includes(part));
+    if ((reduced || (closing && question.status === "answered")) && !addedAnswers.length
+      && !sourcedCorrection(question.question_id, prior || {}, question)) {
+      fail("MISSING_ANSWER_SUPPORT", "Removing the unanswered part of " + question.question_id + " requires additional answer support or a sourced correction, not just an instruction to finish.");
+    }
+    const addedUsers = addedAnswers.filter(ref => evidence.get(ref)?.kind === "user_statement");
+    if (addedUsers.length && !sourcedCorrection(question.question_id, prior || {}, question)) {
+      const matched = currentReply?.components.some(component => component.question_ref === question.question_id
+        || (["information", "correction"].includes(component.kind) && !component.exchange_ref)
+        || (component.kind === "selection" && question.basis_refs?.includes(component.exchange_ref)));
+      if (!matched || addedUsers.some(ref => !currentReply.incoming_refs.includes(ref))) {
+        fail("MISSING_ANSWER_INTERPRETATION", "Interpret the user's answer before updating question " + question.question_id + "; standalone facts need source linkage, not a fabricated delivery binding.");
+      }
+    }
+  }
+  require("./exchanges.cjs").validateResolutionWrite(state, request.payload, currentReply);
+  require("./exchanges.cjs").validateIncomingGroups(state, request.payload, events);
+
+  const changedUnderstanding = ["objective", "causal_target", "current_claim_boundary"].filter(key =>
+    Object.hasOwn(changes.project_understanding || {}, key) && changes.project_understanding[key] !== state.project_understanding[key]);
+  if (changedUnderstanding.length) {
+    const decisions = new Map(state.decisions.map(decision => [decision.decision_id, decision]));
+    for (const decision of changes.decisions || []) decisions.set(decision.decision_id, decision);
+    const mentioned = new Set([...(currentReply?.basis_refs || []), ...(request.payload.exchange?.basis_refs || []),
+      ...(request.payload.corrects_refs || []), ...(changes.decisions || []).map(decision => decision.decision_id)]);
+    const kinds = changedUnderstanding.some(key => key !== "current_claim_boundary") ? ["target"] : ["target", "boundary"];
+    if (![...mentioned].some(ref => {
+      const decision = decisions.get(ref);
+      return decision?.status === "current" && kinds.includes(decision.kind) && decisionHasSource(state, request.payload, decision);
+    })) fail("UNRECONCILED_UNDERSTANDING", "Changing " + changedUnderstanding.join(", ") + " requires a sourced current target/boundary decision in this reconciliation. Update substantive changes together; cite an unchanged decision for cosmetic wording.");
   }
 }
 
@@ -484,6 +597,7 @@ function reduceEvent(state, event, copyState) {
       index(payload.checkpoint.checkpoint_id, "checkpoint");
     }
     if (changes.project_understanding) Object.assign(next.project_understanding, structuredClone(changes.project_understanding));
+    if (changes.case_brief) next.case_brief = { ...(next.case_brief || {}), ...structuredClone(changes.case_brief) };
     for (const [name, config] of Object.entries(COLLECTIONS)) for (const record of changes[name] || []) {
       if (!next[name]) next[name] = [];
       upsert(next[name], record, config.id);
@@ -584,6 +698,6 @@ function createReplayBuilder(projectId, timestamp) {
 
 module.exports = {
   CATALOG, ID, PUBLIC_TYPES, CHECKPOINT_STATUSES, STRATEGY_STATUSES, COLLECTIONS,
-  emptyState, validateSemantic, prepareMemoryWrite, validateMemoryWrite, applyEvent, createReplayBuilder, jsonValue, object, text, id,
+  emptyState, validateSemantic, prepareMemoryWrite, validateMemoryWrite, decisionHasSource, applyEvent, createReplayBuilder, jsonValue, object, text, id,
   enumeration, array, strings, validateUnderstanding, validateAssignment, validateAdditionalDesigns
 };

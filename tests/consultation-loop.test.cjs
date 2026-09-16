@@ -222,6 +222,48 @@ test("new user steering suspends an old open action until explicitly resumed", t
   unchanged(root, "DIRECTION_CHANGED", () => write(root, "run-resume", "more.txt", "Do not continue automatically."));
   assert.equal(f.state(root).runs[0].status, "in_progress");
 });
+test("paused acceptance survives a fresh process without executing or asking for the same approval again", t => {
+  const root = project(t);
+  const offer = f.prepareScope(root, plan(), { basis_refs: ["data-source"] });
+  const accepted = f.acceptScope(root, offer, { lead_only: true, user_text: "I approve this scope, but wait while I confirm that this is the intended extract." });
+  unchanged(root, "ASSIGNMENT_MISMATCH", () => start(root, accepted, "run-before-clarification"), "run-before-clarification");
+  const interpreted = f.state(root).interpretations.at(-1);
+  const receipt = f.exchange(root, interpreted, "paused-approval", f.emptyResponse("Your approval is recorded. The selected work will wait for confirmation of the extract."));
+  f.deliver(root, receipt.exchange_id, "paused-approval");
+  const command = spawnSync(process.execPath, [path.resolve(__dirname, "../scripts/project.cjs"), "context", "--project-root", root], { encoding: "utf8", windowsHide: true });
+  assert.equal(command.status, 0, command.stdout);
+  const resumed = JSON.parse(command.stdout);
+  const permission = resumed.views.work.actions.eligibility.find(item => item.scope_ref === offer.scope.scope_id);
+  assert.equal(permission.eligible, true);
+  assert.equal(permission.executable_now, false);
+  assert.ok(resumed.views.work.exchanges.some(item => item.exchange_id === offer.exchange_ref));
+  assert.equal(f.state(root).runs.length, 0);
+  const direction = f.interpret(root, "extract-confirmed", { kind: "specialist", assignment: offer.scope.assignment,
+    scope: "Resume the unchanged approved scope.", reason: "The user confirms the extract and explicitly resumes the accepted action.",
+    scope_ref: accepted.scope_ref, authorization_ref: accepted.authorization_ref }, {}, "It is the same extract. Go ahead with the scope I approved.");
+  const approved = { ...accepted, interpretation_ref: direction.interpretation_id };
+  finish(root, approved, "run-after-clarification");
+  discuss(root, approved, "run-after-clarification", "resumed-findings");
+  assert.equal(f.state(root).action_decisions.filter(item => item.disposition === "accept").length, 1);
+  assert.equal(f.state(root).runs.length, 1);
+  assert.equal(runs.verify(root).ok, true);
+});
+test("correcting the bound target prevents an unchanged approval starting the old outcome analysis", t => {
+  const root = project(t);
+  const offer = f.prepareScope(root, plan(), { basis_refs: ["data-source"] });
+  const accepted = f.acceptScope(root, offer, { user_text: "I approve the scope as described." });
+  const target = f.state(root).decisions.find(item => offer.scope.basis_versions.some(binding => binding.ref === item.decision_id) && item.kind === "target");
+  f.record(root, "memory_updated", { changes: {
+    evidence: [f.statement("user-target-correction", "The outcome should be completion, not the recorded score.")],
+    decisions: [{ ...target, statement: "Describe completion in the observed sample; no causal conclusion.", basis_refs: [...target.basis_refs, "user-target-correction"] }]
+  } }, "event-target-correction");
+  assert.equal(policy.eligibility(f.state(root), offer.scope.scope_id).eligible, false);
+  unchanged(root, "INVALID_AUTHORIZATION", () => start(root, accepted, "run-old-outcome"), "run-old-outcome");
+  const context = store.context(root, { focus_refs: [offer.scope.scope_id], limit: 1 });
+  const targetVersions = context.views.work.actions.exact_basis.find(item => item.scope_ref === offer.scope.scope_id).versions.find(item => item.ref === target.decision_id);
+  assert.match(targetVersions.recorded_body.statement, /Describe the sample/);
+  assert.equal(targetVersions.current_event_ref, "event-target-correction");
+});
 
 test("presenting computed evidence satisfies its completed run's discussion obligation", t => {
   const root = project(t);

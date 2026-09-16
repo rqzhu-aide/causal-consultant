@@ -17,11 +17,14 @@ or perform a second specialist review.
 
 ## Load the Selected Science
 
-Choose and read the primary guide for the selected target's identifying argument.
-Load only additional guides needed for that same argument and record them in
-`additional_design_ids`. For example, a randomized saturation spillover review
-can combine interference and randomization guidance within this one specialist.
-Multiple guides do not authorize another estimand or independent investigation.
+Read the guides selected in the committed assignment. Helper selects known
+`additional_design_ids` and `support_ids` before commitment; preserve that exact
+assignment. Load complementary guidance as needed for the same bounded argument,
+recording the actual additional guide/file consulted in `review.work_performed`,
+not by changing assignment IDs or a frozen plan. For example, a randomized
+saturation spillover review can consult interference and randomization guidance
+within this one specialist. Reading does not authorize a different target,
+identifying frame or material plan change; return those needs to Lead.
 
 - [randomized_assignment](design/randomized_assignment.md)
 - [single_time_observational](design/single_time_observational.md)
@@ -34,8 +37,8 @@ Multiple guides do not authorize another estimand or independent investigation.
 - [descriptive_association](design/descriptive_association.md)
 - [custom_identification](design/custom_identification.md)
 
-Load a support only if it changes this review, and record its ID in the
-assignment: [heterogeneous-effects](support/heterogeneous-effects.md),
+Load a support only when useful within this review's scope, using the same
+consulted-guidance rule: [heterogeneous-effects](support/heterogeneous-effects.md),
 [dose-response](support/dose-response.md), [mediation](support/mediation.md),
 [policy-making-and-transportability](support/policy-making-and-transportability.md),
 [non-continuous-outcomes](support/non-continuous-outcomes.md), or
@@ -169,15 +172,19 @@ with a visible reason and timing.
 
 ## Handoff
 
-Use the shared [memory](memory.md) review to connect the work to the selected
-uncertainty, strategy and prospectively recorded interpretation. The completed
+Use the [review contract](memory-records.md#checkpoints-and-reviews) to connect the
+work to the selected uncertainty, strategy and prospectively recorded interpretation. Return the
+review and proposed memory changes to its named commit owner, normally Lead;
+run execution commits remain immediate. The completed
 assignment must match the bounded work selected before it began. Distinguish
 findings, assumptions and limitations; identify what the review ruled out and
 what remains possible. Computed study
 evidence must point to the completed run and its manifested output.
 
-Save governing assumptions as attributed assumption records and attach them
-directly through `changes.result_conditions`, with locatable results, targets,
+Use [study-record fields](memory-records.md#study-and-user-records) for attributed
+assumptions and evidence, and attach governing assumptions directly through
+the [result-condition contract](memory-records.md#result-conditions), with locatable
+results, targets,
 basis and limitations. Separate quantities with different conditions: the
 point estimate, a sharp-null test and a model-based interval need not share one
 inferential target or guarantee. For inferential results, preserve the tested

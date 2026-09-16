@@ -42,15 +42,18 @@ exhaustive literature-review requirement.
 
 ## Useful Handoff
 
-Record source-backed evidence, assumptions and any warranted strategy changes
-in the shared [memory](memory.md) contract, linked to the router's committed
+Return source-backed evidence, assumptions and any warranted strategy changes
+to the named review-commit owner, normally Lead. Prepare the
+[review contract](memory-records.md#checkpoints-and-reviews) and the relevant
+[study records](memory-records.md#study-and-user-records), linked to Helper's committed
 interpretation and bounded assignment. Explain what interpretation became
 more credible, what misleading analogy or label should be discounted, and the
 remaining uncertainty. A suggestion should say what a changed endpoint,
 population, measurement strategy or comparator would enable, what it requires,
 and its main risk. Preserve the current target unless the user adopts a change.
 Keep consequential claims linked to their assumptions and source limitations
-through `result_conditions` when later synthesis could lose those conditions.
+through [result conditions](memory-records.md#result-conditions) when later
+synthesis could lose those conditions.
 Propose useful user questions with their decision consequence; the lead decides
 what to ask and records the actual outgoing wording.
 

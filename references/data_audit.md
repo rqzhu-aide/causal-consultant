@@ -58,8 +58,10 @@ In existing evidence summaries/limitations, retain inspected source/version and
 documentation; population, row unit, keys/linkage, key meanings/timing,
 selection/missingness and unchecked scope. Attribute user accounts and assumptions.
 Record known file hashes for reuse; hashes identify bytes, not meaning.
-Link open questions and strategy implications via [memory](memory.md).
-Link the review to the router's committed interpretation and bounded assignment.
+Use [study records](memory-records.md#study-and-user-records) when supplying evidence
+or strategy changes and [question records](memory-records.md#questions) when updating
+answers. Prepare the [review contract](memory-records.md#checkpoints-and-reviews),
+linked to Helper's committed interpretation and bounded assignment.
 Preserve unresolved parts of user answers, and mark proposed questions as
 proposals for the lead rather than questions already asked.
 
@@ -68,9 +70,10 @@ Example: booking is not attendance. If attendance timing matters, propose
 enable that timeline, not establish offer assignment or select a new target.
 The lead selects the question and records its consequence.
 
-No-output reviews need only committed review/source evidence. Audit artifacts
+Return review/source evidence to its named commit owner, normally Lead.
+No-output reviews need no run. Audit artifacts
 use a run; memory keeps concise interpretation and provenance. Link consequential
-derived-data claims to their construction conditions using `result_conditions`;
+derived-data claims using the [result-condition contract](memory-records.md#result-conditions);
 do not invent an inferential target or hypothesis for preparation outputs.
 Run finalization ends artifact work; the lead still reconciles and saves the
 outgoing exchange. Audit findings return to discussion; they do not authorize

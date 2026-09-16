@@ -60,6 +60,68 @@ test("accepted action binds exact plan, assignment and one execution only", () =
   rejects(() => policy.validateRunStart(env.fixture.state, plan), "INVALID_AUTHORIZATION");
   assert.equal(policy.validateRunContinuation(env.fixture.state, env.fixture.state.runs.at(-1), plan).scope_ref, env.scope.scope_id);
 });
+test("one clearly bound yes accepts the current offer without another confirmation", () => {
+  const env = setup(); const payload = acceptance(env);
+  payload.changes.evidence[0].source_excerpt = "Yes, do it.";
+  env.fixture.append("reply_interpreted", payload);
+  assert.equal(policy.validateRunStart(env.fixture.state, { ...env.plan, interpretation_ref: payload.interpretation.interpretation_id,
+    scope_ref: env.scope.scope_id, authorization_ref: "decision-accept" }).authorization_ref, "decision-accept");
+});
+test("accepted scope can wait through clarification and resume without a second acceptance", () => {
+  const env = setup(); const payload = acceptance(env);
+  payload.changes.evidence[0].source_excerpt = "I approve this scope, but first let me check the allocation record.";
+  payload.interpretation.next_action = { kind: "lead_only", scope: "Clarify the allocation record before execution.",
+    reason: "The user approves the unchanged scope but asks to establish a prerequisite first.",
+    adjustment_reason: "Hold the selected assignment while the prerequisite is clarified.", clarification_needed: "Confirm that the recorded assignment variable is the intended one." };
+  env.fixture.append("reply_interpreted", payload);
+  assert.equal(policy.eligibility(env.fixture.state, env.scope.scope_id).eligible, true);
+  const approved = { ...env.plan, interpretation_ref: "interpretation-accept", scope_ref: env.scope.scope_id, authorization_ref: "decision-accept" };
+  rejects(() => policy.validateRunStart(env.fixture.state, approved), "INVALID_AUTHORIZATION");
+  assert.equal(env.fixture.state.runs.length, 0);
+  const clarification = interpretation("clarification"); clarification.incoming_refs = ["user-clarification"];
+  clarification.components = [{ kind: "information", meaning: "The user is still locating the record.", established: ["The record is not yet available."], unresolved: ["Which assignment variable the record identifies."] }];
+  clarification.next_action = { kind: "lead_only", scope: "Retain the exact unanswered prerequisite.", reason: "The additional reply does not resolve it." };
+  env.fixture.append("reply_interpreted", { protocol: PROTOCOL, interpretation: clarification,
+    changes: { evidence: [{ evidence_id: "user-clarification", kind: "user_statement", source_ref: "conversation:clarification", source_excerpt: "I have not found it yet.", summary: "The prerequisite remains unresolved." }] } });
+  assert.equal(policy.eligibility(env.fixture.state, env.scope.scope_id).eligible, true);
+  const resumed = interpretation("resume"); resumed.incoming_refs = ["user-resume"];
+  resumed.components = [{ kind: "answer", meaning: "The user directly resolves the sole stated blocker and supports the offered resumption.", established: ["The record identifies the same assignment variable."], unresolved: [] }];
+  resumed.next_action = { kind: "specialist", scope: "Resume the unchanged accepted action.", reason: "The reply resolves the sole stated blocker to the offered resumption.",
+    assignment: structuredClone(assignment), scope_ref: env.scope.scope_id, authorization_ref: "decision-accept" };
+  env.fixture.append("reply_interpreted", { protocol: PROTOCOL, interpretation: resumed,
+    changes: { evidence: [{ evidence_id: "user-resume", kind: "user_statement", source_ref: "conversation:resume", source_excerpt: "It names the assignment variable you proposed.", summary: "The sole prerequisite is resolved without changing the scope." }] } });
+  assert.equal(policy.validateRunStart(env.fixture.state, { ...approved, interpretation_ref: resumed.interpretation_id }).authorization_ref, "decision-accept");
+  assert.equal(env.fixture.state.action_decisions.length, 1);
+  let replay = emptyState(env.fixture.events[0].project_id, env.fixture.events[0].timestamp);
+  for (const event of env.fixture.events) replay = applyEvent(replay, event);
+  assert.deepEqual(replay, env.fixture.state);
+});
+test("accepting paused analysis permits only independently selected different work", () => {
+  const env = setup(); const payload = acceptance(env);
+  payload.changes.evidence[0].source_excerpt = "I approve the analysis. While I check allocation, inspect the missing values only.";
+  payload.interpretation.next_action = { kind: "specialist", scope: "Inspect missing values without interpreting causal effects.",
+    reason: "The explicitly requested missingness check does not depend on the allocation answer.",
+    adjustment_reason: "Preserve analysis approval while doing the separately requested data check.",
+    assignment: { specialist_id: "data_audit", operation: "review" } };
+  rejects(() => env.fixture.append("reply_interpreted", payload), "INVALID_AUTHORIZATION");
+  payload.interpretation.components.push({ kind: "instruction", meaning: "The user separately requests a missing-value check.",
+    established: ["Inspect missing values only while allocation is being checked."], unresolved: [] });
+  env.fixture.append("reply_interpreted", payload);
+  assert.equal(env.fixture.state.interpretations.at(-1).next_action.assignment.specialist_id, "data_audit");
+  assert.equal(policy.eligibility(env.fixture.state, env.scope.scope_id).eligible, true);
+  assert.equal(env.fixture.state.runs.length, 0);
+});
+test("paused acceptance retains observation, scope and single-selection constraints", () => {
+  const env = setup(); const payload = acceptance(env);
+  payload.interpretation.next_action = { kind: "lead_only", scope: "Explain the outstanding prerequisite.", reason: "Execution waits." };
+  rejects(() => env.fixture.append("reply_interpreted", payload), "ASSIGNMENT_MISMATCH");
+  payload.interpretation.next_action.adjustment_reason = "Clarification precedes the selected assignment.";
+  payload.interpretation.action_decisions.push({ ...payload.interpretation.action_decisions[0], decision_id: "decision-second" });
+  rejects(() => env.fixture.append("reply_interpreted", payload), "INVALID_AUTHORIZATION");
+  payload.interpretation.action_decisions.pop();
+  payload.changes.evidence.push({ ...env.fixture.state.evidence.find(item => item.evidence_id === "user-request"), summary: "Actually change the target population." });
+  rejects(() => env.fixture.append("reply_interpreted", payload), "STALE_SCOPE");
+});
 test("same-ID material basis update invalidates affected permission", () => {
   const env = setup(); const plan = authorize(env);
   env.fixture.append("memory_updated", { changes: { evidence: [{ ...env.fixture.state.evidence.find(x => x.evidence_id === "user-request"), summary: "Corrected target population" }] } });
@@ -116,6 +178,34 @@ test("new policy history replays exact decisions, scope and delivery bindings", 
   const env = setup(); authorize(env); let replay = emptyState(env.fixture.events[0].project_id, env.fixture.events[0].timestamp);
   for (const event of env.fixture.events) replay = applyEvent(replay, event);
   assert.deepEqual(replay, env.fixture.state);
+});
+test("new offers bind a current sourced target while historical offers still replay", () => {
+  const env = setup();
+  const legacyRequest = { payload: { exchange: env.outgoing } };
+  rejects(() => policy.validateProposalWrite(env.fixture.state, legacyRequest), "MISSING_TARGET_BINDING");
+  // This guard is deliberately absent from validateOffer/applyEvent: old valid
+  // journals did not require a target decision and must not change on replay.
+  let replay = emptyState(env.fixture.events[0].project_id, env.fixture.events[0].timestamp);
+  for (const event of env.fixture.events) replay = applyEvent(replay, event);
+  assert.deepEqual(replay, env.fixture.state);
+  const target = { decision_id: "target-current", kind: "target", status: "current", statement: "Estimate the trial-population ATE.", basis_refs: ["user-request"] };
+  env.fixture.append("memory_updated", { changes: { decisions: [target] } });
+  const scope = { ...env.scope, scope_id: "scope-target-bound", basis_versions: [...env.scope.basis_versions,
+    { ref: target.decision_id, event_ref: env.fixture.state.history_index[target.decision_id].event_ref }] };
+  env.fixture.append("memory_updated", { changes: { action_scopes: [scope] } });
+  const request = { payload: { exchange: { ...env.outgoing, response: { ...env.outgoing.response,
+    next_steps: [{ ...env.outgoing.response.next_steps[0], scope_ref: scope.scope_id }] } } } };
+  assert.doesNotThrow(() => policy.validateProposalWrite(env.fixture.state, request));
+  for (const status of ["withdrawn", "superseded"]) {
+    const changed = structuredClone(env.fixture.state); changed.decisions[0].status = status;
+    rejects(() => policy.validateProposalWrite(changed, request), "MISSING_TARGET_BINDING");
+  }
+  const unsourced = structuredClone(env.fixture.state); unsourced.decisions[0].basis_refs = ["question-allocation"];
+  rejects(() => policy.validateProposalWrite(unsourced, request), "MISSING_TARGET_BINDING");
+  const boundaryOnly = structuredClone(env.fixture.state); boundaryOnly.decisions[0].kind = "boundary";
+  rejects(() => policy.validateProposalWrite(boundaryOnly, request), "MISSING_TARGET_BINDING");
+  const stale = structuredClone(env.fixture.state); stale.history_index[target.decision_id].event_ref = "event-newer-target";
+  rejects(() => policy.validateProposalWrite(stale, request), "MISSING_TARGET_BINDING");
 });
 test("new governing result conditions invalidate prior scopes and require their assumption closure", () => {
   const env = setup(); const plan = authorize(env);

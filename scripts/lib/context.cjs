@@ -2,12 +2,24 @@
 
 const { fail, canonical } = require("./files.cjs");
 const { jsonValue, object, text, id, array } = require("./model.cjs");
-const { collectionIds, journalBodies, conversationRoots } = require("./views.cjs");
+const { collectionIds, journalBodies, conversationRoots, questionMemoryLinks } = require("./views.cjs");
 
 const ARRAY_REFS = ["basis_refs", "evidence_refs", "user_contribution_refs", "route_changes",
   "assumptions_added_or_revised", "evidence_for", "evidence_against", "strategy_ids_it_could_change",
   "related_unresolved_question_refs", "assumption_refs", "incoming_refs", "completed_work_refs", "reconciles", "work_refs", "findings_refs", "user_refs"];
 const compare = (left, right) => left < right ? -1 : left > right ? 1 : 0;
+
+function briefRequestShape(value, state) {
+  jsonValue(value);
+  object(value, "brief context request", ["mode"], ["expected_last_event_id"]);
+  if (value.mode !== "brief") fail("INVALID_INPUT", "The only explicit context mode is brief; omit mode for the existing focused selector.");
+  if (Object.hasOwn(value, "expected_last_event_id")) {
+    id(value.expected_last_event_id, "expected_last_event_id");
+    if (value.expected_last_event_id !== state.state_meta.last_event_id) {
+      fail("STALE_CONTEXT", "Project history changed. Read the current brief before continuing.", { current_last_event_id: state.state_meta.last_event_id });
+    }
+  }
+}
 
 function requestShape(value) {
   jsonValue(value);
@@ -31,6 +43,7 @@ function requestShape(value) {
 function references(record, ownId) {
   const result = new Set();
   for (const field of ARRAY_REFS) for (const ref of record[field] || []) result.add(ref);
+  for (const ref of record.resolution?.answer_refs || []) result.add(ref);
   for (const field of ["supersedes", "last_review_id", "run_id", "parent_run_id", "evidence_ref", "interpretation_ref", "exchange_ref", "scope_ref", "authorization_ref", "delivery_ref", "focus_scope_ref"]) {
     if (record[field] && record[field] !== ownId) result.add(record[field]);
   }
@@ -143,7 +156,12 @@ function graphFor(state, events) {
         if (!provenanceOnly) add(forward, ref, target);
         const bindingOnly = node.kind === "interpretations" && ((node.links || node.record).components || []).some(component =>
           [component.exchange_ref, component.question_ref, component.delivery_ref].includes(target));
-        if (!bindingOnly) add(reverse, target, ref);
+        // Repeated public clarification of the same question must not make
+        // every historic exchange a dependency. Add its original/latest usable
+        // presentations explicitly when the question is relevant below.
+        const questionMention = node.kind === "exchanges" && nodes.get(target)?.kind === "questions"
+          && nodes.get(target).record.origin !== "user";
+        if (!bindingOnly && !questionMention) add(reverse, target, ref);
       }
     }
     if (node.kind === "result_conditions" && nodes.has(node.record.evidence_ref)) {
@@ -174,6 +192,7 @@ function selectContext(loaded, request = {}) {
     });
   }
   const { nodes, forward, reverse, revisions, changed, versions } = graphFor(state, events);
+  const questionLinks = questionMemoryLinks(state, events);
   for (const ref of options.focus_refs || []) {
     if (!nodes.get(ref)?.current) fail("UNKNOWN_REFERENCE", "focus_refs requires a current record; use history --record-id or --event-id for historical or unknown reference: " + ref);
   }
@@ -203,6 +222,16 @@ function selectContext(loaded, request = {}) {
     if (!nodes.has(ref) || selected.has(ref)) return;
     selected.set(ref, reason); queue.push(ref);
     if (changed.has(ref)) reverseQueue.push(ref);
+    const question = nodes.get(ref).kind === "questions" ? nodes.get(ref).record : null;
+    const continuity = questionLinks.get(ref);
+    if (continuity && (question.status === "open" || question.resolution?.remaining.length
+      || (options.focus_refs || []).includes(ref)
+      || continuity.latest_interpretation_ref === conversation.current_interpretation_ref)) {
+      for (const target of [continuity.original_exchange_ref, continuity.latest_exchange_ref,
+        continuity.latest_interpretation_ref, ...continuity.delivery_refs]) {
+        if (target) include(target, "question continuity: " + ref);
+      }
+    }
   };
   for (const ref of roots) {
     include(ref, (options.focus_refs || []).includes(ref) ? "explicit focus"
@@ -290,4 +319,4 @@ function selectContext(loaded, request = {}) {
       exceeds_requested_limit: essentialCount > options.limit, selection_complete: next === null } };
 }
 
-module.exports = { selectContext };
+module.exports = { selectContext, briefRequestShape };

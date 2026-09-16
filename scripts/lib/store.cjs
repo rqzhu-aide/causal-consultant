@@ -91,16 +91,34 @@ function receipt(event, extra = {}, root) {
 }
 function capabilities() {
   return { ok: true, version: require("../../package.json").version, journal_schema: 7,
-    capabilities: ["durable-exchanges-v1", "user-question-routing-v1", "consultation-loop-v1", "captured-delivery-v1", "proposal-preflight-v1", "intact-reply-recovery-v1", "source-attributed-memory-v1"],
+    capabilities: ["durable-exchanges-v1", "user-question-routing-v1", "consultation-loop-v1", "captured-delivery-v1", "proposal-preflight-v1", "intact-reply-recovery-v1", "source-attributed-memory-v1", "reply-reconciliation-v1", "case-brief-v1"],
     renderers: ["lead-markdown-v1", "lead-markdown-v2", "lead-markdown-v3", "lead-markdown-v4"],
     compatibility: { minimum_extension_reader: "7.0.7", historical_events: "replayed unchanged",
-      additional_reader_requirements: { captured_observations: "captured-delivery-v1", recovered_observations: "intact-reply-recovery-v1" },
+      additional_reader_requirements: { captured_observations: "captured-delivery-v1", recovered_observations: "intact-reply-recovery-v1", reconciled_questions_and_paused_acceptance: "reply-reconciliation-v1", case_brief_selections_and_message_coverage: "case-brief-v1" },
       protected_work_enforcement: "helper identities, order, scope and current record versions; semantic consent and host bypass require observation",
       host_closeout_enforcement: "instruction_only", delivery: "observe-exchange compares retained actual text; capture attribution remains host/agent supplied; historical hash-only observations are unverified" } };
 }
 function writeProjection(root, state, hooks = {}) {
   if (hooks.beforeProjection) hooks.beforeProjection();
   atomicWrite(root, "project.yaml", JSON.stringify(state, null, 2) + "\n");
+}
+function refreshDerived(loaded, hooks = {}, afterAppendError) {
+  const result = { current_last_event_id: loaded.state.state_meta.last_event_id,
+    projection_written: false, brief_path: "case-brief.md", brief_written: false };
+  try {
+    if (afterAppendError) throw afterAppendError;
+    writeProjection(loaded.root, loaded.state, hooks);
+    result.projection_written = true;
+  } catch (error) { result.projection_error = error.message; }
+  try {
+    if (hooks.beforeBrief) hooks.beforeBrief();
+    atomicWrite(loaded.root, result.brief_path, require("./case-brief.cjs").buildCaseBrief(loaded).markdown);
+    result.brief_written = true;
+  } catch (error) { result.brief_error = error.message; }
+  if (!result.projection_written || !result.brief_written) {
+    result.warning = "History is committed, but a derived memory file could not be refreshed. Read current context or recover the files; do not repeat the work.";
+  }
+  return result;
 }
 function append(root, event) {
   const target = safePath(root, "journal.jsonl");
@@ -128,7 +146,9 @@ function transact(projectRoot, request, producer, options = {}) {
   return withLock(root, () => {
     let loaded;
     if (options.initializing && !fs.existsSync(safePath(root, "journal.jsonl"))) {
-      if (fs.existsSync(safePath(root, "project.yaml"))) fail("ORPHAN_PROJECTION", "A projection exists without its authoritative journal.");
+      if (["project.yaml", "case-brief.md"].some(file => fs.existsSync(safePath(root, file)))) {
+        fail("ORPHAN_PROJECTION", "A generated memory file exists without its authoritative journal.");
+      }
       id(request.project_id, "project_id");
       loaded = { root, state: emptyState(request.project_id, new Date().toISOString()), events: [] };
     } else {
@@ -140,11 +160,7 @@ function transact(projectRoot, request, producer, options = {}) {
       if (prior.type !== options.eventType || prior.request_sha256 !== fingerprint) {
         fail("EVENT_CONFLICT", "This event ID was committed for a different operation or content.");
       }
-      let projectionWritten = true;
-      try { writeProjection(root, loaded.state, options.hooks); }
-      catch { projectionWritten = false; }
-      return receipt(prior, { replayed: true, projection_written: projectionWritten,
-        current_last_event_id: loaded.state.state_meta.last_event_id }, root);
+      return receipt(prior, { replayed: true, ...refreshDerived(loaded, options.hooks) }, root);
     }
     if (options.initializing && loaded.events.length) fail("ALREADY_INITIALIZED", "This project is already initialized; no files were replaced.");
     if (!options.initializing) {
@@ -177,15 +193,11 @@ function transact(projectRoot, request, producer, options = {}) {
         event_id: event.event_id, cause: error.message
       });
     }
-    try {
-      if (options.hooks && options.hooks.afterAppend) options.hooks.afterAppend();
-      writeProjection(root, next, options.hooks);
-      return receipt(event, { replayed: false, projection_written: true, ...(prepared.result || {}) }, root);
-    } catch (error) {
-      return receipt(event, { replayed: false, projection_written: false, ...(prepared.result || {}),
-        warning: "The event committed, but projection delivery failed. Do not repeat the work; status reconstructs from the journal.",
-        projection_error: error.message }, root);
-    }
+    let afterAppendError;
+    try { if (options.hooks?.afterAppend) options.hooks.afterAppend(); }
+    catch (error) { afterAppendError = error; }
+    return receipt(event, { replayed: false, ...(prepared.result || {}),
+      ...refreshDerived({ root, state: next, events: [...loaded.events, event] }, options.hooks, afterAppendError) }, root);
   });
 }
 function init(projectRoot, request, options = {}) {
@@ -200,10 +212,10 @@ function init(projectRoot, request, options = {}) {
   }, { ...options, initializing: true, eventType: "init" });
 }
 function record(projectRoot, request, options = {}) {
-  return transact(projectRoot, request, ({ root, state }) => {
+  return transact(projectRoot, request, ({ root, state, events }) => {
     const prepared = require("./model.cjs").prepareMemoryWrite(state, request);
     validateSemantic(state, prepared);
-    require("./model.cjs").validateMemoryWrite(state, prepared);
+    require("./model.cjs").validateMemoryWrite(state, prepared, events);
     require("./authorizations.cjs").validateProposalWrite(state, prepared);
     if (prepared.payload.delivery) require("./delivery.cjs").validateWrite(root, prepared.payload.delivery);
     for (const evidence of prepared.payload.changes?.evidence || []) {
@@ -233,6 +245,29 @@ function memoryViews(loaded, selected) {
 }
 function context(projectRoot, request = {}) {
   const loaded = readJournal(rootPath(projectRoot));
+  if (request && Object.hasOwn(request, "mode")) {
+    require("./context.cjs").briefRequestShape(request, loaded.state);
+    const assembled = require("./case-brief.cjs").buildCaseBrief(loaded);
+    const conversation = require("./conversation-window.cjs").buildRecentConversation(loaded);
+    const unfinished = structuredClone(assembled.unfinished);
+    for (const intake of conversation.recent_intakes) for (const pending of intake.unfinished) {
+      if (!pending.reasons.includes("actual_capture_unavailable")) continue;
+      const recordRef = loaded.state.turns?.find(turn => turn.interpretation_ref === pending.interpretation_ref)?.turn_id || pending.interpretation_ref;
+      const retained = unfinished.find(item => item.record_ref === recordRef);
+      if (retained) retained.reasons = [...new Set([...retained.reasons, ...pending.reasons])];
+      else unfinished.push({ kind: "turn", record_ref: recordRef, reasons: pending.reasons,
+        related_refs: [pending.interpretation_ref, pending.exchange_ref].filter(Boolean), retrieval: pending.retrieval });
+    }
+    let fileCurrent = false;
+    try { fileCurrent = readFile(loaded.root, "case-brief.md").equals(Buffer.from(assembled.markdown, "utf8")); }
+    catch { /* Missing, unreadable or stale exports do not change journal-derived context. */ }
+    return { ...capabilities(), project_id: loaded.state.state_meta.project_id,
+      last_event_id: loaded.state.state_meta.last_event_id, sequence: loaded.state.state_meta.sequence,
+      consultation_policy: loaded.state.state_meta.consultation_policy || null,
+      projection_current: loaded.projection_current, orphan_run_paths: orphanRuns(loaded.root, loaded.state),
+      brief: { format: "case-brief-v1", markdown: assembled.markdown, recent_intakes: conversation.recent_intakes,
+        unfinished, coverage: { case: assembled.coverage, conversation: conversation.coverage }, file_current: fileCurrent } };
+  }
   const selected = require("./context.cjs").selectContext(loaded, request);
   return { ...capabilities(), project_id: loaded.state.state_meta.project_id,
     last_event_id: loaded.state.state_meta.last_event_id, sequence: loaded.state.state_meta.sequence,
@@ -269,10 +304,9 @@ function recover(projectRoot, options = {}) {
       writeNew(root, preservedTail, loaded.tail);
       atomicWrite(root, "journal.jsonl", loaded.committed_bytes);
     }
-    writeProjection(root, loaded.state);
     return { ok: true, project_id: loaded.state.state_meta.project_id,
       last_event_id: loaded.state.state_meta.last_event_id,
-      projection_written: true, ...(preservedTail ? { preserved_tail: preservedTail } : {}) };
+      ...refreshDerived(loaded, options.hooks), ...(preservedTail ? { preserved_tail: preservedTail } : {}) };
   });
 }
 

@@ -1,7 +1,7 @@
 # Capturing an actual reply
 
-Use this at the next incoming turn when the actual previous assistant message is
-available. It strengthens the existing exchange record without another user
+Helper uses this at incoming resume when the actual previous assistant message is
+available; the main assistant may also capture it earlier. It strengthens the existing exchange record without another user
 approval. The prepared `response_path` is convenient for delivery, but cannot
 serve as evidence that delivery happened.
 
@@ -10,7 +10,10 @@ introduction or closing recap. Prefer an existing host capture. If transcribing
 from visible session context, preserve the actual text and attribute that source
 honestly. Do not substitute the prepared file, an edited transcript, or a model
 summary. If the actual text is unavailable, retain unobserved delivery and recover
-the relevant context before binding an ambiguous selection.
+the relevant context before binding an ambiguous selection. A bare "yes" or number
+depending on that missing message needs its actual wording or clarification.
+Clear new investigation or explanation requests remain interpretable; a protected
+action cannot use a missing historical offer as permission.
 
 ```text
 node scripts/project.cjs observe-exchange --project-root <case> --input observation.json
@@ -32,9 +35,15 @@ node scripts/project.cjs observe-exchange --project-root <case> --input observat
 Relative `message_path` values are relative to the case; absolute source paths
 are read-only. Use current project/event identities. `observation` may be
 `host_confirmed` only with actual host evidence; a file alone does not establish
-that attribution. Optional `observed_at` records a source timestamp or locator.
+that attribution. Matching text alone proves neither transport origin nor consent.
+Optional `observed_at` records a source timestamp or locator.
 
-The helper freezes the actual bytes under
+Preserve a stable actual-message source locator when the host provides one,
+including on repeated observations of that same message. Equal text or hashes
+do not establish identity, and an observation timestamp alone does not prove
+actual emission order. Retain uncertainty when that source evidence is missing.
+
+The memory utility freezes the actual bytes under
 `exchanges/<exchange>/observations/<delivery>.txt` and commits an
 `exchange_delivery` event. Its `response_sha256` identifies the prepared message;
 `observed_response_sha256` identifies the captured message. `source_ref` becomes
@@ -42,7 +51,7 @@ the retained file and `capture_source_ref` preserves the supplied attribution.
 The receipt reports `correspondence: exact`, `wrapped` or `different`. Exact
 comparison keeps all bytes; it does not normalize wording or internal whitespace.
 
-For a wrapper, the helper can locate one exact, complete prepared reply inside
+For a wrapper, the memory utility can locate one exact, complete prepared reply inside
 the capture. Surrounding whitespace alone recovers automatically. If surrounding
 prose was added, inspect the complete actual message and include optional
 `wrapper_review` in the same observation request, explaining why that prose does
@@ -51,9 +60,9 @@ not change the questions, options, findings or qualifications. For example:
 Do not supply this for contradictory instructions, another menu or an unclear
 presentation. An edited, truncated or duplicated body cannot be recovered this way.
 
-The helper derives `response_span` byte boundaries and verifies that the retained
+The memory utility derives `response_span` byte boundaries and verifies that the retained
 span hashes to the prepared reply. It preserves the full capture and its different
-hash. This proves an intact body; the wrapper review remains the lead's attributed
+hash. This proves an intact body; the wrapper review remains the assistant's attributed
 interpretation, not a machine check of meaning. A `wrapped` observation can bind
 the later reply and recover saved findings without another approval or computation.
 The work view can still list it in `discrepancy_refs` because the full bytes differ;

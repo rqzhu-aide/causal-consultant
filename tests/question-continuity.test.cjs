@@ -41,10 +41,18 @@ test("existing records preserve the specialist proposal, lead checkpoint, deferr
   assert.deepEqual(state.questions[0].basis_refs, original.basis_refs);
   assert.equal(state.candidate_routes[0].status, "conditional");
   const strategy = structuredClone(state.candidate_routes[0]);
-  p.record("event-clarified", "memory_updated", { changes: {
+  p.record("event-clarified", "reply_interpreted", { protocol: "durable-exchanges-v1", interpretation: {
+    interpretation_id: "interpretation-clarified", turn_id: "turn-clarified", incoming_refs: [fixture.precise_answer.evidence_id],
+    basis_refs: ["decision-date-boundary"], components: [{ kind: "information", meaning: fixture.resolution,
+      established: ["The recorded date is booking, not attendance."], unresolved: ["Inspect the separate appointment-event table."] }],
+    next_action: { kind: "lead_only", scope: "Reconcile date meaning.", reason: "Actual attendance needs its own evidence." }
+  }, changes: {
     evidence: [{ ...fixture.precise_answer, source_excerpt: "start_date is when the booking was made, not when they attended. We have a separate appointment-event table." }],
     questions: [{ ...state.questions[0], status: "answered", reason: fixture.resolution,
-      basis_refs: [...state.questions[0].basis_refs, fixture.precise_answer.evidence_id] }],
+      basis_refs: [...state.questions[0].basis_refs, fixture.precise_answer.evidence_id],
+      resolution: { answer_refs: [fixture.precise_answer.evidence_id], remaining: [] } }],
+    decisions: [{ decision_id: "decision-date-boundary", kind: "boundary", status: "current",
+      statement: "Booking dates cannot anchor attendance follow-up.", basis_refs: [fixture.precise_answer.evidence_id] }],
     candidate_routes: [{ ...strategy, reason: "Booking cannot anchor attendance follow-up; inspect the offered event table",
       unmet_requirements: ["Inspect and validate actual attendance dates"], evidence_for: [...strategy.evidence_for, fixture.precise_answer.evidence_id] }],
     project_understanding: { current_claim_boundary: "No attendance-based follow-up construction until actual attendance is established" }
@@ -65,8 +73,17 @@ test("retiring an unavailable question preserves its basis and does not assert t
   const p = project(t);
   p.record("event-audit", fixture.audit.type, fixture.audit.payload);
   const question = store.status(p.root).project.questions[0];
-  p.record("event-declined", "memory_updated", { changes: {
-    questions: [{ ...question, status: "retired", reason: "The record is unavailable and staff contact is declined; date meaning remains unknown" }],
+  p.record("event-declined", "reply_interpreted", { protocol: "durable-exchanges-v1", interpretation: {
+    interpretation_id: "interpretation-declined", turn_id: "turn-declined", incoming_refs: ["user-no-record"],
+    basis_refs: ["decision-unknown-date"], components: [{ kind: "information", meaning: "The start_date record is unavailable and staff contact is declined.",
+      established: ["Do not contact staff."], unresolved: ["The meaning of start_date remains unknown."] }],
+    next_action: { kind: "lead_only", scope: "Retain the limitation without asking again.", reason: "The user declines further retrieval." }
+  }, changes: {
+    evidence: [{ evidence_id: "user-no-record", kind: "user_statement", source_ref: "chat:declined", summary: "Record unavailable; contact declined.",
+      source_excerpt: "The start_date record is unavailable, and please do not contact staff." }],
+    questions: [{ ...question, status: "retired", reason: "The record is unavailable and staff contact is declined; date meaning remains unknown",
+      resolution: { answer_refs: ["user-no-record"], remaining: ["The meaning of start_date remains unknown."] } }],
+    decisions: [{ decision_id: "decision-unknown-date", kind: "boundary", status: "current", statement: "Date meaning remains unknown.", basis_refs: ["user-no-record"] }],
     consultation: null, project_understanding: { current_claim_boundary: "No attendance-based causal interpretation; date meaning remains unknown" }
   } });
   const state = store.status(p.root).project;
@@ -80,7 +97,7 @@ test("live same-ID updates retain existing question provenance when callers omit
   const p = project(t);
   p.record("event-audit", fixture.audit.type, fixture.audit.payload);
   p.record("event-replacement", "memory_updated", { changes: { questions: [{ question_id: "question-start",
-    statement: "The same question", status: "open" }] } });
+    statement: store.status(p.root).project.questions[0].statement, status: "open" }] } });
   const state = store.status(p.root).project;
   assert.deepEqual(state.questions[0].basis_refs, store.history(p.root, { record_id: "question-start" }).events[0].payload.changes.questions[0].basis_refs);
   assert.equal(store.history(p.root, { record_id: "question-start" }).events[0].payload.changes.questions[0].basis_refs.length, 2);

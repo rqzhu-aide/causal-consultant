@@ -65,8 +65,11 @@ function prepareScope(root, original, options = {}) {
   const assignment = plan.kind === "analysis" ? { specialist_id: "design_worker", operation: "execution", design_id: plan.design_id,
     ...(plan.additional_design_ids ? { additional_design_ids: plan.additional_design_ids } : {}) } : { specialist_id: "report_writer", operation: "reporting" };
   const it = interpret(root, "proposal-" + suffix, { kind: "lead_only", scope: "Present a concrete action scope.", reason: "The user needs a reviewable proposal before choosing." });
+  const target_ref = "target-" + suffix;
+  record(root, "memory_updated", { changes: { decisions: [{ decision_id: target_ref, kind: "target", status: "current",
+    statement: plan.objective + "; " + plan.claim_boundary, basis_refs: it.incoming_refs }] } }, "event-target-" + suffix);
   const current = state(root);
-  const basis = [...new Set([...(options.basis_refs || plan.evidence_refs || []), ...findings])];
+  const basis = [...new Set([...(options.basis_refs || plan.evidence_refs || []), ...findings, target_ref])];
   if (!basis.length) basis.push(it.incoming_refs[0]);
   for (let index = 0; index < basis.length; index++) {
     const ref = basis[index];

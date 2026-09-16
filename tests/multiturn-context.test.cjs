@@ -179,3 +179,126 @@ test("projection body omissions are disclosed rather than invented by generated 
   assert.equal(views.work.exchanges[0].body_available, false);
   assert.deepEqual(views.work.coverage.missing_bodies, [{ record_ref: "exchange-current", event_ref: "event-exchange-current" }]);
 });
+
+function askQuestion(loaded, suffix, questionRef, wording) {
+  const record = loaded.state.exchanges.find(exchange => exchange.exchange_id === "exchange-" + suffix);
+  const body = loaded.events.find(event => event.event_id === "event-exchange-" + suffix).payload.exchange;
+  record.question_refs = [questionRef];
+  body.response.questions = [{ question_ref: questionRef, text: wording, why: "This determines the available work.", needed: "An answer or an explicit unknown." }];
+  delete body.response.questions_none;
+}
+
+test("an older pending consultant question survives focus changes without expanding unrelated dialogue", () => {
+  const loaded = fixture();
+  event(loaded, "event-question", { changes: { questions: [{ question_id: "q-pooling", statement: "Are seats fixed or transferable?", status: "open",
+    resolution: { answer_refs: [], remaining: ["Can unused seats move between centers?"] } }] } });
+  for (let index = 0; index < 3; index++) {
+    turn(loaded, "pooling-" + index, { delivered: true });
+    askQuestion(loaded, "pooling-" + index, "q-pooling", index ? "Can unused seats move between centers?" : "Are seats fixed or transferable?");
+  }
+  for (let index = 0; index < 25; index++) turn(loaded, "other-" + index, { delivered: true });
+  const current = selectContext(loaded, { limit: 1 }), compact = buildViews(loaded, current);
+  assert.equal(compact.work.pending_consultant_questions.length, 1);
+  assert.deepEqual(compact.work.pending_consultant_questions[0].retrieval, { focus_refs: ["q-pooling"] });
+  assert.deepEqual(compact.work.pending_consultant_questions[0].remaining, ["Can unused seats move between centers?"]);
+  assert.ok(!current.context.questions.some(question => question.question_id === "q-pooling"));
+  const focused = selectContext(loaded, { focus_refs: ["q-pooling"], limit: 1 }), views = buildViews(loaded, focused);
+  const memory = views.work.question_memory.find(question => question.question_ref === "q-pooling");
+  assert.equal(memory.original_exchange_ref, "exchange-pooling-0");
+  assert.equal(memory.latest_exchange_ref, "exchange-pooling-2");
+  assert.ok(views.work.exchanges.some(exchange => exchange.exchange_id === "exchange-pooling-0"));
+  assert.ok(views.work.exchanges.some(exchange => exchange.exchange_id === "exchange-pooling-2"));
+  assert.ok(!views.work.exchanges.some(exchange => exchange.exchange_id === "exchange-pooling-1"));
+  assert.ok(views.work.exchanges.length < 6);
+  assert.equal(focused.coverage.exceeds_requested_limit, true);
+});
+
+test("partial resolution restores qualified answer sources and the latest related interpretation", () => {
+  const loaded = fixture();
+  event(loaded, "event-question", { changes: { questions: [{ question_id: "q-allocation", origin: "consultant",
+    statement: "How were seats allocated, and can they move?", status: "open", basis_refs: [],
+    resolution: { answer_refs: [], remaining: ["How were seats allocated?", "Can seats move?"] } }] } });
+  turn(loaded, "ask", { delivered: true });
+  askQuestion(loaded, "ask", "q-allocation", "How were seats allocated, and can they move?");
+  turn(loaded, "answer", { delivered: true });
+  const evidence = loaded.state.evidence.find(record => record.evidence_id === "incoming-answer");
+  evidence.summary = "The user tentatively recalls 20 seats per center; transferability is unanswered.";
+  evidence.source_excerpt = "I think each center got 20 seats.";
+  evidence.limitations = ["Unverified recollection; transferability was not answered."];
+  // Self-contained answer uses its source, without a fictional public binding.
+  event(loaded, "event-resolution", { changes: { questions: [{ question_id: "q-allocation", origin: "consultant",
+    statement: "How were seats allocated, and can they move?", status: "open", basis_refs: [],
+    resolution: { answer_refs: ["incoming-answer"], remaining: ["Can seats move?"] } }] } });
+  turn(loaded, "unrelated", { delivered: true });
+  const selected = selectContext(loaded, { focus_refs: ["q-allocation"], limit: 1 }), views = buildViews(loaded, selected);
+  const answer = selected.context.evidence.find(record => record.evidence_id === "incoming-answer");
+  assert.equal(answer.source_excerpt, "I think each center got 20 seats.");
+  assert.match(answer.limitations[0], /Unverified recollection/);
+  const memory = views.work.question_memory.find(record => record.question_ref === "q-allocation");
+  assert.equal(memory.latest_interpretation_ref, "interpretation-answer");
+  assert.deepEqual(memory.resolution.remaining, ["Can seats move?"]);
+  assert.equal(views.work.interpretations.find(record => record.interpretation_id === "interpretation-answer").components[0].question_ref, undefined);
+});
+
+test("choice clarification retains the original unprotected alternatives across later clarifications", () => {
+  const loaded = fixture();
+  turn(loaded, "offer", { delivered: true });
+  const offer = loaded.events.find(event => event.event_id === "event-exchange-offer").payload.exchange;
+  offer.response.next_steps = [
+    { option_id: "audit", label: "Inspect missing data", kind: "action", actor: "consultant", scope: "Audit completeness.", basis_refs: [] },
+    { option_id: "explain", label: "Explain the study design", kind: "action", actor: "consultant", scope: "Explain allocation.", basis_refs: [] }
+  ];
+  loaded.state.exchanges.find(record => record.exchange_id === "exchange-offer").options = offer.response.next_steps.map(option => ({ option_id: option.option_id }));
+  event(loaded, "event-choice", { changes: { questions: [{ question_id: "q-choice", status: "open", statement: "Which work should proceed?",
+    basis_refs: ["exchange-offer"], resolution: { answer_refs: [], remaining: ["Missing-data audit or design explanation?"] } }] } });
+  turn(loaded, "clarify", { delivered: true });
+  askQuestion(loaded, "clarify", "q-choice", "Previously I offered an audit or an explanation. Which did you mean?");
+  turn(loaded, "clarify-again", { delivered: true });
+  askQuestion(loaded, "clarify-again", "q-choice", "I still need to know which task you want.");
+  const views = buildViews(loaded, selectContext(loaded, { focus_refs: ["q-choice"], limit: 1 }));
+  const memory = views.work.question_memory.find(record => record.question_ref === "q-choice");
+  assert.equal(memory.original_exchange_ref, "exchange-offer");
+  assert.equal(memory.latest_exchange_ref, "exchange-clarify-again");
+  assert.deepEqual(views.work.exchanges.find(record => record.exchange_id === "exchange-offer").response.next_steps.map(option => option.option_id), ["audit", "explain"]);
+  assert.ok(!views.work.exchanges.some(record => record.exchange_id === "exchange-clarify"));
+});
+
+test("retired uncertainty is retrieved with dependent work without returning to the pending questionnaire", () => {
+  const loaded = fixture();
+  event(loaded, "event-retired", { changes: { questions: [{ question_id: "q-unavailable", origin: "consultant", statement: "Was participation voluntary?",
+    status: "retired", reason: "The user cannot obtain the record.", resolution: { answer_refs: [], remaining: ["Assignment remains unknown."] } }],
+  decisions: [{ decision_id: "decision-limited-report", kind: "scope", statement: "A descriptive report only.", status: "current", basis_refs: ["q-unavailable"] }] } });
+  const selected = selectContext(loaded, { focus_refs: ["decision-limited-report"], limit: 1 }), views = buildViews(loaded, selected);
+  assert.deepEqual(views.work.pending_consultant_questions, []);
+  assert.equal(views.work.question_memory[0].status, "retired");
+  assert.deepEqual(views.work.question_memory[0].resolution.remaining, ["Assignment remains unknown."]);
+});
+
+test("prepared or mismatched question wording is not an observed answer referent", () => {
+  const loaded = fixture();
+  event(loaded, "event-unobserved-question", { changes: { questions: [{ question_id: "q-ambiguous", status: "open", statement: "Which option?" }] } });
+  turn(loaded, "mismatched", { delivered: true });
+  askQuestion(loaded, "mismatched", "q-ambiguous", "Choose A or B.");
+  loaded.state.deliveries[0].observed_response_sha256 = "b".repeat(64);
+  turn(loaded, "prepared");
+  askQuestion(loaded, "prepared", "q-ambiguous", "Choose C or D.");
+  const views = buildViews(loaded, selectContext(loaded, { focus_refs: ["q-ambiguous"], limit: 1 }));
+  const memory = views.work.question_memory[0];
+  assert.equal(memory.original_exchange_ref, null);
+  assert.equal(memory.latest_exchange_ref, null);
+  assert.deepEqual(memory.delivery_refs, []);
+  assert.deepEqual(memory.unobserved_exchange_refs, ["exchange-mismatched", "exchange-prepared"]);
+});
+
+test("a computational answer retrieves its governing conditions through nested answer references", () => {
+  const loaded = resultFixture();
+  event(loaded, "event-computed-answer", { changes: { questions: [{ question_id: "q-interval", origin: "consultant",
+    statement: "What interval is supported under the constant-effect assumption?", status: "answered", reason: "The inversion has been computed.",
+    resolution: { answer_refs: ["result-interval"], remaining: [] } }] } });
+  const selected = selectContext(loaded, { focus_refs: ["q-interval"], limit: 1 });
+  assert.equal(selected.context.result_conditions[0].condition_id, "condition-interval");
+  assert.equal(selected.context.assumptions[0].assumption_id, "assumption-constant");
+  assert.ok(selected.context.evidence.some(record => record.evidence_id === "evidence-claim"));
+  assert.equal(buildViews(loaded, selected).work.question_memory.find(record => record.question_ref === "q-interval").latest_interpretation_ref, null,
+    "A computed answer does not invent a user reply interpretation.");
+});

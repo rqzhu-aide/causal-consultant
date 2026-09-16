@@ -34,7 +34,8 @@ function validate(directory = root) {
   const demand = (condition, message) => { if (!condition) errors.push(message); };
   const read = file => fs.readFileSync(path.join(directory, file), "utf8").replace(/\r\n/g, "\n");
   const required = ["SKILL.md", "README.md", "LICENSE", "package.json", "agents/openai.yaml",
-    "references/catalog.json", "references/memory.md", "references/runs.md", "references/authorizations.md", "scripts/lib/authorizations.cjs", "scripts/project.cjs"];
+    "references/catalog.json", "references/helper.md", "references/memory.md", "references/memory-records.md", "references/runs.md", "references/authorizations.md",
+    "scripts/lib/authorizations.cjs", "scripts/lib/case-brief.cjs", "scripts/lib/conversation-window.cjs", "scripts/project.cjs"];
   for (const name of required) demand(files.includes(name), "Missing " + name);
   const pkg = JSON.parse(read("package.json"));
   demand(Array.isArray(pkg.files) && JSON.stringify([...pkg.files].sort()) === JSON.stringify([...PACKAGE_ENTRIES].sort()),
@@ -45,8 +46,6 @@ function validate(directory = root) {
   const metadata = skill.match(/^---\nname: causal-consultant\ndescription: [^\n]+\nmetadata:\n  version: "([^"\n]+)"\n---\n/);
   demand(metadata, "Invalid skill metadata");
   demand(metadata?.[1] === pkg.version, "SKILL.md version must match package.json");
-  demand(read("README.md").match(/^Version: \*\*([^*\n]+)\*\*/m)?.[1] === pkg.version,
-    "README.md version must match package.json");
   demand(/allow_implicit_invocation:\s*false/.test(read("agents/openai.yaml")), "Explicit invocation policy missing");
   demand(!files.some(file => file.startsWith("architecture/")), "Developer architecture must stay outside the installed skill");
   const catalog = JSON.parse(read("references/catalog.json"));

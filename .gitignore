@@ -6,6 +6,7 @@ __pycache__/
 # Accidental consultation state at the development repository root.
 /journal.jsonl
 /project.yaml
+/case-brief.md
 /runs/
 /.consultant-write.lock
 /.consultant-recovery.lock

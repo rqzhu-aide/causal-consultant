@@ -123,6 +123,29 @@ function validateInterpretation(value, context, state, payload) {
 function interpretationFor(state, payload, interpretationId) {
   return payload.interpretation?.interpretation_id === interpretationId ? payload.interpretation : list(state, "interpretations").find(entry => entry.interpretation_id === interpretationId);
 }
+// New writes only. Historical interpretations and question closures keep their
+// original meaning on replay. A review can answer an uncertainty carried into work.
+function validateResolutionWrite(state, payload, interpretation) {
+  const questions = new Map(state.questions.map(question => [question.question_id, question]));
+  for (const question of payload.changes?.questions || []) questions.set(question.question_id, question);
+  for (const component of interpretation?.components || []) {
+    if (!component.question_ref) continue;
+    const question = questions.get(component.question_ref);
+    if (!question || question.origin === "user") continue;
+    const changed = (payload.changes?.questions || []).some(item => item.question_id === question.question_id);
+    if (!payload.interpretation && !changed) continue;
+    if (!question.resolution) fail("MISSING_QUESTION_RESOLUTION", "Reconcile the supported answer and remaining part of " + question.question_id + " before closing the reply.");
+    const before = state.questions.find(item => item.question_id === question.question_id);
+    const newSources = question.resolution.answer_refs.filter(ref => !before?.resolution?.answer_refs.includes(ref));
+    const findings = newSources.some(ref => ref === payload.review?.review_id
+      || state.history_index[ref]?.kind === "review"
+      || [...state.evidence, ...(payload.changes?.evidence || [])].some(source => source.evidence_id === ref && source.kind !== "user_statement"));
+    if (question.status === "answered" && component.unresolved.length
+      && (payload.interpretation || !findings) && !payload.corrects_refs?.includes(question.question_id)) {
+      fail("QUESTION_RESOLUTION_CONFLICT", "The interpreted reply leaves part of " + question.question_id + " unresolved; it cannot simultaneously close that question as answered.");
+    }
+  }
+}
 function validateReviewInterpretation(review, context, state, payload) {
   const protectedReview = require("./authorizations.cjs").active(state) && (review.assignment.specialist_id === "report_writer" || (review.assignment.specialist_id === "design_worker" && review.assignment.operation === "execution"));
   if (!review.interpretation_ref) {
@@ -290,6 +313,32 @@ function renderExchange(exchange) {
   return (answers ? `[Your Questions]\n\n${answers}\n\n` : "")
     + `[Status]\n\n${response.status}${findings}\n\n[I want to know]\n\n${questions}\n\n[Decide Next Steps]\n\n${steps}`;
 }
+// Live-write check only. Historical journals retain their original semantics.
+// Evidence is replaced in journal order so a later capture repair cannot rewrite
+// which primary message batch an older interpretation actually saw.
+function validateIncomingGroups(state, payload, events) {
+  if (!payload.interpretation) return;
+  const evidence = new Map();
+  const groups = [];
+  const primary = interpretation => (interpretation?.incoming_refs || [])
+    .filter(ref => typeof evidence.get(ref)?.complete_message === "boolean");
+  for (const event of events) {
+    for (const record of event.payload.changes?.evidence || []) evidence.set(record.evidence_id, record);
+    const refs = primary(event.payload.interpretation);
+    if (refs.length) groups.push(refs);
+  }
+  // Include the effective state for callers that supply a saved projection as
+  // well as the event history, then apply this event's proposed source changes.
+  for (const record of state.evidence) evidence.set(record.evidence_id, record);
+  for (const record of payload.changes?.evidence || []) evidence.set(record.evidence_id, record);
+  const refs = primary(payload.interpretation);
+  if (!refs.length) return;
+  for (const group of groups) if (refs.some(ref => group.includes(ref))
+    && (refs.length !== group.length || refs.some((ref, index) => ref !== group[index]))) {
+    fail("INCOMING_GROUP_CONFLICT", "Reuse the same ordered primary incoming_refs for a saved message batch. Partial overlaps or reordered batches would change its intake identity; new user messages need new evidence IDs.");
+  }
+}
+
 function exchangeReceipt(event) {
   if (!event.payload.exchange) return {};
   const response = renderExchange(event.payload.exchange);
@@ -298,4 +347,4 @@ function exchangeReceipt(event) {
 }
 
 module.exports = { PROTOCOL, RENDERER, renderExchange, exchangeReceipt, validateDelivery, deliveryMatches, deliveryCorrespondence,
-  validateInterpretation, validateExchange, validateReviewInterpretation, userQuestions };
+  validateInterpretation, validateExchange, validateReviewInterpretation, validateResolutionWrite, validateIncomingGroups, userQuestions };

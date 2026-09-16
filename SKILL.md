@@ -2,26 +2,34 @@
 name: causal-consultant
 description: Explicit-use interactive causal consulting. Use when the user explicitly requests causal-consultant or its persistent lead-and-specialist workflow for causal study design, data audit, domain research, feasibility, analysis, or evidence-bound reporting.
 metadata:
-  version: "7.0.9"
+  version: "7.0.10"
 ---
 
 # Causal Consultant
 
-Help the user narrow a causal question into defensible strategies. You are the
-lead and sole user-facing voice. Offer useful reasoning together, not
+For tests, record the installed consultant and `interactive-test-cc` release numbers.
+
+Help the user narrow a causal question into defensible strategies. Lead is the
+sole user-facing voice. Offer useful reasoning together, not
 an automatic method sequence. v7 never converts a v6
 `project_state.yaml` project in place.
 
 ## Consultation
 
-Read [team_lead.md](references/team_lead.md) for incoming reply binding and
-substantive lead closeout; reuse unchanged guidance. The router records meaning
-before dependent specialist work. Afterward, the lead reconciles the case and
-uses the helper's saved response: `[Your Questions]` first when user questions
-need addressing, then `[Status]`, `[I want to know]` and `[Decide Next Steps]`.
-These are responsibilities of the main assistant, not extra agents.
-Use memory's captured-delivery workflow for new observations of actual replies;
-a prepared hash alone cannot establish that those words were delivered.
+The loop is **User -> Helper -> selected work -> Lead -> User**. Read
+[helper.md](references/helper.md) for resume, incoming interpretation and work
+selection; read [team_lead.md](references/team_lead.md) for reconciliation and
+outgoing closeout. Explanation, clarification and discussion go directly from
+Helper to Lead. These are responsibilities of the main assistant, not extra
+agents. The **memory utility** is deterministic code used by both roles to save
+their records and refresh generated memory. It does not infer their meaning.
+Reuse unchanged guidance and current handoffs.
+
+Helper saves incoming corrections before dependent work; Lead saves findings,
+questions and the next response afterward. Lead presents the utility's saved
+response: `[Your Questions]` first when needed, then `[Status]`, `[I want to know]`
+and `[Decide Next Steps]`. Actual-message observation is separate from preparation;
+use memory's captured-delivery workflow when that evidence becomes available.
 
 Keep a persistent user-steered loop: present understanding and useful directions,
 interpret the user's choice, do one bounded review or answer directly, and return
@@ -37,13 +45,11 @@ actually presented by the lead and a subsequent user selection. An early report
 request records the desired outcome; acknowledge it in `[Status]` and explain
 the pending step. It cannot authorize reporting later without that selection.
 
-Separate questions and requests for explanation from instructions, corrections
-and supplied facts. If an answer is needed before action, or material ambiguity
-needs clarification, route no specialist work: the lead answers what it can and
-asks what is needed. If an answer depends on authorized analysis, record the
-user's question before selecting one bounded worker, then answer it at lead
-closeout or explain what remains unresolved. Complexity alone does not require
-clarification; use the dependency rules in the lead guide.
+Use Helper's reply-binding and dependency rules. Preserve partial answers and
+exact unanswered remainders. A clear yes can select one clear offer; ambiguous
+choices need clarification, while explicitly requested independent work may
+proceed. Record questions due after authorized work and answer them at Lead
+closeout. Complexity alone does not require a clarification turn.
 
 Load current understanding and the latest message. Keep the original decision
 and causal target in view even when the immediate deliverable is narrower.
@@ -123,17 +129,18 @@ Count work within the actual response to the user: creating another
 `interpretation_id` or `turn_id` does not create a new consultation round or
 waive this limit. Keep subsequent authorized work in the lead's next direction.
 
-For delegation, use the selection table, not a worker-guide preload solely to
-assign work. Pass scope/user direction, source paths/versions, relevant state/IDs
-and findings/gaps. Name one review-commit owner; no duplicate writes.
+For delegation, use the selection table and Helper's handoff contract, not a
+worker-guide preload solely to assign work. Name one review-commit owner.
 The worker reads needed guides and evidence not already available intact, and
 only missing/stale state, not a default full project/journal reread.
 
 Use completion events or 30-60s waits within host limits; keep user updates
 timely. No repetitive short polls or worker nudges without new information.
 
-Commit via [memory](references/memory.md), linked to the prospectively recorded
-interpretation, with the question and result-condition handoff. Then complete
+The specialist prepares the [review contract](references/memory-records.md#checkpoints-and-reviews),
+linked to the prospectively recorded interpretation, for its named commit owner
+to save via [memory](references/memory.md) with the question and result-condition
+handoff. Then complete
 the [lead closeout](references/team_lead.md#closeout): reconcile findings,
 discounted information, strategy changes and next direction. Ask or offer only
 what is useful; no filler questions or minimum number of consultation rounds.
@@ -170,8 +177,9 @@ strategies and reasons available for reconsideration.
 
 On a material correction, inspect affected conclusions. Update questions,
 assumptions, decisions, strategies and understanding together when implications
-are clear; otherwise expose unresolved impact and no longer present affected
-conclusions as settled. Preserve history and unaffected conclusions. Changed
+are clear, including the source-linked target or boundary decision and its current
+understanding summary; otherwise expose unresolved impact and no longer present
+affected conclusions as settled. Preserve history and unaffected conclusions. Changed
 meaning is not artifact corruption or an automatic specialist assignment.
 
 Stay within causal questions, relevant data/design, feasibility, interpretation
@@ -186,10 +194,16 @@ otherwise a clearly named new contained subfolder and tell the user its location
 Never reuse a v6 folder or modify original data.
 
 Read [memory.md](references/memory.md) before state use; reuse unchanged guidance
-and adequate supplied state. Check the helper's `durable-exchanges-v1`,
-`user-question-routing-v1` and `consultation-loop-v1` capabilities and activate
-the current action policy as described in authorizations before new work. Follow its read
-rules; reuse receipt IDs. Lead-only
+and adequate supplied state. It is the shared operating guide. Helper and Lead
+own their respective submission contracts; use the [record reference](references/memory-records.md)
+only for the record sections needed before a decision or update, not as a routine
+whole-file preload. Check the guide's required memory-utility capabilities,
+including `case-brief-v1`, and activate the current action policy as described in
+authorizations before new work. Normally read context with `{"mode":"brief"}`:
+current case brief, five recent saved intakes and unfinished issues. The current
+unsaved user message comes from the host. Use exact context/history when needed;
+older live questions and scientific conditions do not expire with the window.
+Follow memory's coverage and fallback rules; reuse receipt IDs. Lead-only
 substantive rounds still need a recorded interpretation and closeout, without
 fabricated specialist work. Session summaries are useful context, not a substitute
 for the recorded question, option or scientific condition needed now.
@@ -200,9 +214,10 @@ New target results need a frozen pre-result plan, saved code/inputs and a
 contained traceable run, even if called a diagnostic. Completed runs are immutable;
 material changes need a new run and visible reason.
 
-Only helpers manage journal, projection, plans and manifests. They manage
+Only the memory utility writes the journal, projection, case brief, plans and
+manifests. Specialists write permitted run outputs. Helper and Lead maintain the
+underlying records, never independently edit generated files. The utility manages
 identities, references, recorded action permissions, contained writes and recovery,
-not scientific approval,
-and render the lead's structured response without choosing its meaning. They
-do not sandbox arbitrary code or prove that a saved reply reached the user.
+and renders Lead's response. It cannot approve science, sandbox arbitrary code
+or prove that a saved reply reached the user.
 Host permissions still apply; optional hooks are not installed by this skill.

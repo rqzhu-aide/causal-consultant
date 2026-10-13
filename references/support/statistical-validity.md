@@ -1,14 +1,15 @@
 # Support: statistical-validity
 
-Context only. Relevant when the selected design needs additional information about statistical credibility: balance, support, weighting, sensitivity, falsification, uncertainty, nuisance models, AIPW, TMLE, one-step estimators, double/debiased machine learning, orthogonal scores, cross-fitting, or high-dimensional adjustment. The selected design route owns execution, YAML updates, diagnostics, and artifact records.
+Context only. Relevant when the selected design needs additional information about statistical credibility: balance, support, weighting, sensitivity, falsification, uncertainty, nuisance models, AIPW, TMLE, one-step estimators, double/debiased machine learning, orthogonal scores, cross-fitting, or high-dimensional adjustment. The selected design worker owns this review and its diagnostics.
 
 ## Additional Information
 
 - Useful after the design, estimand, timing, target population, and comparison are mostly settled.
-- Helps the design notes explain whether implementation looks passing, limited, descriptive-only, or blocked.
 - Covers statistical validity inside the design: support/positivity, balance, robustness, sensitivity, nuisance roles, model stability, fold integrity, uncertainty, and benchmark comparisons.
-- Clarifies that stronger estimation machinery can improve implementation discipline under measured assumptions; it does not create causal identification.
-- Useful lanes include measured-covariate balance, matching/weighting, negative-control falsification, empirical calibration, proximal identification, AIPW, TMLE, one-step estimators, longitudinal/sequential DR, DML, orthogonal forests, and post-double-selection.
+- Clarifies that stronger estimation machinery can improve implementation
+  discipline under measured assumptions; it does not replace the selected
+  identification design.
+- Useful lanes include measured-covariate balance, matching/weighting, negative-control falsification, empirical calibration, AIPW, TMLE, one-step estimators, longitudinal/sequential DR, DML, orthogonal forests, and post-double-selection.
 
 ## Non-Obvious Twists
 
@@ -23,6 +24,10 @@ Context only. Relevant when the selected design needs additional information abo
 - Influence-curve tails, probability truncation, rare events, and fold instability can dominate inference even when point estimates look reasonable.
 - Negative controls need a credible null or shared-bias story. A failed negative control is not automatically a calibrated correction.
 - Negative-control work should distinguish falsification, empirical calibration, bias adjustment, and proximal identification.
+- Proximal identification changes the identifying argument. Use
+  [custom_identification](../design/custom_identification.md) for its proxy,
+  bridge and completeness conditions; a negative-control check alone is not
+  that analysis or a correction for hidden confounding.
 - DR/TMLE work should distinguish AIPW, TMLE, one-step, censoring/missingness/sampling-aware DR, and longitudinal/sequential DR.
 - DML work should distinguish PLR, IRM, PLIV/IIVM, R-/DR-learners, orthogonal forests, sparse/post-double-selection, and nuisance-only plugins.
 - Flexible learners should be benchmarked against simpler adjusted, weighted, AIPW/TMLE, post-lasso, or design-specific estimators.
@@ -34,7 +39,7 @@ Context only. Relevant when the selected design needs additional information abo
 - Randomized designs may use precision adjustment, DR/TMLE/DML, missingness/censoring support, or heterogeneity tools, but not to repair assignment problems.
 - IV-DML still needs instrument assumptions, first-stage support, exclusion, and monotonicity/complier boundaries.
 - Longitudinal, survival, transport, missingness, and censoring settings need node ordering and nuisance roles made explicit.
-- If statistical checks reveal target/design mismatch, the result should return to causal_check rather than forcing execution.
+- If statistical checks reveal target/design mismatch, return the mismatch to the lead rather than forcing execution.
 
 ## Package Cues
 
@@ -42,7 +47,9 @@ Context only. Relevant when the selected design needs additional information abo
 - Sensitivity and falsification: R `sensemakr`, `EValue`, `tipr`, `rbounds`, `causalsens`; negative-control and placebo workflows often need custom code.
 - DR/TMLE: R `AIPW`, `tmle`, `drtmle`, `tmle3`, `sl3`, `SuperLearner`, `ltmle`, `lmtp`; Python `zepid`, `EconML`, `DoubleML`, `DoWhy`, custom AIPW/TMLE templates.
 - DML/orthogonal ML: R/Python `DoubleML`; Python `EconML`; R `grf`, `hdm`; nuisance learners such as `glmnet`, `ranger`, `xgboost`, `lightgbm`, `SuperLearner`, `sl3`, or sklearn tools.
-- Negative controls/proximal: R `EmpiricalCalibration`, `EvidenceSynthesis`, and custom proximal bridge workflows; Python support is often custom or DoWhy-assisted.
+- Negative-control calibration: inspect the relevant `EmpiricalCalibration` or
+  `EvidenceSynthesis` functionality. Custom proximal estimation needs its own
+  source-supported implementation; these package names do not establish it.
 
 ## Useful Outputs
 
@@ -50,7 +57,7 @@ Context only. Relevant when the selected design needs additional information abo
 - weight distribution, truncation, and effective sample size
 - retained/discarded-unit flow, matched-set, survey/combined-weight, variance-ratio, or eCDF balance note
 - sensitivity, tipping-point, negative-control, or falsification table
-- negative-control lane note: falsification, empirical calibration, bias adjustment, or proximal identification
+- negative-control lane note: falsification, empirical calibration or justified bias adjustment; a proximal proposal changes the identification frame
 - nuisance-role and timing table
 - fold/group/time split plan with seed and tuning boundary
 - nuisance calibration or residualization summary
@@ -59,7 +66,7 @@ Context only. Relevant when the selected design needs additional information abo
 - benchmark comparison against simpler estimators
 - statistical validity decision: supports execution, limits claim, or blocks analysis
 
-## Richer Diagnostics
+## Design-Matched Diagnostics
 
 Select the diagnostics that answer the active design question; do not run every item by default.
 
@@ -71,15 +78,6 @@ Select the diagnostics that answer the active design question; do not run every 
 - Robustness/sensitivity: simple-estimator benchmarks, covariate-set sensitivity, learner-library sensitivity, fold sensitivity, truncation sensitivity, placebo or negative-control checks, tipping-point or E-value summaries when appropriate.
 - Inference stability: influence-curve or orthogonal-score tails, outlier influence, standard-error decomposition, cluster/robust/bootstrap variance route, repeated cross-fitting variation, and multiplicity handling.
 - Reproducibility: estimand label, diagnostic choices, package versions, seeds, folds, preprocessing recipe, code path, artifact folder, and reason any expected diagnostic was skipped.
-
-## Other Considerations
-
-- Recommend this support as a companion to most analysis plans, but keep the actual checks tied to the selected design.
-- Consider `heterogeneous-effects` if statistical validity issues are subgroup-specific or if DR scores, causal forests, R-/DR-learners, or orthogonal forests are used for CATE/GATE.
-- Consider `dose-response` if sparse exposure tails, unstable thresholds, continuous-treatment DML, shift estimators, or dose-support problems drive the concern.
-- Consider `non-continuous-outcomes` if rare events, censoring, competing risks, count overdispersion, category sparsity, or outcome-scale sensitivity drive the concern.
-- Consider `mediation` if concerns involve post-treatment adjustment, mediator timing, pathway confounding, or flexible mediation nuisance models.
-- Consider `policy-making-and-transportability` if validity changes deployment readiness, policy value, source-target overlap, rule feasibility, or transported-effect claims.
 
 ## Boundary Language
 

@@ -2,17 +2,11 @@
 
 Use this file to plan or review a regression discontinuity analysis: sharp or fuzzy RD, regression kink, geographic/border RD, score/rank/date cutoffs, eligibility thresholds, running variables, bandwidth choice, robust bias correction, local randomization, manipulation checks, donut RD, placebo cutoffs, multiple cutoffs, or RD report support.
 
-This design route is the accountable owner for whether analysis execution remains consistent with the cutoff design. Support routes may add analytic tools, but they must stay inside this design scope.
+Verify the cutoff rule, running-variable timing and local support, then match the RD target and inference to the study process. An eligibility/assignment effect can remain interpretable under its design assumptions when a measured receipt jump is imprecise; a receipt/complier effect additionally needs a defensible first stage and IV assumptions. Diagnostic nonrejection does not establish those design assumptions. Do not treat an analyst-created split as RD.
 
-Work in this order: verify the cutoff rule, define the running variable, check the treatment jump, establish local support, choose the RD lane, run manipulation/continuity diagnostics, choose estimator settings, then set the local claim boundary. Do not treat an analyst-created split as RD.
-
-Find the `next_step_plan` entry with `id: analysis_execution` and `design: regression_discontinuity`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
-
-After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this design route owns any combined design/support `artifact_records` write, but only in approved deep execution.
-
-If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only, covering cutoff fit, data contract, local estimand, required diagnostics, blockers, proposed outputs, and execution scope. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
-
-If `analysis_precheck: true`, `mode` should be `deep`: execute only within the approved task and available data/artifacts. If a support route is also named, work from the same `analysis_execution.task` and keep the support work inside the RD design scope.
+Use with [design_worker](../design_worker.md), design ID `regression_discontinuity`.
+Feasibility uses the data requirements, assumptions, and planned diagnostics;
+new target computation additionally follows the recorded-run instructions there.
 
 ## Use When
 
@@ -42,14 +36,19 @@ Facts that usually must be inspected, not merely assumed: cutoff rule, running-v
 
 ## Design-Specific Twists
 
+These are possible revisions, not permission to change the user's target.
+A changed population, contrast, follow-up, or estimand stays an explicit
+alternative until the user adopts it. Base data construction and restriction
+on design evidence, not attractive target results.
+
 - `direct_fit`: the cutoff is real, the running variable is pre-treatment, treatment changes at the cutoff, local support exists, and manipulation risk is acceptable.
 - `data_shape_twist`: orient the running variable, center at cutoff, restrict local windows, encode treatment jump, build local sample counts, or construct distance-to-boundary.
-- `estimand_twist`: convert a broad effect request into local threshold effect, local Wald/fuzzy RD effect, kink effect, border effect, multiple-cutoff effect, or local-randomization estimand.
+- `estimand_twist`: consider reframing a broad effect request into local threshold effect, local Wald/fuzzy RD effect, kink effect, border effect, multiple-cutoff effect, or local-randomization estimand.
 - `diagnostic_twist`: prioritize density/manipulation, treatment jump, covariate continuity, RD plot, bandwidth sensitivity, donut checks, placebo cutoffs, or boundary/spillover checks.
 - `implementation_twist`: use robust bias-corrected local polynomial, fuzzy local IV, local randomization, kink, geographic RD, or multiple-cutoff methods only when design facts fit.
 - `fallback_twist`: if the cutoff is artificial, manipulation is severe, support fails, or a date cutoff is trend-driven, use descriptive discontinuity audit, ITS/DiD review, or future-design requirements.
 
-## Required Diagnostics
+## Design Diagnostics
 
 Perform the analytic diagnostics relevant to the RD design and chosen estimator lane:
 
@@ -85,8 +84,6 @@ Never rescue these failures with covariates, flexible models, or polished plots.
 
 ## Packages
 
-Choose the estimator lane before choosing software. Package lanes are reference cues, not execution permission. Verify current docs before running code.
-
 - Standard RD: R/Stata/Python `rdrobust`, `rdbwselect`, `rdplot` for sharp, fuzzy, kink, bandwidth selection, and robust bias-corrected inference.
 - Manipulation/density: R/Stata `rddensity`; use as one diagnostic, not proof of validity.
 - Local randomization: R/Stata `rdlocrand` for window selection and randomization inference.
@@ -97,29 +94,20 @@ Choose the estimator lane before choosing software. Package lanes are reference 
 
 Key literature anchors: continuity-based RD, local polynomial RD, robust bias correction, McCrary/density testing, local randomization, fuzzy RD as local IV, regression kink, geographic RD, and local external validity.
 
-## Connections With Supports
+## Changes to Discuss with the Lead
 
-- Recommend `statistical-validity` for bandwidth/donut/placebo sensitivity, local support, cluster/robust inference, discrete running variables, and reproducibility.
-- Use `instrumental_variables` logic when the RD is fuzzy and the cutoff acts as a local instrument; this design still owns the cutoff diagnostics.
-- Use `heterogeneous-effects` when the user wants local subgroup or cutoff-specific variation.
-- Use `non-continuous-outcomes` for binary risk, survival, count, recurrent-event, or competing-risk outcomes near the cutoff.
-- Use `policy-making-and-transportability` when the local cutoff result is being generalized, deployed, or used for a decision outside the threshold region.
-- Use `interference_spillovers` for geographic/border RD or thresholds where spillovers contaminate nearby units.
+- Keep fuzzy local-IV assumptions inside this RD review. Flag to the lead a
+  possible switch to `instrumental_variables` only when the instrument rather than the cutoff
+  becomes the primary identification frame.
+- Flag to the lead a possible switch to `interference_spillovers` when spillovers become
+  the primary estimand; otherwise retain them as RD contamination diagnostics.
 
-## Artifact Records Write
+A material change of identification frame or target returns to the lead;
+do not execute another design in this turn. A relevant support guide stays
+inside this same review and does not add a specialist.
 
-In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include RD specifics in the entry summary or in a note/manifest inside the output location, such as:
+## Execution Record
 
-- `design_id: regression_discontinuity`
-- `fit_status`: `direct`, `adapted`, `planning_only`, `blocked`, or `limited`
-- `data_contract`: running variable, cutoff, treatment jump, local support, outcome, manipulation risk, inference route, and inspected-vs-described status
-- `analysis_plan`: RD lane, local estimand, estimator settings, and diagnostic sequence
-- `estimand_cues`: sharp RD, fuzzy local Wald, kink, local randomization, border RD, multiple cutoff, or descriptive discontinuity fallback
-- `twists`: data-shape, estimand, diagnostic, implementation, or fallback twists that would make the route honest
-- `diagnostics_needed` and `diagnostics_reviewed`
-- `boundaries`: invalidating traps, local claim limits, manipulation/support issues, and external-validity cautions
-- `packages`: package lanes only if relevant to the next decision
-- `blocker_reason`: why the RD design did not work, if status is `blocked`
-- `recommended_next_step`: one smallest useful data check, diagnostic, support clarification for `causal_check`, report asset, planning memo, or stop/refusal path
-
-Do not update `project_summary` or `next_step_plan`; `team_lead` updates aggregate workflow fields after the route finishes.
+In the saved review and run summary, emphasize the cutoff and running
+variable, treatment jump, local estimand, manipulation/support and bandwidth
+diagnostics, and the local claim boundary.

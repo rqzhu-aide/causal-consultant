@@ -2,17 +2,11 @@
 
 Use this file to plan or review a synthetic-control or aggregate time-series causal analysis: one or few treated aggregate units, donor pools, intervention dates, synthetic control, augmented SCM, generalized SCM, synthetic DiD, interrupted time series, comparative ITS, Bayesian structural time series, CausalImpact, matrix completion, pre-period fit, placebo inference, or time-series causal diagnostics.
 
-This design route is the accountable owner for whether analysis execution remains consistent with the aggregate counterfactual/time-series design. Support routes may add analytic tools, but they must stay inside this design scope.
-
 Work in this order: define treated unit(s), intervention timing, donor/control pool, outcome scale, pre-period evidence, estimand, inference route, time-series diagnostics, then claim boundary. Do not let a forecast model hide donor contamination, poor pre-fit, or concurrent shocks.
 
-Find the `next_step_plan` entry with `id: analysis_execution` and `design: synthetic_control_time_series`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
-
-After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this design route owns any combined design/support `artifact_records` write, but only in approved deep execution.
-
-If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only, covering treated-unit fit, donor/control validity, time-series data contract, required diagnostics, blockers, proposed outputs, and execution scope. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
-
-If `analysis_precheck: true`, `mode` should be `deep`: execute only within the approved task and available data/artifacts. If a support route is also named, work from the same `analysis_execution.task` and keep the support work inside the synthetic/time-series design scope.
+Use with [design_worker](../design_worker.md), design ID `synthetic_control_time_series`.
+Feasibility uses the data requirements, assumptions, and planned diagnostics;
+new target computation additionally follows the recorded-run instructions there.
 
 ## Use When
 
@@ -43,14 +37,19 @@ Facts that usually must be inspected, not merely assumed: pre-period fit, donor 
 
 ## Design-Specific Twists
 
+These are possible revisions, not permission to change the user's target.
+A changed population, contrast, follow-up, or estimand stays an explicit
+alternative until the user adopts it. Base data construction and restriction
+on design evidence, not attractive target results.
+
 - `direct_fit`: treated unit, intervention date, donor/control pool, pre-period fit, and inference route support an aggregate counterfactual.
 - `data_shape_twist`: reshape to unit-time panel, create treated/post indicators, define donor pool, construct control series, align denominators, or mark pre/post windows.
-- `estimand_twist`: convert a broad policy-effect request into treated-unit gap, cumulative gap, synthetic DiD ATT, ITS level/slope change, comparative ITS contrast, or descriptive forecast audit.
+- `estimand_twist`: consider reframing a broad policy-effect request into treated-unit gap, cumulative gap, synthetic DiD ATT, ITS level/slope change, comparative ITS contrast, or descriptive forecast audit.
 - `diagnostic_twist`: prioritize pre-fit, donor weights, predictor balance, placebo/permutation, leave-one-out, alternative dates, seasonality, autocorrelation, and concurrent-shock review.
 - `implementation_twist`: use classic SCM, augmented SCM, generalized SCM, synthetic DiD, matrix completion, BSTS/CausalImpact, comparative ITS, or treated-only ITS only when the data structure fits.
 - `fallback_twist`: if donor pool, pre-period, intervention timing, measurement stability, or shocks fail, use descriptive time-series audit, donor feasibility memo, or DiD/ITS caveat.
 
-## Required Diagnostics
+## Design Diagnostics
 
 Perform the analytic diagnostics relevant to the synthetic/time-series design and chosen estimator lane:
 
@@ -85,40 +84,29 @@ Never rescue these failures by adding more donors, more predictors, or a richer 
 
 ## Packages
 
-Choose the estimator lane before choosing software. Package lanes are reference cues, not execution permission. Verify current docs before running code.
-
 - Classic SCM: R `Synth`, `tidysynth`; Stata `synth_runner`; Python `pysyncon`.
 - Augmented SCM: R `augsynth`; useful when donor structure is credible but pre-fit is imperfect.
 - Generalized SCM/matrix completion: R `gsynth`, `fect`; useful for multiple treated units/time periods with latent-factor assumptions.
-- Synthetic DiD: R `synthdid`; Stata `SDID`; connect to DiD when treatment timing and panel support matter.
+- Synthetic DiD: R `synthdid`; Stata `SDID`; flag to the lead a possible switch to
+  `difference_in_differences` when group-time identification is primary.
 - BSTS/CausalImpact/comparative ITS: R `CausalImpact`, `bsts`; Python CausalImpact-style ports; Python `statsmodels` for segmented regression/SARIMAX/autocorrelation diagnostics.
 - Time-series benchmarks: R `forecast`, `bsts`, `strucchange`; Python `statsmodels`; use as diagnostics or forecast support, not automatic causal identification.
 
 Key literature anchors: synthetic control, augmented SCM, generalized SCM, synthetic DiD, interrupted time series, comparative ITS, Bayesian structural time series, placebo/permutation inference, conformal inference, and matrix completion for counterfactual panels.
 
-## Connections With Supports
+## Changes to Discuss with the Lead
 
-- Recommend `statistical-validity` for pre-fit diagnostics, placebo/sensitivity, time-series residuals, uncertainty route, reproducibility, and model-dependence checks.
-- Use `difference_in_differences` when many treated cohorts, staggered adoption, group-time ATT, or DiD comparisons are central.
-- Use `interference_spillovers` when donor/control units may be contaminated by spillovers, markets, geography, or displacement.
-- Use `non-continuous-outcomes` when the outcome is a rate, count, event, survival, competing-risk, categorical, or denominator-sensitive measure.
-- Use `policy-making-and-transportability` when aggregate results are being generalized, deployed, or applied to another target population/site/time.
-- Use `heterogeneous-effects` when several treated units or sites allow credible effect variation analysis.
+- Flag to the lead a possible switch to `difference_in_differences` when group-time or
+  multi-cohort identification becomes primary.
+- Flag to the lead a possible switch to `interference_spillovers` when spillovers become
+  the primary estimand; otherwise retain donor contamination as a design threat.
 
-## Artifact Records Write
+A material change of identification frame or target returns to the lead;
+do not execute another design in this turn. A relevant support guide stays
+inside this same review and does not add a specialist.
 
-In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include synthetic/time-series specifics in the entry summary or in a note/manifest inside the output location, such as:
+## Execution Record
 
-- `design_id: synthetic_control_time_series`
-- `fit_status`: `direct`, `adapted`, `planning_only`, `blocked`, or `limited`
-- `data_contract`: treated unit(s), time index, intervention date, donor/control pool, outcome scale, pre-period, inference route, and inspected-vs-described status
-- `analysis_plan`: counterfactual lane, estimand, diagnostic sequence, and sensitivity plan
-- `estimand_cues`: treated-unit gap, cumulative gap, synthetic DiD ATT, ITS level/slope change, comparative ITS, forecast gap, or descriptive fallback
-- `twists`: data-shape, estimand, diagnostic, implementation, or fallback twists that would make the route honest
-- `diagnostics_needed` and `diagnostics_reviewed`
-- `boundaries`: invalidating traps, donor/pre-fit limits, concurrent shocks, aggregate scope, and transport cautions
-- `packages`: package lanes only if relevant to the next decision
-- `blocker_reason`: why the synthetic/time-series design did not work, if status is `blocked`
-- `recommended_next_step`: one smallest useful data check, diagnostic, support clarification for `causal_check`, report asset, planning memo, or stop/refusal path
-
-Do not update `project_summary` or `next_step_plan`; `team_lead` updates aggregate workflow fields after the route finishes.
+In the saved review and run summary, emphasize treated and donor units,
+intervention timing and estimand, pre-fit/placebo and time-series diagnostics,
+concurrent shocks, and the aggregate claim boundary.

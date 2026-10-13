@@ -1,196 +1,205 @@
-# Route: report_writer
+# Evidence-Bound Reporting
 
-Use this reference to draft, revise, or structure academic, technical, reviewer-facing, or decision-facing reports.
+Use `report_writer` / `reporting` for a durable planning or results report,
+revision or derivative communication. The task is synthesis, not new estimation.
+Use [authorizations.md](authorizations.md): a current findings-bound report offer
+and later user selection must precede writing. Check its bound evidence versions;
+return missing or stale permission to Lead. This includes planning, design,
+bounded audit and effect-analysis reports.
 
-Do not produce a standalone user-facing answer. Provide internal findings or revised text for `team_lead` to synthesize.
+## Evidence Basis
 
-For reports that describe analysis results, proceed only when `project_summary.analysis_output: exist`. If `project_summary.analysis_output: non_exist`, use this route only for report-scope setup, study-planning reports, outline structure, safer causal wording, or limitations language; do not draft results, invent results, or describe completed methods.
+Name the exact source evidence before writing. A results report uses the selected
+available results, diagnostics and their governing assumptions. An intentional
+planning report describes targets, evidence gaps, strategies and next decisions;
+it does not contain a completed target-analysis conclusion. Historical output
+somewhere in the project does not make it evidence for this report.
 
-Use this vocabulary consistently:
+Verify selected project runs and their manifested files. For external or legacy results,
+preserve exact source identity and recorded verification limits; never present
+them as verified computations from the current project. A prior report is a presentation source, not
+independent empirical evidence. Identify its underlying results where available.
 
-- `analysis plan` or `study plan`: the causal/statistical work plan; report_writer may describe it but does not own it.
-- `report scope`: the shallow precheck package that proposes what a report would cover before approval.
-- `approved report task`: the deep assignment after the user approves the report scope.
-- `report output`: the created Markdown, HTML, section draft, reviewer response, or other report artifact.
-- `finished artifacts`: completed items in `artifact_records` and their existing
-  output files that can be used, cited, converted, omitted, or disclosed in the
-  report scope.
+If a selected result, diagnostic or source is unavailable or has drifted, explain
+the specific missing evidence and request restoration or an explicit change of
+scope. Never silently substitute a nearby artifact, switch between same-design
+analyses, omit a load-bearing diagnostic, or downgrade a results report to planning.
+Retrieve relevant history when the current summary omits necessary context.
 
-## Plan Entry
+Use the [result-condition contract](memory-records.md#result-conditions) when
+retrieving or supplying conditions for each consequential source result, including
+its target, assumption references, source basis and qualifications. Inferential
+results also retain the tested hypothesis or interval target and the scope of
+the stated guarantee. Different quantities in one output may need different
+conditions. Resolve a legacy result's missing links from attributable source
+evidence when possible; missing coverage is unreviewed, not assumption-free.
+If its guarantee remains unsupported, record the gap and withhold that
+interpretation. Do not invent conditions or derive a new scientific argument
+as hidden analysis while reporting.
 
-Read `next_step_plan` before doing substantive work.
+## Structure and Interpretation
 
-Expected entry:
+Choose sections that answer the user's report question. A planning report normally
+needs the decision context and target sketch, known design facts, assumptions,
+needed data/measurement/provenance, candidate paths, limitations and one useful
+next decision. Keep future figures or analyses clearly proposed, not observed.
 
-```yaml
-next_step_plan:
-  - id: report_writer
-    request: what the user asked or approved
-    task: concrete report-writing assignment
-    mode: shallow | deep
-    report_precheck: false | true
-```
+A results report normally needs the main answer and evidence status, original
+and refined target, estimand/population, data reality/provenance, method rationale,
+results and uncertainty, diagnostics/sensitivities, claim boundary, interpretation
+and sources. Preserve meaningful alternatives, omitted analyses and limitations.
+An appendix can hold technical detail without hiding a load-bearing condition.
+These are coverage cues, not mandatory headings or boilerplate.
 
-If no `next_step_plan` entry has `id: report_writer`, do not proceed with report writer work.
+Use causal wording only under the assumptions the source actually supports.
+Association-only evidence stays "association", "difference" or "pattern";
+discovery and unvalidated subgroup screens stay exploratory. Words such as
+"suggests" do not rescue an unsupported causal claim. For each claim, the
+narrowest applicable boundary in project evidence, source run and report purpose
+governs. Audience, format and brevity never widen it.
+Carry the source result's comparison and these conditions through headlines,
+main answers, tables, captions,
+executive recaps and derivative communications wherever omission would strengthen
+the claim; a later caveat does not qualify an unconditional headline.
+A mathematically correct number can still have an unsupported explanation.
+Check the source's scientific qualification rather than trusting saved prose
+merely because the state or run verifies structurally.
+Review the selected diagnostic findings as well as their existence. If a
+consequential promised check lacks evidence, return the need to the lead or
+state a supported limitation; do not present an unchecked result as validated.
+Keep planning detectability separate from realized uncertainty. A confidence
+interval alone does not establish an MDE, and a planning MDE is not an exclusion
+bound. Support any excluded-magnitude claim using the reported interval for
+the same target, scale and stated coverage.
+Keep the intervention, measured exposure, adoption scenario and justified
+population weights explicit. A weak proxy contrast does not establish absence
+of exposure; a population-standardized effect under universal adoption is not
+the benefit realized under the observed rollout. An effect of an
+offer does not identify an effect among attendees or recipients, or establish
+that their effect is larger, without the additional evidence and conditions for
+that target. Unknown treatment continuation does not establish dilution or larger
+effects among continuers. Keep each claim tied to its own source result,
+population and scenario; preserve measurement level and sample unit when
+translating fields or counts into prose. An adopter effect alone does not
+establish the all-site effect. Positive group averages do not establish benefit
+for every member. Group averages also do not
+identify which individuals benefited or would have benefited under another
+allocation.
 
-Use this entry's `request`, `task`, `mode`, and `report_precheck` as the assignment. Do not update `next_step_plan`; `team_lead` clears or preserves plan entries after synthesis.
+Sensitivity scenarios describe results under specified assumptions about bias,
+response or implementation. A selected scenario is not a worst case or empirical
+lower bound unless the allowed departures are justified and the result bounds
+them; a scenario range is not automatically a confidence interval or the actual
+range of bias. Failure to detect
+an assumption violation does not establish that the assumption holds. Distinguish
+evidence of a positive effect from evidence exceeding a worthwhile threshold.
+Non-detection does not establish practical equivalence. A policy may use point
+estimates, costs and risk preferences without claiming either conclusion.
 
-Interpret `mode` as:
+Check explanations of mechanisms and adjustment against the source evidence
+for variable roles and timing. A coefficient's sign change does not establish
+why it changed or make the adjusted comparison causal. Check subgroup identity
+and interval target against the result being explained: uncertainty about a
+capacity slot is different from uncertainty about positive net benefit. An
+observed development/evaluation gap alone does not establish selection optimism.
+Frequent reselection of the same rule in resamples describes stability under
+that procedure; it does not establish negligible selection bias, explain a
+development/evaluation gap, or show that the rule is necessary or optimal beyond
+the evaluated alternatives.
+While provenance remains synthetic, conclusions apply to that study; uncertainty
+about the word "synthetic" does not support real-world deployment. A used holdout
+limits future independent validation and does not itself justify deploying or
+retaining a rule. Keep the original question's unresolved status distinct from
+completion of a narrower deliverable;
+respect explicit user closure without initiating another investigation.
 
-- `shallow`: prepare an approval-ready report scope, envisioned structure, or readiness notes only.
-- `deep`: draft, revise, or complete the approved report task within available context and claim boundary.
+Explain a decision-bearing finding in units supported by its construction, with
+the estimate, uncertainty, population, horizon and governing conditions integrated
+into language this reader understands. Verify a composite's final scaling and
+reference group before calling it standard deviations; a mean of z-scored
+components is not automatically composite SDs. Label the measurement level supplied
+by the source, not merely the row level of the working table. A separate technical
+and plain-language repetition is not required. Explain a consequential limitation
+through its practical effect without inventing a numerical effect or certainty.
 
-Record blocked or completed work in `report_assembly`, `council_chamber.report_writer.current_status`, and relevant report notes.
+Every figure or table should answer a report question and explain its limitation.
+Avoid decorative plots, invented results, unexplained tables and hidden omissions.
+Separate observed findings, assumptions, methods and interpretation. Internal
+IDs belong in reproducibility detail, not routine reader-facing prose. Preserve
+the requested audience, priority and number of recommendations unless the user
+changes them.
 
-## Report Templates
+## Create and Verify
 
-Use the bundled Markdown templates when preparing a report scope or carrying out an approved report task:
+Load [runs.md](runs.md) before creating output. Start by the accepted scope and
+explicit `responds_to` handling and `decision` references instead of copying its plan.
+That scope's report plan contains purpose, audience and structure in its purpose/objective, exact
+`evidence_refs`, claim boundary, input files and output format. Include the
+selected source results and diagnostics as hashed inputs, not just a mutable
+path mentioned in prose. Use the exact recorded `source_ref` for each
+corresponding input. Known file or legacy hashes must match those snapshots;
+review and record a new or corrected evidence version before selecting changed
+bytes. A missing hash or input is a verification limitation, not proof of a
+match. Keep the report in its own authorized run, outside completed analysis
+runs. A material revision requires a newly presented scope and later selection,
+then a new run with its parent/source relationship. Routine drafting and rendering
+corrections within an in-progress approved report require no extra user decision.
+After finalization, the run is immutable and its permission is consumed: a
+revision uses a new run under the existing scope and later-selection rules.
+Preserve the bound result-condition references and their assumptions with the
+selected report sources. Check material corrections before reusing an older
+result; valid source hashes establish byte identity, not continued applicability.
 
-- `assets/report_template_planning.md` for study-planning reports when `project_summary.analysis_output: non_exist`.
-- `assets/report_template_analysis.md` when `project_summary.analysis_output: exist`.
-- `assets/report_html_layout_template.html` when converting an approved Markdown report to HTML.
+For reproduction instructions, use a fresh contained copy of the saved code and
+required input snapshots. Do not direct readers to run output-writing scripts
+inside a completed run folder.
 
-Use the template as a report structure, not as fixed prose. Omit sections that are irrelevant to the approved scope, but preserve the causal boundary, evidence status, limitations, and next-decision logic.
+Honor a requested format when available tools can produce and validate it.
+Otherwise disclose the format limitation; do not silently promise a different
+file type. If unspecified, standalone HTML is a practical local default. No
+publishing, email delivery or upload is implied by a request for a local report.
 
-## HTML Conversion
+Read back the output, compare quantitative claims with exact source values and
+check that qualifications, omissions and sources survived drafting. For a visual
+format, inspect rendering and fix clipping, unreadable tables and broken assets.
+If the rendering tool is unavailable, record that limitation rather than claiming
+visual validation. Finalize with the primary report, companions and assets under
+the [deliverable contract](runs.md#finalize-and-report-honestly), environment, validation evidence
+and any deviations. Do not label failed rendering or partial files a completed
+validated report.
 
-Use this path when the task asks to convert an existing Markdown report to HTML.
+Use [numerical presentation](presentation.md) for JSON-backed findings, following
+its source-to-block generation and verification contract. Choose displays that
+answer the report question without redundant tables or repeated headline blocks.
+Other formats need an equivalent source-to-label check with its coverage recorded.
 
-Before conversion, confirm that `report_assembly.current_format: md`, `project_summary.report_output: exist`, and an actual `.md` report file from prior `report_writer` work exists in a recorded report output location. `draft_notes` alone is not enough.
+Review free prose separately: does the stated comparison match the calculation,
+are outcome benefits separated from costs/net utility, and do causal or mechanism
+explanations retain their evidence and conditions? If a prior public number was
+wrong, correct it explicitly in the lead handoff instead of silently replacing it
+in the report. When correcting an unsupported interpretation, update the retained
+report source, rebuild the deliverable and read the corrected passage and nearby
+summary in the final artifact. Confirm that the unsupported implication is gone
+and the replacement matches the evidence. Base the handoff's claim of correction
+on that readback, not on the intended edit or a successful build. Describe
+verification by what was checked: generated blocks,
+numerical computations, rendered layout or scientific interpretation. Do not
+substitute any one of these for the others or claim checks that were not performed.
 
-Markdown-to-HTML conversion does not need a separate report precheck when the Markdown report file already exists. The router should set `report_precheck: true` and `mode: deep` for conversion.
-
-When the Markdown report file exists and conversion is requested:
-
-- Treat the assignment as `mode: deep`.
-- Use `assets/report_html_layout_template.html` as the layout shell.
-- Convert the approved Markdown report into `{{REPORT_BODY_HTML}}`; do not rewrite the scientific content except for minimal wording needed to preserve headings, tables, figures, links, callouts, and source references.
-- Fill metadata placeholders from `project_state.yaml` when available.
-- Save pooled or final HTML output directly under `output/`, such as
-  `output/report.html`, `output/final_report.html`, or
-  `output/<project_slug>_report.html`. Do not save pooled or final HTML inside
-  an analysis-specific artifact folder.
-- Set `report_assembly.current_format: html`.
-- Append one `artifact_records` entry with `route: report_writer`, `location`, `created_at`, and a short `summary`.
-- Set `council_chamber.report_writer.current_status` to `produced`.
-
-If no Markdown report file exists, or if the report is not ready to convert, set `council_chamber.report_writer.current_status` to `blocked: <short reason>` and do not create an HTML artifact.
-
-## Report Precheck
-
-Before doing report-writing work, find the `next_step_plan` entry with `id: report_writer` and read that entry's `report_precheck`. This precheck applies to new report-scope setup, outlining, drafting, revision, reviewer-facing text, safer wording, and limitations language; it does not apply to Markdown-to-HTML conversion of an existing report.
-
-If the report-writer entry is missing `report_precheck`, treat it as `false` and use `mode: shallow`.
-
-If the report-writer entry has `report_precheck: false`:
-
-- Do not draft final report text, final reviewer response, completed results prose, or finalized report wording.
-- Do not create output folders or append `artifact_records`.
-- Treat the assignment as `mode: shallow`.
-- Prepare an approval-ready report scope for `team_lead`.
-- Use `assets/report_template_planning.md` when `project_summary.analysis_output: non_exist`; use `assets/report_template_analysis.md` when `project_summary.analysis_output: exist`.
-- Inspect `artifact_records`, `project_summary`, `report_assembly`,
-  route-owned summaries, and existing report-relevant output files before
-  proposing the report scope.
-- Write a compact `report_assembly.planned_structure` list that names the
-  envisioned sections and what each section would do. Keep each entry short and
-  approval-oriented, not drafted prose.
-- Update `report_assembly` with the requested report goal, audience, target
-  section, planned structure, key points, draft notes, wording constraints, and
-  a compact inventory of finished artifacts that the proposed report would use,
-  omit, or disclose.
-- Set `council_chamber.report_writer.current_status` to
-  `scope_ready: waiting for report precheck approval`.
-
-If the report-writer entry has `report_precheck: true`, treat the assignment as `mode: deep` and proceed with the approved report task within the available context and claim boundary.
-
-Create approved report output only when the active `report_writer` entry has `report_precheck: true` and `mode: deep`.
-
-## Rules
-
-1. Preserve the user's intended meaning.
-2. Prefer concise, precise scientific language.
-3. Avoid overclaiming.
-4. Distinguish assumptions, methods, results, limitations, and interpretations.
-5. Use terminology consistently.
-6. For reviewer responses, be polite, direct, and specific.
-7. For methods text, state the design, data source, estimand or target, model or analysis, validation strategy, and uncertainty quantification when relevant.
-8. For results interpretation, separate numerical findings from scientific interpretation.
-9. If `project_summary.analysis_output: non_exist`, state in internal notes that any results/report section is blocked until causal-consultant analysis output exists.
-
-## Return Format
-
-Prepare one of the following for `team_lead`, depending on the user's request:
-
-- A rewritten version, if the user asks for editing or polishing.
-- An approval-ready structured report scope, if the user asks for new report work, an outline, or a study-planning report.
-- A list of issues and suggested revisions, if the draft needs diagnosis.
-- A reviewer-response template, if the user asks for response-letter help.
-- Safer claim wording, if the current wording overstates the evidence.
-
-## Style Preference
-
-Use clear academic prose. Avoid unnecessary adjectives, vague intensifiers, and unsupported claims of novelty, superiority, or causality.
-
-## State Updates
-
-Update `project_state.yaml` fields under `report_assembly` when supported by the user's request:
-
-- `last_updated`: set to the local run time in `HH:MM:SS` format whenever this reference is run.
-- `current_format`: set to `md` when the current report output is Markdown, `html` when the current report output is HTML, or keep `null` when no report output exists.
-- `report_goal`
-- `target_section`
-- `audience`
-- `planned_structure`
-- `key_points`
-- `wording_constraints`
-- `draft_notes`
-
-In report precheck, `draft_notes` should include a compact finished-artifact
-inventory: what artifacts exist, what each contributes to the proposed report,
-and which expected report pieces are missing, omitted, or only suitable as
-limitations.
-
-## Council Chamber Write Contract
-
-Refresh only `council_chamber.report_writer`.
-
-Set:
-
-- `last_updated`: local update time in `HH:MM:SS` format.
-- `current_status`: report handoff status only.
-
-Do not write `opinions` for `report_writer`. Use `scope_ready: <short note>`
-when report scope/readiness was prepared but no report output was created. Use
-`produced` when report text, a report draft, a Markdown `.md` report, an HTML
-conversion, or a report artifact was created. Use `blocked: <short reason>` only
-when report work could not proceed.
-
-Report writer is a handoff route, not a consulting-opinion route.
-
-Do not mark reporting as available. `team_lead` updates report output state after the route finishes; created report files are tracked in `artifact_records`.
-
-## Report Outputs
-
-When any report text, report draft, Markdown `.md` report, HTML conversion, or report artifact is actually created:
-
-1. Save pooled or final Markdown reports directly under `output/`, such as
-   `output/report.md`, `output/final_report.md`, or
-   `output/<project_slug>_report.md`. Save pooled or final HTML reports
-   directly under `output/`, such as `output/report.html`,
-   `output/final_report.html`, or `output/<project_slug>_report.html`. Do not
-   save pooled or final reports inside an analysis-specific artifact folder.
-   Section drafts, reviewer responses, and narrow report assets may use
-   meaningful report-specific folders under `output/`.
-2. Set `report_assembly.current_format` to `md` or `html`.
-3. Record a compact item in `report_assembly.draft_notes` with the run time, report scope, key points or source context, summary, limitations, and output location.
-4. Append one `artifact_records` entry with `route: report_writer`, `location`, `created_at`, and a short `summary` of work, findings, limitations, or suggested additional work.
-5. Set `council_chamber.report_writer.current_status` to `produced`.
-
-Do not create `artifact_records` entries for purely verbal report-scope setup that did not create a new output location.
-
-An analysis-specific note or analysis report may live in an analysis artifact
-folder only when it is part of the analysis output and recorded as
-`route: analysis_execution`. A pooled report produced by `report_writer` should
-be recorded as `route: report_writer` and saved outside analysis-specific
-artifact folders.
+Return one review to the [named commit owner](memory.md#ownership-and-save-points),
+normally Lead, describing the output, source basis, whether any new
+analysis occurred (normally none), inherited claim boundary and important limits.
+Follow the [record purposes and budgets](memory-records.md#prose-budgets-and-purpose);
+the handoff identifies the report's supported use without copying its full narrative.
+Use the [review contract](memory-records.md#checkpoints-and-reviews), linked to
+Helper's prospectively recorded handling and assignment. Put the report run
+being assessed in `review.work_refs`; its source analysis and evidence are inputs,
+not additional assessed runs unless this review actually assessed their work.
+Return justified changes to affected current records for Lead's adoption;
+report completion alone does not settle their scientific unknowns. Completion
+still requires the lead's reconciled outgoing exchange, using the same conditions
+in its user-facing recap. The artifact does not close the project permanently
+or select another action. Preserve questions,
+deferred work and the user's ability to discuss, pause or request a revision.
+If a new empirical analysis is needed, return that bounded need to the lead;
+do not launch or impersonate a design worker in the reporting turn.

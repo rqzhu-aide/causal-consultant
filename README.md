@@ -1,175 +1,103 @@
-# Interactive Causal Consultant
+# Causal Consultant
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-4.2.5-blue.svg)]()
-[![Status](https://img.shields.io/badge/status-active%20development-orange.svg)]()
+Local source version **8.0.7** clarifies actual-response delivery, current-record
+qualifications, user-context attribution and selective continuation. Scientific
+guidance aligns estimates and uncertainty with their target and qualifies
+spillover-policy interpretations. Canonical records, save points, permissions,
+response shape and budgets are unchanged. Live conversational reliability remains
+a separate empirical check.
 
-An interactive causal inference consultant skill for moving from a rough causal
-question to a defensible analysis plan, diagnostic workflow, interpretation, and
-report.
+Start with [SKILL.md](SKILL.md). The consultation follows
+**User -> Helper -> selected work or direct answer -> Lead -> User**.
+These are responsibilities, not mandatory separate agents. The user can change
+focus, request explanation, defer, close or return. Reports are optional artifacts.
 
-> I cannot give you a definitive answer, but I can help you explore.
+## Memory and responsibilities
 
-It is designed to feel like working with a careful causal consulting team: it
-asks clarifying questions, inspects data reality, compares options, keeps the
-user in control of the next step, and avoids jumping straight from a variable
-pair to a model.
+| Record | Purpose | Writer |
+|---|---|---|
+| journal.jsonl | Original messages, adopted knowledge, decisions and work history | Utility, from attributed submissions |
+| project.yaml | Comprehensive current state and exact history references | Utility after commits |
+| case-brief.md | Selected six-section continuation view | Utility using the same selection as compact context |
+| index.html | Completed-report navigation | Utility using retained manifests |
 
-## How It Works
+Helper retains the original incoming message before saving its consequential
+meaning. Simple knowledge or decision saves can handle that message without a
+separate interpretation narrative. Mixed messages retain their conditions,
+questions and answer timing.
 
-`causal-consultant` is a routed skill. The top-level `SKILL.md` initializes
-`project_state.yaml`, writes a compact `next_step_plan`, loads the planned route
-reference, and then loads `team_lead` as the final manager.
+A specialist reads a bounded assignment and necessary sources, then returns one
+assessment to the named commit owner. Lead adopts justified changes, retains live
+questions and alternatives, and prepares the reply. The actual previous reply
+is recorded at the next appropriate resume; native capture remains optional.
+Members never edit generated memory by hand.
 
-The internal team is:
+Mutable facts have short stable identities, with exact versions such as q1@e12.
+Scopes, user decisions, reviews and run starts use their entry IDs. Identical
+canonical resaves preserve versions. Overview fields bind to source records
+instead of repeating authored facts.
 
-- **`team_lead`:** the only user-facing voice; owns synthesis, approvals, state
-  cleanup, and final response.
-- **`data_audit`:** checks data structure, timing, leakage, dependencies,
-  missingness, support, validity, and causal-preparation diagnostics.
-- **`domain_expert`:** records durable domain knowledge, measurement
-  conventions, common practice, precedent, reporting norms, and domain-specific
-  risks.
-- **`causal_check`:** checks causal framing, assumptions, claim strength,
-  analysis readiness, and design/support route recommendations.
-- **`causal_discovery`:** optional graph-hypothesis, variable-neighborhood, and
-  discovery-diagnostic sidecar.
-- **`report_writer`:** report-scope precheck, approved report work,
-  manuscript-style writing, reviewer-facing text, and Markdown-to-HTML
-  conversion.
-- **Design/support references:** focused analysis routes for randomized
-  assignment, observational exposure, longitudinal g-methods, DiD, RD, IV,
-  synthetic control, interference, descriptive association, heterogeneity, dose
-  response, mediation, transportability, non-continuous outcomes, and
-  statistical validity.
+The brief contains Purpose, User context, Current understanding, Open questions,
+Analytic choices, and Work and continuation. User context has domain expertise,
+statistical expertise and communication preferences. Update these only when
+clear new information warrants it. Ordinary resume no longer automatically
+loads five prior intakes or a second copy of the Markdown brief. Exact and focused
+reads retrieve necessary detail. Older live obligations remain visible.
 
-Version 4.2.5 uses a compact route-reference architecture: one state file at
-`project_state.yaml`, one planned route before `team_lead`, shallow/deep gates
-for report or analysis approval, compact route-owned YAML sections for durable
-findings and created outputs, and conditional report/analysis references that
-load only when needed.
+## Consultation behavior
 
-```text
-User <-> causal-consultant router
-          -> selected route reference
-          -> team_lead
-```
+Scientific discovery, attainable questions, defensible alternative routes,
+source qualifications and the original causal target remain central.
+An execution status or valid record does not certify scientific validity.
+No fixed method sequence or mandatory report closes every consultation.
 
-## What It Helps With
+Public responses retain four available sections: To answer your question,
+What has been done, Questions for you, and Next steps. The summary is optional,
+unnumbered and about only the previous turn. Other sections use flat A/Q/N labels.
+Every next-step option contains at most 50 words, including inserted scope terms.
+Other whole items normally stay within 50 words; explicitly requested answers may
+use 200. Empty sections are omitted.
 
-Use it when you want to work interactively on:
+Target analysis and durable reporting use concrete presented scopes and later
+user decisions. Current direction remains separate from acceptance. Frozen
+plans, inputs and manifested outputs retain work provenance; optional numerical
+presentation checks support source-to-display consistency.
 
-- refining a causal question, estimand, comparison, population, or timing
-  window;
-- deciding whether available data can support a causal claim or only a
-  descriptive fallback;
-- auditing data for timing, missingness, leakage, support, dependence, and
-  validity;
-- comparing designs such as experiments, observational adjustment, longitudinal
-  methods, DiD, RD, IV, synthetic control, interference, or descriptive
-  association;
-- exploring target or support goals such as heterogeneity, dose response,
-  mediation, transportability, non-continuous outcomes, or statistical validity;
-- checking DAG/timing, adjustment, post-treatment variables, claim wording, or
-  statistical evidence;
-- producing a planning report, analysis report, manuscript-style section,
-  reviewer-facing response, or HTML version of a Markdown report.
+## Use and compatibility
 
-## Interaction Style
-
-The skill is intentionally interactive. It usually shows framing, consultant
-options, boundaries, and a scoped next step before analysis expands. Broad
-requests like "do your best" or "give me a report" are treated as invitations to
-recommend the safest next move, not permission to skip the causal consulting
-process.
-
-## Activation
-
-This skill is intentionally interactive and can slow down ordinary one-off
-causal or statistical questions. It should be loaded only when you explicitly
-want the persistent causal-consultant workflow.
-
-Start using it by asking your agent: `Use the causal-consultant skill to help
-me think through this causal question.` Or use the direct command:
-
-```
-/causal-consultant
-```
-
-## Install
-
-Install by copying this GitHub repository folder into your personal or
-project-local skill folder.
-
-Codex personal install:
+Node.js 18.18+ is required. The memory utility has no runtime package dependencies.
+Use a machine-wide or user-wide runtime, not a project-local environment.
 
 ```text
-Copy the folder from https://github.com/rqzhu-aide/causal-consultant into `~/.codex/skills/causal-consultant`.
+node scripts/project.cjs init --project-root <new-case>
+node scripts/project.cjs context --project-root <case> --input <case>/scratch/read.json
+node scripts/project.cjs submit --project-root <case> --input <case>/scratch/request.json
 ```
 
-Claude Code personal install:
+A normal read request is `{"mode":"brief"}`. See
+[memory](references/memory.md), [authoring](references/authoring.md),
+[record fields](references/memory-records.md) and [examples](references/record-examples.md).
+Load [authorizations](references/authorizations.md), [delivery](references/delivery.md)
+and [runs](references/runs.md) for the affected operation.
 
-```text
-Copy the folder from https://github.com/rqzhu-aide/causal-consultant into `~/.claude/skills/causal-consultant`.
-```
+New cases use consultation-journal-v8. The CLI dispatches existing v7 journals
+to their retained codec and [v7 contracts](references/v7/memory.md).
+No case is silently converted. A v6 project_state.yaml folder is not reused.
+v8 output uses compact-v2; v7 retains legacy and compact-v1. Exact retry identifies
+the committed entry separately from the current state token.
 
-Codex or other agent project-local install:
+The deployment boundary remains package.json plus its listed SKILL.md, README.md,
+LICENSE, agents/, references/ and scripts/. Architecture, saved evaluations,
+tests and development artifacts remain outside the installed skill.
+The package remains explicit-use through agents/openai.yaml.
 
-```text
-Copy the folder from https://github.com/rqzhu-aide/causal-consultant into `.agents/skills/causal-consultant`.
-```
+## Verification boundary
 
-Alternative project-local install:
+Package validation and focused v8 mechanical checks have passed. This patch
+adds instruction clarifications; source review and mechanical validity do not
+establish scientific accuracy or live conversational reliability. Full
+consultation testing remains pending.
 
-```text
-Copy the folder from https://github.com/rqzhu-aide/causal-consultant into `.agent/skills/causal-consultant`.
-```
-
-### Optional Project Hooks
-
-Project-level hooks are optional stability checks. They are not part of the
-personal skill install. If you want them, copy the hook files into each local
-project where you want the checks to run.
-
-Codex project hook, PowerShell. Navigate to your project working directory, then
-run:
-
-```powershell
-New-Item -ItemType Directory -Force -Path ".codex" | Out-Null
-Invoke-WebRequest "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.codex/hooks.json" -OutFile ".codex\hooks.json"
-Invoke-WebRequest "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.codex/project_state_stop_check.js" -OutFile ".codex\project_state_stop_check.js"
-```
-
-Codex project hook, macOS/Linux shell. Navigate to your project working
-directory, then run:
-
-```sh
-mkdir -p .codex
-curl -L "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.codex/hooks.json" -o .codex/hooks.json
-curl -L "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.codex/project_state_stop_check.js" -o .codex/project_state_stop_check.js
-```
-
-Codex may require you to trust or approve the project hook in Codex settings
-before it runs.
-
-Claude Code project hook, PowerShell. Navigate to your project working
-directory, then run:
-
-```powershell
-New-Item -ItemType Directory -Force -Path ".claude" | Out-Null
-Invoke-WebRequest "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.claude/settings.json" -OutFile ".claude\settings.json"
-Invoke-WebRequest "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.claude/project_state_stop_check.js" -OutFile ".claude\project_state_stop_check.js"
-```
-
-Claude Code project hook, macOS/Linux shell. Navigate to your project working
-directory, then run:
-
-```sh
-mkdir -p .claude
-curl -L "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.claude/settings.json" -o .claude/settings.json
-curl -L "https://raw.githubusercontent.com/rqzhu-aide/causal-consultant/main/project-hooks/.claude/project_state_stop_check.js" -o .claude/project_state_stop_check.js
-```
-
-## License
-
-MIT. See [LICENSE](LICENSE).
+The utility provides a local append-only journal, state checks and contained
+artifacts, not an operating-system sandbox. Hashes establish byte integrity;
+the assistant owns source attribution and scientific interpretation.

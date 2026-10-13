@@ -1,22 +1,26 @@
 # Support: policy-making-and-transportability
 
-Context only. Relevant when the target concerns action choice, prioritization, treatment rules, policy value, deployment, external validity, or applying results to a different population, site, time, or setting. The selected design route owns execution, YAML updates, diagnostics, and artifact records.
+Context only. Relevant when the target concerns action choice, prioritization, treatment rules, policy value, deployment, external validity, or applying results to a different population, site, time, or setting. The selected design worker owns this review and its diagnostics.
 
 ## Additional Information
 
 - Useful when effect estimates need decision, deployment, or source-target context.
 - Policy-making context adds information about what action could be taken, for whom, and under what constraints.
 - Transportability context adds information about what can be said for a target population, site, time, or setting.
-- Both require the user-facing claim to name decision context, target population, implementation setting, and limits of use.
+- Both require the final claim to name decision context, target population, implementation setting, and limits of use.
 - Useful lanes include existing-rule evaluation, shallow/interpretable treatment rules, policy trees, uplift/ranking, budgeted allocation, trial-to-target generalization, source-to-target transport, dynamic regimes, and applicability memos.
 
 ## Non-Obvious Twists
 
 - A CATE estimate is not a policy. A policy needs an action set, decision-time information set, cost/harm model, and feasibility constraints.
+- Obtain accessible decision-defining constraints before freezing a final rule. Clearly scoped preliminary effects or conditional policies do not settle a choice that still depends on unknown costs or capacity.
 - Rule features must be observable at decision time and available in the intended deployment setting.
 - Budgeted allocation can favor stable moderate effects over unstable high predicted effects.
 - A learned rule should be compared against treat-all, treat-none, and current/default practice before it is framed as useful.
 - A rule should be labeled exploratory, cross-fitted, externally validated, or deployment-ready; those are different evidence states.
+- Synthetic-study validation supports a conclusion within the constructed study, not real-world deployment. A user's uncertain understanding of provenance does not override documented synthetic provenance.
+- Preserve the difference between uncertainty about which group gets a capacity slot and uncertainty about that group's positive net benefit. Bind subgroup explanations to the actual group and interval target.
+- A used holdout limits future independent validation; it supplies no reason by itself to deploy or retain the tested rule. An observed development/evaluation gap does not establish why the values differ.
 - Dynamic policies require decision-time rows, histories available before each action, feasible actions at each stage, candidate regimes, and sequential support.
 - SMART, Q-learning, A-learning, WOLS, `DynTxRegime`, `DTRreg`, `polle`, and off-policy evaluation are dynamic-regime tools only when the decision schedule and validation basis are explicit.
 - Transport starts after internal validity. External validity cannot rescue a biased source estimate.
@@ -48,14 +52,6 @@ Context only. Relevant when the target concerns action choice, prioritization, t
 - source-target contrast table
 - source-target version compatibility table
 - effect-modifier overlap and transportability note
-
-## Other Considerations
-
-- Recommend a `statistical-validity` support pass in returned notes, especially for policy support, rule stability, source-target overlap, calibration, sensitivity to effect modifiers, DR scores, off-policy evaluation, cross-fitted value estimation, nuisance models, or source-target DR transport.
-- Consider `heterogeneous-effects` when policy or transport depends on effect modifiers, subgroup benefit, equity/safety strata, or site/time variation.
-- Consider `non-continuous-outcomes` when the decision depends on risk, rate, survival, RMST, competing events, utility, or categorical outcomes.
-- Consider `dose-response` if the decision is about dose choice, exposure intensity, dose cap, threshold, or feasible shift.
-- Consider `mediation` if the policy is justified by a mechanism, pathway, or intervention component rather than the total effect alone.
 
 ## Boundary Language
 

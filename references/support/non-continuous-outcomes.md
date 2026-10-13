@@ -1,6 +1,6 @@
 # Support: non-continuous-outcomes
 
-Context only. Relevant when the outcome is binary, ordinal, categorical, count, zero-inflated, time-to-event, recurrent event, competing risk, bounded, or otherwise not well represented by a simple continuous mean. The selected design route owns execution, YAML updates, diagnostics, and artifact records.
+Context only. Relevant when the outcome is binary, ordinal, categorical, count, zero-inflated, time-to-event, recurrent event, competing risk, bounded, or otherwise not well represented by a simple continuous mean. The selected design worker owns this review and its diagnostics.
 
 ## Additional Information
 
@@ -43,15 +43,6 @@ Context only. Relevant when the outcome is binary, ordinal, categorical, count, 
 - at-risk or denominator table
 - censoring KM/IPCW distribution, truncation, and support note when censoring is modeled
 - outcome-scale boundary wording
-
-## Other Considerations
-
-- Recommend a `statistical-validity` support pass in returned notes, especially for event counts, denominators, censoring, overdispersion, rare outcomes, category sparsity, scale sensitivity, missingness, survival nuisance, binary risk, or AIPW/TMLE/DML-style estimation.
-- Consider grouping, collapsing, thresholding, or transforming outcomes only when the new scale matches the decision or domain meaning, not merely to simplify modeling.
-- Consider `heterogeneous-effects` if outcome-scale conclusions differ across subgroups, sites, cohorts, risk levels, or event-count strata.
-- Consider `dose-response` if the outcome is non-continuous and the exposure has intensity, duration, cumulative dose, or threshold structure.
-- Consider `policy-making-and-transportability` if outcome scale affects decisions, utility, target-population interpretation, or deployment.
-- Consider `mediation` if event timing, intermediate events, or competing pathways are part of the substantive question.
 
 ## Boundary Language
 

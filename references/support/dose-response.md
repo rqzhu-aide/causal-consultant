@@ -1,6 +1,6 @@
 # Support: dose-response
 
-Context only. Relevant when treatment or exposure is continuous, ordinal, multi-level, cumulative, duration-based, intensity-based, threshold-based, or naturally framed as an exposure-response curve. The selected design route owns execution, YAML updates, diagnostics, and artifact records.
+Context only. Relevant when treatment or exposure is continuous, ordinal, multi-level, cumulative, duration-based, intensity-based, threshold-based, or naturally framed as an exposure-response curve. The selected design worker owns this review and its diagnostics.
 
 ## Additional Information
 
@@ -43,14 +43,6 @@ Context only. Relevant when treatment or exposure is continuous, ordinal, multi-
 - threshold or window sensitivity summary
 - alternative dose-scale comparison
 
-## Other Considerations
-
-- Recommend a `statistical-validity` support pass in returned notes, especially for dose support, sparse tails, positivity, balance across dose, threshold stability, continuous-treatment DML, TMLE shift estimators, flexible dose nuisance models, or high-dimensional dose adjustment.
-- Consider `heterogeneous-effects` if the dose-response curve may differ across baseline groups, sites, cohorts, or risk levels.
-- Consider `non-continuous-outcomes` when dose-response is evaluated on risk, rates, events, categories, or survival scales.
-- Consider `mediation` if dose affects intermediate biomarkers, adherence, behavior, or mechanisms that the user wants to interpret.
-- Consider `policy-making-and-transportability` if the practical question is a dose rule, dose cap, target dose range, or transport of a dose recommendation.
-
 ## Boundary Language
 
-Say "within the observed support range" when appropriate. Avoid implying effects for unsupported dose levels, impossible interventions, or post-hoc thresholds.
+Record "within the observed support range" as a wording constraint when appropriate. Avoid implying effects for unsupported dose levels, impossible interventions, or post-hoc thresholds.

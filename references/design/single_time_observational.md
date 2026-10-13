@@ -2,17 +2,11 @@
 
 Use this file to plan or review a point-treatment observational analysis: baseline or one-time exposure, treated-versus-untreated comparisons, target-trial emulation, active-comparator designs, measured-confounding adjustment, matching, weighting, standardization, ATE/ATT/overlap targets, or observational report support.
 
-This design route is the accountable owner for whether analysis execution remains consistent with the observational study design. Support routes may add analytic tools, but they must stay inside this design scope.
+Work in this order: emulate the target trial, align time zero, define exposure and comparator, build the analysis set, audit covariate timing and support, choose an estimator lane, specify required diagnostics, then set the claim boundary. Do not let a flexible model compensate for bad timing, missing confounding, or positivity failure.
 
-Work in this order: emulate the target trial, align time zero, define exposure and comparator, build the analysis set, audit covariate timing and support, choose an estimator lane, run required diagnostics, then set the claim boundary. Do not let a flexible model compensate for bad timing, missing confounding, or positivity failure.
-
-Find the `next_step_plan` entry with `id: analysis_execution` and `design: single_time_observational`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
-
-After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this design route owns any combined design/support `artifact_records` write, but only in approved deep execution.
-
-If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only, covering target-trial fit, data contract, estimand, required diagnostics, blockers, proposed outputs, and execution scope. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
-
-If `analysis_precheck: true`, `mode` should be `deep`: execute only within the approved task and available data/artifacts. If a support route is also named, work from the same `analysis_execution.task` and keep the support work inside the observational-design scope.
+Use with [design_worker](../design_worker.md), design ID `single_time_observational`.
+Feasibility uses the data requirements, assumptions, and planned diagnostics;
+new target computation additionally follows the recorded-run instructions there.
 
 ## Use When
 
@@ -46,14 +40,19 @@ Facts that usually must be inspected, not merely assumed: time zero, exposure ti
 
 ## Design-Specific Twists
 
+These are possible revisions, not permission to change the user's target.
+A changed population, contrast, follow-up, or estimand stays an explicit
+alternative until the user adopts it. Base data construction and restriction
+on design evidence, not attractive target results.
+
 - `direct_fit`: a target-trial emulation is coherent, time zero is clear, confounders are measured before exposure, and support exists for the requested target population.
 - `data_shape_twist`: reshape to one row per eligible unit, create time-zero fields, separate post-exposure variables, build analysis-set flow, restrict to common support, or encode active-comparator versions.
-- `estimand_twist`: convert a generic ATE request into ATT, overlap, restricted-support, active-comparator, or descriptive target when support or treatment choice demands it.
+- `estimand_twist`: consider reframing a generic ATE request into ATT, overlap, restricted-support, active-comparator, or descriptive target when support or treatment choice demands it.
 - `diagnostic_twist`: prioritize timing/role maps, support/positivity, baseline balance, missingness/selection, negative controls, sensitivity analysis, or target-population shift.
 - `implementation_twist`: use regression adjustment, standardization, g-computation, matching, weighting, trimming, AIPW, TMLE, DML, or sensitivity methods only after the design facts are coherent.
 - `fallback_twist`: if time zero, confounding, exposure meaning, or support fails, use descriptive association, design audit, sensitivity memo, or future-data plan instead of causal effect wording.
 
-## Required Diagnostics
+## Design Diagnostics
 
 Perform the analytic diagnostics relevant to the observational design and chosen estimator lane:
 
@@ -63,8 +62,8 @@ Perform the analytic diagnostics relevant to the observational design and chosen
 - Exposure/comparator support: counts and positivity by key covariates, sites, providers, time periods, clusters, and domain groups.
 - Missingness/selection/censoring: profile by exposure and outcome status; assess whether complete-case or censoring choices change the target.
 - Balance and overlap: before/after adjustment, matching, weighting, trimming, or restriction; include SMDs, distributions, weight tails, and effective sample size when relevant.
-- Sensitivity and falsification: unmeasured-confounding sensitivity, negative controls, proximal/proxy feasibility, or IV feasibility when hidden confounding is load-bearing.
-- Estimator benchmark: compare primary estimator against simpler adjusted, weighted, or standardized estimates when execution is approved.
+- Sensitivity and falsification: unmeasured-confounding sensitivity or credible negative controls. A proximal proposal changes identification; use [custom_identification](custom_identification.md), not ordinary measured-confounder adjustment.
+- Estimator benchmark: compare primary estimator against simpler adjusted, weighted, or standardized estimates during planned execution.
 - Support-route diagnostics: if a support file is active, run only the observational diagnostics needed by that support task, such as subgroup overlap, dose support, mediator timing, outcome scale, or statistical-validity checks.
 
 ## Boundaries
@@ -84,39 +83,22 @@ Never rescue these failures by adding more covariates, a richer propensity model
 
 ## Packages
 
-Choose the estimator lane before choosing software. Package lanes are reference cues, not execution permission. Verify current docs before running code.
-
 - Transparent first pass: regression adjustment, standardization, or g-computation; R `fixest`, `marginaleffects`, `stdReg`, `survey`; Python `statsmodels`, `zepid`, custom sklearn/statsmodels workflows.
 - Matching and weighting: R `MatchIt`, `WeightIt`, `cobalt`, `optmatch`, `designmatch`, `CBPS`, `ebal`; Python `causalml`, `DoWhy`, `zepid`, custom propensity/balance code.
 - Doubly robust and targeted learning: R `AIPW`, `tmle`, `drtmle`, `tmle3`, `sl3`, `SuperLearner`; Python `zepid`, `EconML`, `DoubleML`, custom AIPW/TMLE templates.
-- Sensitivity and falsification: R `sensemakr`, `EValue`, `tipr`, `rbounds`, `causalsens`; negative-control/proximal work may require custom code or `EmpiricalCalibration`.
+- Sensitivity and falsification: R `sensemakr`, `EValue`, `tipr`, `rbounds`, `causalsens`; distinguish negative-control calibration from a separate proximal identifying argument.
 - High-dimensional nuisance support: R/Python `DoubleML`; Python `EconML`; R `hdm`, `grf`; nuisance learners such as `glmnet`, `ranger`, `xgboost`, `lightgbm`, `SuperLearner`, `sl3`, or sklearn tools.
 
 Key literature anchors: target-trial emulation, Rubin/Holland potential outcomes, exchangeability/positivity/consistency, Hernan and Robins causal inference framework, propensity-score design, overlap weights, doubly robust estimation, targeted learning, and sensitivity analysis for unmeasured confounding.
 
-## Connections With Supports
+## Changes to Discuss with the Lead
 
-- Recommend `statistical-validity` for most serious observational plans: support, balance, weights, sensitivity, DR/TMLE/DML, negative controls, and richer diagnostics often decide whether execution is ready.
-- Use `heterogeneous-effects` when the question is about subgroup, CATE, site/time, equity, safety, or effect-modifier variation.
-- Use `dose-response` when exposure is continuous, ordinal, cumulative, duration-based, threshold-based, or shift-like.
-- Use `mediation` when the user wants pathway interpretation or asks whether to adjust for an intermediate variable.
-- Use `non-continuous-outcomes` for binary, count, ordinal, survival, recurrent-event, competing-risk, or censoring-sensitive outcomes.
-- Use `policy-making-and-transportability` when the estimate will guide action, targeting, deployment, or movement to another population.
+A material change of identification frame or target returns to the lead;
+do not execute another design in this turn. A relevant support guide stays
+inside this same review and does not add a specialist.
 
-## Artifact Records Write
+## Execution Record
 
-In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include observational-design specifics in the entry summary or in a note/manifest inside the output location, such as:
-
-- `design_id: single_time_observational`
-- `fit_status`: `direct`, `adapted`, `planning_only`, `blocked`, or `limited`
-- `data_contract`: target trial slots, time zero, exposure/comparator, outcome window, adjustment set, support, and inspected-vs-described status
-- `analysis_plan`: target population, estimand, estimator lane, and diagnostic sequence
-- `estimand_cues`: ATE, ATT, overlap, active-comparator, restricted-support, descriptive fallback, or sensitivity-only
-- `twists`: data-shape, estimand, diagnostic, implementation, or fallback twists that would make the route honest
-- `diagnostics_needed` and `diagnostics_reviewed`
-- `boundaries`: invalidating traps, claim limits, measured-only assumptions, and support/selection cautions
-- `packages`: package lanes only if relevant to the next decision
-- `blocker_reason`: why the observational design did not work, if status is `blocked`
-- `recommended_next_step`: one smallest useful data check, diagnostic, support clarification for `causal_check`, report asset, planning memo, or stop/refusal path
-
-Do not update `project_summary` or `next_step_plan`; `team_lead` updates aggregate workflow fields after the route finishes.
+In the saved review and run summary, emphasize the target-trial slots,
+time zero, estimand and target population, support and adjustment diagnostics,
+and the measured-confounding claim boundary.

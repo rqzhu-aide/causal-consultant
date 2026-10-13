@@ -1,6 +1,6 @@
 # Support: mediation
 
-Context only. Relevant when the causal target asks how an effect works, whether a mediator explains the effect, whether to adjust for an intermediate variable, or how to describe pathways. The selected design route owns execution, YAML updates, diagnostics, and artifact records.
+Context only. Relevant when the causal target asks how an effect works, whether a mediator explains the effect, whether to adjust for an intermediate variable, or how to describe pathways. The selected design worker owns this review and its diagnostics.
 
 ## Additional Information
 
@@ -42,14 +42,6 @@ Context only. Relevant when the causal target asks how an effect works, whether 
 - sensitivity-to-mediator-confounding summary
 - exposure-mediator interaction or multiple-mediator ordering note
 - pathway wording that separates mechanism clues from validated pathways
-
-## Other Considerations
-
-- Recommend a `statistical-validity` support pass in returned notes, especially for mediator timing, mediator-outcome confounding, sensitivity, post-treatment adjustment risks, flexible nuisance models, interventional-effect g-computation, TMLE/DML-style estimation, or high-dimensional mediator/outcome models.
-- Consider `non-continuous-outcomes` if the mediator or outcome is binary, ordinal, count, survival, recurrent-event, or competing-risk.
-- Consider `dose-response` if the exposure or mediator has intensity, duration, cumulative exposure, or threshold structure.
-- Consider `heterogeneous-effects` if pathway evidence may differ by subgroup, site, cohort, baseline risk, or exposure level.
-- Consider `policy-making-and-transportability` if mechanism evidence is being used to justify an intervention component, implementation choice, or source-target extrapolation.
 
 ## Boundary Language
 

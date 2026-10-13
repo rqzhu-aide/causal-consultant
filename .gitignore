@@ -1,7 +1,21 @@
-# Runtime state created when testing this skill package from the repository root.
-project_state.yaml
-project_state_stop_check_hook_run.txt
-
-# Python bytecode.
+# Shared installations only; do not vendor project-local environments.
+node_modules/
 __pycache__/
 *.py[cod]
+
+# Accidental consultation state at the development repository root.
+/journal.jsonl
+/project.yaml
+/case-brief.md
+/runs/
+/.consultant-write.lock
+/.consultant-recovery.lock
+
+# Developer history/evidence is retained on the local evidence branch.
+/architecture/
+
+# Local editor and OS files.
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,6 +1,6 @@
 # Support: heterogeneous-effects
 
-Context only. Relevant when the causal target asks whether effects differ across baseline groups, strata, sites, cohorts, risk levels, time periods, or effect modifiers. The selected design route owns execution, YAML updates, diagnostics, and artifact records.
+Context only. Relevant when the causal target asks whether effects differ across baseline groups, strata, sites, cohorts, risk levels, time periods, or effect modifiers. The selected design worker owns this review and its diagnostics.
 
 ## Additional Information
 
@@ -40,15 +40,6 @@ Context only. Relevant when the causal target asks whether effects differ across
 - CATE/GATE calibration, BLP, rank-validation, or uplift-curve note
 - fold stability, honest-split, or grouped-CATE validation note
 - confirmatory versus exploratory wording
-
-## Other Considerations
-
-- Recommend a `statistical-validity` support pass in returned notes, especially for subgroup support, overlap, multiplicity, fold stability, model sensitivity, flexible CATE, causal forests, R-/DR-learners, orthogonal forests, high-dimensional modifiers, or DR scores.
-- Consider simple subgroup or GATE summaries before flexible CATE when the modifier set is small or prespecified.
-- Consider `policy-making-and-transportability` if heterogeneity is meant to guide targeting, treatment rules, equity decisions, deployment, or source-target movement.
-- Consider `non-continuous-outcomes` when subgroup conclusions depend on risk, odds, hazards, RMST, event counts, or ordinal/category shifts.
-- Consider `mediation` if the proposed modifier is post-treatment, pathway-like, or plausibly affected by the exposure.
-- Consider `dose-response` if the heterogeneous target also varies by treatment intensity, duration, or exposure level.
 
 ## Boundary Language
 

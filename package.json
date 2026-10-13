@@ -1,0 +1,13 @@
+{
+  "name": "causal-consultant-v8",
+  "version": "8.0.7",
+  "private": true,
+  "type": "commonjs",
+  "description": "Lead-mediated causal consultation with auditable local project memory.",
+  "engines": { "node": ">=18.18" },
+  "files": ["SKILL.md", "README.md", "LICENSE", "agents", "references", "scripts"],
+  "scripts": {
+    "test": "node tests/run.cjs",
+    "validate": "node scripts/validate.cjs"
+  }
+}

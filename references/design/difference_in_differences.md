@@ -2,17 +2,11 @@
 
 Use this file to plan or review a difference-in-differences or event-study analysis: policy timing, treated and comparison units, pre/post data, panels, repeated cross-sections, staggered adoption, group-time ATT, TWFE benchmarks, synthetic DiD, DR-DiD, anticipation, spillovers, or DiD report support.
 
-This design route is the accountable owner for whether analysis execution remains consistent with the DiD/event-study design. Support routes may add analytic tools, but they must stay inside this design scope.
-
 Work in this order: define unit-time structure, treatment timing, comparison group, pre-period evidence, estimand, timing hazards, composition/support, inference level, then claim boundary. Do not let fixed effects or a modern estimator substitute for a credible comparison.
 
-Find the `next_step_plan` entry with `id: analysis_execution` and `design: difference_in_differences`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
-
-After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this design route owns any combined design/support `artifact_records` write, but only in approved deep execution.
-
-If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only, covering timing fit, comparison credibility, estimand, required diagnostics, blockers, proposed outputs, and execution scope. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
-
-If `analysis_precheck: true`, `mode` should be `deep`: execute only within the approved task and available data/artifacts. If a support route is also named, work from the same `analysis_execution.task` and keep the support work inside the DiD design scope.
+Use with [design_worker](../design_worker.md), design ID `difference_in_differences`.
+Feasibility uses the data requirements, assumptions, and planned diagnostics;
+new target computation additionally follows the recorded-run instructions there.
 
 ## Use When
 
@@ -43,14 +37,19 @@ Facts that usually must be inspected, not merely assumed: treatment timing, comp
 
 ## Design-Specific Twists
 
+These are possible revisions, not permission to change the user's target.
+A changed population, contrast, follow-up, or estimand stays an explicit
+alternative until the user adopts it. Base data construction and restriction
+on design evidence, not attractive target results.
+
 - `direct_fit`: treatment timing, comparison group, pre-period evidence, and inference level support a credible DiD/event-study estimand.
 - `data_shape_twist`: reshape to unit-time or cohort-time, create treatment cohort/event time, build repeated-cross-section cells, encode exposure windows, or mark panel composition changes.
-- `estimand_twist`: convert a generic pre/post request into two-period ATT, group-time ATT, event-time effects, aggregate ATT, repeated-cross-section ATT, synthetic DiD, or descriptive trend comparison.
+- `estimand_twist`: consider reframing a generic pre/post request into two-period ATT, group-time ATT, event-time effects, aggregate ATT, repeated-cross-section ATT, synthetic DiD, or descriptive trend comparison.
 - `diagnostic_twist`: prioritize raw trends, pre-period diagnostics, treatment timing maps, composition/missingness checks, comparison sensitivity, TWFE decomposition, clustering, or parallel-trend sensitivity.
 - `implementation_twist`: use modern staggered-adoption estimators, DR-DiD, synthetic DiD, imputation, interaction-weighted event studies, or HonestDiD only when their comparison and estimand match the data.
 - `fallback_twist`: if comparison credibility fails, use descriptive trend audit, interrupted-time-series warning, synthetic-control review, or future-design requirements.
 
-## Required Diagnostics
+## Design Diagnostics
 
 Perform the analytic diagnostics relevant to the DiD design and chosen estimator lane:
 
@@ -83,41 +82,28 @@ Never rescue these failures by adding fixed effects, covariates, or a newer esti
 
 ## Packages
 
-Choose the estimator lane before choosing software. Package lanes are reference cues, not execution permission. Verify current docs before running code.
-
 - Modern staggered DiD: R `did`, `fixest::sunab`, `didimputation`, `did2s`, `did_multiplegt`, `DIDmultiplegtDYN`; Stata `csdid`, `eventstudyinteract`, `did_imputation`.
 - Two-group/two-period or conditional DiD: R `DRDID`, `did`; Python `moderndid`, `diff-diff`, custom `statsmodels`/`linearmodels` benchmarks.
 - Event-study and FE benchmarks: R `fixest`, `lfe`; Python `statsmodels`, `linearmodels`; keep TWFE labeled when not primary.
 - Sensitivity to parallel-trend violations: R/Stata `HonestDiD`; custom sensitivity after event-study estimates.
-- Synthetic DiD or weak comparison group: R `synthdid`, `augsynth`; connect to `synthetic_control_time_series`.
+- Synthetic DiD or weak comparison group: R `synthdid`, `augsynth`; flag to the lead a possible switch to `synthetic_control_time_series` if donor-weighted
+  identification becomes primary.
 - DML/orthogonal DiD: R/Python `DoubleML`; use only when conditional parallel trends and nuisance roles are explicit.
 - TWFE diagnostics: R `bacondecomp`, decomposition helpers, or manual comparison/weight diagnostics.
 
 Key literature anchors: canonical DiD, parallel trends, Callaway-Sant'Anna group-time ATT, Sun-Abraham interaction-weighted event studies, Borusyak-Jaravel-Spiess imputation, Gardner did2s, de Chaisemartin-D'Haultfoeuille estimators, DR-DiD, synthetic DiD, and HonestDiD sensitivity.
 
-## Connections With Supports
+## Changes to Discuss with the Lead
 
-- Recommend `statistical-validity` for richer diagnostics, DR-DiD, nuisance adjustment, cluster/serial inference, sensitivity, and reproducibility.
-- Use `non-continuous-outcomes` for fixed-horizon risk, event counts, survival, competing risks, rates, or categorical outcomes in DiD.
-- Use `heterogeneous-effects` when dynamic, cohort-specific, subgroup, site, or effect-modifier variation is central.
-- Use `dose-response` when treatment intensity, exposure level, duration, or continuous dose replaces binary adoption.
-- Use `policy-making-and-transportability` when the result is meant to guide policy choice, target a population, or generalize beyond treated settings.
-- Use `interference_spillovers` if comparison units may be indirectly treated or spillovers contaminate controls.
+- Flag to the lead a possible switch to `interference_spillovers` when spillovers become
+  the primary estimand; otherwise record control contamination as a DiD threat.
 
-## Artifact Records Write
+A material change of identification frame or target returns to the lead;
+do not execute another design in this turn. A relevant support guide stays
+inside this same review and does not add a specialist.
 
-In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include DiD specifics in the entry summary or in a note/manifest inside the output location, such as:
+## Execution Record
 
-- `design_id: difference_in_differences`
-- `fit_status`: `direct`, `adapted`, `planning_only`, `blocked`, or `limited`
-- `data_contract`: unit-time data, treatment cohorts, comparison group, pre-period, outcome, composition, inference level, and inspected-vs-described status
-- `analysis_plan`: DiD/event-study estimand, estimator lane, and diagnostic sequence
-- `estimand_cues`: two-period ATT, group-time ATT, event-time effect, aggregate ATT, repeated-cross-section ATT, synthetic DiD, or descriptive trend fallback
-- `twists`: data-shape, estimand, diagnostic, implementation, or fallback twists that would make the route honest
-- `diagnostics_needed` and `diagnostics_reviewed`
-- `boundaries`: invalidating traps, comparison limits, parallel-trend assumptions, contamination, and inference cautions
-- `packages`: package lanes only if relevant to the next decision
-- `blocker_reason`: why the DiD design did not work, if status is `blocked`
-- `recommended_next_step`: one smallest useful data check, diagnostic, support clarification for `causal_check`, report asset, planning memo, or stop/refusal path
-
-Do not update `project_summary` or `next_step_plan`; `team_lead` updates aggregate workflow fields after the route finishes.
+In the saved review and run summary, emphasize treatment cohorts and
+comparison units, the DiD/event-time estimand, pre-period and timing diagnostics,
+inference level, and the parallel-trends claim boundary.

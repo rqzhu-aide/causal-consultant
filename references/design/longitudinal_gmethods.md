@@ -2,17 +2,11 @@
 
 Use this file to plan or review a longitudinal causal analysis: repeated treatment or exposure histories, time-varying confounding, sustained strategies, dynamic regimes, cumulative exposure, marginal structural models, treatment/censoring weights, sequential g-formula, longitudinal TMLE, LMTP, or sequential causal-validity checks.
 
-This design route is the accountable owner for whether analysis execution remains consistent with the longitudinal study design. Support routes may add analytic tools, but they must stay inside this design scope.
+Work in this order: construct the time grid, order histories, define the strategy, verify time-varying confounding and censoring, audit support over histories, choose an estimator lane, specify required diagnostics, then set the claim boundary. Do not collapse a longitudinal problem into a baseline contrast unless the target truly permits it.
 
-Work in this order: construct the time grid, order histories, define the strategy, verify time-varying confounding and censoring, audit support over histories, choose an estimator lane, run required diagnostics, then set the claim boundary. Do not collapse a longitudinal problem into a baseline contrast unless the target truly permits it.
-
-Find the `next_step_plan` entry with `id: analysis_execution` and `design: longitudinal_gmethods`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
-
-After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this design route owns any combined design/support `artifact_records` write, but only in approved deep execution.
-
-If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only, covering the time grid, history data contract, strategy definition, required diagnostics, blockers, proposed outputs, and execution scope. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
-
-If `analysis_precheck: true`, `mode` should be `deep`: execute only within the approved task and available data/artifacts. If a support route is also named, work from the same `analysis_execution.task` and keep the support work inside the longitudinal-design scope.
+Use with [design_worker](../design_worker.md), design ID `longitudinal_gmethods`.
+Feasibility uses the data requirements, assumptions, and planned diagnostics;
+new target computation additionally follows the recorded-run instructions there.
 
 ## Use When
 
@@ -46,14 +40,19 @@ Facts that usually must be inspected, not merely assumed: time ordering, history
 
 ## Design-Specific Twists
 
+These are possible revisions, not permission to change the user's target.
+A changed population, contrast, follow-up, or estimand stays an explicit
+alternative until the user adopts it. Base data construction and restriction
+on design evidence, not attractive target results.
+
 - `direct_fit`: the time grid, histories, strategy, support, censoring, and outcome timing are coherent enough for a g-method target.
 - `data_shape_twist`: reshape to long format, construct lags/grace periods, encode eligibility/censoring, define regimes, preserve histories, or restrict unsupported histories.
-- `estimand_twist`: convert a static effect request into sustained strategy, dynamic regime, cumulative exposure, stochastic shift, LMTP, or simpler baseline target when appropriate.
+- `estimand_twist`: consider reframing a static effect request into sustained strategy, dynamic regime, cumulative exposure, stochastic shift, LMTP, or simpler baseline target when appropriate.
 - `diagnostic_twist`: prioritize history timing, strategy adherence/support, positivity over histories, treatment/censoring weights, balance over time, and sensitivity to grid/lag/truncation choices.
 - `implementation_twist`: use MSM/IPW, sequential g-formula, longitudinal TMLE, LMTP, sequential regression, or structural nested models only after the sequential data contract is clear.
 - `fallback_twist`: if histories, time ordering, support, or censoring cannot sustain g-methods, use trajectory audit, descriptive history summaries, simpler point-treatment target, or future-data plan.
 
-## Required Diagnostics
+## Design Diagnostics
 
 Perform the analytic diagnostics relevant to the longitudinal design and chosen estimator lane:
 
@@ -65,7 +64,7 @@ Perform the analytic diagnostics relevant to the longitudinal design and chosen 
 - Weight diagnostics: treatment/censoring weight distributions, truncation, effective sample size, influential histories, and balance over time when MSM/IPW is used.
 - Censoring/missingness diagnostics: dropout, artificial censoring, competing events, administrative end, and outcome availability by history.
 - Sensitivity: time grid, lag, grace period, strategy variant, truncation, censoring assumption, model class, learner set, and support restriction.
-- Estimator benchmark: compare MSM/IPW, g-formula, sequential regression, LMTP, or longitudinal TMLE outputs to simpler descriptive/history summaries when execution is approved.
+- Estimator benchmark: compare MSM/IPW, g-formula, sequential regression, LMTP, or longitudinal TMLE outputs to simpler descriptive/history summaries during planned execution.
 - Support-route diagnostics: if a support file is active, run only the longitudinal diagnostics needed by that support task, such as dose histories, event/censoring support, dynamic-policy histories, or statistical-validity checks.
 
 ## Boundaries
@@ -84,8 +83,6 @@ Never rescue these failures with a generic mixed model or recurrent-outcome regr
 
 ## Packages
 
-Choose the estimator lane before choosing software. Package lanes are reference cues, not execution permission. Verify current docs before running code.
-
 - MSM/IPW: R `ipw`, `WeightIt`, `cobalt`, `survey`, `geepack`, `fixest`; Python custom `statsmodels`/sklearn weighting workflows.
 - Parametric g-formula: R `gfoRmula`; custom R/Python simulation and standardization workflows when model structure is transparent.
 - Longitudinal TMLE/sequential DR: R `ltmle`, `tmle3`, `sl3`, `SuperLearner`; use only when node ordering and nuisance roles are explicit.
@@ -96,29 +93,14 @@ Choose the estimator lane before choosing software. Package lanes are reference 
 
 Key literature anchors: Robins g-methods, marginal structural models, sequential exchangeability, positivity over histories, parametric g-formula, longitudinal TMLE, modified treatment policies, stochastic interventions, and dynamic treatment regimes.
 
-## Connections With Supports
+## Changes to Discuss with the Lead
 
-- Recommend `statistical-validity` for weight tails, positivity over histories, censoring/missingness nuisance roles, cross-fitting, sensitivity, and reproducibility.
-- Use `dose-response` for cumulative dose, duration, intensity, shifting dose, exposure windows, or modified treatment policies.
-- Use `policy-making-and-transportability` for dynamic regimes, learned policies, sequential decisions, value functions, or deployment.
-- Use `non-continuous-outcomes` for survival, recurrent events, competing risks, censoring-sensitive outcomes, binary risk, or count outcomes.
-- Use `heterogeneous-effects` when strategy effects may differ by baseline history, risk, site, cohort, or time.
-- Use `mediation` only when mediator/confounder ordering is explicit and the pathway target can be written sequentially.
+A material change of identification frame or target returns to the lead;
+do not execute another design in this turn. A relevant support guide stays
+inside this same review and does not add a specialist.
 
-## Artifact Records Write
+## Execution Record
 
-In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include longitudinal-design specifics in the entry summary or in a note/manifest inside the output location, such as:
-
-- `design_id: longitudinal_gmethods`
-- `fit_status`: `direct`, `adapted`, `planning_only`, `blocked`, or `limited`
-- `data_contract`: time grid, histories, strategy, censoring, eligibility, outcome timing, and inspected-vs-described status
-- `analysis_plan`: long-format data shape, strategy estimand, estimator lane, and diagnostic sequence
-- `estimand_cues`: sustained strategy, dynamic regime, cumulative exposure, LMTP, stochastic shift, censoring-adjusted mean/risk, or descriptive fallback
-- `twists`: data-shape, estimand, diagnostic, implementation, or fallback twists that would make the route honest
-- `diagnostics_needed` and `diagnostics_reviewed`
-- `boundaries`: invalidating traps, sequential assumptions, positivity/censoring limits, and support cautions
-- `packages`: package lanes only if relevant to the next decision
-- `blocker_reason`: why the longitudinal design did not work, if status is `blocked`
-- `recommended_next_step`: one smallest useful data check, diagnostic, support clarification for `causal_check`, report asset, planning memo, or stop/refusal path
-
-Do not update `project_summary` or `next_step_plan`; `team_lead` updates aggregate workflow fields after the route finishes.
+In the saved review and run summary, emphasize the time grid, treatment
+history and strategy, sequential estimand, positivity/censoring diagnostics,
+and the sequential-assumption boundary.

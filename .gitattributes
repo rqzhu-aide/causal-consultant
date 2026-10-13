@@ -1,0 +1,12 @@
+# Keep runtime sources and evidence documents byte-stable across platforms.
+# Historical recorded hashes still refer to their original captured bytes.
+* text=auto
+*.cjs text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.html text eol=lf
+# Preserve exact captured evidence bytes and their recorded hashes.
+architecture/** -text

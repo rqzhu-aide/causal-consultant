@@ -2,17 +2,11 @@
 
 Use this file to plan or review an interference or spillover analysis: SUTVA/no-interference violations, peer effects, contagion, contamination, networks, geographic or spatial spillovers, cluster exposure, market effects, treatment saturation, partial interference, exposure mapping, graph cluster randomization, two-stage randomized designs, direct/indirect/total/overall effects, or interference-aware report support.
 
-This design route is the accountable owner for whether analysis execution remains consistent with the interference design. Support routes may add analytic tools, but they must stay inside this design scope.
-
 Work in this order: define units, mechanism, interference restriction, exposure mapping, timing, support, design source, dependence-aware inference, and claim boundary. Do not treat ordinary cluster-robust standard errors as a repair for interference.
 
-Find the `next_step_plan` entry with `id: analysis_execution` and `design: interference_spillovers`. Use that entry's `task`, `mode`, and `analysis_precheck` as the assignment. If no matching analysis-execution entry exists, do not proceed with design-route work.
-
-After finding a matching `analysis_execution` entry, load `references/design_support_workflow.md` and follow its gate, mode, and artifact-records rules. Support routes do not load that shared workflow; this design route owns any combined design/support `artifact_records` write, but only in approved deep execution.
-
-If `analysis_precheck` is missing, treat it as `false`. If `analysis_precheck: false`, `mode` must be `shallow`: prepare readiness notes only, covering interference scope, data contract, exposure mapping, required diagnostics, blockers, proposed outputs, and execution scope. Do not run analysis, create output folders, append `artifact_records`, create analysis output, or mark artifacts as analysis results.
-
-If `analysis_precheck: true`, `mode` should be `deep`: execute only within the approved task and available data/artifacts. If a support route is also named, work from the same `analysis_execution.task` and keep the support work inside the interference/spillover design scope.
+Use with [design_worker](../design_worker.md), design ID `interference_spillovers`.
+Feasibility uses the data requirements, assumptions, and planned diagnostics;
+new target computation additionally follows the recorded-run instructions there.
 
 ## Use When
 
@@ -44,14 +38,19 @@ Facts that usually must be inspected, not merely assumed: exposure map, timing, 
 
 ## Design-Specific Twists
 
+These are possible revisions, not permission to change the user's target.
+A changed population, contrast, follow-up, or estimand stays an explicit
+alternative until the user adopts it. Base data construction and restriction
+on design evidence, not attractive target results.
+
 - `direct_fit`: units, mechanism, exposure mapping, timing, support, and dependence-aware inference support a direct/spillover estimand.
 - `data_shape_twist`: construct network, cluster, market, or geographic exposure map; compute treated-neighbor share; build saturation groups; define lags/radii; or mark contamination of controls.
-- `estimand_twist`: convert isolated-unit ATE into direct, indirect, spillover, total, overall, saturation, exposure-response, contamination-audit, or descriptive map target.
+- `estimand_twist`: consider reframing isolated-unit ATE into direct, indirect, spillover, total, overall, saturation, exposure-response, contamination-audit, or descriptive map target.
 - `diagnostic_twist`: prioritize exposure-map support, own-by-spillover exposure cells, timing of ties, homophily/confounding, contamination, sensitivity to radius/tie weights, and dependence-aware inference.
 - `implementation_twist`: use two-stage randomized estimators, partial-interference IPW, exposure-mapping estimators, network/spatial robust inference, generalized propensity, AIPW/TMLE-style logic, or randomization inference only when the design supports them.
-- `fallback_twist`: if exposure mapping, support, timing, or dependence fails, use contamination audit, descriptive spillover map, or recommendation to repair another design's no-interference assumption.
+- `fallback_twist`: if exposure mapping, support, timing or dependence does not support the requested target, retain a justified narrower contrast, contamination finding, descriptive map or conditional claim. Own-treatment contrasts under the study's allocation do not alone establish the value of changing that allocation; their interpretation and uncertainty still depend on the assignment and interference.
 
-## Required Diagnostics
+## Design Diagnostics
 
 Perform the analytic diagnostics relevant to the interference design and chosen estimator lane:
 
@@ -85,42 +84,31 @@ Never rescue these failures by "controlling for peers" or by ordinary cluster-ro
 
 ## Packages
 
-Choose the estimator lane before choosing software. Package lanes are reference cues, not execution permission. Verify current docs before running code.
-
 - Partial interference and clustered spillovers: R `inferference`, `interferenceCI`, `clusteredinterference`.
 - Network or spatial exposure construction: R `igraph`, `tidygraph`, `sf`; Python `networkx`, `geopandas`, `shapely`.
 - Spatial/spatiotemporal causal support: R/GitHub `SpatialEffect`, R `geocausal`; use only when assumptions match the data.
-- IV/noncompliance plus spillovers: R `latenetwork`; connect to `instrumental_variables`.
+- IV/noncompliance plus spillovers: R `latenetwork`; flag to the lead a possible switch to
+  `instrumental_variables` when the instrument is primary.
 - Dependence-aware inference: Python `networkinference`, network HAC/spatial HAC/custom resampling; R custom randomization/permutation or spatial robust workflows.
 - Flexible nuisance after exposure map is fixed: R `grf`, `SuperLearner`, `xgboost`; Python `DoubleML`, `EconML`, sklearn/xgboost; do not let ML define the estimand.
 - Regression analogs and diagnostics: R `fixest`, `lme4`, `mgcv`; Python `statsmodels`; useful only after exposure map and confounding story are explicit.
 
 Key literature anchors: SUTVA/no-interference violations, partial interference, two-stage randomized designs, exposure mapping, direct/indirect/total/overall effects, network interference, spatial spillovers, spillover-robust experimental design, and peer-effect homophily cautions.
 
-## Connections With Supports
+## Changes to Discuss with the Lead
 
-- Recommend `statistical-validity` for exposure-map support, balance/overlap, dependence-aware inference, sensitivity to maps, and reproducibility.
-- Use `policy-making-and-transportability` when treatment saturation, allocation, spillover policy value, market decisions, or deployment constraints matter.
-- Use `dose-response` when spillover exposure is a treated-neighbor share, radius-weighted dose, saturation level, intensity, or exposure-response curve.
-- Use `heterogeneous-effects` when spillovers vary by subgroup, network position, geography, site, cohort, or baseline risk.
-- Use `instrumental_variables` logic when assignment/encouragement shifts own or peer exposure with noncompliance.
-- Use `difference_in_differences`, `regression_discontinuity`, or `synthetic_control_time_series` when spillovers mainly threaten those comparison designs; this route should write the contamination/exposure-map implication.
-- Use `non-continuous-outcomes` for contagion, infection, event, count, survival, recurrent-event, or competing-risk spillover outcomes.
+- Flag to the lead a possible switch to `instrumental_variables` when an instrument and
+  noncompliance become the primary identification frame.
+- Flag to the lead a possible switch to `difference_in_differences`,
+  `regression_discontinuity`, or `synthetic_control_time_series` when
+  interference is only a threat to that primary comparison design.
 
-## Artifact Records Write
+A material change of identification frame or target returns to the lead;
+do not execute another design in this turn. A relevant support guide stays
+inside this same review and does not add a specialist.
 
-In approved deep execution, append one compact `artifact_records` entry according to `references/design_support_workflow.md`. Include interference specifics in the entry summary or in a note/manifest inside the output location, such as:
+## Execution Record
 
-- `design_id: interference_spillovers`
-- `fit_status`: `direct`, `adapted`, `planning_only`, `blocked`, or `limited`
-- `data_contract`: units, mechanism, exposure map, timing, support, design source, dependence, and inspected-vs-described status
-- `analysis_plan`: direct/spillover estimand, estimator lane, and diagnostic sequence
-- `estimand_cues`: direct, indirect, total, overall, saturation, exposure-response, contamination audit, or descriptive fallback
-- `twists`: data-shape, estimand, diagnostic, implementation, or fallback twists that would make the route honest
-- `diagnostics_needed` and `diagnostics_reviewed`
-- `boundaries`: invalidating traps, no-interference limits, exposure-map uncertainty, confounding/homophily, and dependence cautions
-- `packages`: package lanes only if relevant to the next decision
-- `blocker_reason`: why the interference design did not work, if status is `blocked`
-- `recommended_next_step`: one smallest useful data check, diagnostic, support clarification for `causal_check`, report asset, planning memo, or stop/refusal path
-
-Do not update `project_summary` or `next_step_plan`; `team_lead` updates aggregate workflow fields after the route finishes.
+In the saved review and run summary, emphasize units and exposure mapping,
+the direct/spillover estimand, support and dependence diagnostics,
+confounding/homophily limits, and the interference claim boundary.

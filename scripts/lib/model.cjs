@@ -1,6 +1,6 @@
 "use strict";
 
-const { fail } = require("./files.cjs");
+const { fail, canonical } = require("./files.cjs");
 const CATALOG = require("../../references/catalog.json");
 
 const ID = /^[a-z][a-z0-9_-]{0,79}$/;
@@ -211,7 +211,7 @@ function validateChanges(changes, context) {
   }
   for (const record of changes.evidence || []) {
     const label = "evidence " + record.evidence_id;
-    object(record, label, ["evidence_id", "kind", "source_ref", "summary"], ["limitations", "source_sha256", "source_excerpt", "complete_message", "supersedes", "legacy", "run_id"]);
+    object(record, label, ["evidence_id", "kind", "source_ref", "summary"], ["limitations", "source_sha256", "source_excerpt", "complete_message", "source_intake", "supersedes", "legacy", "run_id"]);
     enumeration(record.kind, ["user_statement", "file", "literature", "computed"], label + ".kind");
     text(record.source_ref, label + ".source_ref");
     text(record.summary, label + ".summary");
@@ -220,6 +220,10 @@ function validateChanges(changes, context) {
         fail("INVALID_INPUT", label + ".complete_message requires a boolean, user_statement kind and string source_excerpt.");
       }
     } else if (Object.hasOwn(record, "source_excerpt")) text(record.source_excerpt, label + ".source_excerpt");
+    if (Object.hasOwn(record, "source_intake")) {
+      enumeration(record.source_intake, ["primary-message-v1"], label + ".source_intake");
+      if (record.kind !== "user_statement" || typeof record.complete_message !== "boolean") fail("INVALID_INPUT", "A primary intake marker requires a marked user message source.");
+    }
     optionalStrings(record, ["limitations"], label);
     if (Object.hasOwn(record, "source_sha256") && !/^[a-f0-9]{64}$/.test(record.source_sha256)) fail("INVALID_INPUT", label + ".source_sha256 must be a SHA-256 hash.");
     supersedes(record, record.evidence_id, "evidence", label, context);
@@ -361,11 +365,17 @@ function validateSemantic(state, request) {
 // to reconstruct it. The reducer deliberately retains historical replacement
 // semantics, and transact fingerprints the original request for exact retries.
 const MEMORY_FIELDS = {
-  evidence: ["source_excerpt", "complete_message", "limitations", "supersedes", "legacy"],
+  evidence: ["source_excerpt", "complete_message", "source_intake", "limitations", "supersedes", "legacy"],
   questions: ["origin", "basis_refs"],
   assumptions: ["basis_refs", "supersedes"],
   decisions: ["basis_refs", "user_contribution_refs", "supersedes"],
   user_context: ["basis_refs", "supersedes"]
+};
+// Route qualifications survive omitted fields, but explicit revisions remain
+// ordinary updates. They are not protected source attributions in MEMORY_FIELDS.
+const RETAINED_FIELDS = { ...MEMORY_FIELDS,
+  candidate_routes: ["design_id", "additional_design_ids", "support_ids", "data_requirements", "claim_boundary",
+    "evidence_for", "evidence_against", "unmet_requirements", "reopen_or_promote_when", "last_review_id"]
 };
 function changedFileSource(before, after) {
   return before.kind !== "user_statement" && (before.kind !== after.kind || before.source_ref !== after.source_ref
@@ -379,7 +389,30 @@ function changedUserSource(before, after) {
 function prepareMemoryWrite(state, request) {
   jsonValue(request);
   const prepared = structuredClone(request);
-  for (const [name, fields] of Object.entries(MEMORY_FIELDS)) {
+  // Live-only boundaries preserve historical source and acceptance semantics.
+  if (prepared.payload?.interpretation) prepared.payload.interpretation.delivery_binding = "message-bound-delivery-v2";
+  for (const source of prepared.payload?.changes?.evidence || []) {
+    if (source?.kind === "user_statement" && typeof source.complete_message === "boolean" && !state.history_index[source.evidence_id]) source.source_intake = "primary-message-v1";
+  }
+  // This is a live authoring form, never a reducer or replay merge policy.
+  for (const [name, allowed] of Object.entries({ questions: ["status", "reason", "resolution", "basis_refs"], evidence: ["summary", "limitations"] })) {
+    const records = prepared.payload?.changes?.[name];
+    if (!Array.isArray(records)) continue;
+    const key = COLLECTIONS[name].id;
+    for (let index = 0; index < records.length; index++) {
+      const entry = records[index];
+      if (!entry || !Object.hasOwn(entry, "patch")) continue;
+      const label = "changes." + name + "[" + index + "]";
+      object(entry, label, [key, "patch"]);
+      id(entry[key], label + "." + key);
+      object(entry.patch, label + ".patch", [], allowed);
+      if (!Object.keys(entry.patch).length || Object.values(entry.patch).some(value => value === null)) fail("INVALID_INPUT", label + ".patch must contain a supported, non-null change.");
+      const previous = (state[name] || []).find(item => item[key] === entry[key]);
+      if (!previous) fail("UNKNOWN_REFERENCE", "A patch requires an already committed " + name + " record: " + entry[key]);
+      records[index] = { ...structuredClone(previous), ...entry.patch };
+    }
+  }
+  for (const [name, fields] of Object.entries(RETAINED_FIELDS)) {
     const records = prepared.payload?.changes?.[name];
     if (!Array.isArray(records)) continue; // Ordinary validation supplies the error.
     const key = COLLECTIONS[name].id;
@@ -411,6 +444,29 @@ function prepareMemoryWrite(state, request) {
     }
   }
   return prepared;
+}
+// Fresh writes keep the submitted records for source checks, while scope checks
+// and the journal see only changes to an existing evidence record's full value.
+function effectiveEvidenceWrite(state, request) {
+  const records = request.payload?.changes?.evidence;
+  if (!Array.isArray(records)) return request;
+  const retained = new Map(state.evidence.map(record => [record.evidence_id, record]));
+  const changed = records.filter(record => {
+    const previous = retained.get(record?.evidence_id);
+    return !previous || canonical(previous) !== canonical(record);
+  });
+  if (changed.length === records.length) return request;
+  // Omitting an unchanged record must not conceal invalid sources or IDs that
+  // collide with another submitted record, scope, interpretation or event.
+  validateChanges({ evidence: records }, semanticContext(state, request));
+  return { ...request, payload: { ...request.payload,
+    changes: { ...request.payload.changes, evidence: changed } } };
+}
+function pendingPrimarySources(state, incomingRefs = []) {
+  const consumed = new Set([...(state.interpretations || []).flatMap(item => item.incoming_refs), ...incomingRefs]);
+  return (state.evidence || []).filter(source => source.source_intake === "primary-message-v1" && !consumed.has(source.evidence_id))
+    .map(source => ({ evidence_ref: source.evidence_id, source_event_ref: state.history_index[source.evidence_id]?.event_ref || null,
+      ...(state.history_index[source.evidence_id]?.sequence ? { sequence: state.history_index[source.evidence_id].sequence } : {}) }));
 }
 function decisionHasSource(state, payload, decision) {
   const records = new Map();
@@ -625,7 +681,8 @@ function reduceEvent(state, event, copyState) {
       const userQuestions = require("./exchanges.cjs").userQuestions(interpretation);
       next.interpretations.push({ interpretation_id: interpretation.interpretation_id, turn_id: interpretation.turn_id,
         event_ref: event.event_id, incoming_refs: structuredClone(interpretation.incoming_refs), basis_refs: structuredClone(interpretation.basis_refs),
-        next_action: structuredClone(interpretation.next_action), ...(userQuestions.length ? { user_questions: userQuestions } : {}) });
+        next_action: structuredClone(interpretation.next_action), ...(userQuestions.length ? { user_questions: userQuestions } : {}),
+        ...(interpretation.delivery_binding ? { delivery_binding: interpretation.delivery_binding } : {}) });
       next.turns.push({ turn_id: interpretation.turn_id, interpretation_ref: interpretation.interpretation_id, work_refs: [], exchange_ref: null });
       index(interpretation.interpretation_id, "interpretation");
       index(interpretation.turn_id, "turn");
@@ -698,6 +755,6 @@ function createReplayBuilder(projectId, timestamp) {
 
 module.exports = {
   CATALOG, ID, PUBLIC_TYPES, CHECKPOINT_STATUSES, STRATEGY_STATUSES, COLLECTIONS,
-  emptyState, validateSemantic, prepareMemoryWrite, validateMemoryWrite, decisionHasSource, applyEvent, createReplayBuilder, jsonValue, object, text, id,
+  emptyState, validateSemantic, prepareMemoryWrite, effectiveEvidenceWrite, validateMemoryWrite, pendingPrimarySources, decisionHasSource, applyEvent, createReplayBuilder, jsonValue, object, text, id,
   enumeration, array, strings, validateUnderstanding, validateAssignment, validateAdditionalDesigns
 };

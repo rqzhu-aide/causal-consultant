@@ -42,11 +42,14 @@ exhaustive literature-review requirement.
 
 ## Useful Handoff
 
+Use the [record purposes and budgets](memory-records.md#prose-budgets-and-purpose)
+to distinguish the source's claim from the review's conclusion without retelling both.
+
 Return source-backed evidence, assumptions and any warranted strategy changes
 to the named review-commit owner, normally Lead. Prepare the
 [review contract](memory-records.md#checkpoints-and-reviews) and the relevant
 [study records](memory-records.md#study-and-user-records), linked to Helper's committed
-interpretation and bounded assignment. Explain what interpretation became
+handling and bounded assignment. Explain what interpretation became
 more credible, what misleading analogy or label should be discounted, and the
 remaining uncertainty. A suggestion should say what a changed endpoint,
 population, measurement strategy or comparator would enable, what it requires,

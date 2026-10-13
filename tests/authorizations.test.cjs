@@ -7,12 +7,20 @@ const { renderExchange, PROTOCOL } = require("../scripts/lib/exchanges.cjs");
 const policy = require("../scripts/lib/authorizations.cjs");
 const assignment = { specialist_id: "design_worker", operation: "execution", design_id: "randomized_assignment" };
 const basePlan = { kind: "analysis", objective: "Estimate treatment effects", claim_boundary: "Randomized sample only", inputs: [], target: "ATE", population: "Trial participants", treatment: "Assignment", comparator: "Control", outcome: "Score", timing: "One year", estimand: "Mean difference", design_id: "randomized_assignment", estimator: "Difference of means", exclusions: [], diagnostics: ["Missingness", "Balance"] };
-function setup(action = "analysis") {
+function setup(action = "analysis", withDecisionSource = false) {
   const fixture = createFixture();
   fixture.append("consultation_policy_activated", { policy: policy.POLICY, reconciliation: "Legacy records remain evidence only; no unfinished runs." });
   const plan = action === "analysis" ? structuredClone(basePlan) : { kind: "report", objective: "Summarize current findings", claim_boundary: "Randomized sample only", inputs: [], purpose: "Current findings", evidence_refs: ["user-request"], format: "Markdown" };
   const scopedAssignment = action === "analysis" ? assignment : { specialist_id: "report_writer", operation: "reporting" };
   const scope = { scope_id: "scope-first", action, assignment: scopedAssignment, public_scope: { target: "ATE", population: "Trial participants", evidence: "User-supplied trial evidence", approach: "Estimate the agreed mean difference", checks: action === "analysis" ? plan.diagnostics : [], outputs: "Results and limitations", claim_boundary: plan.claim_boundary }, execution_plan: plan, basis_versions: [{ ref: "user-request", event_ref: fixture.state.history_index["user-request"].event_ref }], findings_refs: [] };
+  if (withDecisionSource) {
+    fixture.append("memory_updated", { changes: {
+      evidence: [{ evidence_id: "source-target", kind: "user_statement", source_ref: "chat:target", source_excerpt: "Use only eligible baseline participants.", summary: "The user defines eligibility." }],
+      decisions: [{ decision_id: "target-current", kind: "target", statement: "Trial-population ATE", status: "current", basis_refs: ["source-target"] }]
+    } });
+    // Deliberately historical: this scope predates decision-source traversal.
+    scope.basis_versions.push({ ref: "target-current", event_ref: fixture.state.history_index["target-current"].event_ref });
+  }
   if (action === "report") {
     fixture.append("run_started", { run: { run_id: "audit-one", kind: "audit", status: "in_progress" } });
     fixture.append("run_finalized", { run: { run_id: "audit-one", kind: "audit", status: "completed" } });
@@ -39,6 +47,60 @@ function acceptance(env, suffix = "accept", disposition = "accept") {
 }
 function authorize(env) { env.fixture.append("reply_interpreted", acceptance(env)); return { ...env.plan, interpretation_ref: "interpretation-accept", scope_ref: env.scope.scope_id, authorization_ref: "decision-accept" }; }
 const rejects = (fn, code) => assert.throws(fn, error => error.code === code);
+
+test("report acceptance binds requested local formats while retaining exact scientific terms", () => {
+  const env = setup("report"), payload = acceptance(env);
+  payload.changes.evidence[0].source_excerpt = "Yes, write that report, and include HTML alongside Markdown.";
+  payload.interpretation.action_decisions[0].presentation_adjustment = { formats: ["markdown", "html"], user_ref: "user-accept" };
+  env.fixture.append("reply_interpreted", payload);
+  const plan = { ...policy.executionPlanForAuthorization(env.fixture.state, env.scope, "decision-accept"),
+    interpretation_ref: "interpretation-accept", scope_ref: env.scope.scope_id, authorization_ref: "decision-accept" };
+  const binding = policy.validateRunStart(env.fixture.state, plan);
+  assert.equal(plan.format, "markdown, html"); assert.equal(env.scope.execution_plan.format, "Markdown");
+  assert.deepEqual(binding.presentation_adjustment, { formats: ["markdown", "html"], user_ref: "user-accept", source_event_ref: env.fixture.state.history_index["user-accept"].event_ref });
+  for (const [field, value] of Object.entries({ objective: "Another population", claim_boundary: "Unconditional effects", inputs: [{ source_ref: "elsewhere", path: "other.csv" }], purpose: "Publication to another audience", evidence_refs: ["other"], format: "pdf" })) {
+    rejects(() => policy.validateRunStart(env.fixture.state, { ...plan, [field]: value }), "SCOPE_MISMATCH");
+  }
+  const run = { run_id: "report-adjusted", kind: "report", status: "in_progress", interpretation_ref: plan.interpretation_ref, authorization_binding: binding };
+  env.fixture.append("run_started", { run });
+  assert.deepEqual(policy.validateRunContinuation(env.fixture.state, run, plan), binding);
+  rejects(() => policy.validateRunContinuation(env.fixture.state, run, { ...plan, format: "pdf" }), "INVALID_AUTHORIZATION");
+  let replay = emptyState(env.fixture.events[0].project_id, env.fixture.events[0].timestamp);
+  for (const event of env.fixture.events) replay = applyEvent(replay, event);
+  assert.deepEqual(replay, env.fixture.state);
+  rejects(() => policy.validateRunStart(env.fixture.state, plan), "INVALID_AUTHORIZATION");
+});
+
+test("presentation adjustment requires actual acceptance evidence and admits only local formats", () => {
+  for (const change of [
+    { adjustment: { formats: ["html"], user_ref: "user-request" }, code: "MISSING_USER_SOURCE" },
+    { adjustment: { formats: ["html"] }, code: "INVALID_INPUT" },
+    { adjustment: { formats: ["publish"], user_ref: "user-accept" }, code: "INVALID_INPUT" },
+    { adjustment: { formats: ["html", "html"], user_ref: "user-accept" }, code: "INVALID_INPUT" },
+    { adjustment: { formats: [], user_ref: "user-accept" }, code: "INVALID_INPUT" },
+    { adjustment: { formats: ["html"], user_ref: "user-accept", audience: "Public" }, code: "INVALID_INPUT" },
+    { action: "analysis", adjustment: { formats: ["html"], user_ref: "user-accept" }, code: "INVALID_AUTHORIZATION" },
+    { disposition: "defer", adjustment: { formats: ["html"], user_ref: "user-accept" }, code: "INVALID_AUTHORIZATION" },
+    { quote: null, adjustment: { formats: ["html"], user_ref: "user-accept" }, code: "MISSING_USER_SOURCE" }
+  ]) {
+    const env = setup(change.action || "report"), payload = acceptance(env, "accept", change.disposition || "accept");
+    payload.interpretation.action_decisions[0].presentation_adjustment = change.adjustment;
+    if (Object.hasOwn(change, "quote")) delete payload.changes.evidence[0].source_excerpt;
+    rejects(() => env.fixture.append("reply_interpreted", payload), change.code);
+  }
+});
+
+test("changed format-request source requires reconciliation before start or continuation", () => {
+  const env = setup("report"), payload = acceptance(env);
+  payload.interpretation.action_decisions[0].presentation_adjustment = { formats: ["html"], user_ref: "user-accept" };
+  env.fixture.append("reply_interpreted", payload);
+  const plan = { ...env.plan, format: "html", interpretation_ref: "interpretation-accept", scope_ref: env.scope.scope_id, authorization_ref: "decision-accept" };
+  const binding = policy.validateRunStart(env.fixture.state, plan);
+  const run = { run_id: "report-adjusted", kind: "report", status: "in_progress", interpretation_ref: plan.interpretation_ref, authorization_binding: binding };
+  env.fixture.append("memory_updated", { changes: { evidence: [{ ...payload.changes.evidence[0], source_excerpt: "Wait before making the report." }] } });
+  rejects(() => policy.validateRunStart(env.fixture.state, plan), "INVALID_AUTHORIZATION");
+  rejects(() => policy.validateRunContinuation(env.fixture.state, run, plan), "INVALID_AUTHORIZATION");
+});
 
 test("protected execution requires policy and a later user choice, not initial report desire", () => {
   const legacy = createFixture(); rejects(() => policy.validateRunStart(legacy.state, basePlan), "POLICY_ACTIVATION_REQUIRED");
@@ -328,4 +390,79 @@ test("a later captured discrepancy prevents old findings supporting an undisclos
   } });
   rejects(() => policy.validateOffer(env.fixture.state, env.outgoing.response.next_steps[0], {}, {}), "FINDINGS_NOT_DISCUSSED");
   assert.doesNotThrow(() => policy.validateOffer(env.fixture.state, env.outgoing.response.next_steps[0], env.outgoing.response, {}));
+});
+
+test("current decision closure follows nested basis and user sources once without binding unrelated records", () => {
+  const env = setup("analysis", true);
+  env.fixture.append("memory_updated", { changes: {
+    evidence: [{ evidence_id: "user-boundary", kind: "user_statement", source_ref: "chat:boundary", summary: "The stated reporting boundary." },
+      { evidence_id: "user-preference", kind: "user_statement", source_ref: "chat:preference", summary: "A style preference." }],
+    decisions: [{ decision_id: "boundary-nested", kind: "boundary", status: "current", statement: "The eligible sample only.",
+      basis_refs: ["target-current"], user_contribution_refs: ["user-boundary"] },
+    { ...env.fixture.state.decisions[0], basis_refs: ["source-target", "boundary-nested"] }]
+  } });
+  assert.deepEqual(policy.requiredBasisRefs(env.fixture.state, ["target-current"]), ["target-current"]);
+  assert.deepEqual(new Set(policy.requiredBasisRefs(env.fixture.state, ["target-current"], { current: true })),
+    new Set(["target-current", "source-target", "boundary-nested", "user-boundary"]));
+});
+
+test("new scope, offer, acceptance and resumption writes reject unbound decision provenance", () => {
+  const env = setup("analysis", true);
+  const sourceRequests = [
+    { payload: { changes: { action_scopes: [{ ...env.scope, scope_id: "scope-new" }] } } },
+    { payload: { exchange: env.outgoing } },
+    { payload: acceptance(env) }
+  ];
+  for (const request of sourceRequests) rejects(() => policy.validateProposalWrite(env.fixture.state, request), "STALE_SCOPE");
+  const plan = authorize(env);
+  const accepted = structuredClone(env.fixture.state.action_decisions[0]);
+  assert.equal(policy.eligibility(env.fixture.state, env.scope.scope_id).eligible, false);
+  rejects(() => policy.validateRunStart(env.fixture.state, plan), "INVALID_AUTHORIZATION");
+  const resumed = { payload: { interpretation: { next_action: structuredClone(env.fixture.state.interpretations.at(-1).next_action) } } };
+  rejects(() => policy.validateProposalWrite(env.fixture.state, resumed), "STALE_SCOPE");
+  assert.deepEqual(env.fixture.state.action_decisions[0], accepted);
+  const reconciled = { ...env.scope, scope_id: "scope-reconciled", supersedes: env.scope.scope_id,
+    basis_versions: policy.requiredBasisRefs(env.fixture.state, env.scope.basis_versions.map(binding => binding.ref), { current: true })
+      .map(ref => ({ ref, event_ref: env.fixture.state.history_index[ref].event_ref })) };
+  assert.doesNotThrow(() => policy.validateProposalWrite(env.fixture.state, { payload: { changes: { action_scopes: [reconciled] } } }));
+  env.fixture.append("memory_updated", { changes: { action_scopes: [reconciled] } });
+  assert.deepEqual(policy.eligibility(env.fixture.state, reconciled.scope_id), { eligible: false, reason: "awaiting user selection" });
+});
+
+test("historical missing decision bindings replay runs and findings unchanged but block current continuation", t => {
+  const fs = require("node:fs"), os = require("node:os"), path = require("node:path");
+  const store = require("../scripts/lib/store.cjs");
+  const env = setup("analysis", true), plan = authorize(env);
+  const acceptedEvent = env.fixture.events.at(-1);
+  const binding = { policy: policy.POLICY, scope_ref: env.scope.scope_id, authorization_ref: plan.authorization_ref,
+    basis_versions: structuredClone(env.scope.basis_versions) };
+  const run = { run_id: "analysis-historical", kind: "analysis", status: "in_progress",
+    interpretation_ref: plan.interpretation_ref, authorization_binding: binding };
+  env.fixture.append("run_started", { run });
+  rejects(() => policy.validateRunContinuation(env.fixture.state, run, plan), "STALE_SCOPE");
+  env.fixture.append("run_finalized", { run: { ...run, status: "completed" } });
+  env.fixture.append("memory_updated", { changes: {
+    evidence: [{ evidence_id: "historical-result", kind: "computed", run_id: run.run_id, source_ref: "runs/analysis-historical/result.json", summary: "Historical result." }],
+    result_conditions: [{ condition_id: "historical-condition", evidence_ref: "historical-result", result_locator: "Sample result", claim: "Trial mean contrast", target: "ATE",
+      assumption_refs: [], basis_refs: ["target-current"], limitations: ["Conditional on recorded eligibility."] }]
+  } });
+  const outgoing = exchange("accept"); outgoing.renderer = "lead-markdown-v4"; outgoing.completed_work_refs = [run.run_id];
+  outgoing.response.findings = { work_refs: [run.run_id], summary: "Historical result discussion.", diagnostics: [], limitations: ["Conditional on eligibility."] };
+  env.fixture.append("exchange_prepared", { protocol: PROTOCOL, exchange: outgoing });
+  const findings = env.fixture.state.exchanges.at(-1).findings_basis_versions;
+  assert.ok(findings.some(item => item.ref === "target-current"));
+  assert.equal(findings.some(item => item.ref === "source-target"), false);
+  const bytes = env.fixture.events.map(event => JSON.stringify(event)).join("\n") + "\n";
+  let replay = emptyState(env.fixture.events[0].project_id, env.fixture.events[0].timestamp);
+  for (const event of env.fixture.events) replay = applyEvent(replay, event);
+  assert.deepEqual(replay, env.fixture.state);
+  const base = fs.realpathSync.native(os.tmpdir()), root = fs.mkdtempSync(path.join(base, "cc-historical-decision-"));
+  t.after(() => { assert.equal(path.dirname(fs.realpathSync.native(root)), base); assert.ok(path.basename(root).startsWith("cc-historical-decision-")); fs.rmSync(root, { recursive: true, force: true }); });
+  fs.writeFileSync(path.join(root, "journal.jsonl"), bytes);
+  assert.deepEqual(store.readJournal(root).state, env.fixture.state);
+  const retry = { event_id: acceptedEvent.event_id, expected_project_id: acceptedEvent.project_id,
+    expected_last_event_id: acceptedEvent.previous_event_id, type: acceptedEvent.type, payload: acceptedEvent.payload };
+  assert.equal(store.record(root, retry).replayed, true);
+  assert.equal(fs.readFileSync(path.join(root, "journal.jsonl"), "utf8"), bytes);
+  assert.deepEqual(store.readJournal(root).state, env.fixture.state);
 });

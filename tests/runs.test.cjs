@@ -80,7 +80,7 @@ function reportStart(root, run_id = "run-report") {
 }
 function reportFinalize(root, run_id = "run-report") {
   write(root, run_id, "report.md", "The synthetic sample mean is 11. This is descriptive only.\n");
-  return runs.finalize(root, { ...identities(root, "event-finish-" + run_id), run_id, code_paths: [], output_paths: ["report.md"], diagnostic_paths: [], environment: { authoring: "synthetic test fixture" }, deviations: [] });
+  return runs.finalize(root, { ...identities(root, "event-finish-" + run_id), run_id, code_paths: [], output_paths: ["report.md"], deliverable: { primary: "report.md" }, diagnostic_paths: [], environment: { authoring: "synthetic test fixture" }, deviations: [] });
 }
 
 test("start freezes a hashed plan and input snapshot before any target computation", t => {

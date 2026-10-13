@@ -52,6 +52,23 @@ test("brief is an additive context mode and never invokes the legacy selector or
   assert.ok(current.capabilities.includes("case-brief-v1"));
 });
 
+test("an attributed file-arrival update replaces stale current understanding while preserving its historical record", t => {
+  const root = project(t);
+  store.record(root, { ...f.ids(root, "event-await-file"), type: "memory_updated", payload: { changes: {
+    project_understanding: { materials: ["The evaluation file has not arrived."] }
+  } } });
+  const original = fs.readFileSync(path.join(root, "journal.jsonl"), "utf8");
+  const source = f.statement("source-file-arrived", "Here is the evaluation file.");
+  store.record(root, { ...f.ids(root, "event-file-arrived"), type: "memory_updated", payload: { changes: {
+    evidence: [source], project_understanding: { materials: ["The evaluation file has been received; it has not been inspected."] },
+    case_brief: { knowledge_refs: [source.evidence_id] }
+  } } });
+  const current = brief(root).brief.markdown;
+  assert.match(current, /evaluation file has been received; it has not been inspected/);
+  assert.doesNotMatch(current, /evaluation file has not arrived/);
+  assert.ok(fs.readFileSync(path.join(root, "journal.jsonl"), "utf8").startsWith(original));
+});
+
 test("brief distinguishes utility support from project activation without changing legacy history", t => {
   const root = project(t);
   assert.deepEqual(brief(root).consultation_policy, { policy: "consultation-loop-v1", event_ref: "event-init" });

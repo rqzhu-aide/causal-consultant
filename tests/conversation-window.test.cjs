@@ -326,7 +326,8 @@ test("live normalized journal updates preserve the source marker and exact input
     basis_refs: [], next_action: { kind: "lead_only", scope: "Clarify transferability.", reason: "Do not turn a tentative account into a verified design fact." }
   } }, "event-intake");
   const result = buildRecentConversation(store.readJournal(loaded.root)), incoming = result.recent_intakes[0].incoming[0];
-  assert.equal(incoming.source_event_ref, "event-summary");
+  assert.equal(incoming.source_event_ref, "event-source");
+  assert.equal(incoming.later_source_version.source_event_ref, "event-summary");
   assert.equal(incoming.record.source_excerpt, original.source_excerpt);
   assert.equal(incoming.record.complete_message, true);
   assert.deepEqual(incoming.record.limitations, original.limitations);

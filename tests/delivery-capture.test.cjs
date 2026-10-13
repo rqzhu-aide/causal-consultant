@@ -37,7 +37,8 @@ function ids(root, event_id) {
 }
 function captureRequest(root, suffix = "first") {
   return { ...ids(root, "event-capture-" + suffix), delivery_id: "delivery-" + suffix,
-    exchange_ref: "exchange-first", message_path: "actual.txt", source_ref: "test-host:actual-assistant-message",
+    exchange_ref: "exchange-first", message_path: "actual.txt", source_ref: "test-host:actual-assistant-message-" + suffix,
+    capture_message: { conversation_ref: "test-host:conversation", message_ref: suffix, ordinal: store.readJournal(root).state.deliveries.length + 1 },
     observation: "assistant_emission" };
 }
 
@@ -121,7 +122,7 @@ test("an intact reply with reviewed surrounding prose supports the later choice"
   assert.equal(require("../scripts/lib/runs.cjs").verify(root).ok, true);
 });
 
-test("outside whitespace recovers automatically while internal line endings remain exact", t => {
+test("outside whitespace recovers while LF/CRLF equivalence remains distinct from exact bytes", t => {
   const { root, prepared } = setup(t);
   fs.writeFileSync(path.join(root, "actual.txt"), "\n\t" + prepared.rendered_response + "\r\n");
   const result = observe(root, captureRequest(root));
@@ -129,9 +130,10 @@ test("outside whitespace recovers automatically while internal line endings rema
   assert.equal(Object.hasOwn(result.response_span, "wrapper_review"), false);
   fs.writeFileSync(path.join(root, "actual.txt"), prepared.rendered_response.replaceAll("\n", "\r\n"));
   const changed = observe(root, captureRequest(root, "changed-line-endings"));
-  assert.equal(changed.correspondence, "different");
+  assert.equal(changed.correspondence, "line_endings_equivalent");
+  assert.notEqual(changed.observed_response_sha256, prepared.response_sha256);
   const state = store.readJournal(root).state;
-  assert.equal(require("../scripts/lib/exchanges.cjs").deliveryMatches(state.deliveries[0], state), false);
+  assert.equal(require("../scripts/lib/exchanges.cjs").deliveryMatches(state.deliveries[0], state), true);
 });
 
 test("a wrapper explanation cannot recover changed, truncated or duplicated bodies", t => {

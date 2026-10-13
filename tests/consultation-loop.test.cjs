@@ -32,7 +32,7 @@ function finish(root, approved, run_id) {
     assert.equal(command.status, 0, command.stderr);
     assert.equal(JSON.parse(fs.readFileSync(path.join(root, "runs", run_id, "result.json"))).mean, 3);
   } else write(root, run_id, "report.md", "The observed mean is 3. This describes three rows and does not identify a causal effect.\n");
-  runs.finalize(root, { ...f.ids(root, "event-finish-" + run_id), run_id, code_paths: approved.kind === "analysis" ? ["analysis.cjs"] : [], output_paths: [approved.kind === "analysis" ? "result.json" : "report.md"], diagnostic_paths: approved.kind === "analysis" ? ["diagnostics.json"] : [], environment: { runtime: process.version, authoring: "Independent synthetic loop regression" }, deviations: [] });
+  runs.finalize(root, { ...f.ids(root, "event-finish-" + run_id), run_id, code_paths: approved.kind === "analysis" ? ["analysis.cjs"] : [], output_paths: [approved.kind === "analysis" ? "result.json" : "report.md"], ...(approved.kind === "report" ? { deliverable: { primary: "report.md" } } : {}), diagnostic_paths: approved.kind === "analysis" ? ["diagnostics.json"] : [], environment: { runtime: process.version, authoring: "Independent synthetic loop regression" }, deviations: [] });
 }
 function discuss(root, approved, run_id, suffix, delivered = true) {
   const it = f.state(root).interpretations.find(item => item.interpretation_id === approved.interpretation_ref);
@@ -56,7 +56,8 @@ test("wrapped approval and recovered findings finish one action without reapprov
     fs.writeFileSync(path.join(root, "actual-reply.txt"), actual);
     return require("../scripts/lib/delivery.cjs").observe(root, { ...f.ids(root, "event-capture-" + suffix),
       delivery_id: "delivery-" + suffix, exchange_ref, message_path: "actual-reply.txt",
-      source_ref: "fixture-host:assistant-" + suffix, observation: "assistant_emission", wrapper_review });
+      source_ref: "fixture-host:assistant-" + suffix, observation: "assistant_emission", wrapper_review,
+      capture_message: { conversation_ref: "fixture-host:conversation", message_ref: "assistant-" + suffix, ordinal: f.state(root).deliveries.length + 1 } });
   };
   const proposed = capture(offer.exchange_ref, "wrapped-offer", "Here is the proposal.\n\n" + offer.rendered_response,
     "The added introduction identifies the proposal; its full terms and option ordering are unchanged.");
@@ -86,7 +87,9 @@ test("report desire and a saved proposal grant no work permission and create no 
   unchanged(root, "MISSING_AUTHORIZATION", () => start(root, plan(), "run-shortcut"), "run-shortcut");
   const offer = f.prepareScope(root, plan(), { basis_refs: ["data-source"] });
   assert.match(offer.rendered_response, /Three observed rows/);
-  assert.match(offer.rendered_response, /Sample arithmetic mean/);
+  assert.match(offer.rendered_response, /Arithmetic mean/);
+  const exported = JSON.parse(fs.readFileSync(path.join(root, "scopes", offer.scope.scope_id, "scope.json"), "utf8"));
+  assert.equal(exported.execution_plan.estimand, "Sample arithmetic mean");
   unchanged(root, "MISSING_INTERPRETATION", () => start(root, { ...plan(), scope_ref: offer.scope.scope_id }, "run-unselected"), "run-unselected");
   assert.equal(store.status(root).views.work.actions.eligibility[0].reason, "awaiting user selection");
 });
@@ -286,11 +289,11 @@ test("a new report scope can explain a retired assumption without adopting it as
   const approved = f.authorizePlan(root, { kind: "report", objective: "Explain why estimation is unsupported", claim_boundary: "Document missing identification; no treatment effect estimate.", inputs: [], purpose: "Design limitations", evidence_refs: ["data-source"], format: "Markdown" });
   start(root, approved, "run-design-report");
   write(root, "run-design-report", "report.md", "The sources do not establish randomization. The earlier assumption is retired; no causal effect is identified.\n");
-  runs.finalize(root, { ...f.ids(root, "event-design-finish"), run_id: "run-design-report", code_paths: [], output_paths: ["report.md"], diagnostic_paths: [], environment: { authoring: "Design discussion regression" }, deviations: [] });
+  runs.finalize(root, { ...f.ids(root, "event-design-finish"), run_id: "run-design-report", code_paths: [], output_paths: ["report.md"], deliverable: { primary: "report.md" }, diagnostic_paths: [], environment: { authoring: "Design discussion regression" }, deviations: [] });
   assert.equal(runs.verify(root).ok, true);
   assert.ok(f.state(root).runs.every(run => run.kind === "report"));
 });
-test("v4 receipt survives unordered JSON input, canonical journal serialization and exact delivery", t => {
+test("v5 receipt survives unordered JSON input, canonical journal serialization and exact delivery", t => {
   const root = project(t);
   const candidate = plan();
   candidate.identification_basis = { source_refs: ["data.json"], assumptions: ["The values describe the observed rows only."], argument: "No causal identification is claimed." };

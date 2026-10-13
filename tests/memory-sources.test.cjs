@@ -228,3 +228,76 @@ test("historical same-ID replacement replays unchanged while subsequent live upd
   const prepared = model.prepareMemoryWrite(state, { payload: { changes: { evidence: [{ ...state.evidence[0], summary: "No fabricated historical quotation." }] } } });
   assert.equal(Object.hasOwn(prepared.payload.changes.evidence[0], "source_excerpt"), false);
 });
+
+test("brief route updates preserve omitted cautions while explicit revisions and exact retries remain valid", t => {
+  const root = project(t);
+  const route = { strategy_id: "strategy-did", target: "ATT", approach: "Compare outcome changes", status: "conditional",
+    reason: "Follow-up timing needs reconciliation.", design_id: "difference_in_differences", support_ids: [model.CATALOG.supports[0]],
+    data_requirements: ["Comparable follow-up windows"], claim_boundary: "No causal estimate until timing is reconciled.",
+    evidence_for: [], evidence_against: ["user-timing"], unmet_requirements: ["Follow-up timing"],
+    reopen_or_promote_when: "Document comparable follow-up periods." };
+  f.record(root, "memory_updated", { changes: { evidence: [f.statement("user-timing", "Some outcomes were measured later in the treated group.")],
+    candidate_routes: [route] } }, "event-route");
+  const short = { strategy_id: route.strategy_id, target: route.target, approach: route.approach, status: route.status,
+    reason: "Awaiting the promised timing records." };
+  const update = request(root, "event-route-update", "memory_updated", { changes: { candidate_routes: [short] } });
+  const original = structuredClone(update);
+  store.record(root, update);
+  assert.deepEqual(update, original);
+  assert.deepEqual(f.state(root).candidate_routes[0], { ...route, reason: short.reason });
+  assert.match(store.context(root, { mode: "brief" }).brief.markdown, /user-timing/);
+  f.record(root, "memory_updated", { changes: { candidate_routes: [{ ...short, status: "not_relevant",
+    reason: "The user chose a purely descriptive comparison; causal follow-up requirements do not govern that task.",
+    evidence_against: [], unmet_requirements: [], data_requirements: [], support_ids: [], design_id: null,
+    claim_boundary: "Descriptive differences only.", reopen_or_promote_when: "Reconsider only if causal estimation is requested." }] } }, "event-route-explicit");
+  const revised = f.state(root).candidate_routes[0];
+  assert.deepEqual(revised.evidence_against, []);
+  assert.deepEqual(revised.unmet_requirements, []);
+  assert.equal(revised.design_id, null);
+  const journal = fs.readFileSync(path.join(root, "journal.jsonl"));
+  assert.equal(store.record(root, update).replayed, true);
+  assert.deepEqual(fs.readFileSync(path.join(root, "journal.jsonl")), journal);
+  assert.deepEqual(f.state(root).candidate_routes[0], revised);
+  assert.deepEqual(store.history(root, { event_id: "event-route" }).events[0].payload.changes.candidate_routes[0], route);
+});
+
+test("historical route omissions retain replacement semantics on replay", () => {
+  let state = model.emptyState("project-old-route", "2026-01-01T00:00:00Z");
+  const route = { strategy_id: "strategy-old", target: "ATE", approach: "Study comparison", status: "conditional",
+    reason: "A historical strategy", claim_boundary: "Conditional only", evidence_against: [], unmet_requirements: ["Timing"] };
+  for (const [index, record] of [route, { strategy_id: route.strategy_id, target: route.target, approach: route.approach,
+    status: route.status, reason: "Historical replacement omitted optional cautions." }].entries()) {
+    state = model.applyEvent(state, { schema_version: 7, project_id: state.state_meta.project_id, event_id: "event-route-" + index,
+      sequence: index + 1, previous_event_id: state.state_meta.last_event_id, timestamp: "2026-01-01T00:00:00Z",
+      type: "memory_updated", payload: { changes: { candidate_routes: [record] } } });
+  }
+  assert.equal(Object.hasOwn(state.candidate_routes[0], "claim_boundary"), false);
+  assert.equal(Object.hasOwn(state.candidate_routes[0], "unmet_requirements"), false);
+});
+
+test("live scopes bind governing decision sources while unrelated preferences leave permission usable", t => {
+  const root = project(t);
+  f.record(root, "memory_updated", { changes: {
+    evidence: [f.statement("user-target", "Estimate the sample mean for eligible baseline entrants."), f.statement("user-style", "Use short replies.")],
+    decisions: [{ decision_id: "boundary-current", kind: "boundary", status: "current", statement: "Baseline entrants only.", user_contribution_refs: ["user-target"] }]
+  } }, "event-governing-source");
+  const offer = f.prepareScope(root, plan(), { basis_refs: ["boundary-current"] });
+  assert.ok(offer.scope.basis_versions.some(binding => binding.ref === "user-target"));
+  assert.equal(offer.scope.basis_versions.some(binding => binding.ref === "user-style"), false);
+  unchanged(root, request(root, "event-unbound-scope", "memory_updated", { changes: { action_scopes: [{ ...offer.scope,
+    scope_id: "scope-without-governing-source", basis_versions: offer.scope.basis_versions.filter(binding => binding.ref !== "user-target") }] } }), "STALE_SCOPE");
+  const approved = f.acceptScope(root, offer);
+  f.record(root, "memory_updated", { changes: { evidence: [{ ...f.state(root).evidence.find(item => item.evidence_id === "user-style"),
+    summary: "The user still prefers concise explanations." }] } }, "event-style-edit");
+  assert.equal(policy.eligibility(f.state(root), offer.scope.scope_id).eligible, true);
+  assert.equal(policy.validateRunStart(f.state(root), approved).scope_ref, offer.scope.scope_id);
+  const source = f.state(root).evidence.find(item => item.evidence_id === "user-target");
+  f.record(root, "correction", { corrects_refs: [source.evidence_id], reason: "Repair a truncated source quotation by restoring the eligibility restriction.",
+    changes: { evidence: [{ ...source, source_excerpt: "Estimate the sample mean for eligible baseline entrants, excluding late enrollees.",
+      summary: "Late enrollees are excluded from the target population." }] } }, "event-target-source-correction");
+  assert.equal(policy.eligibility(f.state(root), offer.scope.scope_id).reason,
+    "basis version changed: user-target; dependency path: boundary-current -> user-target");
+  assert.throws(() => policy.validateRunStart(f.state(root), approved), { code: "INVALID_AUTHORIZATION" });
+  assert.equal(f.state(root).action_decisions.at(-1).disposition, "accept");
+  assert.deepEqual(f.state(root).action_scopes[0].basis_versions, offer.scope.basis_versions);
+});

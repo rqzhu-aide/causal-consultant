@@ -35,13 +35,15 @@ function validate(directory = root) {
   const read = file => fs.readFileSync(path.join(directory, file), "utf8").replace(/\r\n/g, "\n");
   const required = ["SKILL.md", "README.md", "LICENSE", "package.json", "agents/openai.yaml",
     "references/catalog.json", "references/helper.md", "references/memory.md", "references/memory-records.md", "references/runs.md", "references/authorizations.md",
-    "scripts/lib/authorizations.cjs", "scripts/lib/case-brief.cjs", "scripts/lib/conversation-window.cjs", "scripts/project.cjs"];
+    "scripts/lib/authorizations.cjs", "scripts/lib/case-brief.cjs", "scripts/lib/conversation-window.cjs", "scripts/project.cjs",
+    "scripts/lib/v8/store.cjs", "scripts/lib/v8/records.cjs", "scripts/lib/v8/workflow.cjs", "scripts/lib/v8/runs.cjs", "scripts/lib/v8/views.cjs",
+    "references/v7/memory.md", "references/v7/helper.md", "references/v7/team_lead.md"];
   for (const name of required) demand(files.includes(name), "Missing " + name);
   const pkg = JSON.parse(read("package.json"));
   demand(Array.isArray(pkg.files) && JSON.stringify([...pkg.files].sort()) === JSON.stringify([...PACKAGE_ENTRIES].sort()),
     "package.json files must contain only the declared skill distribution entries");
   const skill = read("SKILL.md");
-  demand(/^7\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(pkg.version), "Expected a v7 package version");
+  demand(/^8\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(pkg.version), "Expected a v8 package version");
   demand(!pkg.dependencies || Object.keys(pkg.dependencies).length === 0, "Runtime dependencies need explicit review");
   const metadata = skill.match(/^---\nname: causal-consultant\ndescription: [^\n]+\nmetadata:\n  version: "([^"\n]+)"\n---\n/);
   demand(metadata, "Invalid skill metadata");

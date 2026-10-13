@@ -103,7 +103,7 @@ function atomicWrite(root, relative, contents) {
 }
 function assertNotLegacy(root) {
   if (fs.existsSync(path.join(root, "project_state.yaml"))) {
-    fail("LEGACY_PROJECT", "This is a v6 project. Preserve it and initialize v7 in a new folder.");
+    fail("LEGACY_PROJECT", "This is a v6 project. Preserve it and initialize a new case in another folder.");
   }
 }
 function readLock(root, name = ".consultant-write.lock") {

@@ -120,7 +120,9 @@ test("candidate guide composition permits a future strategy without forcing a pr
     { design_id: "randomized_assignment", additional_design_ids: ["randomized_assignment"] },
     { design_id: "custom_identification", additional_design_ids: ["custom_identification"] },
     { design_id: "randomized_assignment", additional_design_ids: ["interference_spillovers", "interference_spillovers"] }
-  ]) rejectedUnchanged(root, () => record(root, { candidate_routes: [strategy(fields)] }));
+  // A new route cannot inherit a primary design. Existing routes now retain
+  // omitted optional fields, so a same-ID omission is not an invalid deletion.
+  ]) rejectedUnchanged(root, () => record(root, { candidate_routes: [strategy({ ...fields, strategy_id: "strategy-invalid" })] }));
 });
 
 test("source excerpts preserve exact text and reject blank or non-text additions before commit", t => {

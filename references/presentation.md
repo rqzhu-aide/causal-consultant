@@ -16,23 +16,23 @@ The input specification names sources with their actual SHA256 values and select
   "format": "html",
   "sources": [
     {
-      "source_id": "evaluation",
+      "source_id": "analysis",
       "path": "inputs/0001.json",
       "sha256": "REPLACE_WITH_THE_ACTUAL_64_CHARACTER_SOURCE_SHA256"
     }
   ],
   "quantities": [
     {
-      "quantity_id": "rule_value",
-      "label": "Frozen rule utility",
-      "units": "assessment points per eligible learner",
+      "quantity_id": "effect",
+      "label": "Mean outcome difference",
+      "units": "days",
       "population": "The study recruitment frame",
-      "comparison": "Policy level after the stated offer cost",
-      "source_id": "evaluation",
-      "value": "/evaluation_vs_development/rule_utility/eval",
+      "comparison": "Intervention versus usual care at the specified follow-up",
+      "source_id": "analysis",
+      "value": "/effect/estimate",
       "interval": {
-        "lower": "/bootstrap_ci/u_rule/0",
-        "upper": "/bootstrap_ci/u_rule/1",
+        "lower": "/effect/interval/lower",
+        "upper": "/effect/interval/upper",
         "level": 0.95,
         "method": "stratified percentile bootstrap"
       },
@@ -41,13 +41,16 @@ The input specification names sources with their actual SHA256 values and select
     }
   ],
   "blocks": [
-    {"block_id": "policy_values", "kind": "table", "quantity_ids": ["rule_value"]},
-    {"block_id": "policy_findings", "kind": "headlines", "quantity_ids": ["rule_value"]}
+    {"block_id": "estimates", "kind": "table", "quantity_ids": ["effect"]}
   ]
 }
 ```
 
 Use `format: "markdown"` for Markdown tables and headline blocks. Omit `interval` when no interval is available; do not invent one. A quantity requires label, units, population and comparison, all visible in the generated output. For an absolute level, describe it as a level instead of inventing a comparator. `digits` defaults to 2 and accepts 0 through 12. Estimates and endpoints must resolve to finite JSON numbers; numeric strings, absent locators and reversed intervals are rejected. Pointer keys containing `/` or `~` use `~1` or `~0`. The utility does not require a symmetric interval or require the estimate to lie inside it.
+
+Choose `kind: "headlines"` for a short finding instead of a table when that serves the reader. Include both only when they answer distinct presentation needs. Reduce repeated selections and surrounding prose before expanding a table; retain its scientific metadata and intact verification block.
+
+Keep one substantive numerical account in the appropriate output. The review names the finding and its use-changing limit; Lead explains its implication under the [record purposes and budgets](memory-records.md#prose-budgets-and-purpose). Link detailed diagnostics and exact result conditions instead of copying the full table into every layer. Numerical tables and inferential conditions have no new prose cap; conditions that change a displayed claim remain beside it.
 
 The response contains resolved `quantities` with their source paths, hashes and locators, plus `blocks` and the joined `fragment`. Keep each generated block intact, including its `cc-presentation` comment markers. Compose narrative and layout around those blocks; revise the specification and regenerate when a label, precision or selection needs correction. Tables have one consistent set of columns, and data cells are escaped. Do not paste a supplied estimate or interval elsewhere and describe that separate text as verified.
 

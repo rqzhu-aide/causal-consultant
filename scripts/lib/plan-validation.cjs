@@ -20,12 +20,16 @@ function validatePlanStructure(plan) {
   text(plan.objective, "plan.objective");
   text(plan.claim_boundary, "plan.claim_boundary");
   array(plan.inputs, "plan.inputs", (input, label) => {
-    object(input, label, ["source_ref", "path"], ["sha256"]);
+    object(input, label, ["source_ref", "path"], ["sha256", "deferred_release"]);
     text(input.source_ref, label + ".source_ref");
     text(input.path, label + ".path");
     if (input.path.includes("\0")) fail("INVALID_INPUT", label + ".path contains a NUL byte.");
     if (Object.hasOwn(input, "sha256") && !/^[a-f0-9]{64}$/.test(input.sha256)) fail("INVALID_INPUT", label + ".sha256 must be a SHA-256 hash.");
+    if (Object.hasOwn(input, "deferred_release") && (plan.kind !== "analysis" || input.deferred_release !== true || input.sha256)) {
+      fail("INVALID_INPUT", "Only one unavailable analysis input may use deferred_release, without a pre-release hash.");
+    }
   });
+  if (plan.inputs.filter(input => input.deferred_release).length > 1) fail("INVALID_INPUT", "Only one analysis input may await release.");
   for (const key of fields[plan.kind]) {
     if (["exclusions", "diagnostics", "variables", "evidence_refs"].includes(key)) strings(plan[key], "plan." + key);
     else text(plan[key], "plan." + key);

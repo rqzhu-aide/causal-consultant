@@ -13,10 +13,14 @@ Context only. Relevant when the target concerns action choice, prioritization, t
 ## Non-Obvious Twists
 
 - A CATE estimate is not a policy. A policy needs an action set, decision-time information set, cost/harm model, and feasibility constraints.
+- Obtain accessible decision-defining constraints before freezing a final rule. Clearly scoped preliminary effects or conditional policies do not settle a choice that still depends on unknown costs or capacity.
 - Rule features must be observable at decision time and available in the intended deployment setting.
 - Budgeted allocation can favor stable moderate effects over unstable high predicted effects.
 - A learned rule should be compared against treat-all, treat-none, and current/default practice before it is framed as useful.
 - A rule should be labeled exploratory, cross-fitted, externally validated, or deployment-ready; those are different evidence states.
+- Synthetic-study validation supports a conclusion within the constructed study, not real-world deployment. A user's uncertain understanding of provenance does not override documented synthetic provenance.
+- Preserve the difference between uncertainty about which group gets a capacity slot and uncertainty about that group's positive net benefit. Bind subgroup explanations to the actual group and interval target.
+- A used holdout limits future independent validation; it supplies no reason by itself to deploy or retain the tested rule. An observed development/evaluation gap does not establish why the values differ.
 - Dynamic policies require decision-time rows, histories available before each action, feasible actions at each stage, candidate regimes, and sequential support.
 - SMART, Q-learning, A-learning, WOLS, `DynTxRegime`, `DTRreg`, `polle`, and off-policy evaluation are dynamic-regime tools only when the decision schedule and validation basis are explicit.
 - Transport starts after internal validity. External validity cannot rescue a biased source estimate.

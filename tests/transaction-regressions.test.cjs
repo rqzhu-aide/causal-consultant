@@ -118,14 +118,18 @@ for (const [firstName, secondName, expectedStatus, expectedType] of [
   test(firstName + " replay cannot be mistaken for " + secondName + " with identical request JSON", t => {
     const root = project(t);
     const start = startRequest(root);
-    assert.equal(runs.start(root, start).replayed, false);
+    assert.equal(runs.start(root, start, { legacyReplayRequest() { assert.fail("A fresh write must not inspect a legacy retry."); } }).replayed, false);
     assert.equal(runs.start(root, start).replayed, true);
     const request = { ...identities(root, "event-terminal"), run_id: "run-main", reason: "Fixture execution stopped." };
     const result = runs[firstName](root, request);
     assert.equal(result.committed, true);
     const before = journal(root);
-    assert.equal(runs[firstName](root, request).replayed, true);
+    const retry = runs[firstName](root, request);
+    assert.equal(retry.replayed, true);
+    assert.equal(retry.run_id, result.run_id);
+    assert.equal(retry.status, expectedStatus);
     rejectCode(() => runs[secondName](root, request), "EVENT_CONFLICT");
+    rejectCode(() => runs[secondName](root, request, { legacyReplayRequest() { assert.fail("A different operation must not inspect a legacy retry."); } }), "EVENT_CONFLICT");
     // Trusted operation identity is set by the helper, not an options override.
     rejectCode(() => runs[secondName](root, request, { eventType: expectedType }), "EVENT_CONFLICT");
     assert.deepEqual(journal(root), before);

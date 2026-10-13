@@ -47,8 +47,10 @@ specialists. Routine design diagnostics need no statistical-validity add-on.
 
 ## Reuse Audit Findings
 
-Before reusing findings, check source version, population and definitions;
-reassess affected changes or gaps, not automatically repeat the audit.
+Reuse an adequate audit of the same source version, population and definitions.
+Carry consequential unresolved construction facts into the selected analysis:
+resolve or qualify affected sample rules, measurements and dependence before
+relying on them. Reassess changed parts and gaps rather than repeating the whole audit.
 For a reused file version, pass its known audit hash as the matching input's
 `sha256`. A fresh snapshot alone does not validate old findings.
 
@@ -65,9 +67,23 @@ that reasoning and inspected sources in the ordinary handoff; no empty run is
 needed. Do not force an unfamiliar argument into the nearest familiar design.
 
 Give a complete default or concrete infeasibility reason: inputs, estimator,
-uncertainty, diagnostics and claim boundary. Compare formulations only when
-consequential. Software familiarity, fit and prediction do not establish design
+uncertainty, diagnostics and claim boundary. Return supported alternatives or
+existing information that could enable them for
+[Lead's recommendation and options](team_lead.md#closeout). Alternatives may
+change model assumptions or structure, data preparation, method, target or
+interpretation; they need not be different estimators. Explain consequences,
+requirements and limits without manufacturing two estimators or doing extra
+work to fill a menu. Additional-information routes ask about existing material
+the user can provide, not repeated experiments or new observations.
+Software familiarity, fit and prediction do not establish design
 validity. Synthetic API smoke tests are not study estimates or evidence of them.
+
+When multiple defensible methods are feasible, compare consequential differences
+in requirements, assumptions, interpretation and use. If an attainable study
+fact or user decision could materially change the preferred approach, return a
+concrete question and conditional recommendation to Lead, even if a default is
+currently viable. Resolve routine efficiency and software choices within this
+review.
 
 Feasibility can inspect structure and input diagnostics. It cannot compute the
 requested target result, a raw exposure-outcome contrast or a refined subgroup
@@ -79,8 +95,9 @@ permission to compute it.
 ## Execution
 
 Load [runs.md](runs.md). Confirm the current scope and authorization before
-starting or resuming protected output. Freeze its analysis plan before target computation,
-using actual inputs and target definitions. Save seeds, folds, transformations
+starting or resuming protected output. Start by the scope and explicit
+`responds_to` handling and `decision` references; the utility freezes its saved analysis
+plan before target computation. Use its bound inputs and target definitions. Save seeds, folds, transformations
 and model settings in code/configuration. Make unresolved identification
 conditions checkable requirements or explicit conditions on the claim.
 
@@ -92,39 +109,71 @@ matching totals alone cannot establish that the same units were analyzed.
 Derive diagnostic counts from inspected records, not constants or repeated
 totals presented as independent stages. Distinguish checked file properties
 from documented study properties and assumptions; unavailable receipt or timing
-fields remain unavailable. These checks belong to this worker when routine.
-If a consequential contradiction needs separate audit, repair or clarification,
-return it to the lead before estimating the affected target.
+fields remain unavailable. Resolve discrepancies through routine checks within
+this assignment when possible. Otherwise stop further work that depends on the
+unresolved premise and return the evidence, affected claim and precise distinction
+to Lead. If computation or diagnostics revealed the issue, preserve their outputs
+and provenance while qualifying or withholding the affected interpretation.
+Do not silently repair data, change target or launch another worker. Retain valid
+completed checks under the existing run lifecycle; unsettled interpretation alone
+does not make prior work failed.
 
 Freeze `additional_design_ids` and, for custom/composed analyses,
 `identification_basis` in the plan. Check that this execution's assignment and
 plan describe the same primary/additional guides; identify the newly executed
 run in the handoff. Earlier runs cited as evidence may have different scopes.
 
-For unfamiliar, combined or substantially modified implementations, inspect the
-methods source as well as software documentation and use a proportionate
-independent check: a solvable case, published example, simpler verified
-implementation or suitable simulation. Check the estimator and uncertainty,
-not just a successful API call. Save what the check establishes and what it
-cannot; one simulated realization does not establish interval coverage. The
-same specialist owns this check, without an automatic second review.
+Define each reported quantity's target, scale and aggregation weights once;
+construct its estimate and uncertainty for that quantity. A policy-value
+difference constructed from levels subtracts same-target, same-scale values.
+Different samples, auxiliary estimates or models may serve the same procedure;
+calibrate any reference distribution to its stated statistic.
+
+For unfamiliar, combined, substantially modified or replicated implementations,
+reconcile coded meanings, transformations, model terms including controls, timing
+and aggregation weights with available construction and methods sources before
+claiming implementation. Describe material reference-analysis departures as
+adaptations, not exact replication.
+Inspect documentation as needed and use a proportionate independent check:
+a solvable case, published example, simpler verified implementation or suitable
+simulation. A method name or approximation label needs support from the implemented
+procedure. Check the actual estimator and exact uncertainty procedure used for the claim;
+matching point estimates or a test at one null does not validate another interval
+construction. Save the check's scope and limits; one simulated realization does not establish
+coverage. The same specialist owns this check, without automatic second review.
 
 For cross-validation, give each fitting step only its training rows. Any learned
 eligibility rule, confidence bound, preprocessing or tuning choice belongs inside
 that training step, not a full-data object read from a surrounding scope. Save
 fold memberships and check train/evaluation separation against the actual inputs.
 For a separate held-out evaluation, save the candidate, utility, comparators and
-evaluation procedure before obtaining its outcomes; bind the received file's hash
-when constructing the executable scope. Input labels alone do not prove separation.
+evaluation procedure before obtaining its outcomes. Hash an available held-out
+file in the offered scope; for an unreleased file, use the
+[deferred held-out input rule](authorizations.md#deferred-held-out-input) and bind
+its hash at run start before computation. Input labels alone do not prove separation.
+Resolve decision-defining costs, capacity and decision-time features before
+freezing a final policy. If their values remain unknown, explicitly scoped effect
+estimation or conditional policy work may be useful, but does not settle that
+policy choice. A used holdout limits new independent validation; it is not a
+reason to deploy the evaluated rule.
 
-Check the inferential claim separately from the numerical calculation: what
-hypothesis a test addresses, what parameter an interval covers, and under which
-conditions its guarantee is exact, asymptotic or approximate. Inverting a test
+Check the inferential claim separately from the numerical calculation: identify
+the tested hypothesis or interval target, the assignment or exchangeability
+basis for any permutation, and the conditions making its guarantee exact,
+asymptotic or approximate. Inverting a test
 does not transfer its guarantee to a different hypothesis or effect target.
 In particular, do not describe an interval built under a constant-effect model
 as valid or conservative for a heterogeneous average effect without a justified
 argument for that claim. Correct enumeration or one simulation does not supply
 that argument. State an unresolved guarantee as unresolved.
+
+Choose dependence units from study construction and assignment evidence. Check
+identifiers and memberships for unintended merges or splits in the actual analysis
+samples. Qualify reused local codes with necessary parent identifiers when units
+are nested; preserve globally unique identifiers and documented groups spanning
+parent areas. Retain the checked mapping and counts in diagnostics. A software
+restriction does not make dependent observations independent. Justify any change
+in grouping and state the remaining limit on inference.
 
 Use immutable input snapshots, saved code/configuration and a contained run.
 Keep originals read-only. Choose estimation and sensitivity specifications from
@@ -147,8 +196,7 @@ universal battery or claiming that an untestable assumption was verified.
 
 Keep selected reported estimates and uncertainty in machine-readable results.
 Use [numerical presentation](presentation.md) for JSON-backed headline quantities
-and tables, selecting source locators instead of retyping numbers. Preserve units,
-population, comparison and uncertainty method together. Keep outcome gain, cost
+and tables under its generation/verification contract. Keep outcome gain, cost
 and net utility distinct and compute their arithmetic in the analysis output.
 Agreement of algebraically equivalent estimators is an implementation check, not
 independent scientific corroboration. Retain each actual check's result, tolerance
@@ -160,9 +208,15 @@ and claim boundary are traceable. Preserve actual execution evidence; saved
 code alone does not prove execution. Failed work stays failed/incomplete with its
 reason. Package failure does not establish scientific infeasibility.
 Retain invalidating diagnostics and weaken the claim, not force an estimate.
-Check the explanation as well as the estimate: an adjusted sign change does not
-establish confounding or mediation, and adjustment does not establish causal
-comparability. Attribute variable roles to evidence or explicit assumptions.
+Check the explanation against the actual comparison: if adjustment, population,
+target or weights change together, do not attribute the difference to adjustment
+alone. An adjusted sign change does not establish confounding or mediation, and
+adjustment does not establish causal comparability. Attribute variable roles to
+evidence or explicit assumptions.
+Check the named subgroup, comparison and uncertainty against their actual source;
+uncertainty about a policy's final capacity slot does not establish that the
+selected subgroup's net-benefit interval crosses zero. An observed
+development/evaluation difference alone does not identify its cause.
 An observed confidence interval is not a power analysis or a minimum detectable
 effect: do not turn its width into a claim that smaller effects are invisible.
 Numerical approximations, including a grid used for test inversion, retain
@@ -172,10 +226,17 @@ with a visible reason and timing.
 
 ## Handoff
 
+Follow the [record purposes and budgets](memory-records.md#prose-budgets-and-purpose).
+Summarize the supported answer and its use-changing limit; link detailed diagnostics
+instead of repeating the analysis across evidence, review and Lead's response.
+
 Use the [review contract](memory-records.md#checkpoints-and-reviews) to connect the
-work to the selected uncertainty, strategy and prospectively recorded interpretation. Return the
-review and proposed memory changes to its named commit owner, normally Lead;
-run execution commits remain immediate. The completed
+work to the selected uncertainty, strategy and prospectively recorded handling.
+Identify the assessed analysis run in `review.work_refs`; distinguish source
+evidence from the work assessed. Return the review and justified related memory
+changes to its named commit owner, normally Lead, identifying affected existing
+questions, assumptions or routes rather than only adding new findings.
+Run execution commits remain immediate. The completed
 assignment must match the bounded work selected before it began. Distinguish
 findings, assumptions and limitations; identify what the review ruled out and
 what remains possible. Computed study

@@ -2,7 +2,7 @@
 // Synthetic user/lead exchanges for tests of the current policy. Historical
 // replay fixtures remain separate and never acquire retrospective permission.
 const store = require("../../scripts/lib/store.cjs");
-const { PROTOCOL } = require("../../scripts/lib/exchanges.cjs");
+const { PROTOCOL, RENDERER } = require("../../scripts/lib/exchanges.cjs");
 const state = root => store.readJournal(root).state;
 function ids(root, event_id) { const value = state(root); return { event_id, expected_project_id: value.state_meta.project_id, expected_last_event_id: value.state_meta.last_event_id }; }
 function record(root, type, payload, event_id) { return store.record(root, { ...ids(root, event_id), type, payload }); }
@@ -15,10 +15,10 @@ function interpret(root, suffix, next_action, extra = {}, userText = "Please hel
   record(root, "reply_interpreted", { protocol: PROTOCOL, changes: { evidence: [statement(incoming, userText)] }, interpretation }, "event-in-" + suffix);
   return interpretation;
 }
-function exchange(root, interpretation, suffix, response, completed_work_refs = []) {
+function exchange(root, interpretation, suffix, response, completed_work_refs = [], renderer = RENDERER) {
   return record(root, "exchange_prepared", { protocol: PROTOCOL, exchange: { exchange_id: "exchange-" + suffix, turn_id: interpretation.turn_id,
     interpretation_ref: interpretation.interpretation_id, basis_refs: [], completed_work_refs,
-    reconciliation: { changes: [], limitations: ["Synthetic fixture only."], unresolved: [], next_direction: "The user chooses the next bounded action." }, renderer: "lead-markdown-v4", response } }, "event-out-" + suffix);
+    reconciliation: { changes: [], limitations: ["Synthetic fixture only."], unresolved: [], next_direction: "The user chooses the next bounded action." }, renderer, response } }, "event-out-" + suffix);
 }
 function deliver(root, exchange_ref, suffix, response_sha256) {
   const loaded = store.readJournal(root);
@@ -31,7 +31,8 @@ function deliver(root, exchange_ref, suffix, response_sha256) {
   const message_path = "fixture-message-" + suffix + ".txt";
   require("node:fs").writeFileSync(require("node:path").join(root, message_path), require("../../scripts/lib/exchanges.cjs").renderExchange(outgoing));
   require("../../scripts/lib/delivery.cjs").observe(root, { ...ids(root, "event-delivery-" + suffix),
-    delivery_id, exchange_ref, observation: "assistant_emission", message_path, source_ref: "fixture-host:assistant-" + suffix });
+    delivery_id, exchange_ref, observation: "assistant_emission", message_path, source_ref: "fixture-host:assistant-" + suffix,
+    capture_message: { conversation_ref: "fixture-host:conversation", message_ref: "assistant-" + suffix, ordinal: loaded.state.deliveries.length + 1 } });
   return delivery_id;
 }
 function emptyResponse(status) { return { status, questions: [], questions_none: "No additional information is needed for this bounded decision.", next_steps: [], next_steps_none: "You may pause or ask another question." }; }
@@ -53,7 +54,7 @@ function prepareScope(root, original, options = {}) {
   if (!state(root).state_meta.consultation_policy) record(root, "consultation_policy_activated", { policy: "consultation-loop-v1", reconciliation: "Synthetic current-policy fixture; no historical approval is inferred." }, "event-activate-" + unique(root));
   const plan = structuredClone(original);
   for (const key of ["interpretation_ref", "scope_ref", "authorization_ref"]) delete plan[key];
-  for (const input of plan.inputs) if (!input.sha256) {
+  for (const input of plan.inputs) if (!input.sha256 && !input.deferred_release) {
     input.sha256 = require("../../scripts/lib/files.cjs").sha256(require("node:fs").readFileSync(require("node:path").resolve(root, input.path)));
   }
   let findings = options.findings_refs || [];
@@ -81,7 +82,7 @@ function prepareScope(root, original, options = {}) {
     }
     for (const target of related) if (!basis.includes(target)) basis.push(target);
   }
-  for (const ref of require("../../scripts/lib/authorizations.cjs").requiredBasisRefs(current, basis)) if (!basis.includes(ref)) basis.push(ref);
+  for (const ref of require("../../scripts/lib/authorizations.cjs").requiredBasisRefs(current, basis, { current: true })) if (!basis.includes(ref)) basis.push(ref);
   const scope = { scope_id: "scope-" + suffix, action: plan.kind, assignment,
     public_scope: { target: plan.target || plan.purpose, population: plan.population || "Population described by the selected sources",
       evidence: plan.inputs.map(input => input.source_ref).join(", ") || (plan.evidence_refs || basis).join(", "),
@@ -95,7 +96,7 @@ function prepareScope(root, original, options = {}) {
   response.next_steps = [{ option_id: "choose-" + suffix, kind: "action", label: plan.kind === "report" ? "Produce the final report" : "Run the proposed analysis", actor: "consultant",
     scope: "Use this exact proposed scope and its limitations.", basis_refs: basis, assignment, scope_ref: scope.scope_id, proposal: scope.public_scope, execution_plan: plan }];
   if (findings.length) response.findings = { work_refs: findings, summary: "These are the current findings supporting the proposed report.", diagnostics: ["Reviewed the retained evidence."], limitations: [scope.public_scope.claim_boundary] };
-  const receipt = exchange(root, it, suffix, response);
+  const receipt = exchange(root, it, suffix, response, [], options.renderer);
   const delivery_ref = deliver(root, receipt.exchange_id, suffix, receipt.response_sha256);
   return { scope, suffix, exchange_ref: receipt.exchange_id, option_id: response.next_steps[0].option_id, delivery_ref, rendered_response: receipt.rendered_response };
 }
@@ -120,4 +121,4 @@ function preparePlan(root, plan, options = {}) {
   return { ...structuredClone(plan), interpretation_ref: it.interpretation_id,
     operations: plan.kind === "discovery" ? ["graph_exploration"] : [plan.transformations ? "preparation" : "data_quality"] };
 }
-module.exports = { state, ids, record, statement, interpret, exchange, deliver, emptyResponse, prepareScope, acceptScope, authorizePlan, preparePlan };
+module.exports = { state, ids, record, statement, interpret, exchange, deliver, emptyResponse, findingReview, prepareScope, acceptScope, authorizePlan, preparePlan };

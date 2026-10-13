@@ -16,6 +16,12 @@ accepted analysis scope; do not perform them as graph diagnostics or discovery.
 
 ## Method and Assumptions
 
+Before running or interpreting discovery, check that the proposed test or score
+fits the variable types and data structure, including mixed variables, dependence
+and multiple environments. Check sample size relative to the variable set,
+scaling/preprocessing and leakage from constructed or text-derived features.
+Reuse adequate checks; resolve only gaps that could change the method or interpretation.
+
 Choose from the target, data structure and assumptions:
 
 - PC/stable-PC, GES or score search for IID CPDAG/DAG exploration when causal
@@ -64,11 +70,14 @@ Review existing artifacts at their exact source rather than inventing a replacem
 
 ## Handoff
 
+Use the [record purposes and budgets](memory-records.md#prose-budgets-and-purpose)
+to summarize what changed; retain detailed graph diagnostics in their saved output.
+
 Return one review to the [named commit owner](memory.md#ownership-and-save-points),
 normally Lead, with sources, method, candidate findings, performed diagnostics,
 limitations and what structural hypotheses were weakened or remain plausible.
 Use the [review contract](memory-records.md#checkpoints-and-reviews), linked to
-Helper's committed interpretation and bounded assignment, and the
+Helper's committed handling and bounded assignment, and the
 [study-record fields](memory-records.md#study-and-user-records) for evidence or candidate changes.
 Use language such as "compatible with", "candidate edge" or "unstable orientation".
 New computed evidence points to the finalized run and manifested file.

@@ -47,11 +47,12 @@ function reportScope(root, review, freshEvent) {
   const state = f.state(root);
   const refs = ["data", "target", review.review_id];
   if (state.result_conditions?.length) refs.push("condition-register", "assumption-register");
+  const required = require("../scripts/lib/authorizations.cjs").requiredBasisRefs(state, refs, { current: true });
   return { scope_id: "scope-report", action: "report", assignment: { specialist_id: "report_writer", operation: "reporting" },
     public_scope: { target: plan.purpose, population: "People described by the register", evidence: "The reviewed register",
       approach: "Summarize the reviewed findings", checks: [], outputs: "A Markdown report", claim_boundary: plan.claim_boundary },
     execution_plan: plan, findings_refs: [review.review_id],
-    basis_versions: refs.map(ref => ({ ref, event_ref: state.history_index[ref]?.event_ref || freshEvent })) };
+    basis_versions: required.map(ref => ({ ref, event_ref: state.history_index[ref]?.event_ref || freshEvent })) };
 }
 function closeout(it, review, scope) {
   const response = { ...f.emptyResponse(review.summary), findings: { work_refs: [review.review_id], summary: review.summary,
@@ -91,7 +92,8 @@ test("prerecording review and conditions permits one findings-bound report offer
     { ref: "data", event_ref: "event-basis" }, { ref: "target", event_ref: "event-basis" },
     { ref: "review-work", event_ref: "event-review-and-conditions" },
     { ref: "condition-register", event_ref: "event-review-and-conditions" },
-    { ref: "assumption-register", event_ref: "event-review-and-conditions" }
+    { ref: "assumption-register", event_ref: "event-review-and-conditions" },
+    { ref: "user-work", event_ref: "event-in-work" }
   ]);
   const incomplete = { ...scope, basis_versions: scope.basis_versions.filter(binding => binding.ref !== "condition-register") };
   rejectUnchanged(root, "STALE_SCOPE", () => f.record(root, "exchange_prepared", { protocol: PROTOCOL,

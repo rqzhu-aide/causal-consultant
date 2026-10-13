@@ -138,7 +138,7 @@ test("a source repair is shown beside its original intake and never consumes a n
   assert.match(JSON.stringify(conversation.recent_intakes[0].incoming[0]), /retrieve the log/);
 });
 
-test("old review-backed partial answers remain discoverable without expanding unrelated work", t => {
+test("old review-backed partial answers stay visible while their question remains open", t => {
   const root = project(t), assignment = { specialist_id: "data_audit", operation: "review" };
   write(root, { questions: [{ question_id: "question-seats", origin: "consultant", status: "open",
     statement: "How many seats are available and may unused seats be pooled?" }],
@@ -168,30 +168,34 @@ test("old review-backed partial answers remain discoverable without expanding un
     f.deliver(root, receipt.exchange_id, suffix);
   }
   const resolution = structuredClone(f.state(root).questions[0].resolution);
-  const assertOmission = () => {
+  const assertCurrentSupport = () => {
     const journal = fs.readFileSync(path.join(root, "journal.jsonl")), current = store.context(root, { mode: "brief" }).brief;
     assert.equal(current.recent_intakes.length, 5);
     assert.ok(!current.recent_intakes.some(item => item.intake_id === it.interpretation_id));
     assert.match(current.markdown, /May unused seats be pooled/);
-    assert.doesNotMatch(current.markdown, /Seventeen seats|Center B was not inspected/);
-    const warning = current.coverage.case.warnings.find(item => item.code === "answer_review_not_displayed");
-    assert.equal(warning.record_ref, "question-seats");
-    assert.deepEqual(warning.related_refs, [review.review_id]);
-    assert.deepEqual(warning.retrieval.history, { record_id: review.review_id });
-    assert.match(current.markdown, /Read history record_id=review-seats/);
-    assert.ok(!current.coverage.case.work.included_refs.includes(review.review_id));
-    const saved = store.history(root, warning.retrieval.history).events.find(event => event.payload.review?.review_id === review.review_id).payload.review;
+    assert.match(current.markdown, /Seventeen seats/);
+    assert.match(current.markdown, /Center B was not inspected; pooling is not documented/);
+    assert.ok(!current.coverage.case.warnings.some(item => item.code === "answer_review_not_displayed"));
+    assert.match(current.markdown, /specialist reviews \(review-seats\)/);
+    assert.match(current.markdown, /For any card ID, use history record_id=<ID>/);
+    assert.ok(current.coverage.case.work.included_refs.includes(review.review_id));
+    const saved = store.history(root, { record_id: review.review_id }).events.find(event => event.payload.review?.review_id === review.review_id).payload.review;
     assert.deepEqual(saved.findings, review.findings);
     assert.deepEqual(saved.limitations, review.limitations);
     assert.deepEqual(fs.readFileSync(path.join(root, "journal.jsonl")), journal);
   };
-  assertOmission();
+  assertCurrentSupport();
   write(root, { case_brief: { work_refs: [review.review_id] } }, "select-review");
   const selected = store.context(root, { mode: "brief" }).brief;
   assert.match(selected.markdown, /Seventeen seats|Center B was not inspected/);
   assert.ok(!selected.coverage.case.warnings.some(item => item.code === "answer_review_not_displayed"));
   write(root, { case_brief: { work_refs: [] } }, "deselect-review");
-  assertOmission();
+  assertCurrentSupport();
   assert.deepEqual(f.state(root).questions[0].resolution, resolution);
   assert.deepEqual(f.state(root).case_brief, { knowledge_refs: [], work_refs: [] });
+  write(root, { questions: [{ ...f.state(root).questions[0], status: "retired", reason: "The user stopped pursuing the pooling question." }] }, "retire-question");
+  const retired = store.context(root, { mode: "brief" }).brief;
+  assert.ok(!retired.coverage.case.work.included_refs.includes(review.review_id));
+  assert.doesNotMatch(retired.markdown, /Seventeen seats|Center B was not inspected/);
+  assert.deepEqual(f.state(root).questions[0].resolution, resolution);
 });

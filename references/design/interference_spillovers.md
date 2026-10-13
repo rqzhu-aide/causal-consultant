@@ -48,7 +48,7 @@ on design evidence, not attractive target results.
 - `estimand_twist`: consider reframing isolated-unit ATE into direct, indirect, spillover, total, overall, saturation, exposure-response, contamination-audit, or descriptive map target.
 - `diagnostic_twist`: prioritize exposure-map support, own-by-spillover exposure cells, timing of ties, homophily/confounding, contamination, sensitivity to radius/tie weights, and dependence-aware inference.
 - `implementation_twist`: use two-stage randomized estimators, partial-interference IPW, exposure-mapping estimators, network/spatial robust inference, generalized propensity, AIPW/TMLE-style logic, or randomization inference only when the design supports them.
-- `fallback_twist`: if exposure mapping, support, timing, or dependence fails, use contamination audit, descriptive spillover map, or recommendation to repair another design's no-interference assumption.
+- `fallback_twist`: if exposure mapping, support, timing or dependence does not support the requested target, retain a justified narrower contrast, contamination finding, descriptive map or conditional claim. Own-treatment contrasts under the study's allocation do not alone establish the value of changing that allocation; their interpretation and uncertainty still depend on the assignment and interference.
 
 ## Design Diagnostics
 

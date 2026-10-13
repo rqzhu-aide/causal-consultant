@@ -49,6 +49,7 @@ on design evidence, not attractive target results.
 - `estimand_twist`: consider reframing a broad treatment-effect request into an assignment-based contrast when appropriate; use CACE/LATE only for noncompliance or encouragement under IV assumptions; flag triggered-user, per-protocol, or receipt-based requests as needing a different target/assumption layer.
 - `diagnostic_twist`: prioritize SRM, assignment flow, pre-assignment balance, attrition/missingness, compliance/crossover, cluster/block checks, multiplicity inventory, or randomization inference depending on the decision.
 - `implementation_twist`: add ANCOVA, Lin adjustment, or CUPED for precision only with pre-assignment covariates; add cluster-aware/block-aware inference when design requires it; do not use flexible tools to repair broken assignment logic.
+- Clustered power planning: baseline precision gains need within/between-cluster covariance assumptions matched to the proposed analysis. A learner correlation alone does not justify multiplying the whole clustered variance by `1 - rho^2`. When unknown, show explicit conditional scenarios, including the unadjusted case.
 - `fallback_twist`: if randomization cannot be verified or post-assignment selection breaks the target, use descriptive arm summaries, design audit, feasibility review, or future-experiment requirements instead of causal effect wording.
 
 ## Design Diagnostics

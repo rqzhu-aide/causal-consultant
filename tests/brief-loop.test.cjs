@@ -29,6 +29,84 @@ function observed(root, it, suffix, response, work = []) {
   read(root);
   return receipt;
 }
+function closeDirection(root, it, suffix, next_direction, extra = {}) {
+  return f.record(root, "exchange_prepared", { protocol: PROTOCOL, exchange: {
+    exchange_id: "exchange-" + suffix, turn_id: it.turn_id, interpretation_ref: it.interpretation_id,
+    basis_refs: [], completed_work_refs: [], renderer: "lead-markdown-v4",
+    reconciliation: { changes: [], limitations: [], unresolved: [], next_direction },
+    response: f.emptyResponse("The current question has been discussed."), ...extra
+  } }, "event-out-" + suffix);
+}
+function directionCard(brief) {
+  return brief.markdown.split("### Latest Lead proposed direction\n")[1]?.split("\n### ")[0];
+}
+
+test("brief separates a reconciled incoming action from Lead's prepared and observed proposal", t => {
+  const root = project(t);
+  f.record(root, "checkpoint", { checkpoint: { checkpoint_id: "checkpoint-capacity", status: "assessing",
+    primary_uncertainty: "The number of seats is unknown.", why_it_matters: "Capacity constrains the study." } }, "event-capacity");
+  const it = incoming(root, "capacity", "Seventeen seats; I still do not know the pooling rule.", direct);
+  let brief = read(root);
+  assert.match(brief.markdown, /### Selected incoming action awaiting Lead closeout \(interpretation-capacity\)/);
+  assert.equal(directionCard(brief), undefined);
+  closeDirection(root, it, "capacity", "Ask only whether unused seats can be pooled.");
+  brief = read(root);
+  assert.match(brief.markdown, /### Incoming action reconciled by Lead \(interpretation-capacity\)/);
+  assert.doesNotMatch(brief.markdown, /Current incoming direction|Selected incoming action awaiting Lead closeout/);
+  assert.match(directionCard(brief), /Ask only whether unused seats can be pooled/);
+  assert.match(directionCard(brief), /Latest incoming turn/);
+  assert.match(directionCard(brief), /Proposed next direction, not a user selection or permission to execute/);
+  assert.match(directionCard(brief), /"status":"unobserved"/);
+  assert.match(directionCard(brief), /"record_id":"exchange-capacity"/);
+  // Displaying a saved next direction cannot repair an omitted semantic update.
+  assert.equal(f.state(root).consultation.primary_uncertainty, "The number of seats is unknown.");
+  f.deliver(root, "exchange-capacity", "capacity");
+  assert.match(directionCard(read(root)), /"status":"assistant_emission"/);
+});
+
+test("new input and reconciliation govern the proposal despite late older closeouts and observations", t => {
+  const root = project(t);
+  const old = incoming(root, "old", "Discuss the comparison.", direct);
+  const latest = incoming(root, "latest", "Focus on the timing records first.", direct);
+  closeDirection(root, old, "old", "OLD PROPOSAL: discuss the comparison again.");
+  let brief = read(root);
+  assert.match(brief.markdown, /Selected incoming action awaiting Lead closeout \(interpretation-latest\)/);
+  assert.match(directionCard(brief), /Earlier turn; newer incoming direction awaits Lead closeout/);
+  f.deliver(root, "exchange-old", "old");
+  assert.match(directionCard(read(root)), /Earlier turn; newer incoming direction awaits Lead closeout/);
+  closeDirection(root, latest, "latest", "NEW PROPOSAL: inspect the actual timing records.", { reconciles: [old.interpretation_id] });
+  brief = read(root);
+  assert.match(directionCard(brief), /NEW PROPOSAL/);
+  assert.match(directionCard(brief), /Latest incoming turn/);
+  assert.doesNotMatch(directionCard(brief), /OLD PROPOSAL/);
+  assert.equal(f.state(root).turns.find(turn => turn.interpretation_ref === old.interpretation_id).exchange_ref, "exchange-latest");
+  closeDirection(root, old, "old-revised", "LATE OLD PROPOSAL: a revised explanation.", { supersedes: "exchange-old" });
+  f.deliver(root, "exchange-old-revised", "old-revised");
+  brief = read(root);
+  assert.match(directionCard(brief), /NEW PROPOSAL/);
+  assert.match(directionCard(brief), /"status":"unobserved"/);
+  assert.doesNotMatch(directionCard(brief), /LATE OLD PROPOSAL|assistant_emission/);
+  f.deliver(root, "exchange-latest", "latest");
+  assert.match(directionCard(read(root)), /"status":"assistant_emission"/);
+});
+
+test("closing a selected protected action removes current-direction labeling without inventing completed work", t => {
+  const root = project(t);
+  fs.writeFileSync(path.join(root, "data.json"), "[1,3,5]");
+  const plan = f.authorizePlan(root, { kind: "analysis", objective: "Describe the supplied values", claim_boundary: "Descriptive only.",
+    inputs: [{ path: "data.json", source_ref: "data.json" }], target: "Sample mean", population: "Three rows", treatment: "None",
+    comparator: "None", outcome: "Recorded value", timing: "One collection", estimand: "Sample mean", design_id: "descriptive_association",
+    estimator: "Arithmetic mean", exclusions: [], diagnostics: ["Count observed values."] });
+  assert.match(read(root).markdown, /\*\*current direction:\*\* true/);
+  const it = f.state(root).interpretations.find(item => item.interpretation_id === plan.interpretation_ref);
+  closeDirection(root, it, "deferred", "The selected work was not performed; discuss the outstanding issue first.");
+  const brief = read(root);
+  assert.equal(f.state(root).runs.length, 0);
+  assert.match(brief.markdown, /\*\*current direction:\*\* false/);
+  assert.match(brief.markdown, /\*\*direction turn closed:\*\* true/);
+  assert.match(brief.markdown, /saved closeout is not proof that every selected task was completed/);
+  assert.match(directionCard(brief), /selected work was not performed/);
+});
 
 test("vague clarification loops preserve the original choice through rollover and finish on a clear answer", t => {
   const root = project(t), opening = incoming(root, "opening", "Help me choose the next investigation.", direct);
@@ -126,13 +204,21 @@ test("completed analysis resumes under new input, saves its old handoff once and
   f.deliver(root, receipt.exchange_id, "results");
   assert.equal(f.state(root).runs.length, 1);
   assert.equal(f.state(root).specialist_reviews.length, 1);
+  const discussed = read(root);
+  assert.match(discussed.markdown, /### Lead findings/);
+  f.record(root, "memory_updated", { changes: { case_brief: { knowledge_refs: [], work_refs: [] } } }, "event-hide-discussed-narrative");
+  const curated = read(root);
+  assert.doesNotMatch(curated.markdown, /### Lead findings/);
+  assert.deepEqual(curated.unfinished, discussed.unfinished);
+  // Report eligibility uses the observed, version-current discussion in the
+  // journal, even when its completed narrative is no longer displayed.
   const offer = f.prepareScope(root, { kind: "report", objective: "Report the discussed descriptive result", purpose: "Describe the supplied rows and limitations", claim_boundary: "No causal effect established.", inputs: [], evidence_refs: ["data"], format: "Markdown" }, { findings_refs: ["run-analysis", review.review_id] });
   assert.equal(f.state(root).runs.length, 1);
   const approved = f.acceptScope(root, offer, { user_text: "Write the descriptive report under those terms." });
   runs.start(root, { ...f.ids(root, "event-report-start"), run_id: "run-report", plan: approved });
   const { event_id, ...ids } = f.ids(root, "unused");
   runs.write(root, { ...ids, run_id: "run-report", path: "report.md", content: "Mean 3 among three supplied rows. No causal effect is established.\n" });
-  runs.finalize(root, { ...f.ids(root, "event-report-final"), run_id: "run-report", code_paths: [], output_paths: ["report.md"], diagnostic_paths: [], environment: { runtime: process.version }, deviations: [] });
+  runs.finalize(root, { ...f.ids(root, "event-report-final"), run_id: "run-report", code_paths: [], output_paths: ["report.md"], deliverable: { primary: "report.md" }, diagnostic_paths: [], environment: { runtime: process.version }, deviations: [] });
   const reportIt = f.state(root).interpretations.find(item => item.interpretation_id === approved.interpretation_ref);
   observed(root, reportIt, "report-final", f.emptyResponse("The selected descriptive report is saved. You may reopen the study later."), ["run-report"]);
   assert.equal(fs.readFileSync(path.join(root, "runs/run-analysis/result.json"), "utf8"), result);

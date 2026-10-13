@@ -47,7 +47,7 @@ function start(root, extra = {}, prepared = proposal(root, extra)) {
 function finish(root) {
   const { event_id, ...ids } = identity(root, "unused");
   runs.write(root, { ...ids, run_id: "run-report", path: "report.md", content: "A summary of selected source evidence, not new computation.\n" });
-  return runs.finalize(root, { ...identity(root, "event-finish"), run_id: "run-report", code_paths: [], output_paths: ["report.md"], diagnostic_paths: [], environment: { authoring: "test fixture" }, deviations: [] });
+  return runs.finalize(root, { ...identity(root, "event-finish"), run_id: "run-report", code_paths: [], output_paths: ["report.md"], deliverable: { primary: "report.md" }, diagnostic_paths: [], environment: { authoring: "test fixture" }, deviations: [] });
 }
 function frozen(root) { return JSON.parse(fs.readFileSync(path.join(root, "runs/run-report/plan.yaml"), "utf8")); }
 function treeHash(root) {

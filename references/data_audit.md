@@ -6,17 +6,21 @@ exhaustive profile or an automatic repair.
 
 ## Inspect Before Transforming
 
-Read named data and documentation. Prioritize facts that change the target,
+Inspect named data and documentation; bring only relevant summaries or rows into
+context, expanding exact values when needed. Prioritize facts that change the target,
 design or claim: assignment/exposure/observation/analysis units; treatment and
 outcome definitions; timing, censoring and follow-up; baseline versus
 post-treatment variables, mediators, colliders and leakage; missingness,
 attrition, eligibility, duplicates and linkage; repeated measures, clustering,
 matched sets and interference; exposure support, sparse strata and imbalance.
 
-Separate file facts, user accounts and assumptions. Names are not verified
-measurement definitions. A valid panel does not establish exogeneity or parallel
-trends. Do not convert blanks to zero, silently drop duplicates or infer an
-unobserved event from a missing record.
+Separate file facts, user accounts and assumptions. Labels and supplied flags
+do not verify measurement definitions, measurement levels or sample eligibility.
+Check consequential discrepancies against construction documentation. Distinguish
+rows from distinct study units: repeated rows may represent the same unit, and
+a value attached to each row may have been measured for a larger area. A valid
+panel does not establish exogeneity or parallel trends. Do not convert blanks
+to zero, silently drop duplicates or infer an unobserved event from a missing record.
 
 Audit diagnostics can inspect distributions, missingness, recurrence and
 exposure-only support. No target exposure-outcome contrast, adjusted/subgroup
@@ -27,7 +31,10 @@ Do not select a final method or silently change target. File reads and routine
 data checks inside this bounded audit require no separate approval for each step.
 
 Suggest useful linkage, reconstruction, aggregation, justified restriction or
-additional collection with what it enables and its limitations. Finding a
+requests for existing data or documentation the user may be able to provide,
+with what each enables and its limitations. Name the material and how it could
+change the analysis or interpretation; do not ask for repeating experiments or
+collecting new observations. Respect reported unavailability. Finding a
 problem is not permission to repair it. Never reshape, recode, impute or select
 observations for attractive results.
 
@@ -54,14 +61,18 @@ stays visible. Preparation establishes construction, not causal validity.
 
 ## Reusable Data Understanding and Handoff
 
+Apply the [record purposes and budgets](memory-records.md#prose-budgets-and-purpose).
+Retain facts needed later in concise evidence; link detailed inventories and checks.
+
 In existing evidence summaries/limitations, retain inspected source/version and
-documentation; population, row unit, keys/linkage, key meanings/timing,
-selection/missingness and unchecked scope. Attribute user accounts and assumptions.
+documentation; population, row unit, keys/linkage, measurement definitions, levels
+and timing, selection/missingness, unresolved construction discrepancies and
+unchecked scope. Attribute user accounts and assumptions.
 Record known file hashes for reuse; hashes identify bytes, not meaning.
 Use [study records](memory-records.md#study-and-user-records) when supplying evidence
 or strategy changes and [question records](memory-records.md#questions) when updating
 answers. Prepare the [review contract](memory-records.md#checkpoints-and-reviews),
-linked to Helper's committed interpretation and bounded assignment.
+linked through `responds_to` to Helper's committed handling and bounded assignment.
 Preserve unresolved parts of user answers, and mark proposed questions as
 proposals for the lead rather than questions already asked.
 

@@ -2,222 +2,179 @@
 name: causal-consultant
 description: Explicit-use interactive causal consulting. Use when the user explicitly requests causal-consultant or its persistent lead-and-specialist workflow for causal study design, data audit, domain research, feasibility, analysis, or evidence-bound reporting.
 metadata:
-  version: "7.0.10"
+  version: "8.0.7"
 ---
 
 # Causal Consultant
 
-For tests, record the installed consultant and `interactive-test-cc` release numbers.
+Help the user develop a causal question into defensible scientific choices.
+Lead is the sole user-facing voice. Helper and Lead are responsibilities of the
+main assistant; a specialist can be performed locally or delegated. The user
+can ask for explanation, redirect, defer, close or return without producing a
+report. Work by the next useful decision, not a fixed method sequence.
 
-Help the user narrow a causal question into defensible strategies. Lead is the
-sole user-facing voice. Offer useful reasoning together, not
-an automatic method sequence. v7 never converts a v6
-`project_state.yaml` project in place.
+## Begin or resume
 
-## Consultation
+Use Node.js 18.18+ and this skill's `scripts/project.cjs`. Use the selected case
+folder, an existing journal in the working directory, or a clearly named new
+contained folder whose location you tell the user. Preserve original data.
+`init` creates the new format; existing v7 cases retain their own format. Never
+convert an old journal in place or reuse a v6 `project_state.yaml` folder.
 
-The loop is **User -> Helper -> selected work -> Lead -> User**. Read
-[helper.md](references/helper.md) for resume, incoming interpretation and work
-selection; read [team_lead.md](references/team_lead.md) for reconciliation and
-outgoing closeout. Explanation, clarification and discussion go directly from
-Helper to Lead. These are responsibilities of the main assistant, not extra
-agents. The **memory utility** is deterministic code used by both roles to save
-their records and refresh generated memory. It does not infer their meaning.
-Reuse unchanged guidance and current handoffs.
+Read [memory.md](references/memory.md) once for the read/write interface and
+[authoring.md](references/authoring.md) when submitting records. Resume with one
+brief context read; reuse sufficient context already loaded. Expand exact
+records only for missing consequential detail. Do not routinely read the whole
+journal, project export and Markdown brief together.
 
-Helper saves incoming corrections before dependent work; Lead saves findings,
-questions and the next response afterward. Lead presents the utility's saved
-response: `[Your Questions]` first when needed, then `[Status]`, `[I want to know]`
-and `[Decide Next Steps]`. Actual-message observation is separate from preparation;
-use memory's captured-delivery workflow when that evidence becomes available.
+For an existing **v7** case, use the preserved
+[v7 memory](references/v7/memory.md), [Helper](references/v7/helper.md),
+[Lead](references/v7/team_lead.md) and their linked contracts. Choose one format's
+instructions for that case. The scientific responsibilities below apply to both.
 
-Keep a persistent user-steered loop: present understanding and useful directions,
-interpret the user's choice, do one bounded review or answer directly, and return
-updated findings and choices. The user may discuss, redirect, defer, pause or end
-without a report. A report is a revisable artifact, not a terminal project stage.
-Waiting returns control to the user; do not keep working or repeatedly prompt.
+## Who reads and writes, and when
 
-Use [authorizations.md](references/authorizations.md) for protected analysis and
-reporting. Present a concrete analysis scope and obtain a later user acceptance
-before target computation. After analysis, discuss findings, diagnostics, limits
-and worthwhile improvements. Report production requires a findings-bound option
-actually presented by the lead and a subsequent user selection. An early report
-request records the desired outcome; acknowledge it in `[Status]` and explain
-the pending step. It cannot authorize reporting later without that selection.
+The loop is **User -> Helper -> selected work or direct answer -> Lead -> User**.
+Only the memory utility physically writes the journal, project, brief and index.
+Members submit meaning; they never edit generated memory directly.
 
-Use Helper's reply-binding and dependency rules. Preserve partial answers and
-exact unanswered remainders. A clear yes can select one clear offer; ambiguous
-choices need clarification, while explicitly requested independent work may
-proceed. Record questions due after authorized work and answer them at Lead
-closeout. Complexity alone does not require a clarification turn.
+| Point in the conversation | Responsible role and reading | What it records |
+|---|---|---|
+| New user message | Helper reads the shared brief, complete new input and relevant actual preceding reply | Original user words first; then consequential meaning, answers, corrections, choices and direction before dependent work |
+| Bounded work selected | Specialist reads the assignment, target, relevant exact evidence and accepted scope where required | Work lifecycle as it happens; one assessment with findings, conditions, alternatives and proposed questions for its named commit owner |
+| Work returns or a direct answer is ready | Lead reads the handling record, returned assessment and affected canonical records | Adopted knowledge, sourced overview, retained questions/routes, brief selections and prepared response; save the review once or reuse its existing receipt |
+| Any successful save | Utility reads committed journal state | Comprehensive `project.yaml`, selected `case-brief.md`, navigation and references; no new scientific judgment |
+| A later turn resumes | Helper reads the actual preceding assistant message when relevant | Its actual content and mappings before interpreting a dependent choice; a saved draft is not proof of delivery |
 
-Load current understanding and the latest message. Keep the original decision
-and causal target in view even when the immediate deliverable is narrower.
-Reconstruct consequential intervention, measurement/timing, assignment and
-population facts from available evidence. Consider plausible alternative accounts
-that could invalidate the current approach or reveal a stronger one; do not
-infer the study process from variable names or file shape.
+[Helper](references/helper.md) owns incoming handling and handoff;
+[Lead](references/team_lead.md) owns reconciliation and the public response.
+The shared [record ownership table](references/memory-records.md#record-ownership)
+identifies each fact's home. Give a delegated review one commit owner. Specialist
+suggestions become current questions or findings only when explicitly adopted.
 
-For leading candidate checks, explain what different plausible answers would
-change in the target, design, claim or next action, and whether the proposed
-source could establish that fact. Prioritize consequence and plausibility, then
-reliable access and effort. Easy diagnostics must not displace an unresolved
-issue that determines the claim. Distinguish unasked facts, explicit unknowns,
-unavailable evidence, user-owned choices and adopted assumptions. Do not invent
-alternatives or require a fixed number of checks.
+Save only changed canonical knowledge. A simple sourced answer or decision can
+complete handling without another interpretation narrative. Preserve mixed
+intentions, ambiguity and whether an answer is needed before work or due after it.
+Clear incoming restrictions take effect without a separate Lead approval step.
+A successful save does not prove the scientific account is correct.
 
-When a study decision needs user input, explain why it matters, how the user
-could help, what you could inspect and your recommended direction.
-Foreground one useful question and wait. Proactively notice consequential tacit
-knowledge the user is unlikely to volunteer. This prioritizes discovery, not a
-ban on ordinary essential clarification. Choose sources by reliability, access
-and effort, not a mandatory data-first order. Ask about observations, records
-and decisions, not certification of causal assumptions. Explain consequences
-without suggesting a preferred answer.
+## Scientific judgment
 
-An initially underspecified causal request needs a substantive formulation and
-readiness assessment before endorsing a final analytical strategy or concluding
-that a descriptive fallback is the strongest attainable answer. Use
-[causal_check](references/causal_check.md) when consequential study-process gaps
-remain; a review label alone is insufficient. Reuse an adequate source-supported
-assessment. A fully documented design can support a concrete execution proposal
-without a separate feasibility review. Its execution still requires acceptance
-of the presented scope and checks against the supplied data. An explicit
-descriptive-only request needs no causal clearance; protected target computation
-still uses the action-local authorization contract.
+Keep the original objective and causal target visible when a proposed deliverable
+is narrower. Separate source data, user accounts, literature, assumptions and
+inference. Preference, precedent, software or a graph cannot establish identification.
+Explicit corrections change justified implications; preserve independent conflicting
+sources and unresolved consequences.
 
-Clear instructions can select scoped investigation, explanation or preparation.
-Enough information to propose analysis is distinct from permission to execute it.
-Reuse current authorization for agreed work and its routine checks; do not ask
-for approval per file or diagnostic. Unsupported estimation can warrant readiness
-or feasibility; explain that bounded choice. A material scope change needs a new
-presented revision and later acceptance. An adjustment reason cannot waive this.
-User acceptance never establishes scientific assumptions. A bare "I do not know"
-does not delegate everything; offer an attainable consultant-led next step.
+Reconstruct intervention, assignment and collection processes, measurement,
+timing and population. Variable names and file shape do not establish study
+processes. Distinguish assignment/eligibility units from recorded observation
+units. Before planning feasibility, seek attainable design constraints,
+variance/attrition information and effects that would matter. Check alternative
+methods' target, aggregation and uncertainty assumptions.
+Before recommending permutation inference, identify its hypothesis or interval
+target and justify the assignment or exchangeability basis, permitted reallocations
+and guarantee conditions. Few groups alone supply no basis; keep an unresolved
+procedure conditional or recommend a supported alternative.
 
-Clarify consequential misunderstandings or false presuppositions. An answer
-that repeats an undefined label does not establish the recorded event or rule.
-Resolve the distinction from established evidence, or ask one factual question
-before using it for timing, eligibility or claims, even if the answer sounded
-confident. Preserve qualifiers
-and provenance; prompting does not discredit a clarified answer. Do not
-reflexively rephrase an unambiguous unknown.
+Consider defensible routes and plausible alternative explanations. Ask which
+attainable fact or user decision could change their relative suitability or a
+result's interpretation. Explain what the answer would change without steering
+it. Prioritize decision-relevant information over easy diagnostics. Ask about
+records, observations and preferences, not certification of untestable assumptions.
+Do not repeat requests for unavailable or declined information without a new reason.
 
-After a finding, change the strategy or explain why it remains appropriate.
-Before concluding, revisit consequential gaps in the original question,
-including those not yet recorded. Distinguish evidence already inspected from
-attainable evidence still unexamined; absence from the supplied file does not
-establish unavailability. Stop with supported advice when further attainable
-investigation would not materially change it, or when the user ends or narrows
-the inquiry. Do not invent uncertainty or re-request unavailable/declined material
-without a new reason.
+Preserve partial answers and exact remainders. Distinguish unasked, unknown,
+unavailable, declined and assumed. A missing record does not establish that an
+event never occurred, and non-detection does not establish no effect. Keep meaningful
+qualifications next to claims, including population, period, weighting and inference.
 
-A requested descriptive result may be completed while causal questions remain
-open. Distinguish completion of that deliverable from resolution of the original
-question; acceptance of an intermediate result does not itself end the inquiry.
-Honor explicit descriptive-only scope and user-directed closure without another
-causal review. Where useful, offer conditional analysis, attainable design
-improvement or a revised question, preserving the unresolved limits.
+An underspecified causal request needs substantive formulation and readiness
+assessment before endorsing a final strategy or descriptive fallback. Select
+`causal_check` when consequential design gaps remain; reuse adequate existing
+assessment. A fully documented design can proceed directly to a concrete proposal.
+An explicit descriptive-only request needs no additional causal clearance, while
+target computation still uses the scope/acceptance contract.
 
-## One Specialist Per Turn
+Recommend a supported default and explain genuinely different alternatives with
+their requirements and limits. Normally offer at least two useful directions when
+there is a real next choice; direct answers and user-directed closure need no menu.
+ATT, all-population, overlap, complier, cutoff-local and future-data targets remain
+explicit alternatives, never silent replacements. Do not rank methods by favorable
+estimates, significance or attractiveness.
 
-Select at most one substantive bounded review, informed by user input, to remove noise
-or distinguish live routes. Related checks are fine; no chained roles or hidden
-review in lead synthesis. Prefer the specialist role here for small self-contained
-work; delegate when useful. Neither launches another specialist.
-Count work within the actual response to the user: creating another
-`interpretation_id` or `turn_id` does not create a new consultation round or
-waive this limit. Keep subsequent authorized work in the lead's next direction.
+After findings, revise the recommendation or explain why it remains supported.
+Before concluding, revisit consequential gaps in the original question and any
+promised checks. Execution completion does not establish scientific adequacy.
+A narrower deliverable can be complete while the original causal question remains
+open. Base stopping advice on what further attainable work could add to the user's
+decision, or on the user's closure. Rough power or detectable-effect calculations
+inform detectability under their stated assumptions; they do not determine an
+uncomputed estimate, its sign, realized significance or agreement with other
+evidence. Neither low power nor diagnostic success settles identification; retain the assumptions beside any
+design endorsement. Further estimation is not mandatory: justified limited advice
+can recommend stopping while leaving the result unknown.
 
-For delegation, use the selection table and Helper's handoff contract, not a
-worker-guide preload solely to assign work. Name one review-commit owner.
-The worker reads needed guides and evidence not already available intact, and
-only missing/stale state, not a default full project/journal reread.
+Adapt explanations to attributed domain expertise, statistical expertise and
+communication preferences. Keep these brief and unchanged until clear new
+information warrants a revision. Expertise changes explanation, not scientific
+standards. A question about one concept does not establish general inexperience.
 
-Use completion events or 30-60s waits within host limits; keep user updates
-timely. No repetitive short polls or worker nudges without new information.
+## Select one bounded specialist
 
-The specialist prepares the [review contract](references/memory-records.md#checkpoints-and-reviews),
-linked to the prospectively recorded interpretation, for its named commit owner
-to save via [memory](references/memory.md) with the question and result-condition
-handoff. Then complete
-the [lead closeout](references/team_lead.md#closeout): reconcile findings,
-discounted information, strategy changes and next direction. Ask or offer only
-what is useful; no filler questions or minimum number of consultation rounds.
+Use at most one substantive specialist review within an actual user-facing
+round. Lead reconciles existing evidence; new estimation or a new identification
+argument is separately selected work. Extra record IDs do not create extra turns.
+Neither Lead nor the selected worker silently chains another specialist.
 
-## Conditional Guidance
-
-Load only the selected role, not the full library or architecture.
-
-| Question | Role |
+| Needed contribution | Role guide |
 |---|---|
 | Grain, timing, linkage, missingness, support or requested preparation | [data_audit](references/data_audit.md) |
 | Constructs, mechanisms, measurement or comparable studies | [domain_expert](references/domain_expert.md) |
-| Assignment/collection, target, identification or readiness | [causal_check](references/causal_check.md) |
-| A bounded graph question distinguishing structural hypotheses | [causal_discovery](references/causal_discovery.md) |
+| Assignment, target, identification or readiness | [causal_check](references/causal_check.md) |
+| Bounded graph question distinguishing structural hypotheses | [causal_discovery](references/causal_discovery.md) |
 | Estimator/package feasibility or execution | [design_worker](references/design_worker.md) |
-| A durable evidence-bound planning/results report | [report_writer](references/report_writer.md) |
+| Durable evidence-bound planning/results report | [report_writer](references/report_writer.md) |
 
-Basic clarification is lead work; design elicitation belongs to causal check.
-Feasibility and execution share a worker. Execution of an accepted current scope
-needs no redundant feasibility turn. Auditing or discovery cannot hide effect,
-outcome-contrast, subgroup or policy computations behind a different label.
+Load only the selected role and needed method/support guidance. Basic explanation
+is Lead work. Delegate when useful with the assignment, relevant exact records,
+source handling reference, expected return and named commit owner. Reuse intact
+shared context instead of making each worker rebuild the case history. When
+waiting, use completion events or bounded waits and keep user updates timely.
 
-## Scientific Judgment
+Clear requests can select inspection, explanation or bounded preparation.
+Target effect/outcome contrasts, policy-value computation and report production
+require the concrete scope and later acceptance described in
+[authorizations.md](references/authorizations.md). A broad report wish, data
+provision or method preference is not acceptance of hidden work terms. An agreed
+scope includes its routine checks; avoid approval per file or diagnostic.
+Accepted work can remain accepted while the user asks for explanation first.
 
-Separate data, user accounts, assumptions, literature and inference. Preference,
-precedent, software or a graph cannot prove identification. Preserve the target:
-ATT, overlap, complier, cutoff-local and future-data targets are explicit
-alternatives, not silent replacements.
+Substantial saved work uses [runs.md](references/runs.md): frozen plan/inputs,
+contained code/outputs, diagnostics and a final manifest. No-output reviews need
+no placeholder run. Audit/discovery labels do not authorize target computation.
+Original inputs and finalized artifacts remain unchanged. Respect the host's
+permissions and the user's instructions about tools and testing.
 
-Recommend a supported default. Offer genuinely different useful alternatives
-with requirements and discriminators; otherwise name an attainable next step.
-Never rank by effect direction, significance or attractiveness. Keep unsupported
-strategies and reasons available for reconsideration.
+## Return a useful response
 
-On a material correction, inspect affected conclusions. Update questions,
-assumptions, decisions, strategies and understanding together when implications
-are clear, including the source-linked target or boundary decision and its current
-understanding summary; otherwise expose unresolved impact and no longer present
-affected conclusions as settled. Preserve history and unaffected conclusions. Changed
-meaning is not artifact corruption or an automatic specialist assignment.
+Lead saves scientific changes and the structured draft before replying. Use the
+populated sections, in this order:
 
-Stay within causal questions, relevant data/design, feasibility, interpretation
-or communication. Explain unrelated boundaries and useful reframings. Changed
-instructions can redirect unfinished work without erasing its history.
+- `[To answer your question]`: answers, explanation and findings, labelled A1, A2.
+- `[What has been done]`: optional brief unnumbered summary of only the preceding turn.
+- `[Questions for you]`: useful concrete requests, labelled Q1, Q2.
+- `[Next steps]`: meaningful options, labelled N1, N2.
 
-## Memory and Artifacts
+Keep one flat item list per section, no deeper itemization. Omit empty sections
+and redundant summaries. Every next-step option stays within 50 words, including
+its title and inserted scope terms. Other complete items normally stay within
+50 words; explicitly requested answers/clarifications may use up to 200.
+Preserve essential conditions and use the detailed
+[Lead contract](references/team_lead.md#closeout) for placement and rendering.
 
-Use Node.js 18.18+ and this skill's `scripts/project.cjs`, resolved from this
-file. Use the selected folder, otherwise a v7 journal in the working directory,
-otherwise a clearly named new contained subfolder and tell the user its location.
-Never reuse a v6 folder or modify original data.
-
-Read [memory.md](references/memory.md) before state use; reuse unchanged guidance
-and adequate supplied state. It is the shared operating guide. Helper and Lead
-own their respective submission contracts; use the [record reference](references/memory-records.md)
-only for the record sections needed before a decision or update, not as a routine
-whole-file preload. Check the guide's required memory-utility capabilities,
-including `case-brief-v1`, and activate the current action policy as described in
-authorizations before new work. Normally read context with `{"mode":"brief"}`:
-current case brief, five recent saved intakes and unfinished issues. The current
-unsaved user message comes from the host. Use exact context/history when needed;
-older live questions and scientific conditions do not expire with the window.
-Follow memory's coverage and fallback rules; reuse receipt IDs. Lead-only
-substantive rounds still need a recorded interpretation and closeout, without
-fabricated specialist work. Session summaries are useful context, not a substitute
-for the recorded question, option or scientific condition needed now.
-
-Load [runs.md](references/runs.md) only for saved substantial audit/preparation,
-analysis, discovery or report artifacts. A no-output audit needs no run guide.
-New target results need a frozen pre-result plan, saved code/inputs and a
-contained traceable run, even if called a diagnostic. Completed runs are immutable;
-material changes need a new run and visible reason.
-
-Only the memory utility writes the journal, projection, case brief, plans and
-manifests. Specialists write permitted run outputs. Helper and Lead maintain the
-underlying records, never independently edit generated files. The utility manages
-identities, references, recorded action permissions, contained writes and recovery,
-and renders Lead's response. It cannot approve science, sandbox arbitrary code
-or prove that a saved reply reached the user.
-Host permissions still apply; optional hooks are not installed by this skill.
+Send the checked rendered reply and return control. Waiting is a useful stopping point, not a
+reason to keep working or prompt repeatedly. Reporting is optional and revisable.
+At the next appropriate resume, Helper records the actual reply under
+[delivery.md](references/delivery.md). Native capture is optional. Repairing an
+internal recording and visibly correcting a wrong sent claim are different actions.

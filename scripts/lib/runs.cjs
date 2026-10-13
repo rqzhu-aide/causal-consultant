@@ -186,6 +186,20 @@ function checkBoundInputHashes(bindings, inputs) {
     }
   }
 }
+// The same read-only resolution is used before presenting a fresh proposal and
+// immediately before starting it. It neither grants permission nor writes files.
+function resolvePlanSources(root, state, plan, { offer = false } = {}) {
+  const sources = plan.inputs.flatMap(input => {
+    if (offer && input.deferred_release) {
+      if (fs.existsSync(path.resolve(root, input.path))) fail("UNBOUND_SCOPE_INPUT", "An available input must be hashed before its scope is offered: " + input.source_ref);
+      return [];
+    }
+    return [inputSource(root, input)];
+  });
+  const bindings = evidenceBindings(root, state, plan);
+  checkBoundInputHashes(bindings, sources);
+  return { sources, bindings };
+}
 function checkEvidenceBindings(root, plan) {
   checkBoundInputHashes(plan.evidence_bindings, plan.inputs);
   for (const binding of plan.evidence_bindings || []) {
@@ -210,10 +224,21 @@ function checkEvidenceBindings(root, plan) {
 }
 
 function start(projectRoot, request, options = {}) {
-  requestShape(request, ["run_id", "plan"], ["parent_run_id"]);
+  requestShape(request, ["run_id"], ["plan", "scope_ref", "interpretation_ref", "authorization_ref", "parent_run_id"]);
   return store.transact(projectRoot, request, ({ root, state }) => {
-    validatePlan(request.plan, state);
-    const authorization_binding = authorizations.validateRunStart(state, request.plan);
+    const refs = ["scope_ref", "interpretation_ref", "authorization_ref"];
+    let executionPlan;
+    if (Object.hasOwn(request, "plan")) {
+      if (refs.some(key => Object.hasOwn(request, key))) fail("INVALID_INPUT", "start-run takes either plan or the three scope/interpretation/authorization references, not both.");
+      executionPlan = request.plan;
+    } else {
+      for (const key of refs) id(request[key], key);
+      const scope = (state.action_scopes || []).find(item => item.scope_id === request.scope_ref);
+      if (!scope) fail("UNKNOWN_REFERENCE", "start-run requires a committed protected scope.");
+      executionPlan = { ...authorizations.executionPlanForAuthorization(state, scope, request.authorization_ref), ...Object.fromEntries(refs.map(key => [key, request[key]])) };
+    }
+    validatePlan(executionPlan, state);
+    const authorization_binding = authorizations.validateRunStart(state, executionPlan);
     if (state.runs.some(run => run.run_id === request.run_id)) fail("RUN_EXISTS", "Run identity is already committed.");
     if (request.run_id === request.event_id || Object.hasOwn(state.history_index, request.run_id)) {
       fail("DUPLICATE_ID", "Run identity conflicts with another project record: " + request.run_id);
@@ -226,9 +251,7 @@ function start(projectRoot, request, options = {}) {
     const prefix = runPrefix(request.run_id);
     const target = safePath(root, prefix);
     if (fs.existsSync(target)) fail("ORPHAN_RUN", "Run directory already exists and will not be adopted: " + prefix);
-    const sources = request.plan.inputs.map(input => inputSource(root, input));
-    const bindings = evidenceBindings(root, state, request.plan);
-    checkBoundInputHashes(bindings, sources);
+    const { sources, bindings } = resolvePlanSources(root, state, executionPlan);
     ensureDirectory(root, "runs");
     fs.mkdirSync(target);
     ensureDirectory(root, prefix + "/inputs");
@@ -244,7 +267,8 @@ function start(projectRoot, request, options = {}) {
       source.snapshot_sha256 = snapshot.sha256;
     }
     const started_at = new Date().toISOString();
-    const plan = { ...structuredClone(request.plan), plan_schema_version: 1, run_id: request.run_id, frozen_at: started_at, inputs: sources };
+    const plan = { ...structuredClone(executionPlan), plan_schema_version: 1, run_id: request.run_id, frozen_at: started_at, inputs: sources };
+    if (plan.kind === "report") plan.report_contract = require("./deliverables.cjs").CONTRACT;
     if (authorization_binding) plan.authorization_binding = structuredClone(authorization_binding);
     if (bindings.length) plan.evidence_bindings = bindings;
     checkInputs(root, plan);
@@ -322,7 +346,7 @@ function declaredPaths(root, prefix, value, label) {
   return normalized;
 }
 function finalize(projectRoot, request, options = {}) {
-  requestShape(request, ["run_id", "code_paths", "output_paths", "diagnostic_paths", "environment", "deviations"]);
+  requestShape(request, ["run_id", "code_paths", "output_paths", "diagnostic_paths", "environment", "deviations"], ["deliverable"]);
   return store.transact(projectRoot, request, ({ root, state }) => {
     const run = getRun(state, request.run_id, true);
     const prefix = runPrefix(run.run_id);
@@ -359,6 +383,15 @@ function finalize(projectRoot, request, options = {}) {
       deviations: structuredClone(request.deviations), claim_boundary: run.claim_boundary,
       evidence_bindings: plan.evidence_bindings || [], files
     };
+    if (plan.report_contract || request.deliverable !== undefined) {
+      if (plan.kind !== "report" || (plan.report_contract && plan.report_contract !== require("./deliverables.cjs").CONTRACT)) fail("INVALID_DELIVERABLE", "Unsupported report deliverable contract.");
+      manifest.deliverable = require("./deliverables.cjs").descriptor(request.deliverable, manifest);
+      const validation = require("./deliverables.cjs").check(root, prefix, manifest.deliverable, manifest, run.authorization_binding?.presentation_adjustment?.formats);
+      if (!validation.ok) fail("INVALID_DELIVERABLE", "Report dependencies are incomplete. Repair the named references before finalizing.", validation);
+      manifest.manifest_version = 2;
+      manifest.report_contract = require("./deliverables.cjs").CONTRACT;
+      manifest.delivery_validation = validation;
+    }
     if (run.authorization_binding) manifest.authorization_binding = structuredClone(run.authorization_binding);
     const serialized = JSON.stringify(manifest, null, 2) + "\n";
     writeNew(root, manifest_ref, serialized);
@@ -376,6 +409,24 @@ function terminal(projectRoot, request, status, options = {}) {
 }
 const failRun = (root, request, options = {}) => terminal(root, request, "failed", options);
 const abandon = (root, request, options = {}) => terminal(root, request, "abandoned", options);
+
+// Reconstruct receipt data from the committed operation, not the current run
+// status or external source files. Missing artifacts cannot undo its commit.
+function replayReceipt(root, event) {
+  const run = event.payload.run;
+  if (event.type === "run_started") {
+    const result = { run_id: run.run_id, run_path: path.resolve(root, runPrefix(run.run_id)), plan_ref: run.plan_ref };
+    try { result.inputs = structuredClone(frozenPlan(root, run).inputs); }
+    catch (error) {
+      result.receipt_recovery_error = { code: error.code || "IO_ERROR",
+        message: "The run start is committed, but its frozen input details could not be recovered: " + error.message };
+    }
+    return result;
+  }
+  if (event.type === "run_finalized") return { run_id: run.run_id, manifest_ref: run.manifest_ref, manifest_sha256: run.manifest_sha256 };
+  if (["run_failed", "run_abandoned"].includes(event.type)) return { run_id: run.run_id, status: run.status };
+  return {};
+}
 
 function verify(projectRoot, options = {}) {
   object(options, "verification options", [], ["source_check"]);
@@ -411,6 +462,11 @@ function verify(projectRoot, options = {}) {
       }
       const actual = capture(run.run_id, () => inventory(root, prefix, true));
       if (manifest && actual && canonical(actual) !== canonical(manifest.files)) issues.push({ run_id: run.run_id, code: "ARTIFACT_CHANGED", message: "Run files are missing, changed, or unmanifested." });
+      if (manifest && plan && (plan.report_contract || manifest.deliverable)) capture(run.run_id, () => {
+        if (manifest.report_contract !== require("./deliverables.cjs").CONTRACT) fail("INVALID_DELIVERABLE", "Report manifest is missing its declared deliverable contract.");
+        const validation = require("./deliverables.cjs").check(root, prefix, manifest.deliverable, manifest, run.authorization_binding?.presentation_adjustment?.formats);
+        if (!validation.ok) issues.push({ run_id: run.run_id, code: "INVALID_DELIVERABLE", ...validation });
+      });
     } else capture(run.run_id, () => {
       inventory(root, prefix);
       if (fs.existsSync(safePath(root, prefix + "/manifest.json"))) issues.push({ run_id: run.run_id, code: "UNCOMMITTED_MANIFEST", message: "A manifest exists without a committed completed run." });
@@ -419,4 +475,4 @@ function verify(projectRoot, options = {}) {
   return { ok: issues.length === 0, source_check, project_id: loaded.state.state_meta.project_id, last_event_id: loaded.state.state_meta.last_event_id, checked_runs: loaded.state.runs.length, issues };
 }
 
-module.exports = { start, write, finalize, failRun, abandon, verify, validatePlan, assertComputedEvidence, frozenPlan, manifestFor, inventory };
+module.exports = { start, write, finalize, failRun, abandon, verify, validatePlan, resolvePlanSources, assertComputedEvidence, frozenPlan, manifestFor, inventory, replayReceipt };

@@ -1,412 +1,352 @@
-# Memory Record Reference
+# Memory record reference
 
-Use [memory](memory.md) for the common read/write contract. Read only the sections
-needed before the current interpretation, reconciliation or submission; reuse
-intact guidance. The complete [interpretation](helper.md#interpretation-submission)
-and [exchange](team_lead.md#exchange-submission) contracts belong to Helper and Lead.
+These contracts apply to `consultation-journal-v8`. Existing v7 cases retain
+[v7/memory-records.md](v7/memory-records.md). Do not convert their journals or
+mix formats. Use [memory](memory.md) for ordinary reads and save points,
+[authoring](authoring.md) for requests, and [connected examples](record-examples.md)
+when combining records.
 
-| Need | Section |
+## Record ownership
+
+Only the utility writes the journal and generated memory files. Helper, Lead and
+the selected specialist author meaning through submissions:
+
+| Content | Author and save point |
 |---|---|
-| Focused reads, pagination or older views | [Reading Details](#reading-details) |
-| Field types and shared record fields | [Conventions](#record-field-conventions); [Study and User Records](#study-and-user-records) |
-| Incoming source capture/correction | [Incoming User Sources](#incoming-user-sources) |
-| Question meaning, answers or retirement | [Questions](#questions) |
-| Objective, target or boundary change | [Target and Boundary Updates](#target-and-boundary-updates) |
-| Consequential findings and their qualifications | [Result Conditions](#result-conditions) |
-| Retained brief contents | [Case Brief Selection](#case-brief-selection) |
-| Specialist selection or handoff | [Checkpoints and Reviews](#checkpoints-and-reviews) |
-| Historical shapes or a first-round submission | [Compatibility](#compatibility); [Examples](#examples) |
+| Original incoming message | Helper, before interpretation or dependent work |
+| Whole-message handling, incoming facts and user choices | Helper, after reading the complete available message and relevant actual reply |
+| Scientific assessment and proposed changes | Selected specialist; one named commit owner, normally Lead, saves the review once |
+| Reconciled knowledge, useful routes/questions, scopes and prepared response | Lead, using the source handling and specialist return |
+| Actual preceding reply | Helper at the next appropriate resume; optional adapter supplies genuine capture evidence |
+| Identities, versions, indexes and export files | Utility, from committed records |
 
-## Reading Details
+Helper and Lead are responsibilities, not required separate agents. Proposed
+questions or facts in a review become current only through explicit adoption.
+Adopt justified related changes together in the ordinary handling or closeout
+save; leaving an affected current record untouched keeps its old meaning.
+Do not save another review merely to change its author. A new scientific
+assessment or consequential correction retains its own attribution.
 
-Brief context's envelope includes `format: "case-brief-v1"`; use the
-[short guide](memory.md#reading) for its ordinary reading contract.
+## Record field conventions
 
-Legacy `context` remains available with optional selectors, e.g.
-`{"focus_refs":["strategy-a"],"query":"timing","limit":20}`.
-Focus IDs must be current. To find exact older wording without a known ID, start
-with literal `history --query`, then retrieve the matching event. Use focused
-context when the current brief and exact source leave relevant dependencies
-unclear; searching an old option need not reload the current neighborhood twice. Use
-`status` directly for broad reassessment when no useful focus exists. Do not
-page through everything by default.
+Submit `{"at":"<state_token>","op":"<type>",...content}`. Do not author the
+journal envelope, timestamp or hashes. The utility stores one immutable entry
+per committed line and assigns its local `eN` identity. The initial header has
+head `e0` and supplies the case/format identity.
 
-Legacy context returns original record shapes, understanding/checkpoint,
-source corrections and relevant work, with omissions and retrieval locators.
-For pages, use `coverage.next_cursor` as `cursor`, unchanged focus/query, and
-`last_event_id` as `expected_last_event_id`. Limit is 1..100, default 20
-optional records, not conversation turns. Essential records can exceed it.
-On `STALE_CONTEXT`, refresh and reassess. Use context's project/event identities
-or status's `project.state_meta` for writes.
-
-`history` retrieves full events using `--record-id`, `--event-id`, `--type` or
-`--query`, with `--cursor`/`--limit` and `next_cursor`. Use it for exact older
-sources and complete review findings; projection review indexes omit details.
-The user, study and work views are read-only groupings from one journal state,
-not additional files. Relevant legacy work paths remain:
-
-| View | Use |
+| Reference | Meaning |
 |---|---|
-| `views.work.pending_consultant_questions` | Cross-focus question inventory with retrieval references |
-| `views.work.question_memory` | Resolution, original/latest questions, exchanges and delivery/work references; expand relevant bodies |
-| `views.work.exchanges` and `interpretations` | Full available records, delivery and unfinished-turn evidence |
-| `views.work.actions` | Scopes, decisions, exact offers/basis, eligibility and findings awaiting discussion |
+| `e12` | An immutable entry, including a scope, review or reply defined there |
+| `q1` | The current definition of one continuing question |
+| `q1@e12` | The definition of q1 actually saved at e12; a mention is insufficient |
+| `e11/N1` | A uniquely labelled item in an actual recorded reply |
+| `e11/items/0` | The first actual item when its observed label is absent or ambiguous |
 
-Action eligibility separates accepted permission from `current_direction` and
-`executable_now`; waiting work can retain acceptance. Inspect current scope and
-direction under [authorizations](authorizations.md#work-discuss-and-preserve-choices)
-before resuming. Findings awaiting discussion need delivery recovery or presentation
-of saved findings, never automatic recomputation.
+Short references are case-local. Preserve case identity when sharing them outside
+the case. Display A/Q/N labels are positions within one reply, not record IDs.
+Keep actual labels and ordering even when the sent reply was malformed.
 
-## Record Field Conventions
+For a new mutable record, omit `entity`; optionally supply `as: "name"` and use
+`@name` in reference fields in the same request. Use the returned ID for later
+updates. Reserved `@entry` names this request's immutable entry, for example
+when a decision also selects itself as the authorization for work. It is not a
+new entity alias and cannot be reassigned.
 
-All listed fields are required unless marked optional. The request envelope,
-event types and field-specific replacement/retention rules are in
-[Record Contract](memory.md#record-contract). Do not treat updates as deep merges.
+### Entry types
 
-Lists: `limitations`, `data_requirements`, `unmet_requirements` are strings;
-`*_refs`, `evidence_for`/`evidence_against` are IDs. Design/support lists use
-catalog IDs, not project IDs. Nonempty `additional_design_ids` needs a primary
-`design_id`, is unique and excludes that primary and `custom_identification`.
-`supersedes` is one same-kind ID; `last_review_id` is one review ID.
-`claim_boundary` and `reopen_or_promote_when` are strings.
-
-## Study and User Records
-
-Read the relevant rows before supplying those records; preserve scientific
-qualifications and attribution when using them for interpretation or synthesis.
-
-| Collection | Record |
+| `op` | Meaning and core authored fields |
 |---|---|
-| `project_understanding` | Partial strings: `objective`, `intended_use`, `audience`, `causal_target`, `current_claim_boundary`; `materials` source-locator array |
-| `evidence` | `evidence_id`, `kind`: `user_statement`/`file`/`literature`/`computed`, `source_ref`, `summary`; optional `limitations`, `source_sha256`, `source_excerpt`, `complete_message`, `supersedes`, `legacy`, `run_id` |
-| `assumptions` | `assumption_id`, `statement`, `status`: `active`/`revised`/`retired`; optional `basis_refs`, `supersedes` |
-| `decisions` | `decision_id`, `kind`: `target`/`investigation`/`design`/`execution`/`reporting`/`boundary`, `statement`, `status`: `current`/`superseded`/`withdrawn`; optional `basis_refs`, `user_contribution_refs`, `supersedes` |
-| `candidate_routes` | `strategy_id`, `target`, `approach`, `status`, `reason`; optional `design_id`, `additional_design_ids`, `support_ids`, `data_requirements`, `claim_boundary`, `evidence_for`, `evidence_against`, `unmet_requirements`, `reopen_or_promote_when`, `last_review_id` |
-| `user_context` | `context_id`, `kind`: `preference`/`constraint`/`communication`/`domain_expertise`/`statistical_expertise`, `statement`, nonempty `basis_refs`, `status`: `current`/`superseded`; optional `supersedes` |
-| `action_scopes` | Immutable analysis/report scope revisions; exact fields and activation in [authorizations.md](authorizations.md) |
+| `user_message` | Complete available `text`, `source`, `complete`, optional `attachments` |
+| `knowledge` | New or changed `updates`; may also handle `user_message`, bind `overview`, change `selection` or `next_action` |
+| `interpretation` | `user_message`, consequential interpretation and relevant actual-source links; optional adopted updates/direction |
+| `scope` | `action`, shared `terms`, `assignment`, execution-only `execution`, selected `basis_refs`, report `findings_refs` when applicable |
+| `decision` | `user_message`, `actual_reply`, actual `item`, immutable `scope`, `choice`; material conditions/direction when needed |
+| `review` | `responds_to`, `summary`, `assignment`, `question_addressed`, `work_performed`, `findings`; `work_refs` for assessed runs, relevant sources/limits/proposed changes |
+| `reply_prepared` | `responds_to`, typed `response`; utility supplies the current renderer when omitted |
+| `reply_recorded` | Actual `source`, ordered `items`, `prepared` when known, ordinary `before_user` anchor, optional same-reply links |
+| `correction` | `reason`, `corrects_refs`, justified replacement updates and their sources |
 
-Strategy status: `possible`, `conditional`, `preferred`,
-`unsupported_with_current_evidence`, `not_relevant`. Distinct targets,
-populations/data routes keep distinct IDs; routine diagnostics do not.
+Artifact `work` entries are generated by managed run commands. Do not submit
+`op: "work"` directly. See [runs](runs.md) for start, file writes, completion,
+failure and abandonment. One immutable primary record may adopt mutable updates
+atomically. Several immutable scopes or replies use separate entries.
 
-Small non-target inspections use `file` evidence.
-New `computed` evidence requires a completed `run_id` and project-relative
-manifested output as `source_ref`; load [runs](runs.md) only for artifacts.
-Legacy source evidence uses `legacy: {source_project, source_version, verification}`:
-`legacy_unverified` or `reviewed_summary`, never newly verified computations.
+## Incoming user sources
 
-User context records attributed preferences and tentative communication needs.
-Study facts belong in evidence, even when supplied by the user; link them instead
-of copying them into another view. Domain and statistical expertise are separate,
-revisable observations, not grounds to lower scientific standards.
+`user_message` retains original words once. `source` is an attributable locator
+string, or `{locator, kind?, native_id?, sent_at?}` using only available metadata.
+`complete` is a boolean, not an assurance that the message was understood.
+An attachment-only message may have empty text with its attachment references.
+Do not mark a partial excerpt complete or substitute a summary for the source.
 
-## Incoming User Sources
+Save the new source before recording the previous actual reply, so a recording
+failure cannot lose incoming input. Facts derived from that source cite its eN
+entry. They do not require another copy of its original words or a mandatory
+summary of a short acceptance.
 
-Helper reads this before capturing or correcting incoming evidence; Lead uses it
-when repairing attribution. Source meaning must be settled before dependent work.
+In a `knowledge`, `interpretation` or `decision` save, `user_message` names one
+incoming entry or an array of entries. This explicitly asserts whole-message
+handling: consequential intentions, changes and ambiguity have been considered.
+A source citation inside a fact alone does not complete handling. Pending input
+must be accounted for before dependent protected work.
 
-On a primary `user_statement` source, optional boolean `complete_message`
-requires string `source_excerpt`. Use true for the full actual capture, false for
-known incompleteness. Presence of either value identifies a primary incoming
-source; ordinary fact excerpts omit it. Keep honest `source_ref` attribution.
-The marker does not independently prove host origin, completeness or meaning.
-Attached documents remain separate evidence. Do not mark a summary as full text.
+Handling need not resolve every question. An ambiguous message can be handled
+with clarification as its next action. Use a separate interpretation only when
+the decision or adopted updates do not adequately preserve consequential meaning.
+Work, reviews and prepared replies use `responds_to` to cite their committed
+handling/direction entry, or an array when covering several incoming messages.
 
-Keep `summary` a concise attributed account of what the source says or supports,
-including consequential qualifications and uncertainty. Preserve exact wording
-in `source_excerpt`; do not copy a long message into its summary or interpretation
-components. Summaries should carry the meaning needed for later decisions, with
-detail governed by that need rather than a fixed length.
+## Study and user records
 
-If a sourced correction changes a marked record's source or text under the same
-ID, explicitly restate `complete_message`; omission fails with
-`MESSAGE_COVERAGE_REQUIRED`. Reassess coverage instead of inheriting a stale claim.
+An adopting save uses `updates: [{kind, entity?, as?, ...fields}]`. Each item is
+the complete changed definition, not a field patch. Omitted entities remain
+unchanged; omitted fields in a replacement are not automatically carried over.
+Preserve their required qualifications and sources. The utility gives new
+entities the listed prefix and projects them under the familiar collection IDs.
 
-One intake uses the ordered marked source IDs in `interpretation.incoming_refs`.
-A contiguous captured batch is one intake. Reinterpretations reuse the same IDs
-and order; partial overlaps/reordering of established marked groups are rejected.
-New user input gets new IDs even when its text is identical; old material belongs
-in basis/context references. Later corrections cannot rewrite the historical
-incoming representation. Legacy unmarked history remains a provisional view
-with explicit grouping/completeness uncertainty, not five verified full messages.
-Missing or incomplete captures retain their known position.
+| Update `kind` | Prefix / project collection | Required content besides kind/entity |
+|---|---|---|
+| `question` | q / `questions` | `statement`, `status`; see Questions below |
+| `evidence` | f / `evidence` | `evidence_kind`, `source_ref`, `summary` |
+| `assumption` | a / `assumptions` | `statement`, `status` |
+| `scientific_decision` | d / `decisions` | `decision_kind`, `statement`, `status` |
+| `route` | r / `candidate_routes` | `target`, `approach`, `status`, `reason` |
+| `user_context` | p / `user_context` | `context_kind`, `statement`, `basis_refs`, `status` |
+| `result_condition` | c / `result_conditions` | `evidence_ref`, `result_locator`, `claim`, `target`, `assumption_refs`, `basis_refs`, `limitations` |
 
-Outgoing exchanges attach through `interpretation_ref`; `reconciles` can account
-for older work without merging its turn. Observation IDs and identical hashes
-alone do not establish that two captures are the same actual message. Preserve a
-stable actual-message source locator when available and any uncertain emission
-order; a late capture does not become a new conversation turn.
+Use journal references for `basis_refs` and other record links. External file or
+literature locators remain `source_ref` values. Exact references are useful when
+the historical version matters; frozen scopes bind selected current records to
+their exact defining versions mechanically.
 
-Attribute qualified user accounts. For new user input backing an action decision,
-user correction, or user-provided question resolution/withdrawal, retain the
-relevant exact words in `source_excerpt`, including qualifications such as
-"before we decide." Link the actual question or offered option through the
-existing interpretation. Do not replace attribution with a summary or infer a
-new acceptance from a digest/pause request. Excerpts remain optional for other
-evidence and do not independently verify meaning or message origin.
-The memory utility advertises these live-write rules as `source-attributed-memory-v1`.
-Repair a missing internal excerpt from the available conversation; ask the user
-only when their meaning or the source itself is unavailable or unclear.
+- Evidence kinds: `user_statement`, `file`, `literature`, `computed`. Optional
+  fields are `limitations`, `source_sha256`, `source_excerpt`, `supersedes`,
+  `legacy`, `run_id`. A user-statement fact uses the original `user_message` eN as
+  `source_ref`, with no duplicate `source_excerpt`. Computed evidence requires a
+  completed `run_id` and an artifact under that run. Detailed tables stay in files.
+  Imported historical evidence may use `legacy: {source_project, source_version,
+  verification}`, with `verification: "legacy_unverified"` or `"reviewed_summary"`;
+  it is not newly computed work.
+- Assumption statuses: `active`, `revised`, `retired`; optional `basis_refs` and
+  `supersedes`. Acceptance does not establish an assumption.
+- Scientific decision kinds: `target`, `investigation`, `design`, `execution`,
+  `reporting`, `boundary`; statuses: `current`, `superseded`, `withdrawn`.
+  Optional `basis_refs`, `user_contribution_refs` and `supersedes` preserve why the
+  choice was made. User contributions identify original message entries.
+- Route statuses: `possible`, `conditional`, `preferred`,
+  `unsupported_with_current_evidence`, `not_relevant`. Optional fields are
+  `design_id`, `additional_design_ids`, `support_ids`, `data_requirements`,
+  `claim_boundary`, `evidence_for`, `evidence_against`, `unmet_requirements`,
+  `reopen_or_promote_when`, `last_review_id`. Catalog IDs retain their existing
+  meanings. A preferred route is not evidence of acceptance or execution.
+- User-context kinds: `preference`, `constraint`, `communication`,
+  `domain_expertise`, `statistical_expertise`; statuses: `current`, `superseded`;
+  optional `supersedes`. Use `communication` for explanation depth, terminology,
+  tone, length and document presentation; `preference` for substantive priorities
+  or choices; `constraint` for restrictions on possible or permitted work.
+  Retain stated versus tentative meaning in the sourced statement. Unknown
+  expertise stays unknown. Change only on clear new evidence. Older generic
+  preferences remain valid; classify their meaning only from their sources,
+  not by mechanically guessing from prose or treating missing classification as
+  absence of a preference.
+
+`supersedes` links a different earlier entity of the same kind. Updating the same
+continuing entity uses `entity`, retaining its earlier definitions in history.
+Identical resaves keep their defining version. A changed source, qualification,
+status or remainder is a meaningful update, even if its headline is unchanged.
+
+## Prose budgets and purpose
+
+Write what a later turn needs to choose work, interpret a result or honor a
+restriction. Evidence states what its source supports; assumptions state what
+interpretation relies on; decisions state the chosen course and its conditions.
+Use several record types only when each has a distinct function.
+
+Retain the existing advisory internal budgets: 80 words for an evidence summary
+or scientific decision statement, 60 for an assumption statement, and 150 for a
+review summary. These are drafting guidance, not truncation or validity limits.
+Keep exact quantities, source distinctions and use-changing qualifications even
+when fuller detail belongs in linked artifacts. The public 50-word option limit
+and other item allowances belong to [Lead closeout](team_lead.md#closeout).
 
 ## Questions
 
-Helper reads this before interpreting an affected answer or correction; Lead
-uses it before changing question disposition. Preserve supported parts and exact
-unanswered remainders; permission to act is not factual answer evidence.
+Keep the original `statement` and `origin: "consultant"` or `"user"` for the
+same issue. Status is `open`, `answered` or `retired`; non-open status requires
+`reason`. Optional `basis_refs` retain source and context. A user-origin question
+requires an originating user-message source, directly or through a sourced fact.
 
-| Collection | Record |
-|---|---|
-| `questions` | `question_id`, `statement`, `status`: `open`/`answered`/`retired`; `reason` required when closed, optional otherwise; optional `origin`: `user`/`consultant`, `basis_refs`, `resolution` as below; user-origin questions require nonempty `basis_refs` including a user-statement source |
-
-Use `origin: "user"` for questions the user asks you to answer, and `consultant`
-for information you want from the user or another source. Omitted origin in old
-records stays unspecified; do not infer fictional user questions from them.
-User-origin questions stay `open` until answered or explicitly withdrawn by the
-user. Record the resolution or withdrawal and its source in `reason` and
-`basis_refs`; use `retired` for withdrawal. A pending answer remains open even
-when work completes or its source proves unavailable. Clear user-directed scope
-closure can explicitly withdraw it without pretending an answer was established.
-
-For reconciled consultant questions, `resolution` has `answer_refs` (evidence or
-specialist-review IDs supporting the current answer) and `remaining` (strings
-stating the exact unanswered parts). `basis_refs` may also explain why the question
-was asked; `answer_refs` specifically attributes its answer and preserves source
-qualifications. User-origin questions do not use `resolution`; they keep the
-preceding answer/withdrawal contract without invented factual evidence records.
-
-- `open` with resolution needs a nonempty remainder. A partial answer can add
-  support while preserving the same question ID, original statement and remainder.
-- `answered` after reconciliation needs nonempty answer references and an empty
-  remainder. It means answered at the stated evidence level, not independently
-  verified. Assumptions cannot substitute for factual answer evidence.
-- `retired` may keep a remainder. Record why asking stops and retain the unknown's
-  consequences in relevant decisions/limitations. A decline, scope change or
-  desire to finish does not establish the missing fact.
-- Live updates carry an omitted resolution. Explicit updates can narrow, clear
-  or reopen the remainder; it is not append-only provenance. Replacing existing
-  answer attribution needs a sourced correction or explicit evidence supersession,
-  preserving history.
-  Removing an unanswered part needs additional answer support or a sourced
-  correction. Reusing the old partial answer after an instruction to finish is
-  insufficient.
-- New user answer references must match the current interpretation's incoming
-  sources, unless an explicitly sourced correction establishes the update.
-  Reconcile a context-dependent reply in a question-specific interpretation
-  component with its observed exchange/delivery. A standalone fact can instead
-  connect the question to its incoming source and answer references without a
-  fictional delivery, using an `information` or `correction` component. A choice
-  clarification can cite its observed selection when the question's basis links
-  that original exchange. A specialist review can supply computational resolution.
-  Earlier support already in `answer_refs` remains retained.
-  To repair an old omitted answer from historical evidence, use a sourced
-  `correction` identifying the question; do not relabel old evidence as newly
-  received or invent delivery links. A fact explaining why the question matters
-  can remain in `basis_refs` without becoming an answer to it.
-  An answered update cannot coexist with a linked component's unresolved part
-  of that same question unless subsequent findings or an explicit correction
-  resolve it. Do not close one compound question from one answered part.
-
-Keep `statement` for the original issue and clarified public wording in exchanges.
-A materially different question gets a new ID linked through existing basis
-references. For ambiguous investigation choices without an action scope, retain
-one clarification question with the original exchange in its basis. Reuse it
-through clarification turns; do not fabricate an option selection.
-
-## Target and Boundary Updates
-
-Read before changing objective, target or claim meaning, including during incoming
-interpretation; do not wait until an outdated scope has already been selected.
-
-When changing `objective` or `causal_target`, identify the relevant current sourced
-target decision. A changed `current_claim_boundary` may cite a current target or
-boundary decision. Use `interpretation.basis_refs`, `exchange.basis_refs`,
-`payload.corrects_refs`, or the IDs updated in `changes.decisions`. Source linkage
-may traverse existing evidence, assumptions, decisions and reviews. Update that
-decision for a substantive meaning change; a cosmetic summary rewording may cite
-its unchanged version.
-Record source-linked decisions and affected summary fields together rather than
-only appending evidence. Initialization and historical replay remain separate.
-New protected offers bind a relevant current target decision, so changing it
-exposes affected scopes; the memory utility checks references, not semantic equivalence.
-
-## Result Conditions
-
-Read before contributing, reusing or reporting a consequential finding. Keep the
-scientific duty in the selected role; these fields preserve its supported account.
-
-| Collection | Record |
-|---|---|
-| `result_conditions` | `condition_id`, `evidence_ref`, `result_locator`, `claim`, `target`, `assumption_refs`, `basis_refs`, `limitations`; optional `inference`, `supersedes` |
-
-Result conditions identify a separately reportable quantity or claim within
-evidence. `result_locator`, `claim` and `target` are nonempty text; references
-are ID arrays and limitations are strings. Optional `inference` has `kind`:
-`test`/`interval`/`estimate`, `target`, `guarantee`; a test also requires
-`hypothesis`. Record the actual scope of an exact, approximate or conditional
-guarantee. Use separate records when quantities have different conditions.
-An empty `assumption_refs` is an explicit assessment, never inferred from a
-missing record. Old unlinked results need review of their saved limitations;
-do not label them unconditional or invent past links. Preparation output needs
-no artificial inferential target. Reports freeze condition and assumption
-versions through [runs.md](runs.md).
-
-## Case Brief Selection
-
-Helper uses this when retaining incoming knowledge; Lead when curating knowledge
-and reviewed work. Removing a selection cannot change the underlying fact.
-
-| Collection | Record |
-|---|---|
-| `case_brief` | Optional selection object: `knowledge_refs` (evidence IDs), `work_refs` (review/run IDs); per-field replacement with omitted fields retained |
-
-`changes.case_brief` contains one or both of `knowledge_refs` and `work_refs`.
-Each list contains distinct IDs in display order and replaces that supplied list;
-an omitted field retains its value. Existing and same-event records are valid,
-including a review bundled with closeout. Unknown/wrong-kind IDs, extra fields,
-`null` and an empty object are invalid. Never supplied means uninitialized;
-`[]` means intentionally empty. Do not initialize an omitted field implicitly.
-
-Helper adds consequential incoming knowledge while preserving relevant selection.
-Lead retains supported findings and reconciles superseded or out-of-scope items.
-Use existing interpretation/reconciliation to explain consequential changes.
-Removing a reference affects inclusion only; it cannot delete evidence, resolve
-questions, retire assumptions or change permission. Correct facts through the
-ordinary source-linked correction rules. A selected superseded/conflicting source
-stays visibly qualified until selection is reconciled; do not treat it as current
-uncontested knowledge or silently replace its historical source.
-
-Current user context, objective/target/boundary, active assumptions, operative
-decisions, unresolved issues, candidate-route conditions, pending scopes/work
-and unfinished communication remain automatic brief content. Conditions on a
-selected result remain attached. A retired question's unknown still restricts
-relevant claims; completed execution alone supplies no scientific finding.
-Unselected evidence/work remains available through context/history. Maintain
-underlying records and references, never paraphrase the previous brief again.
-
-## Checkpoints and Reviews
-
-The selected specialist and named commit owner need this contract before supplying
-a handoff. Helper uses the checkpoint/assignment fields when selecting work.
-The handoff can carry already-loaded requirements; no default full reference read.
-
-| Collection | Record |
-|---|---|
-| `consultation` | Current/next checkpoint or `null` |
-
-Checkpoint requires `checkpoint_id`, `status`, `primary_uncertainty`,
-`why_it_matters`. Status is `assessing`, `awaiting_user`,
-`ready_for_specialist` or `specialist_complete`, a resumption hint not permission.
-Optional string arrays: `ways_user_can_help`,
-`consultant_led_options_if_unknown`. Optional ID arrays:
-`strategy_ids_it_could_change`, `user_contribution_refs`,
-`related_unresolved_question_refs`. Optional `selected_assignment`.
-
-Review requires `review_id`, `summary`, `assignment`,
-`question_addressed`, `selection_basis`, `work_performed`, `findings`.
-
-- Assignment: `specialist_id`, `operation`. Data audit uses `review`/`prepare`;
-  domain `review`; causal check `readiness`/`design_elicitation`; discovery
-  `discovery`; design worker `feasibility`/`execution`; report writer
-  `reporting`. Design worker also needs `design_id`. Optional
-  `additional_design_ids` (design worker only), `support_ids`, `strategy_ids`.
-- Selection basis: `checkpoint_id`, nonempty `user_contribution_refs` pointing
-  to user-statement evidence. This explains selection, not scientific validity.
-- `work_performed`/`findings`: nonempty string arrays. Optional string arrays:
-  `limitations`, `noise_or_invalid_information`, `remaining_uncertainty`;
-  optional string `suggested_next_uncertainty`; optional ID arrays
-  `evidence_refs`, `route_changes`, `assumptions_added_or_revised`.
-- `interpretation_ref`: the committed specialist interpretation for this review.
-  Required after this project starts using the exchange protocol. Copy its
-  selected assignment exactly; a lead-only interpretation cannot authorize a
-  specialist review, and one interpretation completes at most one review.
-  Record additional guidance consulted within unchanged scope in `work_performed`,
-  naming the actual guide/file; do not amend the assignment or frozen plan IDs.
-
-For a direct investigation request, save its interpretation, checkpoint and user
-evidence before dependent specialist work. Protected analysis/reporting requires
-the current presented scope and later acceptance under the action contract;
-ordinary selection rationale cannot substitute for them.
-Historical pre-protocol reviews may contain retrospective combined selection;
-do not rewrite them or use that older convention for new work.
-`payload.checkpoint` is the selection checkpoint; put a
-new question's checkpoint in `changes.consultation`, not the completed review's
-selection basis. `consultation: null` clears the checkpoint, not open questions.
-At closeout, Lead retains, updates or clears this checkpoint according to the
-remaining uncertainty and outgoing direction. An answered question alone does
-not imply that the wider checkpoint is resolved.
-
-Use the existing checkpoint's `primary_uncertainty` and `why_it_matters` to
-record what the selected check could change and its attainable source. The
-review records the actual finding and its effect on the strategy, including a
-justified unchanged recommendation. Do not create artificial comparison records
-when one check is clearly useful.
-
-When useful, the specialist proposes answerable wording, consequence and source
-in `remaining_uncertainty` or `suggested_next_uncertainty`. Save material
-unresolved proposals as consultant-origin questions with `statement`, `reason`,
-`basis_refs`. The same handoff addresses assigned user-question IDs with the
-findings that answer them or the specific reason each remains unresolved.
-The lead owns priority/wording and checkpoint `related_unresolved_question_refs`.
-
-## Compatibility
-
-Historical events replay their original replacement semantics and renderer bytes.
-An older question without `resolution` has unstructured answer state, not a known
-empty remainder. Reconcile touched records from attributable history or retain
-the gap; do not bulk-migrate or manufacture past answers. Unmarked old incoming
-sources remain provisional as described in [Incoming User Sources](#incoming-user-sources).
-
-Current policy exchanges use `lead-markdown-v4`; v1, v2 and v3 remain available
-for exact historical replay and receipts. Do not relabel old exchanges or normalize
-their saved response to record delivery. Existing history acquires no retrospective
-approval. Use [authorizations](authorizations.md#activate-the-current-policy) for
-activation/legacy review reconciliation and [delivery](delivery.md) for historical
-hash-only observations and actual capture recovery. Compatibility details do not
-waive the current utility capabilities required by [memory](memory.md).
-
-## Examples
-
-Consult when assembling a first Lead-only submission and no adequate example is
-already available. Use actual case facts and current receipt identities.
-
-### Lead-Only First Round Example
-
-After a new `init` returns event-init with the action policy active, one submission can save the attributed request,
-answer the user's prerequisite question and ask for a missing study fact.
-This is an authoring example, not evidence about a real study:
+Consultant questions may carry:
 
 ```json
-{
-  "event_id": "event-intake", "expected_project_id": "project-study",
-  "expected_last_event_id": "event-init", "type": "exchange_prepared",
-  "payload": {
-    "protocol": "durable-exchanges-v1",
-    "changes": {
-      "case_brief": {"knowledge_refs":["user-request"],"work_refs":[]},
-      "evidence": [{"evidence_id":"user-request","kind":"user_statement","source_ref":"chat:1","source_excerpt":"What does an offer effect mean? Please explain that before we decide which comparison to analyze.","complete_message":true,"summary":"The user asks what an offer effect means before deciding which program comparison to analyze."}],
-      "questions": [
-        {"question_id":"question-offer-effect","origin":"user","statement":"What does an offer effect mean?","status":"answered","reason":"Explained the distinction between being offered a place and attending; the study-specific assignment remains unknown.","basis_refs":["user-request"]},
-        {"question_id":"question-offers","origin":"consultant","statement":"How were program offers assigned?","status":"open","reason":"Assignment determines what comparison can support.","basis_refs":["user-request"]}
-      ]
-    },
-    "interpretation": {
-      "interpretation_id":"interpretation-intake","turn_id":"turn-intake","incoming_refs":["user-request"],
-      "components":[{"kind":"question","user_question_ref":"question-offer-effect","answer_timing":"before_work","meaning":"Explain the offer effect before choosing a comparison.","established":["The user needs the target distinction before deciding."],"unresolved":["Assignment procedure is unknown."]}],
-      "basis_refs":["user-request"],
-      "next_action":{"kind":"lead_only","scope":"Explain the offer effect and ask about allocation.","reason":"The explanation precedes the user's choice of comparison."}
-    },
-    "exchange": {
-      "exchange_id":"exchange-intake","turn_id":"turn-intake","interpretation_ref":"interpretation-intake",
-      "basis_refs":["user-request"],"completed_work_refs":[],"renderer":"lead-markdown-v4",
-      "reconciliation":{"changes":["Explained the offer-effect target before selecting work."],"limitations":["Allocation has not been described."],"unresolved":["How program offers were assigned."],"next_direction":"Obtain the study procedure."},
-      "response":{
-        "user_questions":[{"question_ref":"question-offer-effect","text":"What does an offer effect mean?","answer":"It compares outcomes under being offered a program place versus not being offered one. People may choose whether to attend, so this is a different question from the effect of attending. Which comparison we can support depends on how the offers were assigned.","status":"answered","basis_refs":[]}],
-        "status":"The target distinction is clear; the assignment procedure is still needed to choose a defensible comparison.",
-        "questions":[{"question_ref":"question-offers","text":"How was it decided who received an offer?","why":"The selection procedure determines which comparisons could be credible.","needed":"A description of the decision or a protocol describing it."}],
-        "next_steps":[],"next_steps_none":"You can describe the procedure or share its record."
-      }
-    }
-  }
+"resolution": {"answer_refs": ["e15"], "remaining": ["How readiness was defined"]}
+```
+
+Partial answers remain `open`, with known support and the exact remainder.
+`answered` requires supporting references and empty `remaining`. A retired
+request can retain an unresolved scientific unknown, with its reason and
+consequences. Record unavailability or refusal so the next turn does not repeat
+the same request without an attainable new source. Closing or reducing a
+remainder needs additional support or an explicit sourced correction.
+
+Preserve the existing user-question contract: use `status`, `reason`, sources and
+prepared/actual answer evidence. Do **not** put `resolution` on a user-origin
+question. For a partial answer keep it open and retain the unresolved meaning in
+its reason and sourced reply. A common structured support/remainder schema for
+user questions remains deferred. Withdrawal requires the user's distinct source;
+changing topic does not withdraw a pending question.
+
+## Answer resolution and communication
+
+Supported knowledge, a prepared answer and actual communication remain distinct.
+The canonical question owns its disposition; typed prepared/actual items identify
+which answer was offered or communicated. Do not maintain a second answer-delivery
+checklist or mark a draft as sent. A later draft does not erase an earlier actual
+answer. The continuation view distinguishes that observed history from the newer
+reply's unconfirmed delivery. A changed question, answer or supporting basis
+needs applicability reconciliation; earlier delivery does not confirm a later
+correction. Update the canonical question's existing status, reason and sources
+when its supported answer changes.
+
+Prepared `response.user_questions` items use `question_ref`, `answer`, `status`
+(`answered`, `pending`, `withdrawn`) and `basis_refs`; use `text` when echoing the
+question with `echo_question`. Their disposition matches the canonical question.
+An answered requested scope explanation may use `scope_ref` when the same reply
+also has that selectable option. See [Lead closeout](team_lead.md#closeout).
+
+Actual items preserve complete visible wording in `text`, `kind`, observed `label`
+when present, and supported `question_ref`, `scope_ref`, `work_refs` or
+`answer_status`. Actual reply recording does not repair a wrong sent claim;
+a visible correction is a new reply. Genuine
+capture determines text, while the assistant supplies its supported mappings.
+See [delivery](delivery.md) for optional capture and reconciliation.
+
+## Target and boundary updates
+
+Scientific decisions own target and claim-boundary choices. Project orientation
+binds to canonical source fields instead of requiring a second authored target:
+
+```json
+"overview": {
+  "causal_target": {"ref": "@target", "field": "statement"},
+  "current_claim_boundary": {"ref": "d2"}
 }
 ```
+
+Available overview keys are `objective`, `intended_use` (or `use`), `audience`,
+`causal_target`, `current_claim_boundary`. Each value contains `ref` and optional
+`field`, defaulting to `statement`. The selected field must contain text. A
+current entity binding follows its later definition; an exact `d1@e2` binding
+stays at that version until deliberately changed. The utility copies the field
+and keeps its provenance; it does not infer a new scientific summary.
+
+Changing the current target does not erase the original request or make existing
+work answer the new question. Reconcile affected assumptions, routes, findings,
+scope and claims. Do not put a progress narrative into the scientific overview.
+
+## Result conditions
+
+A computed result is evidence, not a separate results collection. Its conditions
+explain what a downstream claim can mean and under which assumptions. Optional
+`inference: {kind, target, guarantee, hypothesis?}` uses `estimate`, `interval`
+or `test`; a test requires `hypothesis`. Optional `supersedes` names an earlier
+condition. Estimates, intervals and tests in one file can have different meanings.
+
+Readers retain these conditions with relevant results. An empty assumption list,
+successful execution or file hash does not establish unconditional validity.
+
+## Checkpoints and reviews
+
+V8 derives continuation from explicit direction and owned records. Do not author
+a separate checkpoint or repeat its question, answer remainder and run status.
+
+Use explicit `next_action` only when direction changes. Its `kind` is
+`lead_only`, `specialist`, `wait` or `close`; optional fields include `reason`,
+`scope`, `decision`, `question_refs`, `question_timing`. A specialist action needs
+its bounded `assignment`. `scope_ref` names an immutable scope and `decision`
+names its acceptance. `scope` may instead state a concise work purpose in prose,
+or carry the scope entry reference. `authorization_ref` is an accepted alias
+for `decision`.
+
+`question_timing` is `before_work`, `after_work` or `clarify_first`, or a list of
+`{question_ref, timing}` bindings. An answer needed first prevents immediate
+specialist selection. Acceptance can remain valid while explanation is next.
+Permission, direction and execution progress are separate meanings.
+
+An incoming handling save or attributed prepared closeout owns direction; later
+recovery of an old closeout must not override newer user input. `responds_to`
+retains that source relationship. A review needs its prospectively selected
+assignment, sources, findings and limits; it does not manufacture another turn.
+Use `review.work_refs` for the runs whose work this review assesses, including
+the completed analysis or report it returns. Supporting inputs belong in
+`evidence_refs` or other source links; citing a run as an input does not say its
+work was assessed. `responds_to` identifies the selected assignment, not the
+assessed run. Existing reviews without `work_refs` remain readable; a missing
+link is not proof that no review occurred.
+Keep at most one substantive bounded specialist review per actual user-facing
+round. A no-output review needs no placeholder run.
+
+## Case brief selection
+
+`selection: {knowledge_refs?, work_refs?}` accompanies an ordinary adopting save.
+A supplied list replaces that selection; an omitted list retains it. An explicit
+empty list differs from uninitialized selection. `work_refs` selects work or
+reviews. No separate selection entry or authored brief prose is required.
+
+Live user questions, restrictions, deferred accepted work and consequential
+communication gaps remain visible independently of optional selection. Selection
+does not answer questions, retire assumptions or change permission. Do not revise
+a bound canonical record solely to shorten its display; use existing concise
+fields and exact expansion.
+
+## Derived project components
+
+The utility reconstructs these 21 components. Agents do not author another copy
+of them, and ordinary resumption does not require reading the entire export.
+
+| Component | Derived contents and principal readers |
+|---|---|
+| `state_meta` | Case/head, format and generated source links; utility and read/write interfaces |
+| `project_understanding` | Bound purpose/use/target/boundary fields; all roles |
+| `user_context` | Current attributed preferences/expertise/constraints; Helper and Lead |
+| `evidence` | Current fact/source/result definitions; relevant scientific roles and binding checks |
+| `assumptions` | Current premise definitions and assessments; routing, analysis and reporting |
+| `decisions` | Scientific choices; Lead and scientific readers |
+| `questions` | Current canonical issues and supported disposition; Helper and Lead |
+| `candidate_routes` | Scientific alternatives and discriminators; routing and Lead |
+| `result_conditions` | Result meaning and applicability; analysis, reporting and later readers |
+| `consultation` | Attributed current direction; Helper, selected specialist and Lead |
+| `specialist_reviews` | Review summaries and full-body links; Lead and later specialists |
+| `runs` | Latest lifecycle and frozen artifact links; executing roles and continuation |
+| `action_scopes` | Full immutable scope definitions; Helper, executors and authorization checks |
+| `action_decisions` | Historical source-bound user dispositions; permission and continuity |
+| `focus_scope_ref` | Explicit current scope focus; navigation, never permission |
+| `interpretations` | Index of actual interpretation entries; Helper, Lead and continuity |
+| `exchanges` | Prepared-response indexes; Helper, Lead and delivery checks |
+| `deliveries` | Actual observations and same-reply links; communication and authorization |
+| `turns` | Incoming/handling/work/reply associations; utility and pending-work views |
+| `case_brief` | Saved relevance selections; shared brief assembly |
+| `history_index` | Rebuildable identity/defining-entry lookup; retrieval and validation |
+
+Mutable collections keep one current definition per entity, including inactive
+records. Older definitions remain in the journal. Immutable observations and
+decisions retain their history. Original user messages remain independently
+discoverable even when no evidence-summary record is needed. Projection indexes
+are not complete review, interpretation or prepared-reply bodies.
+
+## Reading details and compatibility
+
+Use [memory reading](memory.md#reading) for brief, exact and focused reads. Exact
+reads return definitions, not a silently substituted current version. Expand
+sources and applicable conditions when the next decision requires them.
+
+No-op entity updates preserve versions. A wholly empty knowledge change may
+return `no_op: true` without a new entry. Original intake, actual observation or
+decision is not discarded merely because its words resemble older content.
+Exact committed retries identify the original operation; export repair does not
+repeat it. See [recovery](memory.md#recovery) for current-head and no-op handling.
+
+The utility replays the authoritative journal before comparing generated files.
+A successful commit survives project/brief/index export failure. Historical v7
+records retain their original parser, IDs, renderers and artifacts through the
+[v7 contract](v7/memory-records.md); no in-place migration is implied.

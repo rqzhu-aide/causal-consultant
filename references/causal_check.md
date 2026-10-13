@@ -52,12 +52,12 @@ adjustment validity and identification independently from timing, assignment,
 domain knowledge and defensible assumptions. A fitted graph is not an adjustment
 certificate. Diagnostic success cannot prove untestable identification assumptions.
 
-Interpret corrections precisely. Self-selected attendance does not refute
-randomized offers or their ITT target. An explicit correction that no offer was
-randomized does remove that randomization argument. Inspect the affected
-cohort, evidence and current recommendations; update their known implications
-together while keeping historical reviews intact. Do not treat semantic
-correction as altered artifact bytes or automatically invalidate other targets.
+Use [Helper's reconciled account](helper.md#resume-and-interpret) without
+mistaking understood meaning for established science. Assess the affected
+mechanism, cohort, target and plausible alternative accounts against their
+sources. Return justified changes and unresolved implications together; preserve
+unaffected conclusions and historical reviews. Changed source meaning does not
+itself imply altered artifact bytes.
 
 ## Strategies and the Next Discriminator
 
@@ -78,10 +78,20 @@ from this example.
 
 Maintain project-specific candidates using the
 [study-record contract](memory-records.md#study-and-user-records). Recommend a default
-only when evidence can rank a responsible route for the current target.
-Useful alternatives may involve different data construction, linkage, collection,
-population, comparator, follow-up, estimand, identification frame, or an explicitly
-non-causal fallback. Do not force alternatives when one path is adequate.
+only when evidence can rank a responsible route for the current target; keep a
+route's endorsement or exclusion conditional while unresolved study facts could
+materially change it.
+Develop alternatives for Lead across model assumptions or structure, data
+construction or linkage, method, population, comparator, follow-up, estimand or
+interpretation, including an explicitly non-causal fallback. Follow
+[Lead's conditional option guidance](team_lead.md#select-the-next-useful-contribution):
+normally offer at least two meaningful directions when a real next choice remains.
+Direct answers, an accepted next action and user-directed closure need no menu;
+a viable default alone does not establish that useful alternatives are exhausted.
+An information route asks whether the user can provide existing data, protocols,
+assignment records or other documentation, and explains what it could resolve.
+It does not ask for a repeated experiment or new observations. Do not invent
+unsupported science to populate the menu; preserve the limits of available evidence.
 
 For each material change, record its supporting/opposing evidence, unmet
 requirements, claim boundary, reason, and what could reopen or promote it.
@@ -106,6 +116,9 @@ to the user as factual questions. Return proposed dispositions for the
 when updating a saved answer or unresolved remainder.
 
 ## Claim and Work Boundary
+
+Use the [record purposes and budgets](memory-records.md#prose-budgets-and-purpose):
+summarize the decisive conclusion and limit; link the detailed identifying account.
 
 Make the assessment's basis inspectable: connect consequential facts and their
 sources, unresolved conditions, the live routes they support or undermine, and
@@ -132,7 +145,7 @@ later acceptance before one design worker executes it in a later turn.
 Return one meaningful review with evidence, assumptions and strategy changes
 to the [named commit owner](memory.md#ownership-and-save-points), normally Lead.
 Use the [review contract](memory-records.md#checkpoints-and-reviews), linking it
-to the prospectively recorded interpretation and assignment. An option
+to the prospectively recorded handling and assignment. An option
 selection authorizes bounded work; it does not confirm the identifying
 conditions. Preserve partial answers and uncertain accounts in the evidence
 and keep unanswered factual questions open.

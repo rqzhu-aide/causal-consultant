@@ -2,6 +2,7 @@
 
 const fs = require("node:fs");
 const crypto = require("node:crypto");
+const path = require("node:path");
 const {
   fail, canonical, sha256, rootPath, safePath, ensureDirectory, readFile,
   writeNew, atomicWrite, assertNotLegacy, withLock
@@ -79,7 +80,10 @@ function readJournal(root, allowTail = false) {
 
 function receipt(event, extra = {}, root) {
   return { ok: true, project_id: event.project_id, last_event_id: event.event_id,
-    sequence: event.sequence, committed: true, ...extra,
+    state_token: require("./authoring.cjs").stateToken(event.project_id, event.event_id),
+    sequence: event.sequence, committed: true,
+    committed_records: require("./record-lookup.cjs").definitionsInEvent(event).map(({ record_ref, event_ref, collection }) => ({ record_ref, event_ref, collection })),
+    ...(extra.replayed && event.payload.run && root ? require("./runs.cjs").replayReceipt(root, event) : {}), ...extra,
     ...(event.type === "exchange_prepared" ? require("./exchanges.cjs").exchangeReceipt(event) : {}),
     ...(event.type === "exchange_prepared" && root ? require("./delivery.cjs").savePrepared(root, event) : {}),
     ...(event.payload.delivery?.observed_response_sha256 ? {
@@ -87,16 +91,38 @@ function receipt(event, extra = {}, root) {
       observed_response_sha256: event.payload.delivery.observed_response_sha256,
       observed_response_path: event.payload.delivery.source_ref,
       ...(event.payload.delivery.response_span ? { response_span: event.payload.delivery.response_span } : {})
+    } : {}),
+    ...(require("./exchanges.cjs").isAgentRecorded(event.payload.delivery) ? {
+      correspondence: "agent_recorded", reply_attribution: "agent_recorded",
+      actual_source_ref: event.payload.delivery.source_ref,
+      before_incoming_ref: event.payload.delivery.agent_recording.before_incoming_ref,
+      before_incoming_event_ref: event.payload.delivery.agent_recording.before_incoming_event_ref,
+      ...(event.payload.delivery.agent_recording.capture_ref ? {
+        capture_ref: event.payload.delivery.agent_recording.capture_ref,
+        recorded_items_role: "agent_interpretation_of_captured_message"
+      } : {}),
+      ...(event.payload.delivery.agent_recording.supersedes_recording_ref ? {
+        supersedes_recording_ref: event.payload.delivery.agent_recording.supersedes_recording_ref
+      } : {}),
+      recorded_response_items: require("./exchanges.cjs").recordedItems(event.payload.delivery)
     } : {}) };
 }
 function capabilities() {
   return { ok: true, version: require("../../package.json").version, journal_schema: 7,
-    capabilities: ["durable-exchanges-v1", "user-question-routing-v1", "consultation-loop-v1", "captured-delivery-v1", "proposal-preflight-v1", "intact-reply-recovery-v1", "source-attributed-memory-v1", "reply-reconciliation-v1", "case-brief-v1"],
-    renderers: ["lead-markdown-v1", "lead-markdown-v2", "lead-markdown-v3", "lead-markdown-v4"],
+    capabilities: ["compact-memory-views-v1", "exact-record-read-v1", "assisted-authoring-v1", "agent-recorded-reply-v1", "actual-reply-reconciliation-v1", "claude-transcript-capture-v1", "four-section-responses-v1", "visible-scope-answers-v1", "section-item-labels-v1", "message-bound-delivery-v2", "pending-intake-v1", "durable-exchanges-v1", "user-question-routing-v1", "consultation-loop-v1", "captured-delivery-v1", "proposal-preflight-v1", "intact-reply-recovery-v1", "source-attributed-memory-v1", "reply-reconciliation-v1", "case-brief-v1", "compact-proposals-v1", "concise-authoring-v1", "conversational-responses-v1", "deferred-release-v1", "operational-summary-v1", "report-deliverables-v1", "report-presentation-adjustment-v1"],
+    renderers: [...require("./exchanges.cjs").RENDERERS],
     compatibility: { minimum_extension_reader: "7.0.7", historical_events: "replayed unchanged",
-      additional_reader_requirements: { captured_observations: "captured-delivery-v1", recovered_observations: "intact-reply-recovery-v1", reconciled_questions_and_paused_acceptance: "reply-reconciliation-v1", case_brief_selections_and_message_coverage: "case-brief-v1" },
+      additional_reader_requirements: { captured_observations: "captured-delivery-v1", recovered_observations: "intact-reply-recovery-v1", reconciled_questions_and_paused_acceptance: "reply-reconciliation-v1", case_brief_selections_and_message_coverage: "case-brief-v1", compact_proposal_exchanges: "compact-proposals-v1 (7.0.11); full saved scope export with lead-markdown-v5", conversational_exchanges: "conversational-responses-v1 (7.0.13); lead-markdown-v6", flat_option_exchanges: "7.5.1; lead-markdown-v7", sectioned_exchanges: "7.5.2; lead-markdown-v8", four_section_exchanges: "7.5.3; lead-markdown-v9; response explanations and derived items", message_bound_delivery: "7.5.3; captured-delivery-v2 and message-bound-delivery-v2", pending_intakes: "7.5.3; primary-message-v1 source marker", deferred_analysis_inputs: "deferred-release-v1 (7.2.0); one unreleased analysis input" },
+      new_report_reader: "7.5.0 for report-deliverables-v1 and report-presentation-adjustment-v1; legacy plans and manifests retain their frozen contracts",
+      visible_scope_answer_reader: "7.5.4 for visible-scope-answers-v1; lead-markdown-v10 links a sourced user-question answer to the same exchange's selectable scope",
+      section_item_label_reader: "7.5.5 for section-item-labels-v1; lead-markdown-v11 displays A/Q/N labels and advisory item limits of 50, requested answers up to 200 and necessary public scope terms up to 100.",
+      agent_recorded_reply_reader: "7.5.6 for agent-recorded-reply-v1; actual visible reply items and their following retained primary user message, with agent attribution and semantic scope mappings.",
+      actual_reply_reconciliation_reader: "7.5.12 for actual-reply-reconciliation-v1; optional capture_ref and supersedes_recording_ref link interpretations of the same actual reply. Captured content and agent interpretation retain separate provenance; current views reconcile them while exact history and original acceptance stay unchanged.",
+      agent_recorded_answer_disposition_reader: "7.5.9 for optional mapped answer status; older recordings remain readable. Current views separate question resolution from actual communication and route assessment from recorded execution.",
+      compact_memory_reader: "7.5.7; --output-format compact-v1 returns memory-compact-v1 with shared record-version bodies and local locators. 7.5.10 preserves actual answer disposition as answer_status separately from lookup status. Legacy output remains the default; history remains full event search.",
+      exact_record_reader: "7.5.7; context mode:record retrieves batched definitions, optionally at an exact defining event. Always compact; historical unbound dependencies are not silently replaced by current versions.",
       protected_work_enforcement: "helper identities, order, scope and current record versions; semantic consent and host bypass require observation",
-      host_closeout_enforcement: "instruction_only", delivery: "observe-exchange compares retained actual text; capture attribution remains host/agent supplied; historical hash-only observations are unverified" } };
+      host_closeout_enforcement: "instruction_only", delivery: "observe-exchange records an agent's faithful reading of the actual visible reply or compares retained native capture bytes; agent recordings claim no exact-byte or host proof; historical hash-only observations are unverified" } };
 }
 function writeProjection(root, state, hooks = {}) {
   if (hooks.beforeProjection) hooks.beforeProjection();
@@ -104,7 +130,8 @@ function writeProjection(root, state, hooks = {}) {
 }
 function refreshDerived(loaded, hooks = {}, afterAppendError) {
   const result = { current_last_event_id: loaded.state.state_meta.last_event_id,
-    projection_written: false, brief_path: "case-brief.md", brief_written: false };
+    projection_written: false, brief_path: "case-brief.md", brief_written: false,
+    index_path: "index.html", index_written: false };
   try {
     if (afterAppendError) throw afterAppendError;
     writeProjection(loaded.root, loaded.state, hooks);
@@ -112,13 +139,38 @@ function refreshDerived(loaded, hooks = {}, afterAppendError) {
   } catch (error) { result.projection_error = error.message; }
   try {
     if (hooks.beforeBrief) hooks.beforeBrief();
-    atomicWrite(loaded.root, result.brief_path, require("./case-brief.cjs").buildCaseBrief(loaded).markdown);
+    atomicWrite(loaded.root, result.brief_path, require("./case-brief.cjs").buildCaseBrief(withFrozenInputs(loaded)).markdown);
     result.brief_written = true;
   } catch (error) { result.brief_error = error.message; }
-  if (!result.projection_written || !result.brief_written) {
+  try {
+    if (hooks.beforeIndex) hooks.beforeIndex();
+    const deliverables = require("./deliverables.cjs");
+    if (fs.existsSync(safePath(loaded.root, result.index_path)) && !readFile(loaded.root, result.index_path).toString("utf8").startsWith(deliverables.INDEX_MARKER)) {
+      fail("FILE_EXISTS", "index.html belongs to another author; preserve it and choose a clear path before rebuilding the report index.");
+    }
+    atomicWrite(loaded.root, result.index_path, deliverables.indexHtml(loaded));
+    result.index_written = true;
+  } catch (error) { result.index_error = error.message; }
+  if (!result.projection_written || !result.brief_written || !result.index_written) {
     result.warning = "History is committed, but a derived memory file could not be refreshed. Read current context or recover the files; do not repeat the work.";
   }
   return result;
+}
+// Read only known immutable plans once per loaded view, not the run tree.
+function withFrozenInputs(loaded) {
+  if (loaded.frozen_inputs) return loaded;
+  loaded.frozen_inputs = []; loaded.frozen_input_issues = [];
+  for (const run of loaded.state.runs) {
+    if (!run.plan_ref) continue;
+    try {
+      const bytes = readFile(loaded.root, run.plan_ref);
+      if (sha256(bytes) !== run.plan_sha256) fail("PLAN_CHANGED", "Plan hash differs.");
+      const plan = parseJSON(bytes, "Frozen plan");
+      if (plan.run_id !== run.run_id) fail("PLAN_CHANGED", "Plan run identity differs.");
+      loaded.frozen_inputs.push(...(plan.inputs || []).map(input => ({ ...input, run_id: run.run_id })));
+    } catch (error) { loaded.frozen_input_issues.push({ run_id: run.run_id, code: error.code || "IO_ERROR" }); }
+  }
+  return loaded;
 }
 function append(root, event) {
   const target = safePath(root, "journal.jsonl");
@@ -157,7 +209,13 @@ function transact(projectRoot, request, producer, options = {}) {
     const prior = loaded.events.find(e => e.event_id === request.event_id);
     if (prior) {
       // Keep the original request hash format so rc.1 events remain replayable.
-      if (prior.type !== options.eventType || prior.request_sha256 !== fingerprint) {
+      let matches = prior.request_sha256 === fingerprint;
+      if (prior.type === options.eventType && !matches && options.legacyReplayRequest) {
+        const legacy = options.legacyReplayRequest(prior);
+        matches = legacy && legacy.event_id === request.event_id && legacy.expected_project_id === request.expected_project_id
+          && prior.request_sha256 === payloadHash(legacy);
+      }
+      if (prior.type !== options.eventType || !matches) {
         fail("EVENT_CONFLICT", "This event ID was committed for a different operation or content.");
       }
       return receipt(prior, { replayed: true, ...refreshDerived(loaded, options.hooks) }, root);
@@ -166,8 +224,15 @@ function transact(projectRoot, request, producer, options = {}) {
     if (!options.initializing) {
       if (request.expected_project_id !== loaded.state.state_meta.project_id) fail("WRONG_PROJECT", "The request belongs to a different project.");
       if (request.expected_last_event_id !== loaded.state.state_meta.last_event_id) {
+        const known = loaded.events.findIndex(event => event.event_id === request.expected_last_event_id);
+        const later = new Set(loaded.events.slice(known + 1).map(event => event.event_id));
+        const changed = known < 0 ? [] : Object.entries(loaded.state.history_index)
+          .filter(([, item]) => later.has(item.event_ref)).map(([ref, item]) => ({ ref, kind: item.kind, event_ref: item.event_ref }));
         fail("STALE_WRITE", "Project history changed. Read current state before revising the request.", {
-          current_last_event_id: loaded.state.state_meta.last_event_id
+          current_last_event_id: loaded.state.state_meta.last_event_id,
+          expected_last_event_id: request.expected_last_event_id,
+          changed_refs: changed.slice(0, 20), changed_ref_count: changed.length,
+          ...(known < 0 ? { expected_event_unknown: true } : {})
         });
       }
     }
@@ -208,20 +273,35 @@ function init(projectRoot, request, options = {}) {
     const changes = { project_understanding: request.project_understanding || {} };
     validateSemantic(state, { event_id: request.event_id, expected_project_id: request.project_id,
       expected_last_event_id: null, type: "memory_updated", payload: { changes } });
-    return { type: "init", payload: { project_understanding: changes.project_understanding, consultation_policy: require("./authorizations.cjs").POLICY } };
+    return { type: "init", payload: { project_understanding: changes.project_understanding, consultation_policy: require("./authorizations.cjs").POLICY },
+      result: require("./writing.cjs").writingFeedback(state, { project_understanding: changes.project_understanding }) };
   }, { ...options, initializing: true, eventType: "init" });
 }
 function record(projectRoot, request, options = {}) {
   return transact(projectRoot, request, ({ root, state, events }) => {
-    const prepared = require("./model.cjs").prepareMemoryWrite(state, request);
+    const authored = options.prepareRequest ? options.prepareRequest(root, state, request) : request;
+    const submitted = require("./model.cjs").prepareMemoryWrite(state, authored);
+    const prepared = require("./model.cjs").effectiveEvidenceWrite(state, submitted);
+    require("./authorizations.cjs").prepareProposalWrite(state, prepared);
+    if (require("./exchanges.cjs").COMPACT_RENDERERS.includes(prepared.payload?.exchange?.renderer) && Array.isArray(prepared.payload.exchange.response?.next_steps)) {
+      for (const option of prepared.payload.exchange.response.next_steps) if (option?.scope_ref) {
+        const scope_file = path.resolve(root, require("./exchanges.cjs").scopePath(option.scope_ref)).replace(/\\/g, "/");
+        if (Object.hasOwn(option, "scope_file") && option.scope_file !== scope_file) fail("SCOPE_MISMATCH", "The scope-file locator must identify this project's derived saved scope.");
+        option.scope_file = scope_file;
+      }
+    }
+    if (prepared.payload.delivery) require("./recorded-reply.cjs").prepareRecording(prepared.payload.delivery, events);
     validateSemantic(state, prepared);
-    require("./model.cjs").validateMemoryWrite(state, prepared, events);
-    require("./authorizations.cjs").validateProposalWrite(state, prepared);
-    if (prepared.payload.delivery) require("./delivery.cjs").validateWrite(root, prepared.payload.delivery);
-    for (const evidence of prepared.payload.changes?.evidence || []) {
+    require("./model.cjs").validateMemoryWrite(state, submitted, events);
+    require("./exchanges.cjs").validateInterpretationWrite(state, prepared.payload, events);
+    require("./authorizations.cjs").validateProposalWrite(state, prepared, root);
+    if (prepared.payload.delivery) require("./delivery.cjs").validateWrite(root, prepared.payload.delivery, state, events);
+    for (const evidence of submitted.payload.changes?.evidence || []) {
       if (evidence.kind === "computed") require("./runs.cjs").assertComputedEvidence(root, state, evidence);
     }
-    return { type: prepared.type, payload: prepared.payload };
+    return { type: prepared.type, payload: prepared.payload,
+      result: { ...require("./writing.cjs").writingFeedback(state, request.payload),
+        ...require("./writing.cjs").responseFeedback(prepared.payload.exchange) } };
   }, { ...options, eventType: request?.type });
 }
 function orphanRuns(root, state) {
@@ -231,23 +311,41 @@ function orphanRuns(root, state) {
   const known = new Set(state.runs.map(r => r.run_id));
   return fs.readdirSync(directory).filter(name => !known.has(name));
 }
-function status(projectRoot) {
+function readFormat(value) {
+  if (value !== undefined && !["legacy", "compact-v1"].includes(value)) fail("INVALID_INPUT", "Output format must be legacy or compact-v1.");
+  return value === "compact-v1";
+}
+function readEnvelope(loaded) {
+  return { ok: true, version: require("../../package.json").version, journal_schema: 7,
+    project_id: loaded.state.state_meta.project_id,
+    last_event_id: loaded.state.state_meta.last_event_id, sequence: loaded.state.state_meta.sequence,
+    state_token: require("./authoring.cjs").stateToken(loaded.state.state_meta.project_id, loaded.state.state_meta.last_event_id),
+    projection_current: loaded.projection_current };
+}
+function status(projectRoot, outputFormat) {
+  const compact = readFormat(outputFormat);
   const loaded = readJournal(rootPath(projectRoot));
   const { history_index, ...context } = loaded.state;
-  return { ...capabilities(), project: context, projection_current: loaded.projection_current,
+  const result = { ...capabilities(), project: context, projection_current: loaded.projection_current,
     orphan_run_paths: orphanRuns(loaded.root, loaded.state),
     incomplete_run_ids: loaded.state.runs.filter(r => r.status === "in_progress").map(r => r.run_id),
     ...memoryViews(loaded) };
+  return compact ? require("./compact-memory.cjs").compactRead(loaded, { ...result, ...readEnvelope(loaded) }) : result;
 }
 function memoryViews(loaded, selected) {
   if (!loaded.state.state_meta.protocol && !loaded.state.state_meta.consultation_policy && !loaded.state.user_context?.length && !loaded.state.result_conditions?.length) return {};
   return { views: require("./views.cjs").buildViews(loaded, selected) };
 }
-function context(projectRoot, request = {}) {
+function context(projectRoot, request = {}, outputFormat) {
+  const compact = readFormat(outputFormat);
   const loaded = readJournal(rootPath(projectRoot));
+  if (request?.mode === "record") {
+    if (outputFormat === "legacy") fail("INVALID_INPUT", "Exact record mode always returns compact output; omit --output-format or use compact-v1.");
+    return { ...readEnvelope(loaded), ...require("./record-lookup.cjs").exactContext(loaded, request) };
+  }
   if (request && Object.hasOwn(request, "mode")) {
     require("./context.cjs").briefRequestShape(request, loaded.state);
-    const assembled = require("./case-brief.cjs").buildCaseBrief(loaded);
+    const assembled = require("./case-brief.cjs").buildCaseBrief(withFrozenInputs(loaded));
     const conversation = require("./conversation-window.cjs").buildRecentConversation(loaded);
     const unfinished = structuredClone(assembled.unfinished);
     for (const intake of conversation.recent_intakes) for (const pending of intake.unfinished) {
@@ -261,18 +359,25 @@ function context(projectRoot, request = {}) {
     let fileCurrent = false;
     try { fileCurrent = readFile(loaded.root, "case-brief.md").equals(Buffer.from(assembled.markdown, "utf8")); }
     catch { /* Missing, unreadable or stale exports do not change journal-derived context. */ }
+    if (compact) return require("./compact-memory.cjs").compactBrief(loaded,
+      { ...assembled, unfinished, file_current: fileCurrent }, conversation,
+      { ...readEnvelope(loaded), consultation_policy: loaded.state.state_meta.consultation_policy || null,
+        orphan_run_paths: orphanRuns(loaded.root, loaded.state) });
     return { ...capabilities(), project_id: loaded.state.state_meta.project_id,
       last_event_id: loaded.state.state_meta.last_event_id, sequence: loaded.state.state_meta.sequence,
+      state_token: require("./authoring.cjs").stateToken(loaded.state.state_meta.project_id, loaded.state.state_meta.last_event_id),
       consultation_policy: loaded.state.state_meta.consultation_policy || null,
       projection_current: loaded.projection_current, orphan_run_paths: orphanRuns(loaded.root, loaded.state),
       brief: { format: "case-brief-v1", markdown: assembled.markdown, recent_intakes: conversation.recent_intakes,
         unfinished, coverage: { case: assembled.coverage, conversation: conversation.coverage }, file_current: fileCurrent } };
   }
   const selected = require("./context.cjs").selectContext(loaded, request);
-  return { ...capabilities(), project_id: loaded.state.state_meta.project_id,
+  const result = { ...capabilities(), project_id: loaded.state.state_meta.project_id,
     last_event_id: loaded.state.state_meta.last_event_id, sequence: loaded.state.state_meta.sequence,
+    state_token: require("./authoring.cjs").stateToken(loaded.state.state_meta.project_id, loaded.state.state_meta.last_event_id),
     projection_current: loaded.projection_current, orphan_run_paths: orphanRuns(loaded.root, loaded.state), ...selected,
     ...memoryViews(loaded, selected) };
+  return compact ? require("./compact-memory.cjs").compactRead(loaded, result) : result;
 }
 function history(projectRoot, options = {}) {
   const { events } = readJournal(rootPath(projectRoot));

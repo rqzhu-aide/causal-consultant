@@ -2,7 +2,7 @@
 
 Use this file to plan or review a regression discontinuity analysis: sharp or fuzzy RD, regression kink, geographic/border RD, score/rank/date cutoffs, eligibility thresholds, running variables, bandwidth choice, robust bias correction, local randomization, manipulation checks, donut RD, placebo cutoffs, multiple cutoffs, or RD report support.
 
-Work in this order: verify the cutoff rule, define the running variable, check the treatment jump, establish local support, choose the RD lane, specify manipulation/continuity diagnostics, choose estimator settings, then set the local claim boundary. Do not treat an analyst-created split as RD.
+Verify the cutoff rule, running-variable timing and local support, then match the RD target and inference to the study process. An eligibility/assignment effect can remain interpretable under its design assumptions when a measured receipt jump is imprecise; a receipt/complier effect additionally needs a defensible first stage and IV assumptions. Diagnostic nonrejection does not establish those design assumptions. Do not treat an analyst-created split as RD.
 
 Use with [design_worker](../design_worker.md), design ID `regression_discontinuity`.
 Feasibility uses the data requirements, assumptions, and planned diagnostics;

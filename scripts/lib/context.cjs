@@ -12,13 +12,31 @@ const compare = (left, right) => left < right ? -1 : left > right ? 1 : 0;
 function briefRequestShape(value, state) {
   jsonValue(value);
   object(value, "brief context request", ["mode"], ["expected_last_event_id"]);
-  if (value.mode !== "brief") fail("INVALID_INPUT", "The only explicit context mode is brief; omit mode for the existing focused selector.");
+  if (value.mode !== "brief") fail("INVALID_INPUT", "Brief context requires mode: brief; use mode: record for exact lookup or omit mode for the existing focused selector.");
   if (Object.hasOwn(value, "expected_last_event_id")) {
     id(value.expected_last_event_id, "expected_last_event_id");
     if (value.expected_last_event_id !== state.state_meta.last_event_id) {
       fail("STALE_CONTEXT", "Project history changed. Read the current brief before continuing.", { current_last_event_id: state.state_meta.last_event_id });
     }
   }
+}
+
+function recordRequestShape(value, state) {
+  jsonValue(value);
+  object(value, "exact record context request", ["mode", "records"], ["expected_last_event_id"]);
+  if (value.mode !== "record") fail("INVALID_INPUT", "Exact record context requires mode: record.");
+  array(value.records, "records", (selector, label) => {
+    object(selector, label, ["record_ref"], ["event_ref"]);
+    id(selector.record_ref, label + ".record_ref");
+    if (Object.hasOwn(selector, "event_ref")) id(selector.event_ref, label + ".event_ref");
+  }, true);
+  if (Object.hasOwn(value, "expected_last_event_id")) {
+    id(value.expected_last_event_id, "expected_last_event_id");
+    if (value.expected_last_event_id !== state.state_meta.last_event_id) {
+      fail("STALE_CONTEXT", "Project history changed. Refresh the current context before continuing.", { current_last_event_id: state.state_meta.last_event_id });
+    }
+  }
+  return value;
 }
 
 function requestShape(value) {
@@ -56,6 +74,9 @@ function references(record, ownId) {
     for (const ref of references(decision, decision.decision_id)) result.add(ref);
   }
   for (const ref of record.response?.findings?.work_refs || []) result.add(ref);
+  if (require("./exchanges.cjs").FOUR_SECTION_RENDERERS.includes(record.renderer) && record.response) {
+    for (const item of record.response_items || require("./response-layout.cjs").responseItems(record)) for (const ref of item.refs) result.add(ref);
+  }
   for (const assignment of [record.assignment, record.selected_assignment, record.next_action?.assignment]) {
     for (const ref of assignment?.strategy_ids || []) result.add(ref);
   }
@@ -66,15 +87,21 @@ function references(record, ownId) {
   for (const component of record.components || []) for (const field of ["exchange_ref", "question_ref", "delivery_ref", "user_question_ref"]) {
     if (component[field]) result.add(component[field]);
   }
-  for (const question of record.response?.questions || []) result.add(question.question_ref);
+  for (const question of record.response?.questions || []) if (question.question_ref) result.add(question.question_ref);
   for (const question of [...(record.user_questions || []), ...(record.response?.user_questions || [])]) {
-    result.add(question.question_ref);
+    if (question.question_ref) result.add(question.question_ref);
     for (const ref of question.basis_refs || []) result.add(ref);
   }
   for (const option of record.response?.next_steps || []) {
     if (option.scope_ref) result.add(option.scope_ref);
     for (const ref of option.basis_refs || []) result.add(ref);
     for (const ref of option.assignment?.strategy_ids || []) result.add(ref);
+  }
+  if (record.agent_recording) {
+    result.add(record.agent_recording.before_incoming_ref);
+    result.add(record.agent_recording.before_incoming_event_ref);
+    for (const field of ["capture_ref", "supersedes_recording_ref"]) if (record.agent_recording[field]) result.add(record.agent_recording[field]);
+    for (const item of require("./exchanges.cjs").recordedItems(record)) for (const ref of item.refs) result.add(ref);
   }
   return [...result].sort(compare);
 }
@@ -91,7 +118,7 @@ function graphFor(state, events) {
   const priorContents = new Map();
   const eventMap = new Map(events.map(event => [event.event_id, event]));
   const reviewBodies = new Map();
-  const conversationBodies = journalBodies(events);
+  const conversationBodies = journalBodies(events, state);
   const checkpoints = new Map();
   const add = (graph, from, to) => {
     if (!graph.has(from)) graph.set(from, new Set());
@@ -133,7 +160,8 @@ function graphFor(state, events) {
   for (const [ref, record] of checkpoints) nodes.set(ref, { kind: "checkpoint", record, current: false });
   for (const [name, key] of Object.entries(COLLECTIONS)) for (const record of state[name] || []) {
     const ref = record[key];
-    nodes.set(ref, { kind: name, record, current: true, links: name === "specialist_reviews" ? reviewBodies.get(ref)
+    const current = name === "exchanges" ? require("./exchanges.cjs").effectiveExchange(state, record) : record;
+    nodes.set(ref, { kind: name, record: current, current: true, links: name === "specialist_reviews" ? reviewBodies.get(ref)
       : conversationBodies[name]?.get(ref) || record });
   }
   if (state.consultation) nodes.set(state.consultation.checkpoint_id, { kind: "checkpoint", record: state.consultation, current: true });
@@ -194,10 +222,16 @@ function selectContext(loaded, request = {}) {
   const { nodes, forward, reverse, revisions, changed, versions } = graphFor(state, events);
   const questionLinks = questionMemoryLinks(state, events);
   for (const ref of options.focus_refs || []) {
-    if (!nodes.get(ref)?.current) fail("UNKNOWN_REFERENCE", "focus_refs requires a current record; use history --record-id or --event-id for historical or unknown reference: " + ref);
+    const node = nodes.get(ref);
+    if (!node?.current) {
+      const hint = node?.kind === "event" ? "use history --event-id " + ref + " for the complete event."
+        : node ? "use context mode=record with record_ref " + ref + " for this historical record; add event_ref for a known defining version."
+        : "use context mode=record for a known record ID, or literal history --query to discover an unknown ID: " + ref;
+      fail("UNKNOWN_REFERENCE", "focus_refs requires a current record; " + hint);
+    }
   }
   const roots = new Set(options.focus_refs || []);
-  const conversation = conversationRoots(state);
+  const conversation = conversationRoots(state, questionLinks);
   for (const ref of conversation.roots.keys()) roots.add(ref);
   for (const record of state.user_context || []) if (record.status === "current") {
     roots.add(record.context_id); conversation.roots.set(record.context_id, "current user context");
@@ -224,7 +258,7 @@ function selectContext(loaded, request = {}) {
     if (changed.has(ref)) reverseQueue.push(ref);
     const question = nodes.get(ref).kind === "questions" ? nodes.get(ref).record : null;
     const continuity = questionLinks.get(ref);
-    if (continuity && (question.status === "open" || question.resolution?.remaining.length
+    if (continuity && (question.status === "open" || question.resolution?.remaining.length || continuity.communication?.needs_reconciliation
       || (options.focus_refs || []).includes(ref)
       || continuity.latest_interpretation_ref === conversation.current_interpretation_ref)) {
       for (const target of [continuity.original_exchange_ref, continuity.latest_exchange_ref,
@@ -263,7 +297,7 @@ function selectContext(loaded, request = {}) {
   }
 
   const ordered = Object.entries(COLLECTIONS).flatMap(([name, key]) =>
-    (state[name] || []).map(record => ({ ref: record[key], name, record })).sort((a, b) => compare(a.ref, b.ref)));
+    (state[name] || []).map(record => ({ ref: record[key], name, record: nodes.get(record[key]).record })).sort((a, b) => compare(a.ref, b.ref)));
   const query = options.query?.toLowerCase();
   const optional = ordered.filter(item => !selected.has(item.ref) && (query !== undefined
     ? stringValues(item.record).some(value => value.toLowerCase().includes(query)) : !usefulFocus));
@@ -296,7 +330,7 @@ function selectContext(loaded, request = {}) {
   const context = { project_understanding: structuredClone(state.project_understanding), consultation: structuredClone(state.consultation) };
   const collections = {};
   for (const [name, key] of Object.entries(COLLECTIONS)) {
-    context[name] = (state[name] || []).filter(record => selected.has(record[key])).sort((a, b) => compare(a[key], b[key])).map(record => structuredClone(record));
+    context[name] = (state[name] || []).filter(record => selected.has(record[key])).sort((a, b) => compare(a[key], b[key])).map(record => structuredClone(nodes.get(record[key]).record));
     collections[name] = { total: (state[name] || []).length, selected: context[name].length, omitted: (state[name] || []).length - context[name].length };
   }
   const next = options.cursor + page.length < optional.length ? options.cursor + page.length : null;
@@ -308,10 +342,12 @@ function selectContext(loaded, request = {}) {
   if (!usefulFocus && query === undefined) omissions.push("No useful focus is recorded; this is broad paginated discovery. Complete status is available in one read.");
   for (const ref of [...selected.keys()].sort(compare)) {
     const node = nodes.get(ref);
-    if (!node.current) omissions.push("Historical content is not reproduced here: history " + (node.kind === "event" ? "--event-id " : "--record-id ") + ref + ". Current replacements do not establish an earlier version.");
+    if (!node.current) omissions.push("Historical content is not reproduced here: "
+      + (node.kind === "event" ? "history --event-id " : "context mode=record with record_ref ") + ref
+      + ". Current replacements do not establish an earlier version.");
     if (node.current && versions.get(ref) > 1) omissions.push("Earlier versions: history --record-id " + ref + ". Current content is the latest record.");
-    if (node.kind === "specialist_reviews") omissions.push("Full review findings and limitations: history --event-id " + node.record.event_ref + " (review " + ref + ").");
-    if (["interpretations", "exchanges"].includes(node.kind)) omissions.push("Conversation body source: history --event-id " + node.record.event_ref + " (record " + ref + "); generated work views materialize the selected bodies.");
+    if (node.kind === "specialist_reviews") omissions.push("Full review findings and limitations: context mode=record with record_ref " + ref + " and event_ref " + node.record.event_ref + ".");
+    if (["interpretations", "exchanges"].includes(node.kind)) omissions.push("Conversation body source: context mode=record with record_ref " + ref + " and event_ref " + node.record.event_ref + "; generated work views materialize the selected bodies.");
   }
   return { context, selection: { focus_refs: [...roots].sort(compare), reasons: [...selected.entries()]
     .filter(([ref]) => nodes.get(ref).current).sort(([a], [b]) => compare(a, b)).map(([record_ref, reason]) => ({ record_ref, reason })) },
@@ -319,4 +355,4 @@ function selectContext(loaded, request = {}) {
       exceeds_requested_limit: essentialCount > options.limit, selection_complete: next === null } };
 }
 
-module.exports = { selectContext, briefRequestShape };
+module.exports = { selectContext, briefRequestShape, recordRequestShape, references };

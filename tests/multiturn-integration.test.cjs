@@ -49,7 +49,7 @@ function write(root, run_id, file, content) {
 }
 function finalize(root, run_id, output) {
   return runs.finalize(root, { ...ids(root, "event-finalize-" + run_id), run_id,
-    code_paths: [], output_paths: [output], diagnostic_paths: [], environment: { authoring: "structural regression fixture" }, deviations: [] });
+    code_paths: [], output_paths: [output], ...(store.readJournal(root).state.runs.find(run => run.run_id === run_id).kind === "report" ? { deliverable: { primary: output } } : {}), diagnostic_paths: [], environment: { authoring: "structural regression fixture" }, deviations: [] });
 }
 
 test("capability preflight works without a project and rejects unsupported protocols without mutation", t => {

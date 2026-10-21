@@ -44,6 +44,21 @@ what else would be useful.
 Node.js **18.18+** is required for local project memory. The memory utility has
 no runtime package dependencies.
 
+## Interactive testing
+
+We use the companion [interactive-test skill](https://github.com/rqzhu-aide/interactive-test)
+to evaluate Causal Consultant through adaptive, multi-turn conversations. A
+simulated user follows a defined study scenario and user role, shares information
+gradually, and responds to the consultant's questions and proposed choices.
+Independent review examines the actual conversation and available evidence for
+scientific reasoning, useful recommendations, and continuity across turns.
+
+Cases cover study design, difference-in-differences, treatment-effect
+heterogeneity and policy, and data-quality problems, alongside standalone cases
+for real-data investigation and planning future studies. See the tester's
+[runner guide](https://github.com/rqzhu-aide/interactive-test/blob/main/references/runner.md)
+for setup, supported hosts, and version compatibility.
+
 ## Further details
 
 See [the skill instructions](SKILL.md), [method guidance](references/method-catalog.md),

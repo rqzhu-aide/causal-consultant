@@ -53,11 +53,25 @@ gradually, and responds to the consultant's questions and proposed choices.
 Independent review examines the actual conversation and available evidence for
 scientific reasoning, useful recommendations, and continuity across turns.
 
-Cases cover study design, difference-in-differences, treatment-effect
-heterogeneity and policy, and data-quality problems, alongside standalone cases
-for real-data investigation and planning future studies. See the tester's
-[runner guide](https://github.com/rqzhu-aide/interactive-test/blob/main/references/runner.md)
-for setup, supported hosts, and version compatibility.
+We constructed three groups of cases:
+
+- **Reusable synthetic problems:** tutoring study design, observational
+  difference-in-differences, treatment-effect heterogeneity and policy, and
+  data-quality problems. Each can be paired with a typical user, a novice who
+  presses for a preferred conclusion, or an expert who proposes alternatives.
+- **Real-data investigation:** the RGGVY rural electrification study in
+  Chhattisgarh, India, with a fixed Research Coordinator seeking a defensible
+  household-welfare report.
+- **Prospective study planning:** four fictional studies of a mask campaign in
+  France, rural assistance and forest clearing in Peru, medication and depression
+  in England, and surgical outcomes by surgeon gender in South Africa. These
+  test feasible data collection and conditional analysis planning before outcomes
+  exist, without requiring a numerical result or saved report.
+
+The four reusable problems across three personas give 12 combinations; the five
+standalone cases bring the total to **17 configurations**. See the
+[tester README](https://github.com/rqzhu-aide/interactive-test#readme) for case
+selectors, setup, and the interactive run steps.
 
 ## Further details
 

@@ -14,8 +14,7 @@ Context only. Relevant when the causal target asks whether effects differ across
 - A modifier should usually be baseline or otherwise justified as part of a history-defined target. Post-treatment modifiers often change the question.
 - Site/time heterogeneity can reflect implementation, measurement, or calendar changes rather than biological or behavioral moderation.
 - Raw individual CATE maps are often less reportable than grouped CATE, best-linear-projection summaries, calibrated strata, or prespecified subgroup contrasts.
-- Shrinkage can stabilize sparse subgroup estimates, but it does not repair missing support.
-- Many sparse groups may need pooling, partial pooling, or hierarchical/shrinkage summaries before subgroup claims are useful.
+- When supported subgroup estimates are noisy, consider whether partial pooling or a simpler interaction structure could improve useful precision without imposing implausible similarity. Sharing a model can retain named subgroup targets; replacing subgroup targets with a merged-group average changes the target and may hide heterogeneity. Neither creates missing treatment support.
 - Discovery and estimation should be separated when subgroups are learned from data; use held-out, honest, or cross-fitted summaries when possible.
 - Imbalanced treatment groups may make X-learner, R-learner, or grouped DR summaries more informative than naive subgroup regressions, but only after design support is checked.
 - If the user asks who should receive treatment, heterogeneous effects are evidence for policy making, not a policy by themselves.

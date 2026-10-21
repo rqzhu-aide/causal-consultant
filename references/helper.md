@@ -13,10 +13,11 @@ agent. Read [memory.md](memory.md) for access and recovery and the relevant
 2. Save the complete available incoming words as `user_message`, with their
    source and completeness. Retain them even if later interpretation or reply
    recording fails. Do not turn a paraphrase into an original message.
-3. Read the previous actual assistant reply where needed. Record its actual items
-   through [delivery](delivery.md), or reuse an adequate existing observation,
-   before interpreting a dependent choice. Original intake, cancellation and
-   independent discussion need not wait for optional capture.
+3. Before interpreting an answer or choice that depends on the preceding reply,
+   read and record its actual visible items through [delivery](delivery.md), or
+   reuse an adequate existing actual record. Native capture is optional; it is
+   not required for assistant recording. Original intake, cancellation and
+   independent discussion need not wait for unrelated delivery repair.
 4. Handle the whole message. Save a `decision` for a clear work disposition,
    `knowledge` for sourced changes, or `interpretation` for additional consequential
    meaning. Each handling save names `user_message`. It may include adopted
@@ -39,7 +40,8 @@ something else. Do not recast a selection as information to get past an error.
 
 Record explicit user questions, including explanation requests without question
 marks, with their source. Preserve consultant-question support and exact remaining
-parts. A partial answer changes the supported part, not the original issue.
+parts. Apply an answer or availability limit only to the parts it supports;
+preserve the other parts' existing support, status and unresolved remainders.
 Distinguish lack of knowledge, unavailable records, refusal and deferral; avoid
 asking the same unavailable question again.
 
@@ -74,14 +76,17 @@ information could distinguish plausible analytic routes, including consequential
 study-process facts the user may not volunteer. State why the question matters
 without suggesting a preferred answer. Reuse adequate existing assessment.
 
-When the user does not know, consider an attainable source or bounded
-consultant-led contribution. Before saying a supplied record is missing or asking
-for a resend, inspect available attachment references and their accessible files.
-Receipt does not establish contents; unknown contents do not establish absence.
-Keep an issue unknown unless an attributable source establishes unavailability.
-Preserve the limit: "no new interviews or covariates" does not make an existing
-dictionary unavailable. Request a specific record only when it could resolve the
-remainder; otherwise offer explanation or a qualified limit.
+When the user does not know, consider a specific attainable source or bounded
+consultant-led contribution that could resolve a consequential remainder.
+Before saying a supplied record is missing or requesting it again, inspect
+available attachment references and their accessible files. Receipt does not
+establish contents; unknown contents do not establish absence. Record only the
+availability limit established by an attributable source, preserving the
+distinction between lack of knowledge, unavailability, refusal and deferral.
+Request a specific record only when its contents could change the advice. If
+no worthwhile attainable check remains, or the user chooses closure, give the
+supported qualified answer without turning an unresolved remainder into a
+resolved fact or claiming that an unchecked source does not exist.
 
 ## Save and hand off
 

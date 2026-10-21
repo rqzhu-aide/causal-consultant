@@ -30,7 +30,7 @@ Context only. Relevant when the selected design needs additional information abo
   that analysis or a correction for hidden confounding.
 - DR/TMLE work should distinguish AIPW, TMLE, one-step, censoring/missingness/sampling-aware DR, and longitudinal/sequential DR.
 - DML work should distinguish PLR, IRM, PLIV/IIVM, R-/DR-learners, orthogonal forests, sparse/post-double-selection, and nuisance-only plugins.
-- Flexible learners should be benchmarked against simpler adjusted, weighted, AIPW/TMLE, post-lasso, or design-specific estimators.
+- When nonlinearities or interactions could materially affect the answer and the design and support permit, consider whether flexible nuisance estimation offers a useful advantage over a simple specification. If selected, check whether the intended target and effect structure are retained, match validation and uncertainty to the procedure, and use an appropriate simpler benchmark within the planned work.
 
 ## Design Interaction
 

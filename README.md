@@ -5,7 +5,7 @@ studies, and interpreting evidence. It works with you through a conversation:
 gathering context, exploring study designs, discussing useful next steps, and
 revising recommendations as new information arrives.
 
-Current version: **8.0.7**.
+Current version: **8.0.15**.
 
 ## How the consultation works
 

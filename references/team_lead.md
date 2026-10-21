@@ -48,8 +48,14 @@ delivery. Retain useful consultant questions, partial support and consequential
 unknowns. A completed report does not resolve
 the original scientific issue automatically.
 
-Use result conditions whenever a finding is reused, preserving population, target,
-period, weighting, assumptions and uncertainty meaning. Reconcile promised checks
+When adopting or publicly reusing a finding or recommendation, preserve its source
+limitations and result conditions: population, target, period, weighting,
+assumptions and uncertainty meaning. Keep availability and recoverability claims
+as narrow as the evidence supports; absent documentation does not establish that
+every information route is unavailable. Preserve reconstruction limits and the
+assumptions of illustrative feasibility calculations. Call a quantity a bound
+only when evidence or explicit assumptions establish it over the stated input
+range; otherwise label it an illustrative scenario. Reconcile promised checks
 with their saved outcomes before claiming agreement or that further work cannot
 help. Carry a retained sensitivity that meaningfully changes interpretation or the
 useful next action into the public answer or findings summary, including changed
@@ -68,11 +74,19 @@ without changing standards; other kinds follow the
 
 ## Select the next useful contribution
 
-Keep useful analytic alternatives and facts that could change their fit. Explain
-a supported recommendation with its requirements and limits. Ask for attainable
-information, preferences or decisions that matter, not filler or certification.
-Normally offer at least two meaningful directions when there is a real choice;
-a direct answer, accepted next action or user-directed closure needs no menu.
+Keep useful analytic alternatives and facts that could change their fit. Recommend
+a route when evidence supports a preference; when it cannot rank the routes,
+explain the consequential tradeoff and any attainable fact or user preference
+that could distinguish them. Present the materially different options needed for
+the current decision, not every candidate considered. A viable default alone
+does not exhaust useful alternatives; no fixed option count is required.
+Prioritize attainable information, preferences or decisions by what could change
+the current recommendation or its interpretation. Adapt to partial answers:
+foreground the consequential unresolved request and defer independent
+lower-priority requests when they would diffuse the exchange. Ask about facts or
+choices, not certification. A direct answer, accepted next action, acknowledgment
+of a pending check or user-directed closure needs no menu. Repeat an unchanged
+option only when it helps the current decision.
 
 When adopting consequential findings, initialize or refresh
 `selection.knowledge_refs` and `selection.work_refs` in that existing save.
@@ -113,6 +127,14 @@ The response uses the existing `lead-markdown-v11` structured fields:
 | `next_steps` | Ordered `{label, actor, scope, kind, scope_ref?, basis_refs?}` options; the utility supplies local option identity and material scope rendering |
 
 `actor` identifies who performs the proposed contribution, not who selects it.
+Classify the contribution before offering it as selectable. If drafting would
+produce a protected durable report, attach its concrete scope to that first
+offer so the user's later selection can authorize it. If the terms are not
+ready, offer discussion of them instead. Do not request another confirmation
+for correctly classified work already authorized on unchanged terms. If an
+earlier protected offer omitted material terms, present the corrected scope
+and obtain the required later selection; the earlier choice does not supply
+missing authorization.
 Offering consultant target analysis or durable report production, including
 "Approve the report", uses `actor: consultant`, `kind: action` and `scope_ref`. Use
 `actor: user` for contributions such as supplying records or stating a preference.
@@ -153,7 +175,10 @@ repetition of an answer already given. Retain material limits beside claims. Kee
 IDs, workflow mechanics and internal role names out of routine public prose unless
 the user asks about them. Avoid text outside the populated response sections.
 
-Before sending, read the rendered items and their word diagnostics. A successful
+Before sending, read the rendered items against their adopted target, source
+qualifications and result conditions, as well as their word diagnostics.
+Preserve the distinction between illustrative scenarios and supported bounds
+in the words the user will read. A successful
 save or nonblocking diagnostic does not waive the public limits. Findings,
 including their Checks and Limits, count as one item. `review_request` asks
 whether the user's explicit request permits a longer answer; it does not grant

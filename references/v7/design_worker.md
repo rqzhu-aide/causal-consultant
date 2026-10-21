@@ -64,8 +64,9 @@ estimator and uncertainty calculation. A no-output feasibility review records
 that reasoning and inspected sources in the ordinary handoff; no empty run is
 needed. Do not force an unfamiliar argument into the nearest familiar design.
 
-Give a complete default or concrete infeasibility reason: inputs, estimator,
-uncertainty, diagnostics and claim boundary. Return supported alternatives or
+Give a supported proposal, an unresolved choice or requirement, or a concrete
+infeasibility reason. A proposal specifies inputs, estimator, uncertainty,
+diagnostics and claim boundary. Return supported alternatives or
 existing information that could enable them for
 [Lead's recommendation and options](team_lead.md#closeout). Alternatives may
 change model assumptions or structure, data preparation, method, target or

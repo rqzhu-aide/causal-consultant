@@ -82,8 +82,8 @@ only when evidence can rank a responsible route for the current target.
 Develop alternatives for Lead across model assumptions or structure, data
 construction or linkage, method, population, comparator, follow-up, estimand or
 interpretation, including an explicitly non-causal fallback. Follow
-[Lead's normal minimum of two options](team_lead.md#closeout) when proposing the
-next direction; a viable default alone does not exhaust alternatives. An
+[Lead's selective option guidance](team_lead.md#closeout) when proposing the
+next direction; a viable default alone does not exhaust useful alternatives. An
 information route asks whether the user can provide existing data, protocols,
 assignment records or other documentation, and explains what it could resolve.
 It does not ask for a repeated experiment or new observations. Do not invent

@@ -27,6 +27,10 @@ exposure-only support. No target exposure-outcome contrast, adjusted/subgroup
 effect or target model, even under a diagnostic label. Those require a planned
 authorized design-worker execution under [authorizations.md](authorizations.md).
 Policy learning/value and outcome-based subgroup selection share that boundary.
+Separate checked construction findings from causal or inferential implications
+that still need assessment. Return the unresolved premise, any attainable check
+and the remaining condition on the claim; reuse adequate assessment where available.
+A demonstrated construction obstacle can rule out the affected calculation.
 Do not select a final method or silently change target. File reads and routine
 data checks inside this bounded audit require no separate approval for each step.
 

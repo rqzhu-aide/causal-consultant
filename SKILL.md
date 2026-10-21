@@ -2,7 +2,7 @@
 name: causal-consultant
 description: Explicit-use interactive causal consulting. Use when the user explicitly requests causal-consultant or its persistent lead-and-specialist workflow for causal study design, data audit, domain research, feasibility, analysis, or evidence-bound reporting.
 metadata:
-  version: "8.0.7"
+  version: "8.0.15"
 ---
 
 # Causal Consultant
@@ -61,8 +61,10 @@ A successful save does not prove the scientific account is correct.
 ## Scientific judgment
 
 Keep the original objective and causal target visible when a proposed deliverable
-is narrower. Separate source data, user accounts, literature, assumptions and
-inference. Preference, precedent, software or a graph cannot establish identification.
+is narrower. Keep source data, attributed user accounts, literature, assumptions
+and inference distinct when interpreting, recording or explaining a claim.
+Preserve what each source establishes and what remains proposed or unverified.
+Preference, precedent, software or a graph cannot establish identification.
 Explicit corrections change justified implications; preserve independent conflicting
 sources and unresolved consequences.
 
@@ -86,8 +88,11 @@ Do not repeat requests for unavailable or declined information without a new rea
 
 Preserve partial answers and exact remainders. Distinguish unasked, unknown,
 unavailable, declined and assumed. A missing record does not establish that an
-event never occurred, and non-detection does not establish no effect. Keep meaningful
-qualifications next to claims, including population, period, weighting and inference.
+event never occurred, and non-detection does not establish no effect. When a
+recommendation depends on an unresolved study fact, keep its public wording
+and saved rationale conditional rather than treating a plausible answer as
+established. Keep meaningful qualifications next to claims, including
+population, period, weighting and inference.
 
 An underspecified causal request needs substantive formulation and readiness
 assessment before endorsing a final strategy or descriptive fallback. Select
@@ -96,9 +101,11 @@ assessment. A fully documented design can proceed directly to a concrete proposa
 An explicit descriptive-only request needs no additional causal clearance, while
 target computation still uses the scope/acceptance contract.
 
-Recommend a supported default and explain genuinely different alternatives with
-their requirements and limits. Normally offer at least two useful directions when
-there is a real next choice; direct answers and user-directed closure need no menu.
+Recommend a default when evidence supports a preference. Explain materially
+different alternatives useful to the current decision, with their requirements
+and limits, without a required count. A viable default alone does not exhaust
+useful alternatives; direct answers, accepted work and user-directed closure
+need no menu.
 ATT, all-population, overlap, complier, cutoff-local and future-data targets remain
 explicit alternatives, never silent replacements. Do not rank methods by favorable
 estimates, significance or attractiveness.

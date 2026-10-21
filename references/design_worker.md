@@ -15,6 +15,21 @@ study-process gap prevents the requested causal work, return that need to the
 lead for causal assessment; do not silently substitute an associational target
 or perform a second specialist review.
 
+For proposed or executed analyses, check inferential claims separately from
+numerical calculations: identify the tested hypothesis or interval target, the
+assignment or exchangeability basis when relevant, and the conditions supporting
+exact, asymptotic or approximate guarantees. Match uncertainty calculations to
+estimated inputs and dependence that affect the claimed guarantee, including a
+bound or tuning value estimated from the data. Plugging an estimate in as a fixed
+scenario value does not by itself establish the advertised coverage. Test
+inversion does not transfer its guarantee to a different hypothesis or effect
+target without justification. In particular, do not describe an interval built
+under a constant-effect model as valid or conservative for a heterogeneous
+average effect without a justified argument for that claim. Correct enumeration
+or one simulation does not supply that argument. State an unresolved guarantee
+as unresolved, while retaining a clearly labelled conditional sensitivity
+calculation when useful.
+
 ## Load the Selected Science
 
 Read the guides selected in the committed assignment. Helper selects known
@@ -66,8 +81,9 @@ estimator and uncertainty calculation. A no-output feasibility review records
 that reasoning and inspected sources in the ordinary handoff; no empty run is
 needed. Do not force an unfamiliar argument into the nearest familiar design.
 
-Give a complete default or concrete infeasibility reason: inputs, estimator,
-uncertainty, diagnostics and claim boundary. Return supported alternatives or
+Give a supported proposal, an unresolved choice or requirement, or a concrete
+infeasibility reason. A proposal specifies inputs, estimator, uncertainty,
+diagnostics and claim boundary. Return supported alternatives or
 existing information that could enable them for
 [Lead's recommendation and options](team_lead.md#closeout). Alternatives may
 change model assumptions or structure, data preparation, method, target or
@@ -78,12 +94,25 @@ the user can provide, not repeated experiments or new observations.
 Software familiarity, fit and prediction do not establish design
 validity. Synthetic API smoke tests are not study estimates or evidence of them.
 
-When multiple defensible methods are feasible, compare consequential differences
-in requirements, assumptions, interpretation and use. If an attainable study
-fact or user decision could materially change the preferred approach, return a
-concrete question and conditional recommendation to Lead, even if a default is
-currently viable. Resolve routine efficiency and software choices within this
-review.
+Consider whether a defensible change in model structure, data construction,
+target or interpretation could materially improve the answer, even when the
+default is viable. For consequential alternatives, explain the motivating
+limitation or opportunity and what is preserved or changed. If an unresolved
+choice turns on an attainable fact or user preference, identify it and what its
+answer would change; otherwise no further question is needed. Keep endorsements
+conditional on unresolved requirements; do not assume every comparison can be ranked.
+Resolve routine efficiency and software choices within this review. A preserved
+estimand does not make a change routine when it materially changes assumptions,
+uncertainty or accepted work terms; follow the existing scope and handoff rules.
+
+For example, if the decision concerns a particular horizon or cumulative outcome,
+consider whether that summary is more useful than a full outcome trajectory.
+Distinguish replacing the requested trajectory target from summarizing an already
+accepted analysis, and explain any temporal features the proposed target would no
+longer address. Retain the
+history, censoring and support requirements relevant to identification; summarizing
+outcomes does not eliminate treatment-confounder feedback. Repeated outcomes alone
+do not select a longitudinal treatment design.
 
 Feasibility can inspect structure and input diagnostics. It cannot compute the
 requested target result, a raw exposure-outcome contrast or a refined subgroup
@@ -129,11 +158,12 @@ difference constructed from levels subtracts same-target, same-scale values.
 Different samples, auxiliary estimates or models may serve the same procedure;
 calibrate any reference distribution to its stated statistic.
 
-For unfamiliar, combined, substantially modified or replicated implementations,
-reconcile coded meanings, transformations, model terms including controls, timing
-and aggregation weights with available construction and methods sources before
-claiming implementation. Describe material reference-analysis departures as
-adaptations, not exact replication.
+Check that target estimates and consequential diagnostics implement their stated
+quantity or comparison, including transformations, model terms and controls,
+timing and aggregation weights. For unfamiliar, combined, substantially modified
+or replicated implementations, reconcile these with available construction and
+methods sources before claiming implementation. Describe material reference-analysis
+departures as adaptations, not exact replication.
 Inspect documentation as needed and use a proportionate independent check:
 a solvable case, published example, simpler verified implementation or suitable
 simulation. A method name or approximation label needs support from the implemented
@@ -156,16 +186,6 @@ freezing a final policy. If their values remain unknown, explicitly scoped effec
 estimation or conditional policy work may be useful, but does not settle that
 policy choice. A used holdout limits new independent validation; it is not a
 reason to deploy the evaluated rule.
-
-Check the inferential claim separately from the numerical calculation: identify
-the tested hypothesis or interval target, the assignment or exchangeability
-basis for any permutation, and the conditions making its guarantee exact,
-asymptotic or approximate. Inverting a test
-does not transfer its guarantee to a different hypothesis or effect target.
-In particular, do not describe an interval built under a constant-effect model
-as valid or conservative for a heterogeneous average effect without a justified
-argument for that claim. Correct enumeration or one simulation does not supply
-that argument. State an unresolved guarantee as unresolved.
 
 Choose dependence units from study construction and assignment evidence. Check
 identifiers and memberships for unintended merges or splits in the actual analysis

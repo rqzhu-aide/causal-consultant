@@ -28,16 +28,64 @@ supports or undermines. When one missing fact remains decisive, identify it
 precisely and say how the user or a document could resolve it. Ordinary asking
 for that fact is lead work, not a reason to invoke an empty specialist review.
 
+When planning future collection, connect the proposed comparison to a usable
+provisional recommendation about what to collect, for whom and when, using
+known resource, workload, access and participant-burden limits. Explain the
+collection or allocation tradeoff that matters for the user's current planning
+goal, including when narrower coverage or richer measurement in fewer units
+would better serve the question. Revisit an unanswered constraint when an
+attainable answer could change the next useful recommendation; otherwise state
+the condition and how it will be checked. Retain proportionate permission and
+confidentiality conditions for the activities proposed. If a measurement can
+reveal serious harm needing action, identify who can respond and make an
+attainable response arrangement a condition before using it. A provisional
+plan or useful pause need not wait for every condition to be resolved. A
+narrower endpoint the user has chosen need not complete the broader study
+design.
+
 ## Readiness
 
-Check the question, population, intervention/exposure, comparator, outcome,
-time zero, follow-up and estimand against the actual evidence. In particular:
+Check the question, population, exposure, comparator, outcome, time zero,
+follow-up and estimand together for each proposed route, including conditional
+fallbacks.
+Distinguish the intended population from the units with observed outcomes.
+Missingness, censoring, exclusions, weighting, and changes to exposure or
+follow-up can change identification requirements and sometimes the target.
+An observed-case contrast is not automatically an effect for the original
+population or a common selected subgroup. If an event makes the outcome
+undefined rather than merely unobserved, such as death before a symptom score,
+distinguish a descriptive observed-case comparison from a causal effect for a
+shared subgroup or a new outcome that includes the event. State the target and
+assumptions of any causal alternative; few or similar event rates do not
+establish a common causal comparison population. Explain which comparison
+supports the stated target and what remains assumed; otherwise state the limit
+or propose an explicit alternative. Preserving planned or assigned exposure
+after deviations may define a plan/assignment-policy contrast under the relevant
+comparison assumptions. It does not randomize allocation or automatically
+identify actual-delivery, actual-receipt or no-exposure effects, or attenuation
+toward the null.
+In particular:
 
-- order covariates, treatment, mediators, outcomes, selection and censoring;
+- order covariates, treatment, mediators, outcomes, selection and censoring by
+  the actual study process and measurement/reference windows; when entry or
+  follow-up changes, reassess variable roles rather than treating everything
+  recorded before the new time zero as pre-exposure. A recall or aggregate
+  measure spanning exposure is not automatically pretreatment; preserve its
+  timing uncertainty and the conditions for any proposed use;
 - identify the assignment or exposure process and the comparison it supports;
 - assess confounding, measurement, missingness, support, leakage, interference,
   clustering, selection and transport assumptions where they affect the target;
-- distinguish evidence for an assumption from an assumption merely adopted;
+  match inference to assignment and dependence, keeping the recommendation
+  conditional when these remain unknown;
+- distinguish the quantity an observed source or proposed diagnostic measures
+  from the outcome, mechanism or assumption it is meant to assess. Explain the
+  link. Before attributing a consequential pattern, consider plausible competing
+  causes and what attainable evidence could distinguish them. Selection, coverage
+  or a ratio's composition can change the measure without a corresponding change
+  in the target outcome. Preserve what events and temporal resolution a
+  reconstruction can identify and any unverified measurement, coverage or
+  interpretation conditions; evidence about one mechanism, population or period
+  does not establish the unsupported remainder;
 - identify diagnostics, sensitivity, falsification or negative controls that
   could materially weaken or qualify the conclusion.
 
@@ -81,17 +129,20 @@ Maintain project-specific candidates using the
 only when evidence can rank a responsible route for the current target; keep a
 route's endorsement or exclusion conditional while unresolved study facts could
 materially change it.
-Develop alternatives for Lead across model assumptions or structure, data
-construction or linkage, method, population, comparator, follow-up, estimand or
-interpretation, including an explicitly non-causal fallback. Follow
-[Lead's conditional option guidance](team_lead.md#select-the-next-useful-contribution):
-normally offer at least two meaningful directions when a real next choice remains.
-Direct answers, an accepted next action and user-directed closure need no menu;
-a viable default alone does not establish that useful alternatives are exhausted.
-An information route asks whether the user can provide existing data, protocols,
-assignment records or other documentation, and explains what it could resolve.
-It does not ask for a repeated experiment or new observations. Do not invent
-unsupported science to populate the menu; preserve the limits of available evidence.
+Consider alternatives suggested by a consequential limitation or opportunity in
+the current route, even when a viable default exists. Relevant changes may concern
+model assumptions or structure, data construction or linkage, method, population,
+comparator, follow-up, estimand or interpretation, including an explicitly
+non-causal fallback. These are reasoning dimensions, not a checklist. Return
+alternatives that could materially improve the answer or its usefulness, with
+what they preserve or change. Lead selects the public choices under its
+[selective option guidance](team_lead.md#select-the-next-useful-contribution).
+An information route requests existing material that could resolve the uncertainty.
+For an existing-data consultation, it does not require repeated experiments or
+new observations. Recommendations for future collection follow Design Elicitation
+above and remain proposals, not claims that collection is available or approved.
+Do not invent unsupported science to populate the menu; preserve the limits of
+available evidence.
 
 For each material change, record its supporting/opposing evidence, unmet
 requirements, claim boundary, reason, and what could reopen or promote it.

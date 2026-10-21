@@ -158,8 +158,8 @@ they qualify without repeating content just to populate a section.
   understood part and ask only the relevant remainder or alternatives. Do not
   re-request a settled answer, pressure a user who declined, or ask them to
   certify scientific validity. Offer an unknown/unavailable path when useful.
-- `next_steps`: normally at least two concrete options when proposing the next
-  direction, with stable identities and order. Recommend one when evidence supports
+- `next_steps`: concrete, materially different options useful to the current
+  decision, with stable identities and order and no required count. Recommend one when evidence supports
   a preference; if it cannot rank them, explain what existing information or user
   decision could distinguish them. Develop alternatives by considering changes to
   the model, available data or its preparation, method, target or interpretation.
@@ -167,9 +167,9 @@ they qualify without repeating content just to populate a section.
   option changes, what it could establish and its main requirement or limitation.
   A viable default alone is no reason to omit alternatives. An existing-information
   request enabling another route or a narrower or conditional interpretation can
-  be an option; do not invent an unsupported estimator or duplicate work to reach
-  two. If none of these dimensions supports an alternative, explain the concrete
-  limitation. Direct answers, acknowledgments, focused clarification, artifact
+  be an option; do not invent an unsupported estimator or duplicate work to fill
+  a menu. Explain scientific limits when they affect the recommendation, not to
+  justify an option count. Direct answers, acknowledgments, focused clarification, artifact
   delivery and user-directed pause or closure need no compulsory menu. Do not reopen
   a choice the user has already made. Write `scope` as a useful action sentence, rather
   than an instruction to select the option. Present protected work through its
@@ -201,7 +201,7 @@ Count a scope-bearing answer with all its expanded terms against its 200-word
 ceiling. Do not split one thought artificially, remove a material qualifier, or
 fill a word target.
 
-The normal minimum of two options applies to recommendations, not every reply.
+Select options by their usefulness to the current decision, not a fixed count.
 Prepare concise text before saving the draft and preserve its scientific meaning
 when replying. Fully rendered-item
 diagnostics are advisory; they do not truncate content, invalidate a committed

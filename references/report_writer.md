@@ -86,15 +86,18 @@ for every member. Group averages also do not
 identify which individuals benefited or would have benefited under another
 allocation.
 
-Sensitivity scenarios describe results under specified assumptions about bias,
-response or implementation. A selected scenario is not a worst case or empirical
-lower bound unless the allowed departures are justified and the result bounds
-them; a scenario range is not automatically a confidence interval or the actual
-range of bias. Failure to detect
-an assumption violation does not establish that the assumption holds. Distinguish
-evidence of a positive effect from evidence exceeding a worthwhile threshold.
-Non-detection does not establish practical equivalence. A policy may use point
-estimates, costs and risk preferences without claiming either conclusion.
+Sensitivity and planning scenarios describe results conditional on specified
+assumptions about bias, response, implementation or precision. Preserve which
+inputs are observed, estimated or illustrative. A selected scenario is not a
+worst case or empirical bound unless the allowed departures are justified and
+the result bounds them; a scenario range is not automatically a confidence
+interval or the actual range of bias. Frame feasibility against the requested
+criterion across the relevant scenarios; a favorable hypothetical improvement
+does not establish that the design meets it. Failure to detect an assumption
+violation does not establish that the assumption holds. Distinguish evidence of
+a positive effect from evidence exceeding a worthwhile threshold. Non-detection
+does not establish practical equivalence. A policy may use point estimates,
+costs and risk preferences without claiming either conclusion.
 
 Check explanations of mechanisms and adjustment against the source evidence
 for variable roles and timing. A coefficient's sign change does not establish

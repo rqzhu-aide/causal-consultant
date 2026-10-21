@@ -61,7 +61,7 @@ Perform the analytic diagnostics relevant to the DiD design and chosen estimator
 - Timing hazards: anticipation, spillovers, contamination, concurrent shocks, seasonality, policy bundles, and lagged effects.
 - Comparison sensitivity: never-treated versus not-yet-treated, donor pool, excluded cohorts, window choices, covariate set, and aggregation weights.
 - TWFE diagnostics: label TWFE as benchmark when appropriate; use decomposition or negative-weight discussion if staggered adoption is present.
-- Inference: cluster level, serial correlation, small-cluster sensitivity, randomization/placebo uncertainty, and aggregate policy variation.
+- Inference: cluster level, serial correlation, small-cluster sensitivity, design-justified randomization inference or explicitly qualified placebo comparisons, and aggregate policy variation.
 - Support-route diagnostics: if a support file is active, run only the DiD diagnostics needed by that support task, such as event-count support, subgroup trend support, dose/intensity timing, or statistical-validity checks.
 
 ## Boundaries

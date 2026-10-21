@@ -29,7 +29,7 @@ Before analysis, build or specify an IV-ready dataset. Minimum facts:
 - first-stage evidence and whether relevance is strong enough for the intended analysis
 - independence/as-if-randomness or conditional independence rationale
 - exclusion restriction: plausible direct paths, alternate treatments, resources, information, spillovers, or biological pleiotropy
-- monotonicity/no-defier or equivalent local-effect logic when LATE/CACE is claimed
+- monotonicity/no-defier or equivalent local-effect logic when LATE/CACE is claimed; explain the claimed group through treatment responses under alternative instrument assignments. Observed agreement with assignment alone does not define compliers.
 - measurement compatibility across instrument, treatment, outcome, clusters, compliance, and windows
 - weak-instrument, many-instrument, overidentification, clustering, fixed-effect, heteroskedasticity, and selected-sample issues
 - MR-specific facts when relevant: allele harmonization, LD, ancestry, sample overlap, variant-exposure relevance, population stratification, pleiotropy, and exposure/outcome source compatibility

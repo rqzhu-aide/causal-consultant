@@ -8,5 +8,6 @@
 *.yaml text eol=lf
 *.yml text eol=lf
 *.html text eol=lf
+*.pdf binary
 # Preserve exact captured evidence bytes and their recorded hashes.
 architecture/** -text

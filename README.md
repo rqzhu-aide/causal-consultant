@@ -9,6 +9,8 @@ revising recommendations as new information arrives.
 
 ## How the consultation works
 
+[![Consultation loop linking the user, one assistant with Helper and Lead responsibilities, optional specialist work, and shared consultation memory.](assets/consultant-loop.png)](assets/consultant-loop.pdf)
+
 - **Understand the study.** Clarify the research goal, intervention or exposure,
   population, outcomes, timing, and how treatment and data collection actually
   happen. This supports both planning a new study and assessing existing data.

@@ -1,6 +1,6 @@
 # Causal Consultant
 
-[![Version 8.1.4](https://img.shields.io/badge/version-8.1.4-blue)](SKILL.md)
+![Version 8.1.4](https://img.shields.io/badge/version-8.1.4-blue)
 
 Anonymous review copy of version **8.1.4**.
 
@@ -11,7 +11,7 @@ revising recommendations as new information arrives.
 
 ## How the consultation works
 
-[![Consultation loop linking the user, one assistant with Helper and Lead responsibilities, optional specialist work, and shared consultation memory.](assets/consultant-loop.png)](assets/consultant-loop.pdf)
+![Consultation loop linking the user, one assistant with Helper and Lead responsibilities, optional specialist work, and shared consultation memory.](assets/consultant-loop.png)
 
 - **Understand the study.** Clarify the research goal, intervention or exposure,
   population, outcomes, timing, and how treatment and data collection actually
@@ -86,8 +86,9 @@ is distributed separately from this consultant skill.
 
 ## Further details
 
-See [the skill instructions](SKILL.md), [study and sample-size planning](references/study-planning.md),
-[method guidance](references/method-catalog.md), and [project memory](references/memory.md).
+The included files provide further guidance: `SKILL.md` for skill instructions,
+`references/study-planning.md` for study and sample-size planning,
+`references/method-catalog.md` for methods, and `references/memory.md` for project memory.
 The skill distinguishes evidence from assumptions and keeps limitations alongside
 causal claims; saved records and successful computation do not by themselves
 establish scientific validity.

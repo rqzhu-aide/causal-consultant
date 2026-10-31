@@ -50,7 +50,7 @@ You can also start with existing data, a study protocol, or a question about
 interpreting results. Share what you know; the consultation should help identify
 what else would be useful.
 
-Node.js **18.18+** is required for local project memory. The memory utility has
+**Node.js 18.18+ is required for local project memory.** The memory utility has
 no runtime package dependencies.
 
 ## Interactive testing

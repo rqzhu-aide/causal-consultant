@@ -1,0 +1,420 @@
+{
+  "source_version": "7.5.0",
+  "source_sha256": "aeb8abdadc2df3855f85b32a73ec87c16cdd0ee4d4d5c005ef97dfab3df3ecac",
+  "cases": [
+    {
+      "exchange": {
+        "renderer": "lead-markdown-v1",
+        "response": {
+          "status": "The all-site conclusion remains conditional.",
+          "questions_none": "No further questions.",
+          "next_steps_none": "No further choices.",
+          "user_questions": [
+            {
+              "text": "Does the effect apply elsewhere?",
+              "answer": "Only under the transport assumption.",
+              "echo_question": false
+            }
+          ],
+          "findings": {
+            "summary": "The studied-site estimate is positive.",
+            "diagnostics": [
+              "Checked outcome timing."
+            ],
+            "limitations": [
+              "Other sites lack outcome records."
+            ]
+          },
+          "questions": [
+            {
+              "text": "Do you have existing rollout records?",
+              "why": "They could change the transfer argument.",
+              "needed": "The already-held site eligibility notes."
+            }
+          ],
+          "next_steps": [
+            {
+              "option_id": "conditional",
+              "kind": "action",
+              "label": "Conditional all-site estimate",
+              "actor": "consultant",
+              "scope": "Estimate the agreed target.",
+              "proposal": {
+                "target": "Average effect over both years",
+                "population": "All 120 sites",
+                "claim_boundary": "Conditional on effect transport",
+                "approach": "Agreed difference-in-differences specification",
+                "evidence": "Recorded study-site panel",
+                "checks": [
+                  "Check timing",
+                  "Assess comparison support"
+                ],
+                "outputs": "Estimate and uncertainty"
+              },
+              "scope_file": "C:/consultation/scopes/conditional/scope.json",
+              "execution_plan": {
+                "objective": "Estimate the agreed all-site target",
+                "estimator": "Agreed specification",
+                "exclusions": []
+              }
+            },
+            {
+              "option_id": "existing-records",
+              "kind": "discussion",
+              "label": "Review existing records",
+              "actor": "user",
+              "scope": "Share the existing eligibility notes.\nRetain the current target until review."
+            }
+          ]
+        }
+      },
+      "text": "[Status]\nThe all-site conclusion remains conditional.\n\n[Questions]\n1. Do you have existing rollout records?\n   Why this matters: They could change the transfer argument.\n   Helpful information: The already-held site eligibility notes.\n\n[Next Steps]\n1. Conditional all-site estimate\n   consultant: Estimate the agreed target.\n\n2. Review existing records\n   user: Share the existing eligibility notes.\n   Retain the current target until review.",
+      "sha256": "5f042ca261c726fc9a3e7d6e33b2cfaebef99d16ad094688182bb1301207485a"
+    },
+    {
+      "exchange": {
+        "renderer": "lead-markdown-v2",
+        "response": {
+          "status": "The all-site conclusion remains conditional.",
+          "questions_none": "No further questions.",
+          "next_steps_none": "No further choices.",
+          "user_questions": [
+            {
+              "text": "Does the effect apply elsewhere?",
+              "answer": "Only under the transport assumption.",
+              "echo_question": false
+            }
+          ],
+          "findings": {
+            "summary": "The studied-site estimate is positive.",
+            "diagnostics": [
+              "Checked outcome timing."
+            ],
+            "limitations": [
+              "Other sites lack outcome records."
+            ]
+          },
+          "questions": [
+            {
+              "text": "Do you have existing rollout records?",
+              "why": "They could change the transfer argument.",
+              "needed": "The already-held site eligibility notes."
+            }
+          ],
+          "next_steps": [
+            {
+              "option_id": "conditional",
+              "kind": "action",
+              "label": "Conditional all-site estimate",
+              "actor": "consultant",
+              "scope": "Estimate the agreed target.",
+              "proposal": {
+                "target": "Average effect over both years",
+                "population": "All 120 sites",
+                "claim_boundary": "Conditional on effect transport",
+                "approach": "Agreed difference-in-differences specification",
+                "evidence": "Recorded study-site panel",
+                "checks": [
+                  "Check timing",
+                  "Assess comparison support"
+                ],
+                "outputs": "Estimate and uncertainty"
+              },
+              "scope_file": "C:/consultation/scopes/conditional/scope.json",
+              "execution_plan": {
+                "objective": "Estimate the agreed all-site target",
+                "estimator": "Agreed specification",
+                "exclusions": []
+              }
+            },
+            {
+              "option_id": "existing-records",
+              "kind": "discussion",
+              "label": "Review existing records",
+              "actor": "user",
+              "scope": "Share the existing eligibility notes.\nRetain the current target until review."
+            }
+          ]
+        }
+      },
+      "text": "[Status]\n\nThe all-site conclusion remains conditional.\n\n[Questions]\n\n1. Do you have existing rollout records?\n   Why this matters: They could change the transfer argument.\n   Helpful information: The already-held site eligibility notes.\n\n[Next Steps]\n\n1. Conditional all-site estimate\n   consultant: Estimate the agreed target.\n\n2. Review existing records\n   user: Share the existing eligibility notes.\n   Retain the current target until review.",
+      "sha256": "496b07de5a41e50fafa9b5e13f90d1528552f5a73c734ba3061f1bc187dcd844"
+    },
+    {
+      "exchange": {
+        "renderer": "lead-markdown-v3",
+        "response": {
+          "status": "The all-site conclusion remains conditional.",
+          "questions_none": "No further questions.",
+          "next_steps_none": "No further choices.",
+          "user_questions": [
+            {
+              "text": "Does the effect apply elsewhere?",
+              "answer": "Only under the transport assumption.",
+              "echo_question": false
+            }
+          ],
+          "findings": {
+            "summary": "The studied-site estimate is positive.",
+            "diagnostics": [
+              "Checked outcome timing."
+            ],
+            "limitations": [
+              "Other sites lack outcome records."
+            ]
+          },
+          "questions": [
+            {
+              "text": "Do you have existing rollout records?",
+              "why": "They could change the transfer argument.",
+              "needed": "The already-held site eligibility notes."
+            }
+          ],
+          "next_steps": [
+            {
+              "option_id": "conditional",
+              "kind": "action",
+              "label": "Conditional all-site estimate",
+              "actor": "consultant",
+              "scope": "Estimate the agreed target.",
+              "proposal": {
+                "target": "Average effect over both years",
+                "population": "All 120 sites",
+                "claim_boundary": "Conditional on effect transport",
+                "approach": "Agreed difference-in-differences specification",
+                "evidence": "Recorded study-site panel",
+                "checks": [
+                  "Check timing",
+                  "Assess comparison support"
+                ],
+                "outputs": "Estimate and uncertainty"
+              },
+              "scope_file": "C:/consultation/scopes/conditional/scope.json",
+              "execution_plan": {
+                "objective": "Estimate the agreed all-site target",
+                "estimator": "Agreed specification",
+                "exclusions": []
+              }
+            },
+            {
+              "option_id": "existing-records",
+              "kind": "discussion",
+              "label": "Review existing records",
+              "actor": "user",
+              "scope": "Share the existing eligibility notes.\nRetain the current target until review."
+            }
+          ]
+        }
+      },
+      "text": "[Your Questions]\n\n1. Does the effect apply elsewhere?\n   Only under the transport assumption.\n\n[Status]\n\nThe all-site conclusion remains conditional.\n\nFindings: The studied-site estimate is positive.\n\nDiagnostics: Checked outcome timing.\n\nLimitations: Other sites lack outcome records.\n\n[I want to know]\n\n1. Do you have existing rollout records?\n   Why this matters: They could change the transfer argument.\n   Helpful information: The already-held site eligibility notes.\n\n[Decide Next Steps]\n\n1. Conditional all-site estimate\n   consultant: Estimate the agreed target.\n\n2. Review existing records\n   user: Share the existing eligibility notes.\n   Retain the current target until review.",
+      "sha256": "d77d5673715ad6f275e27c02c57dfdb310bf3808f0a9dea9fef1462b6e802070"
+    },
+    {
+      "exchange": {
+        "renderer": "lead-markdown-v4",
+        "response": {
+          "status": "The all-site conclusion remains conditional.",
+          "questions_none": "No further questions.",
+          "next_steps_none": "No further choices.",
+          "user_questions": [
+            {
+              "text": "Does the effect apply elsewhere?",
+              "answer": "Only under the transport assumption.",
+              "echo_question": false
+            }
+          ],
+          "findings": {
+            "summary": "The studied-site estimate is positive.",
+            "diagnostics": [
+              "Checked outcome timing."
+            ],
+            "limitations": [
+              "Other sites lack outcome records."
+            ]
+          },
+          "questions": [
+            {
+              "text": "Do you have existing rollout records?",
+              "why": "They could change the transfer argument.",
+              "needed": "The already-held site eligibility notes."
+            }
+          ],
+          "next_steps": [
+            {
+              "option_id": "conditional",
+              "kind": "action",
+              "label": "Conditional all-site estimate",
+              "actor": "consultant",
+              "scope": "Estimate the agreed target.",
+              "proposal": {
+                "target": "Average effect over both years",
+                "population": "All 120 sites",
+                "claim_boundary": "Conditional on effect transport",
+                "approach": "Agreed difference-in-differences specification",
+                "evidence": "Recorded study-site panel",
+                "checks": [
+                  "Check timing",
+                  "Assess comparison support"
+                ],
+                "outputs": "Estimate and uncertainty"
+              },
+              "scope_file": "C:/consultation/scopes/conditional/scope.json",
+              "execution_plan": {
+                "objective": "Estimate the agreed all-site target",
+                "estimator": "Agreed specification",
+                "exclusions": []
+              }
+            },
+            {
+              "option_id": "existing-records",
+              "kind": "discussion",
+              "label": "Review existing records",
+              "actor": "user",
+              "scope": "Share the existing eligibility notes.\nRetain the current target until review."
+            }
+          ]
+        }
+      },
+      "text": "[Your Questions]\n\n1. Does the effect apply elsewhere?\n   Only under the transport assumption.\n\n[Status]\n\nThe all-site conclusion remains conditional.\n\nFindings: The studied-site estimate is positive.\n\nDiagnostics: Checked outcome timing.\n\nLimitations: Other sites lack outcome records.\n\n[I want to know]\n\n1. Do you have existing rollout records?\n   Why this matters: They could change the transfer argument.\n   Helpful information: The already-held site eligibility notes.\n\n[Decide Next Steps]\n\n1. Conditional all-site estimate\n   consultant: Estimate the agreed target.\n   target: Average effect over both years\n   population: All 120 sites\n   evidence: Recorded study-site panel\n   approach: Agreed difference-in-differences specification\n   checks: Check timing; Assess comparison support\n   outputs: Estimate and uncertainty\n   claim boundary: Conditional on effect transport\n   estimator: Agreed specification\n   exclusions: None\n   objective: Estimate the agreed all-site target\n\n2. Review existing records\n   user: Share the existing eligibility notes.\n   Retain the current target until review.",
+      "sha256": "4a1f263e28cc1fe92e9954c69657c39d4f53ed378983c80d8f8ea048074c8297"
+    },
+    {
+      "exchange": {
+        "renderer": "lead-markdown-v5",
+        "response": {
+          "status": "The all-site conclusion remains conditional.",
+          "questions_none": "No further questions.",
+          "next_steps_none": "No further choices.",
+          "user_questions": [
+            {
+              "text": "Does the effect apply elsewhere?",
+              "answer": "Only under the transport assumption.",
+              "echo_question": false
+            }
+          ],
+          "findings": {
+            "summary": "The studied-site estimate is positive.",
+            "diagnostics": [
+              "Checked outcome timing."
+            ],
+            "limitations": [
+              "Other sites lack outcome records."
+            ]
+          },
+          "questions": [
+            {
+              "text": "Do you have existing rollout records?",
+              "why": "They could change the transfer argument.",
+              "needed": "The already-held site eligibility notes."
+            }
+          ],
+          "next_steps": [
+            {
+              "option_id": "conditional",
+              "kind": "action",
+              "label": "Conditional all-site estimate",
+              "actor": "consultant",
+              "scope": "Estimate the agreed target.",
+              "proposal": {
+                "target": "Average effect over both years",
+                "population": "All 120 sites",
+                "claim_boundary": "Conditional on effect transport",
+                "approach": "Agreed difference-in-differences specification",
+                "evidence": "Recorded study-site panel",
+                "checks": [
+                  "Check timing",
+                  "Assess comparison support"
+                ],
+                "outputs": "Estimate and uncertainty"
+              },
+              "scope_file": "C:/consultation/scopes/conditional/scope.json",
+              "execution_plan": {
+                "objective": "Estimate the agreed all-site target",
+                "estimator": "Agreed specification",
+                "exclusions": []
+              }
+            },
+            {
+              "option_id": "existing-records",
+              "kind": "discussion",
+              "label": "Review existing records",
+              "actor": "user",
+              "scope": "Share the existing eligibility notes.\nRetain the current target until review."
+            }
+          ]
+        }
+      },
+      "text": "Does the effect apply elsewhere?\n\nOnly under the transport assumption.\n\nThe all-site conclusion remains conditional.\n\nThe studied-site estimate is positive.\n\nChecks: Checked outcome timing.\n\nLimits: Other sites lack outcome records.\n\nDo you have existing rollout records?\n\nThey could change the transfer argument. Helpful information: The already-held site eligibility notes.\n\n1. Conditional all-site estimate\n   consultant: Estimate the agreed target.\n   target: Average effect over both years\n   population: All 120 sites\n   evidence: Recorded study-site panel\n   approach: Agreed difference-in-differences specification\n   checks: Check timing; Assess comparison support\n   outputs: Estimate and uncertainty\n   claim boundary: Conditional on effect transport\n   [Full saved scope](<C:/consultation/scopes/conditional/scope.json>)\n\n2. Review existing records\n   user: Share the existing eligibility notes.\n   Retain the current target until review.",
+      "sha256": "b1540f273415c78043af23057c623a8b2701aac90382a2c9f6da2e1a2e1f1b2b"
+    },
+    {
+      "exchange": {
+        "renderer": "lead-markdown-v6",
+        "response": {
+          "status": "The all-site conclusion remains conditional.",
+          "questions_none": "No further questions.",
+          "next_steps_none": "No further choices.",
+          "user_questions": [
+            {
+              "text": "Does the effect apply elsewhere?",
+              "answer": "Only under the transport assumption.",
+              "echo_question": false
+            }
+          ],
+          "findings": {
+            "summary": "The studied-site estimate is positive.",
+            "diagnostics": [
+              "Checked outcome timing."
+            ],
+            "limitations": [
+              "Other sites lack outcome records."
+            ]
+          },
+          "questions": [
+            {
+              "text": "Do you have existing rollout records?",
+              "why": "They could change the transfer argument.",
+              "needed": "The already-held site eligibility notes."
+            }
+          ],
+          "next_steps": [
+            {
+              "option_id": "conditional",
+              "kind": "action",
+              "label": "Conditional all-site estimate",
+              "actor": "consultant",
+              "scope": "Estimate the agreed target.",
+              "proposal": {
+                "target": "Average effect over both years",
+                "population": "All 120 sites",
+                "claim_boundary": "Conditional on effect transport",
+                "approach": "Agreed difference-in-differences specification",
+                "evidence": "Recorded study-site panel",
+                "checks": [
+                  "Check timing",
+                  "Assess comparison support"
+                ],
+                "outputs": "Estimate and uncertainty"
+              },
+              "scope_file": "C:/consultation/scopes/conditional/scope.json",
+              "execution_plan": {
+                "objective": "Estimate the agreed all-site target",
+                "estimator": "Agreed specification",
+                "exclusions": []
+              }
+            },
+            {
+              "option_id": "existing-records",
+              "kind": "discussion",
+              "label": "Review existing records",
+              "actor": "user",
+              "scope": "Share the existing eligibility notes.\nRetain the current target until review."
+            }
+          ]
+        }
+      },
+      "text": "Only under the transport assumption.\n\nThe all-site conclusion remains conditional.\n\nThe studied-site estimate is positive.\n\nChecks: Checked outcome timing.\n\nLimits: Other sites lack outcome records.\n\nDo you have existing rollout records?\n\nThey could change the transfer argument.\n\nThe already-held site eligibility notes.\n\n1. Conditional all-site estimate\n\n   Estimate the agreed target.\n   \n   Average effect over both years. All 120 sites. Conditional on effect transport.\n   \n   Agreed difference-in-differences specification. Evidence: Recorded study-site panel.\n   \n   Checks: Check timing; Assess comparison support. Output: Estimate and uncertainty.\n   \n   [Full saved scope](<C:/consultation/scopes/conditional/scope.json>)\n\n2. Review existing records\n\n   user: Share the existing eligibility notes.\n   Retain the current target until review.",
+      "sha256": "73e3c87ad24ad0f94836aa497f6aa48201ad315fa9e807f783e83f1dfec03464"
+    }
+  ]
+}

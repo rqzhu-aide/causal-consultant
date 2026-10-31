@@ -1,0 +1,110 @@
+{
+  "source": "structured-response-fixes-2026-10-01 preserved v7.5.3 baseline",
+  "source_sha256": "aff5f18d5948ec7d12de23026da6c278c7419f344b125250fc943763cdcf1708",
+  "cases": [
+    {
+      "name": "summary",
+      "exchange": {
+        "renderer": "lead-markdown-v9",
+        "response": {
+          "status": "The conclusion remains conditional.",
+          "questions": [],
+          "next_steps": []
+        }
+      },
+      "text": "[What has been done]\n\nThe conclusion remains conditional.",
+      "sha256": "5b5d1df3dd75e7c131b5d1909bc2b689d49888c4dca89ef8780bdfbed1aa29eb"
+    },
+    {
+      "name": "mixed",
+      "exchange": {
+        "renderer": "lead-markdown-v9",
+        "response": {
+          "user_questions": [
+            {
+              "question_ref": "question-cohort",
+              "text": "Which cohort?",
+              "answer": "Applicants in the randomized study.",
+              "echo_question": true,
+              "basis_refs": [
+                "source-cohort"
+              ]
+            }
+          ],
+          "explanations": [
+            {
+              "text": "Offer and attendance differ.",
+              "basis_refs": []
+            }
+          ],
+          "findings": {
+            "summary": "The estimate remains uncertain.",
+            "diagnostics": [
+              "Checked timing."
+            ],
+            "limitations": [
+              "Study cohort only."
+            ],
+            "work_refs": [
+              "review-source"
+            ]
+          },
+          "status": "Reviewed the assignment note.",
+          "questions": [
+            {
+              "question_ref": "question-note",
+              "text": "Can you share the note?"
+            }
+          ],
+          "next_steps": [
+            {
+              "option_id": "discuss",
+              "label": "Discuss uncertainty",
+              "actor": "consultant",
+              "scope": "Explain the interval.",
+              "basis_refs": [
+                "review-source"
+              ]
+            }
+          ]
+        }
+      },
+      "text": "[To answer your question]\n\n[1] Which cohort?\n\nApplicants in the randomized study.\n\n[2] Offer and attendance differ.\n\n[3] The estimate remains uncertain.\n\nChecks: Checked timing.\n\nLimits: Study cohort only.\n\n[What has been done]\n\nReviewed the assignment note.\n\n[Questions for you]\n\n[1] Can you share the note?\n\n[Next steps]\n\n[1] Discuss uncertainty\n\nExplain the interval.",
+      "sha256": "e2d7ff09aeefa4b4995c7aa583c46943c1ea5a72ed3178d762e05c0f981a3c0d"
+    },
+    {
+      "name": "complete-offer",
+      "exchange": {
+        "renderer": "lead-markdown-v9",
+        "response": {
+          "questions": [],
+          "next_steps": [
+            {
+              "option_id": "analyze",
+              "label": "Analyze",
+              "actor": "consultant",
+              "scope": "Use this exact scope.",
+              "scope_ref": "scope-original",
+              "scope_file": "/case/scopes/scope-original/scope.json",
+              "basis_refs": [],
+              "proposal": {
+                "target": "Mean offer effect",
+                "population": "Randomized applicants excluding prespecified ineligible records",
+                "claim_boundary": "Applicants only; no attendance effect.",
+                "approach": "Difference of means with a 95% randomization interval",
+                "evidence": "Original assignment and next-term scores",
+                "checks": [
+                  "Check assignment implementation.",
+                  "Check missing outcomes by arm."
+                ],
+                "outputs": "Findings and diagnostics with limitations"
+              }
+            }
+          ]
+        }
+      },
+      "text": "[Next steps]\n\n[1] Analyze\n\nUse this exact scope.\n\nMean offer effect. Randomized applicants excluding prespecified ineligible records. Applicants only; no attendance effect. Difference of means with a 95% randomization interval. Evidence: Original assignment and next-term scores. Checks: Check assignment implementation.; Check missing outcomes by arm. Output: Findings and diagnostics with limitations.\n\n[Full saved scope](</case/scopes/scope-original/scope.json>)",
+      "sha256": "135f0d2adb5da87304c1d3be4d126ca5c05efa4ba0535287665f4b0982200da5"
+    }
+  ]
+}

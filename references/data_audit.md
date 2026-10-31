@@ -36,7 +36,9 @@ data checks inside this bounded audit require no separate approval for each step
 
 Suggest useful linkage, reconstruction, aggregation, justified restriction or
 requests for existing data or documentation the user may be able to provide,
-with what each enables and its limitations. Name the material and how it could
+with what each enables and its limitations. Approximate linkage can miss matches
+and merge distinct units; retain both limitations when proposing it.
+Name the material and how it could
 change the analysis or interpretation; do not ask for repeating experiments or
 collecting new observations. Respect reported unavailability. Finding a
 problem is not permission to repair it. Never reshape, recode, impute or select

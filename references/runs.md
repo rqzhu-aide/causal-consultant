@@ -75,6 +75,22 @@ data_quality or preparation; discovery can name graph_exploration. Preparation
 declares transformations and diagnostics. These labels do not prove what code
 did or authorize target estimation. See [authorizations](authorizations.md).
 
+Substantial saved assumed-input planning can use `audit` without transformations
+under a selected design-worker feasibility assignment. Keep assumptions in allowed
+plan text or a configuration file declared in `inputs` with its source reference
+and path, so its bytes are snapshotted. A loose link does not freeze a file; the
+plan has no arbitrary assumptions/configuration fields. Retain executed code or
+configuration, outputs and checks under Save actual work, even though audit
+finalization does not mechanically require `code_paths`. Do not invent a planning
+kind/operation or label the calculation preparation; `operations` may be omitted.
+
+An ordinary audit does not acquire a protected scope's basis-version bindings.
+Preserve source qualifications and governing assumptions in the existing records
+and frozen inputs. Reconcile materially changed inputs through current direction
+and a revised run, retaining earlier results and their conditions. This route
+does not authorize observed-study target computation or require a placeholder
+run for simple teaching or a no-output review.
+
 Report evidence_refs name evidence entities, not review entries. The report plan
 freezes their exact content, conditions, assumptions and computational provenance.
 Historical external results remain source evidence with verification limits.

@@ -1,6 +1,6 @@
 # Causal Consultant
 
-[![Version 8.0.15](https://img.shields.io/badge/version-8.0.15-blue)](SKILL.md)
+[![Version 8.1.4](https://img.shields.io/badge/version-8.1.4-blue)](SKILL.md)
 
 An **interactive research skill** for developing causal questions, planning
 studies, and interpreting evidence. It works with you through a conversation:
@@ -16,19 +16,26 @@ revising recommendations as new information arrives.
   happen. This supports both planning a new study and assessing existing data.
 - **Ask for context proactively.** Identify missing information that could change
   the design or interpretation. Ask for obtainable details, records, constraints,
-  and preferences, and explain why they matter. Keep uncertainty explicit when
-  information is unavailable.
+  and preferences, and explain why they matter. Organize questions by the decision
+  they help settle, such as data collection, measurement, processing, or analysis.
+  Keep uncertainty explicit when information is unavailable.
 - **Explore defensible approaches.** Consider plausible alternative explanations
   and different design or analysis routes. Explain their assumptions, tradeoffs,
   and what additional evidence could change the recommendation.
+- **Plan data collection and precision.** Match sample-size or precision planning
+  to the causal target, feasible comparison, measurement timing, and available
+  resources. Investigate relevant methods when the design needs them, and keep
+  numerical recommendations conditional on their planning assumptions.
 - **Develop the work together.** Discuss choices before undertaking scoped
   analysis or reporting. Adapt explanations to your background, respond to
   corrections, and keep the original scientific question in view.
 
 You can ask for an explanation, provide partial information, change direction,
 pause, or return later. Saved project memory retains relevant context, decisions,
-findings, and unresolved questions. Replies stay concise, with clear answers,
-questions, and next steps. A report is available when useful; it is optional.
+findings, partial answers, and unresolved questions. When useful, you can revisit
+a few important pending questions; information needed for the proposed
+work is asked directly. Replies stay concise, with clear answers, questions, and
+next steps. A report is available when useful; it is optional.
 
 ## Start a conversation
 
@@ -52,8 +59,9 @@ We use the companion [interactive-test skill](https://github.com/rqzhu-aide/inte
 to evaluate Causal Consultant through adaptive, multi-turn conversations. A
 simulated user follows a defined study scenario and user role, shares information
 gradually, and responds to the consultant's questions and proposed choices.
-Independent review examines the actual conversation and available evidence for
-scientific reasoning, useful recommendations, and continuity across turns.
+A coordinator records observed issues and supporting conversation evidence for
+programmers to investigate scientific reasoning, useful recommendations, and
+continuity across turns. The simulated user remains a separate agent.
 
 We constructed three groups of cases:
 
@@ -68,7 +76,8 @@ We constructed three groups of cases:
   France, rural assistance and forest clearing in Peru, medication and depression
   in England, and surgical outcomes by surgeon gender in South Africa. These
   test feasible data collection and conditional analysis planning before outcomes
-  exist, without requiring a numerical result or saved report.
+  exist. The medication case also requests a conditional sample-size calculation.
+  These planning cases do not require a saved report.
 
 The four reusable problems across three personas give 12 combinations; the five
 standalone cases bring the total to **17 configurations**. See the
@@ -77,9 +86,10 @@ selectors, setup, and the interactive run steps.
 
 ## Further details
 
-See [the skill instructions](SKILL.md), [method guidance](references/method-catalog.md),
-and [project memory](references/memory.md). The skill distinguishes evidence from
-assumptions and keeps limitations alongside causal claims; saved records and
-successful computation do not by themselves establish scientific validity.
+See [the skill instructions](SKILL.md), [study and sample-size planning](references/study-planning.md),
+[method guidance](references/method-catalog.md), and [project memory](references/memory.md).
+The skill distinguishes evidence from assumptions and keeps limitations alongside
+causal claims; saved records and successful computation do not by themselves
+establish scientific validity.
 
 `main` contains the current release. Backup branches preserve earlier major versions.

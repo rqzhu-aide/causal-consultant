@@ -28,7 +28,7 @@ function project(t, options = {}) {
     source: "synthetic:user-1", complete: true });
   const status = options.canonical || "open";
   const handling = save("knowledge", { user_message: user, updates: [{ as: "question", kind: "question",
-    origin: "user", statement: QUESTION, status, reason: status === "open" ? "Household consumption remains unknown."
+    origin: "user", category: "study_goal", statement: QUESTION, status, reason: status === "open" ? "Household consumption remains unknown."
       : "The supplied source or explicit withdrawal establishes this disposition.", basis_refs: [user] }],
     selection: { knowledge_refs: ["@question"], work_refs: [] },
     next_action: { kind: "lead_only", reason: "Explain the source boundary." } });
@@ -99,7 +99,7 @@ for (const delayed of [false, true]) test("sourced question correction leaves " 
     next_action: { kind: "lead_only", reason: "Correct the question against its retained source." } });
   const correction = f.save("correction", { responds_to: handling, corrects_refs: ["q1"],
     reason: "The combined question record did not preserve the original consumption request.",
-    updates: [{ entity: "q1", kind: "question", origin: "user", statement: correctedQuestion,
+    updates: [{ entity: "q1", kind: "question", origin: "user", category: "study_goal", statement: correctedQuestion,
       status: "open", reason: "Consumption measurements are unavailable.", basis_refs: [f.user, f.before] }] });
   if (delayed) f.record(f.prepared, f.before, [{ kind: "answer", text: PARTIAL,
     question_ref: "q1", answer_status: "pending" }]);
@@ -119,7 +119,7 @@ for (const [status, answerStatus, text] of [
     : "Please withdraw my consumption question. I do not need an answer now." });
   assert.equal(communication(f).status, "pending");
   const handling = f.save("knowledge", { user_message: f.before, updates: [{ entity: "q1", kind: "question",
-    origin: "user", statement: QUESTION, status, reason: status === "answered"
+    origin: "user", category: "study_goal", statement: QUESTION, status, reason: status === "answered"
       ? "The additional source supports the bounded answer." : "The user explicitly withdrew this question.",
     basis_refs: [f.user, f.before] }] });
   assert.equal(communication(f).status, "unconfirmed");
@@ -146,12 +146,12 @@ test("new unrecorded draft retains earlier actual pending answer separately", t 
 test("an older question can be answered under current handling without repeating a delivered answer", t => {
   const f = project(t, { noPrepared: true, canonical: "answered", actual: "answered",
     userText: QUESTION + " Does clustering change the uncertainty calculation?" });
-  const oldHandling = f.save("knowledge", { user_message: f.user, updates: [{ kind: "question", origin: "user",
+  const oldHandling = f.save("knowledge", { user_message: f.user, updates: [{ kind: "question", origin: "user", category: "analysis_modeling",
     statement: "Does clustering change the uncertainty calculation?", status: "open", basis_refs: [f.user] }],
     next_action: { kind: "lead_only", reason: "Retain the second question." } });
   const current = f.save("knowledge", { user_message: f.before,
     next_action: { kind: "lead_only", reason: "Answer the retained question." } });
-  const answer = { updates: [{ entity: "q2", kind: "question", origin: "user",
+  const answer = { updates: [{ entity: "q2", kind: "question", origin: "user", category: "analysis_modeling",
     statement: "Does clustering change the uncertainty calculation?", status: "answered",
     reason: "The conceptual answer is provided.", basis_refs: [f.user] }],
     response: { user_questions: [{ question_ref: "q2", status: "answered",

@@ -72,7 +72,12 @@ Perform the analytic diagnostics relevant to the randomized design and chosen es
 Block or weaken causal wording when:
 
 - randomization cannot be verified, assignment probabilities are unknown, or assignment happened after relevant outcomes/preconditions
-- SRM, logging failure, rerandomization, peeking, broken allocation, or unexplained exclusions threaten assignment integrity
+- SRM, logging failure, unplanned reallocation or changes outside the documented,
+  justified assignment mechanism, peeking, broken allocation, or unexplained
+  exclusions threaten assignment integrity. Prespecified covariate-constrained
+  rerandomization needs inference matched to its accepted assignment set;
+  response dependence alone is not a breach, and prespecification alone does
+  not justify an arbitrary adaptive rule
 - post-assignment filtering, triggered analysis, per-protocol restriction, selected follow-up, missing outcomes, attrition, or censoring drives the contrast
 - treatment receipt is analyzed as randomized when only assignment was randomized
 - interference, spillovers, contamination, or cluster dependence is material and not represented

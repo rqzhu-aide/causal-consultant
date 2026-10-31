@@ -71,15 +71,28 @@ For a reused file version, pass its known audit hash as the matching input's
 
 ## Feasibility
 
-Assess data requirements, identification, estimand/scale, dependence and
-diagnostics before software. Check installed tools and current official package
-documentation as needed. Distinguish documented, locally tested and proposed
-functionality. Do not infer permission for installation, uploads or paid services.
+Assess data requirements, identification, estimand/scale, assignment and observation
+timing, dependence and diagnostics before software. Before recommending a
+study-specific planning number, establish why the calculation applies to the
+intended design and analysis. When a consequential feature lacks a justified
+treatment, or known guidance may be incomplete or outdated, inspect relevant
+primary methods and current implementation documentation before recommending a
+number, a fallback or infeasibility. Check the source's actual setup and limits;
+a familiar formula or package name does not establish a match. Reuse adequate
+inspected sources and stop when the decision is sufficiently supported or the
+remaining limit is clear.
 
-For a custom or combined argument, connect target, assumptions, source-supported
+Check installed tools as needed and distinguish documented, locally tested and
+proposed functionality. Do not force unfamiliar work into the nearest familiar
+design or infer permission for installation, uploads or paid services. For a
+custom or combined argument, connect target, assumptions, source-supported
 estimator and uncertainty calculation. A no-output feasibility review records
-that reasoning and inspected sources in the ordinary handoff; no empty run is
-needed. Do not force an unfamiliar argument into the nearest familiar design.
+its reasoning and sources in the ordinary handoff; no empty run is needed.
+
+For prospective study, sample-size, precision or fixed-resource planning, consult
+[study-planning.md](study-planning.md) when its distinctions affect the
+recommendation. Research belongs within this selected review; it does not
+require a second specialist or change the assigned design/support identities.
 
 Give a supported proposal, an unresolved choice or requirement, or a concrete
 infeasibility reason. A proposal specifies inputs, estimator, uncertainty,
@@ -89,8 +102,11 @@ existing information that could enable them for
 change model assumptions or structure, data preparation, method, target or
 interpretation; they need not be different estimators. Explain consequences,
 requirements and limits without manufacturing two estimators or doing extra
-work to fill a menu. Additional-information routes ask about existing material
-the user can provide, not repeated experiments or new observations.
+work to fill a menu. For existing-data work, additional-information routes
+normally seek attainable existing material. In a prospective planning assignment,
+compare feasible collection or allocation choices within the assessed study
+basis; changes to the causal target, identifying argument or material study
+process return to Lead under the existing contracts.
 Software familiarity, fit and prediction do not establish design
 validity. Synthetic API smoke tests are not study estimates or evidence of them.
 
@@ -114,9 +130,11 @@ history, censoring and support requirements relevant to identification; summariz
 outcomes does not eliminate treatment-confounder feedback. Repeated outcomes alone
 do not select a longitudinal treatment design.
 
-Feasibility can inspect structure and input diagnostics. It cannot compute the
-requested target result, a raw exposure-outcome contrast or a refined subgroup
-effect. Those require authorized execution, even when called preliminary or diagnostic.
+Feasibility can inspect structure and input diagnostics and perform assumed-input
+planning under [authorizations.md](authorizations.md#which-work-is-protected).
+It cannot estimate an observed-study target result, a raw exposure-outcome
+contrast or a refined subgroup effect. Those require authorized execution,
+even when called preliminary or diagnostic.
 The same boundary covers treatment-rule learning, policy value and outcome-based
 model selection for those targets. Feasibility returns a proposed scope, not
 permission to compute it.

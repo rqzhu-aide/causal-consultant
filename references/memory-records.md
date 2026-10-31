@@ -176,6 +176,38 @@ same issue. Status is `open`, `answered` or `retired`; non-open status requires
 `reason`. Optional `basis_refs` retain source and context. A user-origin question
 requires an originating user-message source, directly or through a sourced fact.
 
+Every newly created or changed question definition, for either origin, requires
+one `category` from the following values. Assign it with the question in the
+existing save: Helper for incoming user questions, Lead for adopted consultant
+questions. Read it when selecting or recalling questions; it describes purpose,
+not priority, who asked, or a required conversation sequence.
+
+| Category | Primary purpose |
+|---|---|
+| `study_goal` | Target population, contrast, outcome or intended decision |
+| `design_comparison` | Assignment, comparison groups, rollout or design chronology |
+| `data_collection` | Obtaining records or measurements, including access and timing |
+| `measurement_quality` | Variable meaning, coverage, missingness or measurement errors |
+| `data_processing` | Linkage, episode definitions, aggregation or exclusions |
+| `analysis_modeling` | Distinguishing defensible analytic or modeling options |
+| `precision_feasibility` | Sample size, independent units, precision, cost or implementation |
+| `interpretation_alternatives` | Claim interpretation or useful changes to population, outcome or scope |
+| `others` | A useful purpose outside these categories, including discussion preferences |
+
+Choose the main purpose when several apply; preserve secondary connections in
+existing text or reason. `others` is an explicit choice, never a default for a
+missing field. Categories do not merge independent questions. Public wording can
+use a natural purpose cue instead of the stored enum spelling.
+
+Older uncategorized records remain readable without rewriting history or
+assigning a default. When reusing one in a new reply, adopt its category in the
+ordinary handling or closeout save. Correct a misclassification through an
+ordinary update, retaining the same question, support and unresolved parts.
+Category-only updates preserve earlier actual-answer applicability; changes to
+meaning, sources or disposition retain their existing reconciliation rules.
+Older validators that do not recognize `category` cannot continue categorized
+cases. The separate v7 record contract is unchanged.
+
 Consultant questions may carry:
 
 ```json
@@ -203,7 +235,7 @@ The canonical question owns its disposition; typed prepared/actual items identif
 which answer was offered or communicated. Do not maintain a second answer-delivery
 checklist or mark a draft as sent. A later draft does not erase an earlier actual
 answer. The continuation view distinguishes that observed history from the newer
-reply's unconfirmed delivery. A changed question, answer or supporting basis
+reply's unconfirmed delivery. A changed question meaning, answer or supporting basis
 needs applicability reconciliation; earlier delivery does not confirm a later
 correction. Update the canonical question's existing status, reason and sources
 when its supported answer changes.

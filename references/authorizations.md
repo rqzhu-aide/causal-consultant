@@ -21,6 +21,14 @@ estimation. Calling it preliminary or descriptive does not change that boundary.
 Input distributions, keys, missingness and exposure-only support are audit
 diagnostics. Routine checks within accepted analysis need no further decision.
 
+A bounded prospective size, power, precision or assurance calculation using
+explicit planning assumptions is feasibility work, including fitting the proposed
+analysis to generated data. This does not authorize observed-study target
+estimation, fresh pilot effect fitting, treatment-rule learning on observed data,
+or outcome-driven selection of favorable planning inputs. Input-distribution and
+exposure-only support inspection retain their existing boundaries. Protected
+observed-data work uses an analysis scope; a durable report uses the report choice.
+
 Design or nonidentification findings can support a report without inventing
 an effect estimate. Analysis may return notes and diagnostics; production of
 its durable report still uses the report choice.

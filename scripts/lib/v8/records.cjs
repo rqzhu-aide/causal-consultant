@@ -7,6 +7,8 @@ const { jsonValue, object, text, enumeration, strings, CATALOG, validateAddition
 
 const FORMAT = "consultation-journal-v8";
 const TYPES = ["user_message", "knowledge", "interpretation", "scope", "decision", "review", "reply_prepared", "reply_recorded", "work", "correction"];
+const QUESTION_CATEGORIES = ["study_goal", "design_comparison", "data_collection", "measurement_quality", "data_processing",
+  "analysis_modeling", "precision_feasibility", "interpretation_alternatives", "others"];
 const COLLECTIONS = {
   question: { collection: "questions", id: "question_id", prefix: "q" },
   evidence: { collection: "evidence", id: "evidence_id", prefix: "f" },
@@ -264,8 +266,9 @@ function validateEntity(update, state, loaded, entry) {
   const optionalRefs = fields => { for (const [field, kind] of Object.entries(fields)) if (own(record, field)) refs(record[field], kind); };
   const optionalStrings = fields => { for (const field of fields) if (own(record, field)) strings(record[field], label + "." + field); };
   if (update.kind === "question") {
-    object(record, label, ["question_id", "statement", "status"], ["reason", "basis_refs", "origin", "resolution"]);
+    object(record, label, ["question_id", "statement", "status"], ["reason", "basis_refs", "origin", "category", "resolution"]);
     text(record.statement, label + ".statement"); enumeration(record.status, ["open", "answered", "retired"], label + ".status");
+    if (own(record, "category")) enumeration(record.category, QUESTION_CATEGORIES, label + ".category");
     if (record.status !== "open" || own(record, "reason")) text(record.reason, label + ".reason");
     if (own(record, "origin")) enumeration(record.origin, ["user", "consultant"], label + ".origin");
     optionalRefs({ basis_refs: undefined });

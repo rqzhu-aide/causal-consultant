@@ -22,7 +22,7 @@ function project(t, options = {}) {
   const initial = save("knowledge", { user_message: first, updates: [
     { kind: "scientific_decision", decision_kind: "target", statement: "Describe the synthetic contrast.", status: "current", basis_refs: [first] },
     { kind: "evidence", evidence_kind: "file", source_ref: "source.csv", summary: "Two synthetic rows.", limitations: ["No estimation is performed."] },
-    { kind: "question", origin: "consultant", statement: "How was the outcome defined?", status: "open", basis_refs: [first] }
+    { kind: "question", origin: "consultant", category: "measurement_quality", statement: "How was the outcome defined?", status: "open", basis_refs: [first] }
   ], selection: { knowledge_refs: [], work_refs: [] }, next_action: { kind: "lead_only", reason: "Offer the bounded work." } }).entry_ref;
   const scope = save("scope", { action: "analysis", assignment,
     terms: { target: "Synthetic contrast.", population: "Two rows.", evidence: "source.csv.", approach: "Description.", checks: [], outputs: "Notes.", claim_boundary: "No causal claim." },

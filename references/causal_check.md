@@ -41,7 +41,10 @@ reveal serious harm needing action, identify who can respond and make an
 attainable response arrangement a condition before using it. A provisional
 plan or useful pause need not wait for every condition to be resolved. A
 narrower endpoint the user has chosen need not complete the broader study
-design.
+design. For planning inputs and quantitative feasibility, consult
+[study-planning.md](study-planning.md) when its distinctions affect this
+assessment; the design worker quantifies the assessed basis and returns
+consequential design or target changes to Lead.
 
 ## Readiness
 
@@ -56,10 +59,14 @@ population or a common selected subgroup. If an event makes the outcome
 undefined rather than merely unobserved, such as death before a symptom score,
 distinguish a descriptive observed-case comparison from a causal effect for a
 shared subgroup or a new outcome that includes the event. State the target and
-assumptions of any causal alternative; few or similar event rates do not
-establish a common causal comparison population. Explain which comparison
-supports the stated target and what remains assumed; otherwise state the limit
-or propose an explicit alternative. Preserving planned or assigned exposure
+assumptions of any causal alternative. Few or similar event rates describe how
+often truncation occurs; they do not establish that the same units would have
+observable outcomes under both exposures. If low rates are used to argue that
+distortion is negligible, justify that approximation on the decision-relevant
+effect scale under stated assumptions, rather than treating the rates alone as
+establishing identification. Explain which comparison supports the stated
+target and what remains assumed; otherwise state the limit or propose an
+explicit alternative. Preserving planned or assigned exposure
 after deviations may define a plan/assignment-policy contrast under the relevant
 comparison assumptions. It does not randomize allocation or automatically
 identify actual-delivery, actual-receipt or no-exposure effects, or attenuation
@@ -67,11 +74,16 @@ toward the null.
 In particular:
 
 - order covariates, treatment, mediators, outcomes, selection and censoring by
-  the actual study process and measurement/reference windows; when entry or
-  follow-up changes, reassess variable roles rather than treating everything
-  recorded before the new time zero as pre-exposure. A recall or aggregate
-  measure spanning exposure is not automatically pretreatment; preserve its
-  timing uncertainty and the conditions for any proposed use;
+  the actual study process. When entry or follow-up changes, reassess variable
+  roles. Locate a recall or aggregate measure's reference window against the
+  relevant assignment/receipt chronology using known dates or bounds, retaining
+  uncertainty where these are unavailable. Before using it as a pretreatment
+  covariate, justify its role for the proposed target; a baseline label, long
+  recall window or adjustment for assessment delay does not establish that
+  exposure has not affected its content. Consider an attainable earlier measure
+  or qualified alternative when needed, without treating a proxy or restriction
+  as an automatic repair. Carry that role assessment into any claimed
+  adjustment or precision benefit;
 - identify the assignment or exposure process and the comparison it supports;
 - assess confounding, measurement, missingness, support, leakage, interference,
   clustering, selection and transport assumptions where they affect the target;
@@ -80,9 +92,11 @@ In particular:
 - distinguish the quantity an observed source or proposed diagnostic measures
   from the outcome, mechanism or assumption it is meant to assess. Explain the
   link. Before attributing a consequential pattern, consider plausible competing
-  causes and what attainable evidence could distinguish them. Selection, coverage
-  or a ratio's composition can change the measure without a corresponding change
-  in the target outcome. Preserve what events and temporal resolution a
+  causes and what attainable evidence could distinguish them. Selection, coverage,
+  duplication or a ratio's composition can separate the recorded measure from
+  the target outcome. Stability alone does not establish cancellation in a
+  contrast; justify any claimed cancellation for its construction and effect
+  scale. Preserve what events and temporal resolution a
   reconstruction can identify and any unverified measurement, coverage or
   interpretation conditions; evidence about one mechanism, population or period
   does not establish the unsupported remainder;

@@ -57,6 +57,25 @@ function definitionBefore(loaded, ref, eventRef) {
   return records.resolveAt(loaded, ref, eventRef);
 }
 
+// A metadata-only chain has one applicability identity while its exact saved
+// versions remain available. Changed source bindings also break that chain.
+function questionVersion(loaded, record) {
+  const signature = version => {
+    const { category, ...body } = version.body;
+    return canonical({ body, sources: records.references(body)
+      .map(ref => exact(definitionBefore(loaded, ref, version.event_ref))).sort() });
+  };
+  const versions = loaded.entries.filter(entry => number(entry.id) <= number(record.event_ref))
+    .flatMap(entry => records.definitions(entry)).filter(value => value.kind === "question" && value.ref === record.ref);
+  let anchor = record;
+  const expected = signature(record);
+  for (let index = versions.length - 2; index >= 0; index--) {
+    if (signature(versions[index]) !== expected) break;
+    anchor = versions[index];
+  }
+  return exact(anchor);
+}
+
 function conditionLinks(loaded, evidence, read, historical = false) {
   const current = array(loaded.state.result_conditions);
   const superseded = new Set(current.map(value => identity(value.supersedes)).filter(Boolean));
@@ -163,10 +182,12 @@ function answerCommunication(loaded, question, reply) {
       : "The actual reply has no mapped answer for this prepared answer." };
   const answer = actual[0];
   const answerStatus = answer.answer_status ?? answer.status;
-  let previous;
-  try { previous = definitionBefore(loaded, answer.question_ref, reply.question_version_at); } catch (_) { /* Specific gap below. */ }
-  const currentVersion = loaded.state.history_index?.[ref]?.event_ref;
-  if (!previous || previous.event_ref !== currentVersion) return { ...base, status: "unconfirmed",
+  let previous, applicable = false;
+  try {
+    previous = definitionBefore(loaded, answer.question_ref, reply.question_version_at);
+    applicable = questionVersion(loaded, previous) === questionVersion(loaded, records.resolve(loaded, ref));
+  } catch (_) { /* Specific gap below. */ }
+  if (!applicable) return { ...base, status: "unconfirmed",
     reason: "The recorded answer concerns an earlier or unavailable question definition; reconcile applicability before relying on it.",
     ...(previous ? { answered_question_ref: exact(previous) } : {}) };
   const status = answerStatus === "answered" && question.status === "answered" ? "answered"
@@ -225,7 +246,7 @@ function questionCommunication(loaded, question, replies) {
     try {
       return JSON.stringify({ text: normalizeText(answer.answer),
         echo_question: Boolean(answer.echo_question), question_text: answer.echo_question ? normalizeText(answer.text) : null,
-        question: exact(definitionBefore(loaded, answer.question_ref, reply.question_version_at)),
+        question: questionVersion(loaded, definitionBefore(loaded, answer.question_ref, reply.question_version_at)),
         basis: array(answer.basis_refs).map(value => exact(definitionBefore(loaded, value, reply.question_version_at))).sort(),
         scope: answer.scope_ref || null });
     } catch (_) { return null; }
@@ -347,7 +368,7 @@ function selection(loaded) {
       return factItem(loaded, record, read);
     });
     (unresolved || communicationGap ? section.questions : section.understanding).push({ kind: "question", ref: exact(saved), ...version,
-      ...pick(question, ["origin", "statement", "status", "reason"]),
+      ...pick(question, ["origin", "category", "statement", "status", "reason"]),
       ...(support.length ? { supported_by: support } : {}),
       ...(Object.hasOwn(question, "resolution") ? { remaining: structuredClone(question.resolution.remaining || []) } : {}),
       ...(communication ? { communication } : {}), basis_refs: read.refs(question.basis_refs, saved?.event_ref) });

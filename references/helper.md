@@ -39,8 +39,9 @@ those alternatives and clarify. A failed save is not evidence that the user mean
 something else. Do not recast a selection as information to get past an error.
 
 Record explicit user questions, including explanation requests without question
-marks, with their source. Preserve consultant-question support and exact remaining
-parts. Apply an answer or availability limit only to the parts it supports;
+marks, with their source and primary category under the
+[question contract](memory-records.md#questions). Preserve consultant-question
+support and exact remaining parts. Apply an answer or availability limit only to the parts it supports;
 preserve the other parts' existing support, status and unresolved remainders.
 Distinguish lack of knowledge, unavailable records, refusal and deferral; avoid
 asking the same unavailable question again.

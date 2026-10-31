@@ -347,6 +347,8 @@ function render(loaded, entry) {
 }
 function validate(loaded, entry) {
   const data = entry.data;
+  for (const definition of records.definitions(entry).slice(1)) if (definition.kind === "question"
+    && !Object.hasOwn(definition.body, "category")) fail("INVALID_INPUT", "A fresh question definition requires category.");
   const context = overlay(loaded, entry);
   direction(context, data);
   for (const definition of records.definitions(entry).slice(1)) if (definition.kind === "evidence" && definition.body.kind === "computed") require("./runs.cjs").assertComputedEvidence(context, definition.body);

@@ -49,6 +49,7 @@ separate interpretation is needed merely to restate this straightforward request
       "kind": "question",
       "statement": "When was readiness recorded, and how was it defined?",
       "origin": "consultant",
+      "category": "measurement_quality",
       "status": "open",
       "basis_refs": ["e1"]
     },
@@ -157,6 +158,7 @@ repeat the timing question or treat lack of knowledge as an answer to definition
     "kind": "question",
     "statement": "When was readiness recorded, and how was it defined?",
     "origin": "consultant",
+    "category": "measurement_quality",
     "status": "open",
     "reason": "The user reports 2021 timing before rollout, does not know the definition, and identifies a possible coding guide.",
     "basis_refs": ["e1", "e4"],
@@ -214,6 +216,7 @@ previous question. The decision retains acceptance while selecting explanation.
     "as": "explain_assumptions",
     "kind": "question",
     "origin": "user",
+    "category": "interpretation_alternatives",
     "statement": "Explain the report's assumptions before writing it.",
     "status": "open",
     "basis_refs": ["e22"]
